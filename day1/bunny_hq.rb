@@ -1,5 +1,9 @@
 # google advent of code solution #1
 
+require 'set'
+require 'pry'
+
+input = File.read "test.txt"
 input = File.read "instructions.txt"
 
 instructions = input.split ', '
@@ -13,8 +17,26 @@ directions = {
 }
 
 current_coord = { :x => 0, :y => 0 }
+@visited      = []
+@answer2      = nil
 
 facing_direction = :north
+
+def step current_coord, direction, distance
+  (1..distance.abs).each do |unit|
+    if distance > 0
+      current_coord[direction] += 1
+    else
+      current_coord[direction] -= 1
+    end
+
+    if @answer2.nil? && @visited.member?(current_coord)
+      @answer2 = "Answer 2 is #{current_coord[:x] + current_coord[:y]}"
+    else
+      @visited << current_coord.dup
+    end
+  end
+end
 
 instructions.each do |instruction|
   direction = instruction[0]
@@ -26,20 +48,18 @@ instructions.each do |instruction|
     new_facing_direction = directions[facing_direction].last
   end
 
-  puts "#{new_facing_direction} for #{distance} blocks"
   facing_direction = new_facing_direction
 
   if facing_direction == :north
-    current_coord[:y] += distance
+    step current_coord, :y, distance
   elsif facing_direction == :east
-    current_coord[:x] += distance
+    step current_coord, :x, distance
   elsif facing_direction == :south
-    current_coord[:y] -= distance
+    step current_coord, :y, -distance
   elsif facing_direction == :west
-    current_coord[:x] -= distance
+    step current_coord, :x, -distance
   end
 end
 
-puts current_coord
-
-puts "The solution is #{current_coord[:x] + current_coord[:y]}"
+puts "The part 1 solution is #{current_coord[:x] + current_coord[:y]}"
+puts @answer2
