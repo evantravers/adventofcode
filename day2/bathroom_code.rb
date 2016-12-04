@@ -4,12 +4,14 @@ solution = ""
 
 class Keypad
   KeyValues = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
+    [nil, nil, 1,   nil, nil],
+    [nil, 2,   3,   4,   nil],
+    [5,   6,   7,   8,   9],
+    [nil, "A", "B", "C", nil],
+    [nil, nil, "D", nil, nil]
   ]
 
-  def button x, y
+  def self.button x, y
     return KeyValues[y][x]
   end
 end
@@ -23,20 +25,27 @@ class Pointer
   end
 
   def move_pointer(x, y)
-    @x += x
-    @y += y
+    #bound detection
+    x = @x + x
+    y = @y + y
 
-    if @x > 2
-      @x = 2
+    if x > 4
+      x = 4
     end
-    if @x < 0
-      @x = 0
+    if x < 0
+      x = 0
     end
-    if @y > 2
-      @y = 2
+    if y > 4
+      y = 4
     end
-    if @y < 0
-      @y = 0
+    if y < 0
+      y = 0
+    end
+
+    #weird shape detection
+    unless Keypad.button(x, y) == nil
+      @x = x
+      @y = y
     end
   end
 
@@ -58,7 +67,6 @@ class Pointer
 end
 
 current_key = Pointer.new
-keypad      = Keypad.new
 
 File.foreach('input.txt') do |line|
   line.split('').each do |char|
@@ -73,7 +81,7 @@ File.foreach('input.txt') do |line|
     end
   end
 
-  solution += "#{keypad.button(current_key.x, current_key.y)}"
+  solution += "#{Keypad.button(current_key.x, current_key.y)}"
 end
 
 puts solution
