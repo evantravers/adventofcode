@@ -1,49 +1,54 @@
 require 'pry'
 
-solution = ""
+solution1 = ""
+solution2 = ""
+
+KeyValues = [
+  [nil, nil, nil, nil, nil],
+  [nil, 1, 2, 3, nil],
+  [nil, 4, 5, 6, nil],
+  [nil, 7, 8, 9, nil],
+  [nil, nil, nil, nil, nil]
+]
+FancyKeyValues = [
+  [nil, nil, nil, nil, nil, nil, nil],
+  [nil, nil, nil, 1,   nil, nil, nil],
+  [nil, nil, 2,   3,   4,   nil, nil],
+  [nil, 5,   6,   7,   8,   9, nil],
+  [nil, nil, "A", "B", "C", nil, nil],
+  [nil, nil, nil, "D", nil, nil, nil],
+  [nil, nil, nil, nil, nil, nil, nil]
+]
 
 class Keypad
-  KeyValues = [
-    [nil, nil, 1,   nil, nil],
-    [nil, 2,   3,   4,   nil],
-    [5,   6,   7,   8,   9],
-    [nil, "A", "B", "C", nil],
-    [nil, nil, "D", nil, nil]
-  ]
+  @pad = nil
 
-  def self.button x, y
-    return KeyValues[y][x]
+  def initialize pad_values
+    @pad = pad_values
+  end
+
+  def button x, y
+    return @pad[y][x]
   end
 end
+
+problem1_pad = Keypad.new(KeyValues)
+problem2_pad = Keypad.new(FancyKeyValues)
 
 class Pointer
   attr_accessor :x, :y
 
-  def initialize
-    @x = 1
-    @y = 1
+  def initialize x, y, keypad
+    @x = x
+    @y = y
+    @keypad = keypad
   end
 
   def move_pointer(x, y)
-    #bound detection
     x = @x + x
     y = @y + y
 
-    if x > 4
-      x = 4
-    end
-    if x < 0
-      x = 0
-    end
-    if y > 4
-      y = 4
-    end
-    if y < 0
-      y = 0
-    end
-
-    #weird shape detection
-    unless Keypad.button(x, y) == nil
+    unless @keypad.button(x, y) == nil
       @x = x
       @y = y
     end
@@ -66,22 +71,32 @@ class Pointer
   end
 end
 
-current_key = Pointer.new
+problem1 = Pointer.new(2, 2, problem1_pad)
+problem2 = Pointer.new(3, 3, problem2_pad)
 
 File.foreach('input.txt') do |line|
   line.split('').each do |char|
     if char == "U"
-      current_key.up
+      problem1.up
+      problem2.up
     elsif char == "D"
-      current_key.down
+      problem1.down
+      problem2.down
     elsif char == "L"
-      current_key.left
+      problem1.left
+      problem2.left
     elsif char == "R"
-      current_key.right
+      problem1.right
+      problem2.right
     end
   end
 
-  solution += "#{Keypad.button(current_key.x, current_key.y)}"
+  solution1 += "#{problem1_pad.button(problem1.x, problem1.y)}"
+  solution2 += "#{problem2_pad.button(problem2.x, problem2.y)}"
 end
 
-puts solution
+puts "Imaginary Keypad (Problem Part 1)"
+puts solution1
+
+puts "Real Keypad (Problem Part 2)"
+puts solution2
