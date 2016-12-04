@@ -34,4 +34,24 @@ combinations.each do |sides|
 
   possible += 1 if check_sides(side_1, side_2, side_3)
 end
-puts possible
+
+puts "Problem 1:"
+puts "#{possible}\n"
+
+possible = 0
+
+list_of_sides = combinations.flatten
+
+while !list_of_sides.empty?
+  (0..2).each do |offset|
+    side_1 = list_of_sides[0+offset]
+    side_2 = list_of_sides[3+offset]
+    side_3 = list_of_sides[6+offset]
+
+    possible += 1 if check_sides(side_1, side_2, side_3)
+  end
+  list_of_sides = list_of_sides[9..-1]
+end
+
+puts "Problem 2:"
+puts "#{possible}\n"
