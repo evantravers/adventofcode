@@ -16,6 +16,8 @@ class String
 end
 
 class Decoder
+  attr_accessor :count
+
   def initialize
     @count = 0
   end
@@ -61,7 +63,7 @@ decoder2 = Decoder.new
 first_password  = decoder.simple(Door_code)
 second_password = decoder2.complex(Door_code)
 
-puts "The first answer is:"
+puts "The first answer is (after #{decoder.count} iterations):"
 puts first_password
-puts "The second answer is:"
+puts "The second answer is (after #{decoder2.count} iterations):"
 puts second_password
