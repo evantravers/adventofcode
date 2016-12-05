@@ -43,11 +43,8 @@ class Decoder
     until !password.member? nil
       position, value = self.get_next_char(string)
 
-      if position.number?
-        position        = position.to_i
-      else
-        next
-      end
+      next unless position.number?
+      position = position.to_i
 
       if position < 8 && password[position].nil?
         password[position] = value
