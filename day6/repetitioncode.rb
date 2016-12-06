@@ -1,8 +1,6 @@
 require 'pry'
 
 class Answer
-  @answer
-
   def initialize
     @answer = []
   end
