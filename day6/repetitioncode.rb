@@ -27,8 +27,8 @@ class Answer
     end
   end
 
-  def solve
-    return @answer.map {|char| char.max_by {|letter, value| value}.first}.join
+  def solve method
+    return @answer.map {|char| char.send("#{method}_by") {|letter, value| value}.first}.join
   end
 end
 
@@ -38,5 +38,7 @@ File.foreach('input.txt') do |line|
   answer.evaluate line
 end
 
-puts "The message is:"
-puts answer.solve
+puts "The first message is:"
+puts answer.solve(:max)
+puts "The last message is:"
+puts answer.solve(:min)
