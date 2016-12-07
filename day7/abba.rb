@@ -77,7 +77,9 @@ File.foreach('input.txt') do |line|
     tls += 1
   end
 
-  if (hyper_aba & super_aba).length > 0
+  # compute the matching elements
+  nega_hyper_aba = Set.new(hyper_aba.map {|x| x = "#{x[1]}#{x[0]}#{x[1]}"})
+  if (nega_hyper_aba & super_aba).length > 0
     ssl += 1
   end
 end
