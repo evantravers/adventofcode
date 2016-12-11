@@ -29,13 +29,7 @@ class Screen
   private
 
   def rotate(array, amount)
-    right_index = amount + 1
-    left_index  = amount
-
-    temp_array = array[0..-right_index]
-    remainder  = array[left_index..-1]
-
-    return remainder.reverse + temp_array
+    return array.rotate(array.length - amount)
   end
 end
 
