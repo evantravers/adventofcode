@@ -50,7 +50,7 @@ class Floor
   def safe? elevator=nil
     # if the elevator is docked
     current_inventory = @inventory + elevator.inventory
-    
+
     # if any chip is in a room with a non-matching RTG, fail
     rtgs = current_inventory.select { |x| x.type == :generator }
     chps = current_inventory.select { |x| x.type == :microchip }
@@ -71,7 +71,7 @@ end
 
 class Elevator < Floor
   attr_accessor :position
-  def initialize 
+  def initialize
     @position  = 0
     @inventory = []
   end
