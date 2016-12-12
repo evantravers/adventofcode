@@ -38,11 +38,11 @@ class Floor
   @name      = ""
 
   def initialize line
-    floor_values = line.match(FloorDescription).captures
+    floor_values = line.match(FloorDescription).captures.compact
     @name        = floor_values.shift
     @inventory   = []
 
-    unless floor_values.compact.empty?
+    unless floor_values.empty?
       floor_values.map { |item_name| @inventory << Item.new(item_name) }
     end
   end
