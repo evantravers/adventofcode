@@ -48,9 +48,12 @@ class Floor
   end
 
   def safe? elevator=nil
+    # if the elevator is docked
+    current_inventory = @inventory + elevator.inventory
+    
     # if any chip is in a room with a non-matching RTG, fail
-    rtgs = @inventory.select { |x| x.type == :generator }
-    chps = @inventory.select { |x| x.type == :microchip }
+    rtgs = current_inventory.select { |x| x.type == :generator }
+    chps = current_inventory.select { |x| x.type == :microchip }
 
     if rtgs.size == 0 || chps.size == 0
       return true
@@ -66,7 +69,15 @@ class Floor
   end
 end
 
-File.foreach('input.txt') do |line|
+class Elevator < Floor
+  attr_accessor :position
+  def initialize 
+    @position  = 0
+    @inventory = []
+  end
+end
+
+File.foreach('test.txt') do |line|
   Floors << Floor.new(line)
 end
 
