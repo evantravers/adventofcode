@@ -4,12 +4,18 @@ FloorDescription = /The (\w+) floor contains (?:nothing relevant|(?:a ([\w-]+ [\
 Floors = []
 
 class Item
+  include Comparable
+
   attr_accessor :mineral, :type
 
   def initialize name
     values   = name.split(/ |-compatible/)
-    @mineral = values.first
-    @type    = values.last
+    @mineral = values.first.to_sym
+    @type    = values.last.to_sym
+  end
+
+  def == other_item
+    return @mineral == other_item.mineral
   end
 end
 
@@ -27,6 +33,12 @@ class Floor
     unless floor_values.compact.empty?
       floor_values.map { |item_name| @inventory << Item.new(item_name) }
     end
+  end
+
+  def radiation_check
+    # if any chip is in a room with a non-matching RTG, fail
+    rtgs = @inventory.select { |x| x.type == :generator }
+    chps = @inventory.select { |x| x.type == :microchip }
   end
 end
 
