@@ -25,6 +25,10 @@ class Item
   def hash
     @mineral.hash
   end
+
+  def to_s
+    "#{@mineral} #{@type}"
+  end
 end
 
 class Floor
@@ -55,6 +59,10 @@ class Floor
       # they will be fried
       return (chps - rtgs) == []
     end
+  end
+
+  def to_s
+    "#{name.capitalize} Floor: #{@inventory.map(&:to_s)}"
   end
 end
 
