@@ -1,10 +1,13 @@
 require 'pry'
+require 'pp'
 
 FloorDescription = /The (\w+) floor contains (?:nothing relevant|(?:a ([\w-]+ [\w-]+)(?:,)? )+and a ([\w-]+ [\w-]+))./
 Floors = []
 
 class Item
   include Comparable
+
+  alias_method :eql?, :==
 
   attr_accessor :mineral, :type
 
@@ -14,8 +17,13 @@ class Item
     @type    = values.last.to_sym
   end
 
-  def == other_item
-    return @mineral == other_item.mineral
+  def ==(other_item)
+    self.class == other_item.class && @mineral == other_item.mineral
+  end
+
+
+  def hash
+    @mineral.hash
   end
 end
 
@@ -35,10 +43,18 @@ class Floor
     end
   end
 
-  def radiation_check
+  def safe? elevator=nil
     # if any chip is in a room with a non-matching RTG, fail
     rtgs = @inventory.select { |x| x.type == :generator }
     chps = @inventory.select { |x| x.type == :microchip }
+
+    if rtgs.size == 0 || chps.size == 0
+      return true
+    else
+      # show which chips don't have corresponding rtgs on this floor
+      # they will be fried
+      return (chps - rtgs) == []
+    end
   end
 end
 
