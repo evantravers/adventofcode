@@ -58,9 +58,9 @@ Instructions.each do |instruction|
   if instruction.match BotInstruction
     captured_values = instruction.match(BotInstruction).captures
     bot_id          = captured_values[0].to_i
-    low             = captured_values[1]
+    low             = captured_values[1].to_sym
     low_id          = captured_values[2].to_i
-    high            = captured_values[3]
+    high            = captured_values[3].to_sym
     high_id         = captured_values[4].to_i
 
     bot = find_bot bot_id
@@ -68,5 +68,4 @@ Instructions.each do |instruction|
   end
 end
 
-binding.pry
 puts @bots
