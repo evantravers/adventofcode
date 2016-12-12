@@ -36,12 +36,8 @@ class String
     @multipliers = []
 
     def decrease_multipliers n
-      @multipliers.each do |mul|
-        mul[:length] = mul[:length] - n
-        if mul[:length] < 1
-          @multipliers.delete(mul)
-        end
-      end
+      @multipliers.map { |mul| mul[:length] = mul[:length] - n }
+      @multipliers.select! { |mul| mul[:length] > 0 }
     end
 
     while offset < self.length
@@ -49,14 +45,14 @@ class String
         str_length, str_times = self[offset..-1].scan(Command_pattern).first.map(&:to_i)
         pattern_length = 3 + str_length.to_s.size + str_times.to_s.size
 
+        decrease_multipliers(pattern_length)
+
         @multipliers << {length: str_length, times: str_times}
 
         # move pointer past command pattern
-        decrease_multipliers pattern_length
         offset += pattern_length
       else
         total_multiplier = @multipliers.inject(1) { |memo, m| memo * m[:times] }
-
         decrease_multipliers 1
 
         total  += total_multiplier
@@ -68,6 +64,10 @@ class String
   end
 end
 
+puts "(3x3)XYZ".compute_size == "XYZXYZXYZ".size
+puts "X(8x2)(3x3)ABCY".compute_size == "XABCABCABCABCABCABCY".size
+puts "(27x12)(20x12)(13x14)(7x10)(1x12)A".compute_size == 241920
+puts "(25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN".compute_size == 445
 
 input = File.read('input.txt').strip!
 
