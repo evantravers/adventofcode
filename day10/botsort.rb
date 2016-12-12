@@ -13,11 +13,13 @@ class Bot
   @chips = []
   attr_accessor :id, :high, :low, :high_id, :low_id, :chips
 
-  def initialize(id, chip)
+  def initialize(id, chip=nil)
     @id    = id
     @chips = []
 
-    @chips << chip
+    if chip
+      @chips << chip
+    end
   end
 
   def give_instructions(low, low_id, high, high_id)
@@ -36,11 +38,21 @@ class Chip
   end
 end
 
+def find_bot id
+  bot = @bots.find {|b| b.id == id}
+  if !bot
+    bot = Bot.new(id)
+    @bots << bot
+  end
+  return bot
+end
+
 # setup the world
 Instructions.each do |instruction|
   if instruction.match ValueDeclaration
     chip_num, bot_id = instruction.match(ValueDeclaration).captures.map(&:to_i)
-    @bots << Bot.new(bot_id, Chip.new(chip_num))
+    bot = find_bot(bot_id)
+    bot.chips << Chip.new(chip_num)
   end
 
   if instruction.match BotInstruction
@@ -51,7 +63,7 @@ Instructions.each do |instruction|
     high            = captured_values[3]
     high_id         = captured_values[4].to_i
 
-    bot = @bots.find { |b| b.id == bot_id }
+    bot = find_bot bot_id
     bot.give_instructions(low, low_id, high, high_id)
   end
 end
