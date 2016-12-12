@@ -6,8 +6,8 @@ BotInstruction   = /bot (\d+) gives low to (\w+) (\d+) and high to (\w+) (\d+)/
 
 Instructions     = File.readlines('input.txt').map{ |x| x.rstrip }
 
-@bots = []
-@bins = []
+Bots   = []
+Output = []
 
 class Bot
   @chips = []
@@ -28,21 +28,48 @@ class Bot
     @high    = high
     @high_id = high_id
   end
+
+  def execute
+    low_chip = @chips.min
+    if @low == :output
+      Output[@low_id] = low_chip
+    else
+      find_bot(low_id).chips << low_chip
+    end
+    @chips.delete low_chip
+
+    high_chip = @chips.max
+    if @high == :output
+      Output[@high_id] = high_chip
+    else
+      find_bot(high_id).chips << high_chip
+    end
+    @chips.delete high_chip
+
+    if low_chip.number == 17 && high_chip.number == 61
+      puts "I'm holding the CHIPSSS! And I'm #{@id}"
+    end
+  end
 end
 
 class Chip
+  include Comparable
   attr_accessor :number
 
   def initialize num
     @number = num
   end
+
+  def <=>(anotherchip)
+    @number <=> anotherchip.number
+  end
 end
 
-def find_bot id
-  bot = @bots.find {|b| b.id == id}
+def find_bot(id)
+  bot = Bots.find {|b| b.id == id}
   if !bot
     bot = Bot.new(id)
-    @bots << bot
+    Bots << bot
   end
   return bot
 end
@@ -63,9 +90,14 @@ Instructions.each do |instruction|
     high            = captured_values[3].to_sym
     high_id         = captured_values[4].to_i
 
-    bot = find_bot bot_id
+    bot = find_bot(bot_id)
     bot.give_instructions(low, low_id, high, high_id)
   end
 end
 
-puts @bots
+while Bots.select {|x| x.chips.size == 2}.size > 0
+  Bots.select {|x| x.chips.size == 2}.map { |x| x.execute }
+end
+
+puts "Part 2:"
+puts Output[0].number * Output[1].number * Output[2].number
