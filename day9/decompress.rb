@@ -33,25 +33,32 @@ class String
     offset = 0
     total  = 0
 
-    multipliers = []
+    @multipliers = []
+
+    def decrease_multipliers n
+      @multipliers.each do |mul|
+        mul[:length] = mul[:length] - n
+        if mul[:length] < 1
+          @multipliers.delete(mul)
+        end
+      end
+    end
 
     while offset < self.length
       if self.index(Command_pattern, offset) == offset
         str_length, str_times = self[offset..-1].scan(Command_pattern).first.map(&:to_i)
         pattern_length = 3 + str_length.to_s.size + str_times.to_s.size
 
-        multipliers << {length: str_length, times: str_times}
+        @multipliers << {length: str_length, times: str_times}
 
         # move pointer past command pattern
+        decrease_multipliers pattern_length
         offset += pattern_length
       else
-        total_multiplier = multipliers.inject(1) { |memo, m| memo * m[:times] }
-        multipliers.each do |mul|
-          mul[:length] = mul[:length] - 1
-          if mul[:length] == 0
-            multipliers.delete(mul)
-          end
-        end
+        total_multiplier = @multipliers.inject(1) { |memo, m| memo * m[:times] }
+
+        decrease_multipliers 1
+
         total  += total_multiplier
         offset += 1
       end
@@ -60,6 +67,7 @@ class String
     return total
   end
 end
+
 
 input = File.read('input.txt').strip!
 
