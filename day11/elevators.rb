@@ -1,7 +1,7 @@
 require 'pry'
 require 'pp'
 
-FloorDescription = /The (\w+) floor contains (?:nothing relevant|(?:a ([\w-]+ [\w-]+)(?:,)? )+and a ([\w-]+ [\w-]+))./
+FloorDescription = /The (\w+) floor contains (?:nothing relevant|(?:a ([\w-]+ [\w-]+)(?:, | )?)+(?:and a ([\w-]+ [\w-]+))*)./
 Floors = []
 
 class Item
