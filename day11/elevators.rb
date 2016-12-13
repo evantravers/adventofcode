@@ -3,8 +3,11 @@ require 'pry'
 
 FloorDescription  = /The (\w+) floor contains (?:nothing relevant|(?:a ([\w-]+ [\w-]+)(?:, | )?)+(?:and a ([\w-]+ [\w-]+))*)./
 InitialFloorState = []
+PossibleStates    = Set.new
 
 class Item
+  include Comparable
+
   attr_accessor :mineral, :type
 
   def initialize name
@@ -19,6 +22,14 @@ class Item
 
   def to_s
     "#{@mineral} #{@type}"
+  end
+
+  def == obj
+    self.to_s == obj.to_s
+  end
+
+  def hash
+    self.to_s.hash
   end
 end
 
@@ -53,8 +64,8 @@ class State
 
   def move_item array, direction
     array.map do |item|
-      item = current_floor.inventory.delete(item)
-      @floors[@elevator + direction].inventory << item
+      moving_item = current_floor.inventory.delete(item)
+      @floors[@elevator + direction].inventory << moving_item
     end
   end
 
@@ -67,6 +78,16 @@ class State
     moves =
       current_floor.inventory.combination(1).to_set +
       current_floor.inventory.combination(2).to_set
+
+    if @elevator == 0
+      moves.map do |items|
+        new_state = self.clone
+        new_state.move_item(items, 1)
+        PossibleStates << new_state if new_state.valid?   
+      end
+    elsif @elevator == @floors.size
+    else
+    end
   end
 
   def clone
@@ -94,8 +115,8 @@ class Floor
     return true if @inventory.empty?
 
     # if any chip is in a room with a non-matching RTG, fail
-    rtgs = @inventory.compact.select { |x| x.type == :generator }
-    chps = @inventory.compact.select { |x| x.type == :microchip }
+    rtgs = @inventory.select { |x| x.type == :generator }
+    chps = @inventory.select { |x| x.type == :microchip }
 
     if rtgs.size == 0 || chps.size == 0
       return true
@@ -103,8 +124,8 @@ class Floor
       # show which chips don't have corresponding rtgs on this floor
       # they will be fried
       fried_chips =
-        chps.map {|chip| rtgs.map { |generator| generator.compatible? chip } }
-      return fried_chips == []
+        chps.map {|chip| rtgs.find {|rtg| rtg.mineral != chip.mineral }}
+      return fried_chips.compact.empty?
     end
   end
 
@@ -118,9 +139,9 @@ File.foreach('test.txt') do |line|
 end
 
 initialstate = State.new(InitialFloorState, 0, 0)
-binding.pry
 
 # results in new possible states
 moves = initialstate.generate_moves
+binding.pry
 
 puts moves
