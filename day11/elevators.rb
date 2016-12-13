@@ -25,23 +25,15 @@ end
 class State
   attr_accessor :floors, :elevator, :move_count
 
-  def initialize(*args)
-    # either initialize a new state, or duplicate an older state
-    if args.size == 1 && args.first.class == State
-      old_state          = args.first.dup
-      @floors, @elevator = old_state.floors, old_state.elevator
-      @move_count        = old_state.move_count + 1
-    elsif args.size == 2
-      @floors     = args.first
-      @elevator   = args.last
-      @move_count = 0
-    else
-      puts "This either takes a state, or a Floors array and Elevator int"
-    end
+  def initialize(floors, elevator, move_count)
+    @floors     = floors
+    @elevator   = elevator
+    @move_count = move_count
   end
 
   def to_s
     puts @floors.reverse
+    puts "Elevator at position: #{@elevator}"
   end
 
   def valid?
@@ -75,7 +67,10 @@ class State
     moves =
       current_floor.inventory.combination(1).to_set +
       current_floor.inventory.combination(2).to_set
-    end
+  end
+
+  def clone
+    Marshal::load(Marshal.dump(self))
   end
 end
 
@@ -122,7 +117,8 @@ File.foreach('test.txt') do |line|
   InitialFloorState << Floor.new(line)
 end
 
-initialstate = State.new(InitialFloorState, 0)
+initialstate = State.new(InitialFloorState, 0, 0)
+binding.pry
 
 # results in new possible states
 moves = initialstate.generate_moves
