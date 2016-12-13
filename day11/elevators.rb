@@ -49,6 +49,12 @@ class State
   def to_s
     puts @floors.reverse
   end
+
+  def valid?
+    # if one invalid position, then fail
+    results = @floors.map { |floor| floor.safe? }
+    return results.reduce(:&)
+  end
 end
 
 class Floor
@@ -67,13 +73,10 @@ class Floor
     end
   end
 
-  def safe? elevator=nil
-    # if the elevator is docked
-    current_inventory = @inventory + elevator.inventory
-
+  def safe?
     # if any chip is in a room with a non-matching RTG, fail
-    rtgs = current_inventory.select { |x| x.type == :generator }
-    chps = current_inventory.select { |x| x.type == :microchip }
+    rtgs = @inventory.select { |x| x.type == :generator }
+    chps = @inventory.select { |x| x.type == :microchip }
 
     if rtgs.size == 0 || chps.size == 0
       return true
@@ -89,11 +92,14 @@ class Floor
   end
 end
 
-class Elevator < Floor
+class Elevator
   attr_accessor :position
   def initialize
     @position  = 0
-    @inventory = []
+  end
+
+  def to_s
+    "Elevator on Floor: #{@position}"
   end
 end
 
