@@ -1,14 +1,11 @@
+require 'set'
 require 'pry'
-require 'pp'
 
-FloorDescription = /The (\w+) floor contains (?:nothing relevant|(?:a ([\w-]+ [\w-]+)(?:, | )?)+(?:and a ([\w-]+ [\w-]+))*)./
+FloorDescription  = /The (\w+) floor contains (?:nothing relevant|(?:a ([\w-]+ [\w-]+)(?:, | )?)+(?:and a ([\w-]+ [\w-]+))*)./
+PossibleStates    = Set.new
 InitialFloorState = []
 
 class Item
-  include Comparable
-
-  alias_method :eql?, :==
-
   attr_accessor :mineral, :type
 
   def initialize name
@@ -17,32 +14,26 @@ class Item
     @type    = values.last.to_sym
   end
 
-  def ==(other_item)
-    self.class == other_item.class && @mineral == other_item.mineral
-  end
-
-
-  def hash
-    @mineral.hash
-  end
-
-  def to_s
-    "#{@mineral} #{@type}"
+  def compatible? other_item
+    return @mineral == other_item.mineral
   end
 end
 
 class State
-  attr_accessor :floors, :elevator
+  attr_accessor :floors, :elevator, :move_count
 
   def initialize(*args)
+    # either initialize a new state, or duplicate an older state
     if args.size == 1 && args.first.class == State
-      old_state = args.first
+      old_state          = args.first.dup
       @floors, @elevator = old_state.floors, old_state.elevator
+      @move_count        = old_state.move_count + 1
     elsif args.size == 2
-      @floors   = args.first
-      @elevator = args.last
+      @floors     = args.first
+      @elevator   = args.last
+      @move_count = 0
     else
-      puts "This either takes a state, or a Floors array and Elevator obj"
+      puts "This either takes a state, or a Floors array and Elevator int"
     end
   end
 
@@ -54,6 +45,62 @@ class State
     # if one invalid position, then fail
     results = @floors.map { |floor| floor.safe? }
     return results.reduce(:&)
+  end
+
+  def victory?
+    # everything on the top floor, nothing below
+    @floors.last.inventory.size > 0 && floors[0..-2].map { |f| f.inventory.size == 0 }
+  end
+
+  def current_floor
+    @floors[@elevator]
+  end
+
+  def move_item set, direction
+    set.map do |item|
+      item = current_floor.inventory.delete(item)
+      @floors[@elevator + direction].inventory << item
+    end
+  end
+
+  def generate_moves
+    if self.victory?
+      puts "Found victory in #{@move_count} moves."
+      exit
+    end
+
+    moves =
+      current_floor.inventory.combination(1).to_set +
+      current_floor.inventory.combination(2).to_set
+
+    binding.pry
+    if @elevator == 0
+      # only move up
+      moves.map do |items|
+        state = State.new(self)
+        state.move_item(items, 1)
+        PossibleStates << state if state.valid?
+      end
+    elsif @elevator == @floors.size
+      # only move down
+      moves.map do |items|
+        state = State.new(self)
+        state.move_item(items, -1)
+        PossibleStates << state if state.valid?
+      end
+    else
+			# up and down
+      moves.map do |items|
+        state = State.new(self)
+        state.move_item(items, 1)
+        PossibleStates << state if state.valid?
+      end
+      moves.map do |items|
+        state = State.new(self)
+        state.move_item(items, -1)
+        PossibleStates << state if state.valid?
+      end
+    end
   end
 end
 
@@ -74,6 +121,8 @@ class Floor
   end
 
   def safe?
+    return true if @inventory.empty?
+
     # if any chip is in a room with a non-matching RTG, fail
     rtgs = @inventory.select { |x| x.type == :generator }
     chps = @inventory.select { |x| x.type == :microchip }
@@ -83,7 +132,9 @@ class Floor
     else
       # show which chips don't have corresponding rtgs on this floor
       # they will be fried
-      return (chps - rtgs) == []
+      fried_chips =
+        chps.map {|chip| rtgs.map { |generator| generator.compatible? chip } }
+      return fried_chips == []
     end
   end
 
@@ -92,23 +143,13 @@ class Floor
   end
 end
 
-class Elevator
-  attr_accessor :position
-  def initialize
-    @position  = 0
-  end
-
-  def to_s
-    "Elevator on Floor: #{@position}"
-  end
-end
-
 File.foreach('test.txt') do |line|
   InitialFloorState << Floor.new(line)
 end
 
-initialstate = State.new(InitialFloorState, Elevator.new)
+initialstate = State.new(InitialFloorState, 0)
 
-binding.pry
+# results in new possible states
+moves = initialstate.generate_moves
 
-puts initialstate
+puts moves
