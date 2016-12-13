@@ -2,7 +2,7 @@ require 'pry'
 require 'pp'
 
 FloorDescription = /The (\w+) floor contains (?:nothing relevant|(?:a ([\w-]+ [\w-]+)(?:, | )?)+(?:and a ([\w-]+ [\w-]+))*)./
-Floors = []
+InitialFloorState = []
 
 class Item
   include Comparable
@@ -28,6 +28,26 @@ class Item
 
   def to_s
     "#{@mineral} #{@type}"
+  end
+end
+
+class State
+  attr_accessor :floors, :elevator
+
+  def initialize(*args)
+    if args.size == 1 && args.first.class == State
+      old_state = args.first
+      @floors, @elevator = old_state.floors, old_state.elevator
+    elsif args.size == 2
+      @floors   = args.first
+      @elevator = args.last
+    else
+      puts "This either takes a state, or a Floors array and Elevator obj"
+    end
+  end
+
+  def to_s
+    puts @floors.reverse
   end
 end
 
@@ -78,9 +98,11 @@ class Elevator < Floor
 end
 
 File.foreach('test.txt') do |line|
-  Floors << Floor.new(line)
+  InitialFloorState << Floor.new(line)
 end
+
+initialstate = State.new(InitialFloorState, Elevator.new)
 
 binding.pry
 
-puts Floors
+puts initialstate
