@@ -17,6 +17,10 @@ class Item
   def compatible? other_item
     return @mineral == other_item.mineral
   end
+
+  def to_s
+    "#{@mineral} #{@type}"
+  end
 end
 
 class State
@@ -56,8 +60,8 @@ class State
     @floors[@elevator]
   end
 
-  def move_item set, direction
-    set.map do |item|
+  def move_item array, direction
+    array.map do |item|
       item = current_floor.inventory.delete(item)
       @floors[@elevator + direction].inventory << item
     end
@@ -73,7 +77,6 @@ class State
       current_floor.inventory.combination(1).to_set +
       current_floor.inventory.combination(2).to_set
 
-    binding.pry
     if @elevator == 0
       # only move up
       moves.map do |items|
@@ -124,8 +127,8 @@ class Floor
     return true if @inventory.empty?
 
     # if any chip is in a room with a non-matching RTG, fail
-    rtgs = @inventory.select { |x| x.type == :generator }
-    chps = @inventory.select { |x| x.type == :microchip }
+    rtgs = @inventory.compact.select { |x| x.type == :generator }
+    chps = @inventory.compact.select { |x| x.type == :microchip }
 
     if rtgs.size == 0 || chps.size == 0
       return true
