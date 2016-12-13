@@ -2,7 +2,6 @@ require 'set'
 require 'pry'
 
 FloorDescription  = /The (\w+) floor contains (?:nothing relevant|(?:a ([\w-]+ [\w-]+)(?:, | )?)+(?:and a ([\w-]+ [\w-]+))*)./
-PossibleStates    = Set.new
 InitialFloorState = []
 
 class Item
@@ -76,33 +75,6 @@ class State
     moves =
       current_floor.inventory.combination(1).to_set +
       current_floor.inventory.combination(2).to_set
-
-    if @elevator == 0
-      # only move up
-      moves.map do |items|
-        state = State.new(self)
-        state.move_item(items, 1)
-        PossibleStates << state if state.valid?
-      end
-    elsif @elevator == @floors.size
-      # only move down
-      moves.map do |items|
-        state = State.new(self)
-        state.move_item(items, -1)
-        PossibleStates << state if state.valid?
-      end
-    else
-			# up and down
-      moves.map do |items|
-        state = State.new(self)
-        state.move_item(items, 1)
-        PossibleStates << state if state.valid?
-      end
-      moves.map do |items|
-        state = State.new(self)
-        state.move_item(items, -1)
-        PossibleStates << state if state.valid?
-      end
     end
   end
 end
