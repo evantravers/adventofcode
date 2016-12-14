@@ -74,6 +74,7 @@ class State
     end
 
     @move_count += 1
+    @elevator = @elevator + direction
   end
 
   def generate_moves
@@ -115,7 +116,9 @@ class State
   end
 
   def clone
-    Marshal::load(Marshal.dump(self))
+    this = Marshal::load(Marshal.dump(self))
+    this.move_count += 1
+    return this
   end
 end
 
