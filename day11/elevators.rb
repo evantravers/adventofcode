@@ -45,9 +45,9 @@ class State
   end
 
   def to_s
-    puts @floors.reverse
-    puts "Elevator at position: #{@elevator}"
-    puts "Number of moves: #{@move_count}"
+    "#{@floors.reverse.map{|f| f.to_s }.join("\n")}" +
+    "Elevator at position: #{@elevator}\n" +
+    "Number of moves: #{@move_count}"
   end
 
   def valid?
@@ -111,7 +111,7 @@ class State
   end
 
   def == obj
-    return self.to_s && obj.to_s
+    return self.to_s == obj.to_s
   end
 
   def clone
@@ -154,7 +154,7 @@ class Floor
   end
 
   def to_s
-    "#{name.capitalize} Floor: #{@inventory.map(&:to_s)}"
+    "#{name.capitalize} Floor: #{@inventory.map(&:to_s).join(", ")}"
   end
 end
 
