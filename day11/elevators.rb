@@ -150,7 +150,7 @@ class Floor
   end
 
   def to_s
-    "#{name.capitalize} Floor: #{@inventory.map(&:to_s).join(", ")}"
+    "#{name.capitalize} Floor: #{@inventory.sort.map(&:to_s).join(", ")}"
   end
 end
 
@@ -167,6 +167,7 @@ current_stage  = 0
 # initialize stages with first state as a set
 stages         = [[state].to_set]
 
+binding.pry
 until reached_states.find(&:victory?)
   moves = stages[current_stage]
   moves.map do |st|
