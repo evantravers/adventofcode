@@ -43,9 +43,8 @@ class State
   end
 
   def to_s
-    "#{@floors.reverse.map{|f| f.to_s }.join("\n")}" +
-    "Elevator at position: #{@elevator}\n" +
-    "Number of moves: #{@move_count}"
+    "#{@floors.reverse.map{|f| f.to_s }.join("\n")}\n" +
+    "Elevator at position: #{@elevator}\n"
   end
 
   def valid?
@@ -85,7 +84,7 @@ class State
         new_state.move_item(items, 1)
         possible_moves << new_state if new_state.valid?
       end
-    elsif @elevator == @floors.size
+    elsif @elevator == @floors.size-1
       moves.map do |items|
         new_state = self.clone
         new_state.move_item(items, -1)
@@ -156,18 +155,29 @@ class Floor
 end
 
 InitialFloorState = []
-File.foreach('test_victory.txt') do |line|
+File.foreach('test.txt') do |line|
   InitialFloorState << Floor.new(line)
 end
 
 state = State.new(InitialFloorState, 0, 0)
 
-reachable = Set.new
-reachable << state
+reached_states =  Set.new
+reached_states << state
+current_stage  = 0
+# initialize stages with first state as a set
+stages         = [[state].to_set]
 
-binding.pry
-puts "yay"
+until reached_states.find(&:victory?)
+  moves = stages[current_stage]
+  moves.map do |st|
+    new_positions  = st.generate_moves
+    new_positions  = new_positions - reached_states
+    reached_states += new_positions
 
-# while victory not found
-#   generate possible moves from current position
-#
+    current_stage += 1
+    stages[current_stage] = new_positions
+  end
+  puts reached_states.size
+end
+
+puts reached_states.find(&:victory?)
