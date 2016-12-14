@@ -67,6 +67,7 @@ class State
       moving_item = current_floor.inventory.delete(item)
       @floors[@elevator + direction].inventory << moving_item
     end
+    @elevator = @elevator + direction
   end
 
   def generate_moves
@@ -86,12 +87,28 @@ class State
         PossibleStates << new_state if new_state.valid?   
       end
     elsif @elevator == @floors.size
+      moves.map do |items|
+        new_state = self.clone
+        new_state.move_item(items, -1)
+        PossibleStates << new_state if new_state.valid?   
+      end
     else
+      moves.map do |items|
+        new_state = self.clone
+        new_state.move_item(items, 1)
+        PossibleStates << new_state if new_state.valid?   
+
+        new_state = self.clone
+        new_state.move_item(items, -1)
+        PossibleStates << new_state if new_state.valid?   
+      end
     end
   end
 
   def clone
-    Marshal::load(Marshal.dump(self))
+    this = Marshal::load(Marshal.dump(self))
+    this.move_count += 1
+    return this
   end
 end
 
@@ -141,7 +158,8 @@ end
 initialstate = State.new(InitialFloorState, 0, 0)
 
 # results in new possible states
-moves = initialstate.generate_moves
+initialstate.generate_moves
+
 binding.pry
 
 puts moves
