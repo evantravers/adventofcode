@@ -19,11 +19,15 @@ class Item
   end
 
   def to_s
-    "#{@mineral} #{@type}"
+    "#{@mineral[0].capitalize}#{@type[0].capitalize}"
   end
 
   def == obj
     self.to_s == obj.to_s
+  end
+
+  def <=> obj
+    self.to_s <=> obj.to_s
   end
 
   def hash
@@ -43,8 +47,7 @@ class State
   end
 
   def to_s
-    "#{@floors.reverse.map{|f| f.to_s }.join("\n")}\n" +
-    "Elevator at position: #{@elevator}\n"
+    "#{@floors.reverse.map{|f| f.to_s }.join("\n")}\n"
   end
 
   def valid?
@@ -74,24 +77,24 @@ class State
   def generate_moves
     possible_moves = Set.new
 
-    moves =
+    things_we_can_move =
       current_floor.inventory.combination(1).to_set +
       current_floor.inventory.combination(2).to_set
 
     if @elevator == 0
-      moves.map do |items|
+      things_we_can_move.map do |items|
         new_state = self.clone
         new_state.move_item(items, 1)
         possible_moves << new_state if new_state.valid?
       end
-    elsif @elevator == @floors.size-1
-      moves.map do |items|
+    elsif @elevator == (@floors.size-1)
+      things_we_can_move.map do |items|
         new_state = self.clone
         new_state.move_item(items, -1)
         possible_moves << new_state if new_state.valid?
       end
     else
-      moves.map do |items|
+      things_we_can_move.map do |items|
         new_state = self.clone
         new_state.move_item(items, 1)
         possible_moves << new_state if new_state.valid?
@@ -167,8 +170,7 @@ current_stage  = 0
 # initialize stages with first state as a set
 stages         = [[state].to_set]
 
-binding.pry
-until reached_states.find(&:victory?)
+until stages.size > 11
   moves = stages[current_stage]
   moves.map do |st|
     new_positions  = st.generate_moves
@@ -181,4 +183,5 @@ until reached_states.find(&:victory?)
   puts reached_states.size
 end
 
+binding.pry
 puts reached_states.find(&:victory?)
