@@ -51,16 +51,13 @@ class State
   end
 
   def valid?
-    # if one invalid position, then fail
     results = @floors.map { |floor| floor.safe? }
     return results.reduce(:&)
   end
 
   def victory?
     # everything on the top floor, nothing below
-    @floors.last.inventory.size > 0 && floors[0..-2].map { |f| f.inventory.size == 0 }
-    puts self
-    exit
+    return @floors.last.inventory.size > 0 && floors[0..-2].map { |f| f.inventory.size == 0 }.inject(&:&)
   end
 
   def current_floor
