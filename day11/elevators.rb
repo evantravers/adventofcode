@@ -3,7 +3,7 @@ require 'pry'
 
 FloorDescription  = /The (\w+) floor contains (?:nothing relevant|(?:a ([\w-]+ [\w-]+)(?:, | )?)+(?:and a ([\w-]+ [\w-]+))*)./
 InitialFloorState = []
-PossibleStates    = Set.new
+ReachableStates   = Set.new
 
 class Item
   include Comparable
@@ -36,6 +36,8 @@ end
 class State
   attr_accessor :floors, :elevator, :move_count
 
+  alias_method :eql?, :==
+
   def initialize(floors, elevator, move_count)
     @floors     = floors
     @elevator   = elevator
@@ -45,6 +47,7 @@ class State
   def to_s
     puts @floors.reverse
     puts "Elevator at position: #{@elevator}"
+    puts "Number of moves: #{@move_count}"
   end
 
   def valid?
@@ -56,6 +59,8 @@ class State
   def victory?
     # everything on the top floor, nothing below
     @floors.last.inventory.size > 0 && floors[0..-2].map { |f| f.inventory.size == 0 }
+    puts self
+    exit
   end
 
   def current_floor
@@ -67,13 +72,12 @@ class State
       moving_item = current_floor.inventory.delete(item)
       @floors[@elevator + direction].inventory << moving_item
     end
+
+    @move_count += 1
   end
 
   def generate_moves
-    if self.victory?
-      puts "Found victory in #{@move_count} moves."
-      exit
-    end
+    possible_moves = Set.new
 
     moves =
       current_floor.inventory.combination(1).to_set +
@@ -83,11 +87,31 @@ class State
       moves.map do |items|
         new_state = self.clone
         new_state.move_item(items, 1)
-        PossibleStates << new_state if new_state.valid?   
+        possible_moves << new_state if new_state.valid?   
       end
     elsif @elevator == @floors.size
+      moves.map do |items|
+        new_state = self.clone
+        new_state.move_item(items, -1)
+        possible_moves << new_state if new_state.valid?   
+      end
     else
+      moves.map do |items|
+        new_state = self.clone
+        new_state.move_item(items, 1)
+        possible_moves << new_state if new_state.valid?   
+
+        new_state = self.clone
+        new_state.move_item(items, -1)
+        possible_moves << new_state if new_state.valid?   
+      end
     end
+
+    return possible_moves
+  end
+
+  def == obj
+    return self.to_s && obj.to_s
   end
 
   def clone
@@ -142,6 +166,7 @@ initialstate = State.new(InitialFloorState, 0, 0)
 
 # results in new possible states
 moves = initialstate.generate_moves
+
 binding.pry
 
 puts moves
