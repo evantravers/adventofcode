@@ -1,9 +1,7 @@
 require 'set'
 require 'pry'
 
-FloorDescription  = /The (\w+) floor contains (?:nothing relevant|(?:a ([\w-]+ [\w-]+)(?:, | )?)+(?:and a ([\w-]+ [\w-]+))*)./
-InitialFloorState = []
-ReachableStates   = Set.new
+ItemDescription  = /a ([\w-]+ [\w-]+)/
 
 class Item
   include Comparable
@@ -85,23 +83,23 @@ class State
       moves.map do |items|
         new_state = self.clone
         new_state.move_item(items, 1)
-        possible_moves << new_state if new_state.valid?   
+        possible_moves << new_state if new_state.valid?
       end
     elsif @elevator == @floors.size
       moves.map do |items|
         new_state = self.clone
         new_state.move_item(items, -1)
-        possible_moves << new_state if new_state.valid?   
+        possible_moves << new_state if new_state.valid?
       end
     else
       moves.map do |items|
         new_state = self.clone
         new_state.move_item(items, 1)
-        possible_moves << new_state if new_state.valid?   
+        possible_moves << new_state if new_state.valid?
 
         new_state = self.clone
         new_state.move_item(items, -1)
-        possible_moves << new_state if new_state.valid?   
+        possible_moves << new_state if new_state.valid?
       end
     end
 
@@ -114,7 +112,6 @@ class State
 
   def clone
     this = Marshal::load(Marshal.dump(self))
-    this.move_count += 1
     return this
   end
 end
@@ -126,11 +123,11 @@ class Floor
   @name      = ""
 
   def initialize line
-    floor_values = line.match(FloorDescription).captures.compact
-    @name        = floor_values.shift
+    @name        = line.match(/The ([\w]+) floor/).captures.first
     @inventory   = []
 
-    unless floor_values.empty?
+    unless line.match "nothing relevant"
+      floor_values = line.scan(ItemDescription).flatten
       floor_values.map { |item_name| @inventory << Item.new(item_name) }
     end
   end
@@ -158,15 +155,19 @@ class Floor
   end
 end
 
-File.foreach('test.txt') do |line|
+InitialFloorState = []
+File.foreach('test_victory.txt') do |line|
   InitialFloorState << Floor.new(line)
 end
 
-initialstate = State.new(InitialFloorState, 0, 0)
+state = State.new(InitialFloorState, 0, 0)
 
-# results in new possible states
-moves = initialstate.generate_moves
+reachable = Set.new
+reachable << state
 
 binding.pry
+puts "yay"
 
-puts moves
+# while victory not found
+#   generate possible moves from current position
+#
