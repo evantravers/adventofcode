@@ -13,7 +13,7 @@ problem_start = State.new
 stages        = [Set[problem_start]]
 
 
-File.foreach('test.txt') do |line|
+File.foreach('input.txt') do |line|
   floor_number = NUMBERS.index(line.match(/The ([\w]+) floor/).captures.first)
 
   descriptions = line.scan(ItemDescription).flatten
@@ -27,12 +27,15 @@ number_of_moves = 0
 while true
   possible_moves = stages[number_of_moves].map(&:possible_states).inject(&:+)
 
-  if possible_moves.find {|state| state.found_victory? }
+  if possible_moves.find {|state| state.victory? }
     puts "found it!"
+    puts "It took #{number_of_moves} to reach"
+    puts possible_moves.find { |state| state.victory? }.inspect
     exit
   end
 
   stages[number_of_moves+1] = possible_moves
+  puts "Moves: #{number_of_moves}"
   number_of_moves += 1
 end
 binding.pry

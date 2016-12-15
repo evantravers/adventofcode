@@ -27,7 +27,12 @@ class State
   def inspect
     str = ""
     [3,2,1,0].each do |floor|
-      str += "F#{floor+1}: #{@items.select{|x| x.floor == floor}.sort.map(&:to_s)}\n"
+      if @elevator == floor
+        elevator = "E"
+      else
+        elevator = " "
+      end
+      str += "F#{floor+1}:#{elevator}: #{@items.select{|x| x.floor == floor}.sort.map(&:to_s)}\n"
     end
     return str
   end
@@ -51,25 +56,29 @@ class State
     # the move method is contructed to do nothing if impossible
     # because this is the same state, it should get filtered out in the set
     item_combos.map do |items|
-      tmp_state = self.clone
-      items.map do |item|
-        tmp_state.items.find{ |x| x.id == item.id }.move_up
+      if @elevator != 3
+        tmp_state = self.clone
+        items.map do |item|
+          tmp_state.items.find{ |x| x.id == item.id }.move_up
+        end
+        tmp_state.elevator += 1
+        states << tmp_state
       end
-      tmp_state.elevator += 1
-      states << tmp_state
 
-      tmp_state = self.clone
-      items.map do |item|
-        tmp_state.items.find{ |x| x.id == item.id }.move_down
+      if @elevator != 0
+        tmp_state = self.clone
+        items.map do |item|
+          tmp_state.items.find{ |x| x.id == item.id }.move_down
+        end
+        tmp_state.elevator -= 1
+        states << tmp_state
       end
-      tmp_state.elevator -= 1
-      states << tmp_state
     end
 
     return states
   end
 
-  def found_victory?
+  def victory?
     @items.map { |item| item.floor == 3 }.inject(:&)
   end
 end
