@@ -19,4 +19,5 @@ File.foreach('test.txt') do |line|
   end
 end
 
+binding.pry
 problem_start.possible_states

@@ -24,6 +24,18 @@ class State
     Marshal::load(Marshal.dump(self))
   end
 
+  def inspect
+    str = ""
+    [3,2,1,0].each do |floor|
+      str += "F#{floor+1}: #{@items.select{|x| x.floor == floor}.sort.map(&:to_s)}\n"
+    end
+    return str
+  end
+
+  def == obj
+    self.inspect == obj.inspect
+  end
+
   def possible_states
     states = Set.new
 

@@ -31,6 +31,10 @@ class Item
     return id
   end
 
+  def <=> obj
+    self.id <=> obj.id
+  end
+
   private
 
   def move n
