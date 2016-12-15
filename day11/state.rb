@@ -55,16 +55,22 @@ class State
       items.map do |item|
         tmp_state.items.find{ |x| x.id == item.id }.move_up
       end
+      tmp_state.elevator += 1
       states << tmp_state
 
       tmp_state = self.clone
       items.map do |item|
         tmp_state.items.find{ |x| x.id == item.id }.move_down
       end
+      tmp_state.elevator -= 1
       states << tmp_state
     end
 
     return states
+  end
+
+  def found_victory?
+    @items.map { |item| item.floor == 3 }.inject(:&)
   end
 end
 

@@ -37,8 +37,8 @@ class Item
 
   private
 
-  def move n
-    target_floor = @floor + n
+  def move num
+    target_floor = @floor + num
     @floor = target_floor if (0..3).member? target_floor
   end
 end
