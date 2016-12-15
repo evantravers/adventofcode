@@ -41,17 +41,10 @@ while true
     puts "found it!"
     puts "It took #{steps+1} to reach"
     state = stages[steps+1].find {|st| st.victory? }
-    while state.parent
-      puts state.parent.inspect
-      puts "=" * 21
-      state = state.parent
-    end
+    puts state.show_history
     exit
   end
 
   puts "Moves: #{steps}, Searched Positions: #{solved_states.size}"
   steps += 1
 end
-binding.pry
-
-puts "yay"

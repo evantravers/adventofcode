@@ -83,5 +83,16 @@ class State
   def victory?
     @items.map { |item| item.floor == 3 }.inject(:&)
   end
+
+  def show_history
+    str = ""
+    state = self
+    while state.parent
+      str += state.parent.inspect
+      str += "=" * 21 + "\n"
+      state = state.parent
+    end
+    return str
+  end
 end
 
