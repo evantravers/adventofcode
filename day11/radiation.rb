@@ -25,7 +25,6 @@ end
 
 steps = 0
 
-binding.pry
 while true
   possible_moves = Set.new
   stages[steps].map do |state|
