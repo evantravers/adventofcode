@@ -1,5 +1,5 @@
 class State
-  attr_accessor :elevator, :items
+  attr_accessor :elevator, :items, :parent
 
   def initialize
     @elevator = 0
@@ -21,7 +21,9 @@ class State
   end
 
   def clone
-    Marshal::load(Marshal.dump(self))
+    new_copy = Marshal::load(Marshal.dump(self))
+    new_copy.parent = self
+    return new_copy
   end
 
   def inspect

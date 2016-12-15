@@ -11,9 +11,10 @@ NUMBERS         = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth']
 problem_start = State.new
 # an array of sets!
 stages        = [Set[problem_start]]
+solved_states = Set.new
 
 
-File.foreach('input.txt') do |line|
+File.foreach('test.txt') do |line|
   floor_number = NUMBERS.index(line.match(/The ([\w]+) floor/).captures.first)
 
   descriptions = line.scan(ItemDescription).flatten
@@ -22,21 +23,34 @@ File.foreach('input.txt') do |line|
   end
 end
 
-number_of_moves = 0
+steps = 0
 
 while true
-  possible_moves = stages[number_of_moves].map(&:possible_states).inject(&:+)
+  possible_moves = Set.new
+  stages[steps].map do |state|
+    # don't solve it if it's been solved
+    unless solved_states.include? state
+      possible_moves += state.possible_states
+      solved_states << state
+    end
+  end
 
-  if possible_moves.find {|state| state.victory? }
+  stages[steps+1] = possible_moves
+
+  if stages[steps+1].find {|state| state.victory? }
     puts "found it!"
-    puts "It took #{number_of_moves} to reach"
-    puts possible_moves.find { |state| state.victory? }.inspect
+    puts "It took #{steps+1} to reach"
+    state = stages[steps+1].find {|st| st.victory? }
+    while state.parent
+      puts state.parent.inspect
+      puts "=" * 21
+      state = state.parent
+    end
     exit
   end
 
-  stages[number_of_moves+1] = possible_moves
-  puts "Moves: #{number_of_moves}"
-  number_of_moves += 1
+  puts "Moves: #{steps}, Searched Positions: #{solved_states.size}"
+  steps += 1
 end
 binding.pry
 
