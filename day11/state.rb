@@ -32,8 +32,12 @@ class State
     return str
   end
 
-  def == obj
-    self.inspect == obj.inspect
+  def eql?(obj)
+    self.inspect == obj.inspect && self.class == obj.class
+  end
+
+  def hash
+    self.inspect.hash
   end
 
   def possible_states
