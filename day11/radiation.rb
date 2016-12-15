@@ -14,7 +14,7 @@ stages        = [Set[problem_start]]
 solved_states = Set.new
 
 
-File.foreach('test.txt') do |line|
+File.foreach('input.txt') do |line|
   floor_number = NUMBERS.index(line.match(/The ([\w]+) floor/).captures.first)
 
   descriptions = line.scan(ItemDescription).flatten
@@ -25,6 +25,7 @@ end
 
 steps = 0
 
+binding.pry
 while true
   possible_moves = Set.new
   stages[steps].map do |state|

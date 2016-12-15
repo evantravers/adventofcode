@@ -16,7 +16,7 @@ class Item
   end
 
   def id
-    "#{@mineral[0].capitalize}#{@type[0].capitalize}".to_sym
+    "#{@mineral.capitalize} #{@type.capitalize}".to_sym
   end
 
   def move_up
