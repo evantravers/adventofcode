@@ -19,5 +19,4 @@ File.foreach('test.txt') do |line|
   end
 end
 
-binding.pry
-puts problem_start
+problem_start.possible_states

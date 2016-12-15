@@ -24,11 +24,31 @@ class State
     Marshal::load(Marshal.dump(self))
   end
 
-  def generate_possible_states
-    moveable_items = @items.find {|i| i.floor == @elevator }
-    
-    item_combos = moveable_items.combination(2) + moveable_items.combination(1)
+  def possible_states
+    states = Set.new
 
+    moveable_items = @items.select { |i| i.floor == @elevator }
+    
+    item_combos = moveable_items.combination(2).to_a + 
+                  moveable_items.combination(1).to_a
+
+    # the move method is contructed to do nothing if impossible
+    # because this is the same state, it should get filtered out in the set
+    item_combos.map do |items|
+      tmp_state = self.clone
+      items.map do |item|
+        tmp_state.items.find{ |x| x.id == item.id }.move_up
+      end
+      states << tmp_state
+
+      tmp_state = self.clone
+      items.map do |item|
+        tmp_state.items.find{ |x| x.id == item.id }.move_down
+      end
+      states << tmp_state
+    end
+
+    return states
   end
 end
 
