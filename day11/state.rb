@@ -10,14 +10,14 @@ class State
     rtgs = @items.select { |x| x.type == :generator }
     chps = @items.select { |x| x.type == :microchip }
 
-    # if any chip is in a room with a non-matching RTG without shield, fail
-    chps.each do |chip|
-      if rtgs.map(&:floor).member? chip.floor &&
-          rtgs.find { |rtg| rtg.compatible? chip }.floor != chip.floor
-        return false
-      end
+    # if any chip is in a room with an RTG
+    fried_chips = chps.select { |c| rtgs.map(&:floor).include? c.floor } 
+    # is the chip shielded?
+    fried_chips.reject! do |chip|
+      compatible_rtg = rtgs.find { |r| r.compatible? chip }
+      chip.floor == compatible_rtg.floor
     end
-    return true
+    return fried_chips.empty?
   end
 
   def clone
@@ -64,7 +64,7 @@ class State
           tmp_state.items.find{ |x| x.id == item.id }.move_up
         end
         tmp_state.elevator += 1
-        states << tmp_state
+        states << tmp_state if tmp_state.valid?
       end
 
       if @elevator != 0
@@ -73,7 +73,7 @@ class State
           tmp_state.items.find{ |x| x.id == item.id }.move_down
         end
         tmp_state.elevator -= 1
-        states << tmp_state
+        states << tmp_state if tmp_state.valid?
       end
     end
 
