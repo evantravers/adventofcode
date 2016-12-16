@@ -87,9 +87,10 @@ class State
   def show_history
     str = ""
     state = self
+    str += state.inspect
     while state.parent
       str += state.parent.inspect
-      str += "=" * 21 + "\n"
+      str += "=" * 60 + "\n"
       state = state.parent
     end
     return str
