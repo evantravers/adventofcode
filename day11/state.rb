@@ -47,7 +47,7 @@ class State
     self.inspect.hash
   end
 
-  def possible_states
+  def possible_states(solved_states=Set.new)
     states = Set.new
 
     moveable_items = @items.select { |i| i.floor == @elevator }
@@ -64,7 +64,9 @@ class State
           tmp_state.items.find{ |x| x.id == item.id }.move_up
         end
         tmp_state.elevator += 1
-        states << tmp_state if tmp_state.valid?
+        unless solved_states.include? tmp_state.hash
+          states << tmp_state if tmp_state.valid?
+        end
       end
 
       if @elevator != 0
@@ -73,7 +75,9 @@ class State
           tmp_state.items.find{ |x| x.id == item.id }.move_down
         end
         tmp_state.elevator -= 1
-        states << tmp_state if tmp_state.valid?
+        unless solved_states.include? tmp_state.hash
+          states << tmp_state if tmp_state.valid?
+        end
       end
     end
 

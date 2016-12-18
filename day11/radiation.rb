@@ -14,7 +14,7 @@ stages        = [Set[problem_start]]
 solved_states = Set.new
 
 
-File.foreach('test.txt') do |line|
+File.foreach('input.txt') do |line|
   floor_number = NUMBERS.index(line.match(/The ([\w]+) floor/).captures.first)
 
   descriptions = line.scan(ItemDescription).flatten
@@ -27,11 +27,11 @@ steps = 0
 
 while true
   possible_moves = Set.new
-  stages[steps].map do |state|
+  stages[steps].each do |state|
     # don't solve it if it's been solved
-    unless solved_states.include? state
-      possible_moves += state.possible_states
-      solved_states << state
+    unless solved_states.include? state.hash
+      possible_moves += state.possible_states(solved_states)
+      solved_states << state.hash
     end
   end
 
