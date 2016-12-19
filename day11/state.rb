@@ -64,7 +64,7 @@ class State
           tmp_state.items.find{ |x| x.id == item.id }.move_up
         end
         tmp_state.elevator += 1
-        unless solved_states.include? tmp_state.hash
+        unless solved_states.include? tmp_state
           states << tmp_state if tmp_state.valid?
         end
       end
@@ -75,7 +75,7 @@ class State
           tmp_state.items.find{ |x| x.id == item.id }.move_down
         end
         tmp_state.elevator -= 1
-        unless solved_states.include? tmp_state.hash
+        unless solved_states.include? tmp_state
           states << tmp_state if tmp_state.valid?
         end
       end
@@ -88,16 +88,15 @@ class State
     @items.map { |item| item.floor == 3 }.inject(:&)
   end
 
-  def show_history
-    str = ""
+  def history
+    history = []
     state = self
-    str += state.inspect
+    history << state
     while state.parent
-      str += state.parent.inspect
-      str += "=" * 60 + "\n"
+      history << state.parent
       state = state.parent
     end
-    return str
+    return history
   end
 end
 

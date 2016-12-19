@@ -10,7 +10,7 @@ NUMBERS         = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth']
 # Load in the first state of the problem
 problem_start = State.new
 # an array of sets!
-stages        = [Set[problem_start]]
+todo          = []
 solved_states = Set.new
 
 
@@ -23,28 +23,25 @@ File.foreach('input.txt') do |line|
   end
 end
 
-steps = 0
+todo << problem_start
 
-while true
-  possible_moves = Set.new
-  stages[steps].each do |state|
+until todo.empty?
+  todo.each do |state|
     # don't solve it if it's been solved
-    unless solved_states.include? state.hash
-      possible_moves += state.possible_states(solved_states)
-      solved_states << state.hash
+    if state.victory?
+      state.history.each do |node|
+        puts node.inspect
+        puts "="*60
+      end
+
+      puts "It took #{state.history.size - 1} to reach"
+    end
+
+    unless solved_states.include? state
+      solved_states << state
+      todo += state.possible_states(solved_states).to_a
+    else
+      todo.delete(state)
     end
   end
-
-  stages[steps+1] = possible_moves
-
-  if stages[steps+1].find {|state| state.victory? }
-    puts "found it!"
-    puts "It took #{steps+1} to reach"
-    state = stages[steps+1].find {|st| st.victory? }
-    puts state.show_history
-    exit
-  end
-
-  puts "Moves: #{steps}, Searched Positions: #{solved_states.size}"
-  steps += 1
 end
