@@ -1,3 +1,5 @@
+require 'set'
+
 class Maze
   @map = []
 
@@ -44,42 +46,61 @@ end
 
 class MazeRunner
   def initialize maze
-    @x, @y= 1, 1
-    @maze = maze
+    @maze  = maze
+  end
+
+  def victory? x, y
+    @target_y == x && @target_x == y
+  end
+
+  def possible_moves parent_move
+    x, y = parent_move[:pos]
+
+    moves = []
+    [[x+1, y], [x-1, y], [x, y+1], [x, y-1]].each do |move|
+      if @maze.is_space?(*move)
+        moves << {pos: move, parent: parent_move}
+      end
+    end
+    return moves
   end
 
   def solve x, y
     @target_x, @target_y = x, y
-    # TODO write method to actually *solve* the situation
-  end
 
-  def inspect
-    string = ""
-    @maze.grid.each_with_index do |x, x_index|
-      x.each_with_index do |y, y_index|
-        if x_index == @x && y_index == @y
-          string += "O"
-        elsif x_index == @target_x && y_index == @target_y
-          string += "X"
-        else
-          string += "." if y
-          string += "#" if !y
-        end
-      end
-      string += "\n"
+    @visited          = []
+    queue            = [{pos: [1, 1], parent: nil}]
+
+    def i_have_seen_this_before? position
+      return @visited.find {|x| x[:pos] == position[:pos] }
     end
-    return string
+
+    until queue.empty?
+      position = queue.pop
+
+      if victory?(*position[:pos])
+        results = []
+        while position[:parent]
+          results << position[:parent]
+          position = position[:parent]
+        end
+        return results.size
+      end
+
+      unless i_have_seen_this_before? position
+        @visited << position
+        queue   += possible_moves(position)
+      end
+    end
   end
 end
 
 puts "TEST:\n"
 test = Maze.new(10, 9)
 runner = MazeRunner.new(test)
-runner.solve(4, 7)
-puts runner.inspect
+puts runner.solve(4, 7)
 
-puts "\n\nPROBLEM:\n"
+puts "PROBLEM:\n"
 problem  = Maze.new(1364, 40)
 plissken = MazeRunner.new(problem)
-plissken.solve(31, 39)
-puts plissken.inspect
+puts plissken.solve(31, 39)
