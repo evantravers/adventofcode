@@ -27,7 +27,6 @@ todo << problem_start
 
 until todo.empty?
   todo.each do |state|
-    # don't solve it if it's been solved
     if state.victory?
       state.history.each do |node|
         puts node.inspect
@@ -35,6 +34,7 @@ until todo.empty?
       end
 
       puts "It took #{state.history.size - 1} to reach"
+      exit
     end
 
     unless solved_states.include? state
@@ -43,5 +43,7 @@ until todo.empty?
     else
       todo.delete(state)
     end
+  
+    puts "visited states: #{solved_states.size}, todo states: #{todo.size}, depth: #{state.history.size - 1}"
   end
 end
