@@ -1,5 +1,3 @@
-require 'pry'
-
 class Computer
   REGISTERS = ['a', 'b', 'c', 'd']
 
@@ -20,24 +18,19 @@ class Computer
   end
 
   def cpy src, dst
-    if REGISTERS.include? src
-      # it's a register!
-      value = instance_variable_get "@#{src}"
-    else
-      value = src.to_i
-    end
-    instance_variable_set "@#{dst}", value
+    src = evaluate_argument src
+
+    instance_variable_set "@#{dst}", src
   end
 
   def jnz test, offset
-    if REGISTERS.include? test
-      value = instance_variable_get "@#{test}"
-    else
-      value = test.to_i
-    end
+    test = evaluate_argument test
 
-    if value != 0
-      @instruction_pointer += offset.to_i
+    # this is adjusted because of the instruction pointer advance in `read`
+    offset = offset.to_i - 1
+
+    if test != 0
+      @instruction_pointer += offset
     end
   end
 
@@ -55,23 +48,33 @@ class Computer
       File.readlines(instructions_file).map { |line| line.strip }
   end
 
+  def execute
+    while @instruction_pointer < @instruction_set.length
+      read @instruction_set[@instruction_pointer]
+    end
+  end
+
+  private
+
   def read line
-    args = line.scan(/[\w\d]+/)
+    args = line.scan(/[\w\d-]+/)
     method = args.shift
     send(method, *args)
 
     @instruction_pointer += 1
   end
 
-  def execute
-    while @instruction_pointer < @instruction_set.length
-      read @instruction_set[@instruction_pointer]
+  def evaluate_argument arg
+    if REGISTERS.include? arg
+      instance_variable_get "@#{arg}"
+    else
+      arg.to_i
     end
   end
 end
 
 computer = Computer.new
-computer.load "test.txt"
+computer.load "input.txt"
 computer.execute
 
 puts computer.inspect
