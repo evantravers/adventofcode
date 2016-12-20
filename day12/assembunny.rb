@@ -35,12 +35,15 @@ class Computer
   end
 
   def inspect
+    puts "P: #{@instruction_pointer}"
+    puts "I: #{@instruction_set[@instruction_pointer]}"
+    puts "STATE:"
+    puts "========"
     puts "A: #{@a}"
     puts "B: #{@b}"
     puts "C: #{@c}"
     puts "D: #{@d}"
     puts "========"
-    puts "P: #{@instruction_pointer}"
   end
 
   def load instructions_file
@@ -73,8 +76,26 @@ class Computer
   end
 end
 
+# =======================
+
+puts "Test Data:"
+computer = Computer.new
+computer.load "test.txt"
+computer.execute
+
+puts computer.inspect
+
+puts "Part 1:"
 computer = Computer.new
 computer.load "input.txt"
+computer.execute
+
+puts computer.inspect
+
+puts "Part 2:"
+computer = Computer.new
+computer.load "input.txt"
+computer.inc "c"
 computer.execute
 
 puts computer.inspect
