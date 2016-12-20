@@ -14,7 +14,7 @@ todo          = []
 solved_states = Set.new
 
 
-File.foreach('input.txt') do |line|
+File.foreach('input2.txt') do |line|
   floor_number = NUMBERS.index(line.match(/The ([\w]+) floor/).captures.first)
 
   descriptions = line.scan(ItemDescription).flatten
