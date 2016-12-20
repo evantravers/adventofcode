@@ -6,7 +6,7 @@ class Computer
   def initialize
     @a, @b, @c, @d = 0, 0, 0, 0
     @instruction_pointer = 0
-    @instruction_set     = []
+    @instruction_set     = Array.new
   end
 
   def inc register
@@ -29,6 +29,18 @@ class Computer
     instance_variable_set "@#{dst}", value
   end
 
+  def jnz test, offset
+    if REGISTERS.include? test
+      value = instance_variable_get "@#{test}"
+    else
+      value = test.to_i
+    end
+
+    if value != 0
+      @instruction_pointer += offset.to_i
+    end
+  end
+
   def inspect
     puts "A: #{@a}"
     puts "B: #{@b}"
@@ -39,16 +51,22 @@ class Computer
   end
 
   def load instructions_file
-    @instruction_set = File.each_line { |line| }
+    @instruction_set = 
+      File.readlines(instructions_file).map { |line| line.strip }
   end
 
   def read line
     args = line.scan(/[\w\d]+/)
     method = args.shift
-    self.send(method, *args)
+    send(method, *args)
+
+    @instruction_pointer += 1
   end
 
   def execute
+    while @instruction_pointer < @instruction_set.length
+      read @instruction_set[@instruction_pointer]
+    end
   end
 end
 
