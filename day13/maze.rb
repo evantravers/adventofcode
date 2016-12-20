@@ -43,7 +43,43 @@ class Maze
 end
 
 class MazeRunner
+  def initialize maze
+    @x, @y= 1, 1
+    @maze = maze
+  end
+
+  def solve x, y
+    @target_x, @target_y = x, y
+    # TODO write method to actually *solve* the situation
+  end
+
+  def inspect
+    string = ""
+    @maze.grid.each_with_index do |x, x_index|
+      x.each_with_index do |y, y_index|
+        if x_index == @x && y_index == @y
+          string += "O"
+        elsif x_index == @target_x && y_index == @target_y
+          string += "X"
+        else
+          string += "." if y
+          string += "#" if !y
+        end
+      end
+      string += "\n"
+    end
+    return string
+  end
 end
 
+puts "TEST:\n"
 test = Maze.new(10, 9)
-puts test.inspect
+runner = MazeRunner.new(test)
+runner.solve(4, 7)
+puts runner.inspect
+
+puts "\n\nPROBLEM:\n"
+problem  = Maze.new(1364, 40)
+plissken = MazeRunner.new(problem)
+plissken.solve(31, 39)
+puts plissken.inspect
