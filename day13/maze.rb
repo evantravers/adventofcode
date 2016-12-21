@@ -47,7 +47,7 @@ class MazeRunner
     visited  = Set.new
 
     until queue.empty?
-      current = queue.pop
+      current = queue.shift
 
       if victory?(*current[:coords])
         return "#{current[:steps]} steps to reach the goal."
