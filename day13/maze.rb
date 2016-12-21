@@ -58,11 +58,13 @@ class MazeRunner
         queue += possible_moves(current, visited)
       end
 
-      puts display(current, visited)
+      display(current, visited)
     end
   end
 
   def display current_position, visited
+    sleep 0.25
+    system "clear"
     dimension = 50
     map = ""
     (0..dimension).each do |y|
@@ -81,9 +83,7 @@ class MazeRunner
       end
       map += "\n"
     end
-    map += "=" * dimension.abs
-    sleep 0.25
-    return map
+    puts map
   end
 end
 
