@@ -4,10 +4,8 @@ require 'pry'
 class Maze
   @map = []
 
-  def initialize number, dimension=10
+  def initialize number
     @designers_favorite_number = number
-
-    generate(dimension)
   end
 
   def is_space? x, y
@@ -16,32 +14,6 @@ class Maze
 
     number = secret_formula + @designers_favorite_number
     return number.to_s(2).scan("1").size.even?
-  end
-
-  def generate dimension
-    @map = Array.new(dimension)
-    (0..dimension).each do |x|
-      @map[x] = Array.new(dimension, false)
-      (0..dimension).each do |y|
-        @map[x][y] = is_space?(x, y)
-      end
-    end
-  end
-
-  def grid
-    return @map
-  end
-
-  def inspect
-    map = ""
-    grid.transpose.each do |x|
-      x.each do |y|
-        map += "." if y
-        map += "#" if !y
-      end
-      map += "\n"
-    end
-    return map
   end
 end
 
@@ -54,12 +26,12 @@ class MazeRunner
     @target_y == x && @target_x == y
   end
 
-  def possible_moves parent_move
+  def possible_moves parent_move, visited
     x, y = parent_move[:coords]
 
     moves = []
     [[x+1, y], [x-1, y], [x, y+1], [x, y-1]].each do |move|
-      if @maze.is_space?(*move)
+      if @maze.is_space?(*move) && !visited.include?(move)
         moves << {coords: move, steps: parent_move[:steps] + 1}
       end
     end
@@ -75,21 +47,42 @@ class MazeRunner
     visited  = Set.new
 
     until queue.empty?
-      current = queue.shift
+      current = queue.pop
 
-      if victory? *current[:coords]
+      if victory?(*current[:coords])
         return current[:steps]
       end
 
       unless visited.include? current[:coords]
-        # only store position, not steps
         visited << current[:coords]
-
-        queue += possible_moves(current)
+        queue += possible_moves(current, visited)
       end
 
-      # puts "queue: #{queue.size}, visited: #{visited.size}, depth: #{current[:steps]}"
+      puts display(current, visited)
     end
+  end
+
+  def display current_position, visited
+    dimension = current_position[:coords].max+2
+    map = ""
+    (0..dimension).each do |y|
+      (0..dimension).each do |x|
+        if current_position[:coords] == [x, y]
+          map += "@"
+        elsif visited.include? [x, y]
+          map += "*"
+        elsif [y, x] == [@target_x, @target_y]
+          map += "X"
+        elsif @maze.is_space?(x, y)
+          map += "." 
+        else
+          map += "#"
+        end
+      end
+      map += "\n"
+    end
+    map += "=" * dimension.abs
+    return map
   end
 end
 
@@ -98,7 +91,7 @@ test = Maze.new(10)
 runner = MazeRunner.new(test)
 puts runner.solve(4, 7)
 
-puts "PROBLEM:\n"
-problem  = Maze.new(1364, 200)
-plissken = MazeRunner.new(problem)
-puts plissken.solve(31, 39)
+# puts "PROBLEM:\n"
+# problem  = Maze.new(1364)
+# plissken = MazeRunner.new(problem)
+# puts plissken.solve(31, 39)
