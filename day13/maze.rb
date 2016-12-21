@@ -45,40 +45,27 @@ class MazeRunner
     position = {coords: [1, 1], steps: 0}
     queue    = [position]
     visited  = Set.new
+    allrooms = Set.new
+    distance = 0
 
     until queue.empty?
       current = queue.shift
 
       if victory?(*current[:coords])
-        return "#{current[:steps]} steps to reach the goal."
+        distance = current[:steps]
       end
 
       unless visited.include? current[:coords]
-        visited << current[:coords]
-        queue += possible_moves(current, visited)
+        visited  << current[:coords]
+        allrooms << current
+        queue    += possible_moves(current, visited)
       end
 
       display(current, visited) if instrument
     end
-  end
 
-  def max_steps
-    # starting at 1, 1
-    position = {coords: [1, 1], steps: 0}
-    queue    = [position]
-    visited  = Set.new
-    goal     = Set.new
-
-    until queue.empty?
-      current = queue.shift
-
-      unless visited.include? current[:coords]
-        goal    << current
-        visited << current[:coords]
-        queue += possible_moves(current, visited)
-      end
-    end
-    return "#{goal.select {|x| x[:steps] <= 50 }.size} possible positions."
+    max_locations = allrooms.select { |loc| loc[:steps] <= 50 }.size
+    return "Reached goal in #{distance} steps, max locations is #{max_locations}."
   end
 
   def display current_position, visited
@@ -115,4 +102,3 @@ puts "PROBLEM:\n"
 problem = Maze.new(1364)
 runner  = MazeRunner.new(problem)
 puts runner.solve(31, 39)
-puts runner.max_steps
