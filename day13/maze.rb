@@ -5,7 +5,7 @@ class Maze
   @map = []
 
   def initialize number
-    @designers_favorite_number = number
+    @designers_favorite_number = number.to_i
   end
 
   def is_space? x, y
@@ -23,7 +23,7 @@ class MazeRunner
   end
 
   def victory? x, y
-    @target_y == x && @target_x == y
+    @target_x == x && @target_y == y
   end
 
   def possible_moves parent_move, visited
@@ -38,7 +38,7 @@ class MazeRunner
     return moves
   end
 
-  def solve x, y
+  def solve x, y, instrument=false
     @target_x, @target_y = x, y
 
     # starting at 1, 1
@@ -50,7 +50,7 @@ class MazeRunner
       current = queue.pop
 
       if victory?(*current[:coords])
-        return current[:steps]
+        return "#{current[:steps]} steps to reach the goal."
       end
 
       unless visited.include? current[:coords]
@@ -58,7 +58,7 @@ class MazeRunner
         queue += possible_moves(current, visited)
       end
 
-      display(current, visited)
+      # display(current, visited) if instrument
     end
   end
 
@@ -73,7 +73,7 @@ class MazeRunner
           map += "😅"
         elsif visited.include? [x, y]
           map += "o"
-        elsif [y, x] == [@target_x, @target_y]
+        elsif x == @target_x && y == @target_y
           map += "⛱"
         elsif @maze.is_space?(x, y)
           map += "." 
@@ -90,9 +90,9 @@ end
 puts "TEST:\n"
 test = Maze.new(10)
 runner = MazeRunner.new(test)
-puts runner.solve(4, 7)
+puts runner.solve(7, 4, instrument: true)
 
 puts "PROBLEM:\n"
 problem = Maze.new(1364)
 runner  = MazeRunner.new(problem)
-puts runner.solve(31, 39)
+puts runner.solve(31, 39, instrument: true)

@@ -27,11 +27,6 @@ class State
   end
 
   def inspect
-    def display_items
-      binding.pry
-      @items.select{|x| x.floor == floor}.sort.map(&:to_s)
-    end
-
     str = ""
     [3,2,1,0].each do |floor|
       if @elevator == floor
@@ -39,7 +34,7 @@ class State
       else
         elevator = " "
       end
-      str += "F#{floor+1}:#{elevator}: #{display_items}\n"
+      str += "F#{floor+1}:#{elevator}: #{@items.select{|x| x.floor == floor}.sort.map(&:to_s)}\n"
     end
     return str
   end
