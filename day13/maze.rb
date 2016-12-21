@@ -31,7 +31,7 @@ class MazeRunner
 
     moves = []
     [[x+1, y], [x-1, y], [x, y+1], [x, y-1]].each do |move|
-      if @maze.is_space?(*move) && !visited.include?(move)
+      if @maze.is_space?(*move) && !visited.include?(move) && move.min >= 0
         moves << {coords: move, steps: parent_move[:steps] + 1}
       end
     end
