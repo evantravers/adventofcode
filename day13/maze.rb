@@ -63,16 +63,16 @@ class MazeRunner
   end
 
   def display current_position, visited
-    dimension = current_position[:coords].max+2
+    dimension = 50
     map = ""
     (0..dimension).each do |y|
       (0..dimension).each do |x|
         if current_position[:coords] == [x, y]
-          map += "@"
+          map += "😅"
         elsif visited.include? [x, y]
-          map += "*"
+          map += "o"
         elsif [y, x] == [@target_x, @target_y]
-          map += "X"
+          map += "⛱"
         elsif @maze.is_space?(x, y)
           map += "." 
         else
@@ -82,6 +82,7 @@ class MazeRunner
       map += "\n"
     end
     map += "=" * dimension.abs
+    sleep 0.25
     return map
   end
 end
@@ -91,7 +92,7 @@ test = Maze.new(10)
 runner = MazeRunner.new(test)
 puts runner.solve(4, 7)
 
-# puts "PROBLEM:\n"
-# problem  = Maze.new(1364)
-# plissken = MazeRunner.new(problem)
-# puts plissken.solve(31, 39)
+puts "PROBLEM:\n"
+problem = Maze.new(1364)
+runner  = MazeRunner.new(problem)
+puts runner.solve(31, 39)
