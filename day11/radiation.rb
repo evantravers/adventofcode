@@ -14,7 +14,7 @@ todo          = []
 solved_states = Set.new
 
 
-File.foreach('input2.txt') do |line|
+File.foreach('test.txt') do |line|
   floor_number = NUMBERS.index(line.match(/The ([\w]+) floor/).captures.first)
 
   descriptions = line.scan(ItemDescription).flatten
@@ -26,7 +26,7 @@ end
 todo << problem_start
 
 until todo.empty?
-  todo.each do |state|
+  todo.reverse.each do |state|
     if state.victory?
       state.history.each do |node|
         puts node.inspect
@@ -46,4 +46,3 @@ until todo.empty?
   
     puts "visited states: #{solved_states.size}, todo states: #{todo.size}, depth: #{state.history.size - 1}"
   end
-end

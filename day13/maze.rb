@@ -1,9 +1,10 @@
 require 'set'
+require 'pry'
 
 class Maze
   @map = []
 
-  def initialize number, dimension
+  def initialize number, dimension=10
     @designers_favorite_number = number
 
     generate(dimension)
@@ -28,12 +29,12 @@ class Maze
   end
 
   def grid
-    return @map.transpose
+    return @map
   end
 
   def inspect
     map = ""
-    grid.each do |x|
+    grid.transpose.each do |x|
       x.each do |y|
         map += "." if y
         map += "#" if !y
@@ -54,12 +55,12 @@ class MazeRunner
   end
 
   def possible_moves parent_move
-    x, y = parent_move[:pos]
+    x, y = parent_move[:coords]
 
     moves = []
     [[x+1, y], [x-1, y], [x, y+1], [x, y-1]].each do |move|
       if @maze.is_space?(*move)
-        moves << {pos: move, parent: parent_move}
+        moves << {coords: move, steps: parent_move[:steps] + 1}
       end
     end
     return moves
@@ -68,39 +69,36 @@ class MazeRunner
   def solve x, y
     @target_x, @target_y = x, y
 
-    @visited          = []
-    queue            = [{pos: [1, 1], parent: nil}]
-
-    def i_have_seen_this_before? position
-      return @visited.find {|x| x[:pos] == position[:pos] }
-    end
+    # starting at 1, 1
+    position = {coords: [1, 1], steps: 0}
+    queue    = [position]
+    visited  = Set.new
 
     until queue.empty?
-      position = queue.pop
+      current = queue.shift
 
-      if victory?(*position[:pos])
-        results = []
-        while position[:parent]
-          results << position[:parent]
-          position = position[:parent]
-        end
-        return results.size
+      if victory? *current[:coords]
+        return current[:steps]
       end
 
-      unless i_have_seen_this_before? position
-        @visited << position
-        queue   += possible_moves(position)
+      unless visited.include? current[:coords]
+        # only store position, not steps
+        visited << current[:coords]
+
+        queue += possible_moves(current)
       end
+
+      # puts "queue: #{queue.size}, visited: #{visited.size}, depth: #{current[:steps]}"
     end
   end
 end
 
 puts "TEST:\n"
-test = Maze.new(10, 9)
+test = Maze.new(10)
 runner = MazeRunner.new(test)
 puts runner.solve(4, 7)
 
 puts "PROBLEM:\n"
-problem  = Maze.new(1364, 40)
+problem  = Maze.new(1364, 200)
 plissken = MazeRunner.new(problem)
 puts plissken.solve(31, 39)
