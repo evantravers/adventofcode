@@ -58,8 +58,27 @@ class MazeRunner
         queue += possible_moves(current, visited)
       end
 
-      # display(current, visited) if instrument
+      display(current, visited) if instrument
     end
+  end
+
+  def max_steps
+    # starting at 1, 1
+    position = {coords: [1, 1], steps: 0}
+    queue    = [position]
+    visited  = Set.new
+    goal     = Set.new
+
+    until queue.empty?
+      current = queue.shift
+
+      unless visited.include? current[:coords]
+        goal    << current
+        visited << current[:coords]
+        queue += possible_moves(current, visited)
+      end
+    end
+    return "#{goal.select {|x| x[:steps] <= 50 }.size} possible positions."
   end
 
   def display current_position, visited
@@ -90,9 +109,10 @@ end
 puts "TEST:\n"
 test = Maze.new(10)
 runner = MazeRunner.new(test)
-puts runner.solve(7, 4, instrument: true)
+puts runner.solve(7, 4)
 
 puts "PROBLEM:\n"
 problem = Maze.new(1364)
 runner  = MazeRunner.new(problem)
-puts runner.solve(31, 39, instrument: true)
+puts runner.solve(31, 39)
+puts runner.max_steps
