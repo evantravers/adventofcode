@@ -15,12 +15,23 @@ class OneTimePad
     @salt   = salt
   end
 
+  def hash(number)
+   @md5.hexdigest(@salt + number.to_s)
+  end
+
+  def has_confirm character, key
+    possible_confirms = @confirm[character]
+
+    return false if possible_confirms.nil?
+    return true if possible_confirms.find { |c| c > key && (c - key) < 1000 }
+    return false
+  end
+
   def solve instrument=false
     number = 0
 
-    until @pad.length > 64
-
-      hash = @md5.hexdigest(@salt + number.to_s)
+    until @pad.length > 63
+      hash = hash(number)
 
       if hash.scan(CONFIRM_REGEX).size > 0
         hash.scan(CONFIRM_REGEX).map do |char|
@@ -40,27 +51,22 @@ class OneTimePad
         end
       end
 
-      @maybe.each do |maybe_key, maybe_values|
-        maybe_values.each do |maybe_index|
-          unless @confirm[maybe_key].nil?
-            matches = @confirm[maybe_key].find do |confirm_index|
-              distance = confirm_index - maybe_index
-              distance <= 1000 && distance >= 1
-            end
-            if matches
-              @pad << maybe_index
-              @maybe[maybe_key].delete maybe_index
-            end
+      @maybe.each do |repeated_char, maybe_keys|
+        maybe_keys.each do |possible_key|
+          if has_confirm repeated_char, possible_key
+            @pad << possible_key
+            @maybe[repeated_char].delete possible_key
           end
         end
       end
+
+      @pad.uniq!
 
       number += 1
     end
 
     @pad.sort!
     binding.pry
-    return @pad[63]
   end
 end
 
