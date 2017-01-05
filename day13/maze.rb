@@ -101,4 +101,4 @@ puts runner.solve(7, 4)
 puts "PROBLEM:\n"
 problem = Maze.new(1364)
 runner  = MazeRunner.new(problem)
-puts runner.solve(31, 39)
+puts runner.solve(31, 39, true)

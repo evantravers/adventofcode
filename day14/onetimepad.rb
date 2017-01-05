@@ -1,6 +1,11 @@
 require 'digest'
 require 'pry'
 
+class String
+  def groups_of number
+    self.split('').chunk_while{ |a, b| a == b }.select{|g| g.size == number }
+  end
+end
 
 class OneTimePad
   MAYBE_REGEX   = /(.)\1\1/
@@ -33,24 +38,22 @@ class OneTimePad
     until @pad.length > 63
       hash = hash(number)
 
-      if hash.scan(CONFIRM_REGEX).size > 0
-        hash.scan(CONFIRM_REGEX).map do |char|
-          char = char.first
-          puts "#{number} confirm: #{hash} contains 5 #{char}" if instrument
-          @confirm[char] = [] if @confirm[char].nil?
-          @confirm[char] << number
-        end
+      # memoize confirm hashes
+      hash.groups_of(5).each do |char|
+        char = char.first
+        puts "#{number} confirm: #{hash} contains 5 #{char}" if instrument
+        @confirm[char] = [] if @confirm[char].nil?
+        @confirm[char] << number
       end
 
-      if hash.scan(MAYBE_REGEX).size > 0
-        first_char = hash.match(MAYBE_REGEX)[1]
-        unless hash.match(first_char * 4)
-          puts "#{number} maybe: #{hash} contains 3 #{first_char}" if instrument
-          @maybe[first_char] = [] if @maybe[first_char].nil?
-          @maybe[first_char] << number
-        end
+      # memoize the maybe hashes
+      if !hash.groups_of(3).empty?
+        first_char = hash.groups_of(3).first[0]
+        @maybe[first_char] = [] if @maybe[first_char].nil?
+        @maybe[first_char] << number
       end
 
+      # evaluate the memoized options
       @maybe.each do |repeated_char, maybe_keys|
         maybe_keys.each do |possible_key|
           if has_confirm repeated_char, possible_key
@@ -66,7 +69,7 @@ class OneTimePad
     end
 
     @pad.sort!
-    binding.pry
+    @pad[63]
   end
 end
 
