@@ -3,7 +3,7 @@ require 'pry'
 
 class String
   def groups_of number
-    self.split('').chunk_while{ |a, b| a == b }.select{|g| g.size == number }
+    self.split('').chunk_while{ |a, b| a == b }.select{ |g| g.size == number }
   end
 end
 
