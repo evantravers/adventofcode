@@ -8,10 +8,6 @@ class String
 end
 
 class OneTimePad
-  MAYBE_REGEX   = /(.)\1\1/
-  CONFIRM_REGEX = /(.)\1\1\1\1/
-
-
   def initialize salt
     @maybe, @confirm = {}, {}
 
@@ -28,14 +24,14 @@ class OneTimePad
     possible_confirms = @confirm[character]
 
     return false if possible_confirms.nil?
-    return true if possible_confirms.find { |c| c > key && (c - key) < 1000 }
+    return true if possible_confirms.find { |c| c > key && (c - key) <= 1000 }
     return false
   end
 
   def solve instrument=false
     number = 0
 
-    until @pad.length > 63
+    until @pad.length > 70
       hash = hash(number)
 
       # memoize confirm hashes
