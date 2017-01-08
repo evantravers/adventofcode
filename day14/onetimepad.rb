@@ -12,9 +12,9 @@ class OneTimePad
   def initialize salt
     @maybe, @confirm = {}, {}
 
-    @pad    = Set.new
-    @md5    = Digest::MD5.new
-    @salt   = salt
+    @pad  = Set.new
+    @md5  = Digest::MD5.new
+    @salt = salt
   end
 
   def hash(number)
@@ -25,11 +25,11 @@ class OneTimePad
     possible_confirms = @confirm[character]
 
     return false if possible_confirms.nil?
-    return true if possible_confirms.find { |c| c > key && (c - key) <= 1000 }
+    return true  if possible_confirms.find { |c| c > key && (c - key) <= 1000 }
     return false
   end
 
-  def solve instrument=false
+  def solve(instrument=false)
     number = 0
 
     until @pad.length > 70
@@ -64,11 +64,37 @@ class OneTimePad
 
     return @pad.to_a.sort[63]
   end
+
+  def stupid
+    number = 0
+
+    pad = Set.new
+
+    until pad.length > 70
+      hash = hash(number)
+
+      if !hash.groups_of(3).empty?
+        char = hash.groups_of(3).first[0]
+        (number..number+1000).each do |confirm|
+          confirm_hash = hash(confirm)
+          if confirm_hash.groups_of(5).map {|x| x[0] }.include?(char)
+            puts "found: #{number}"
+            pad << number
+            break
+          end
+        end
+      end
+
+      number += 1
+    end
+
+    return pad.to_a.sort[63]
+  end
 end
 
 puts "Test"
 test = OneTimePad.new "abc"
-result = test.solve
+result = test.stupid
 puts result
 puts 22728.to_s == result
 
