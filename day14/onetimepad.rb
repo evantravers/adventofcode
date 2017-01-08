@@ -1,4 +1,5 @@
 require 'digest'
+require 'set'
 require 'pry'
 
 class String
@@ -11,7 +12,7 @@ class OneTimePad
   def initialize salt
     @maybe, @confirm = {}, {}
 
-    @pad    = []
+    @pad    = Set.new
     @md5    = Digest::MD5.new
     @salt   = salt
   end
@@ -54,18 +55,14 @@ class OneTimePad
         maybe_keys.each do |possible_key|
           if has_confirm repeated_char, possible_key
             @pad << possible_key
-            @maybe[repeated_char].delete possible_key
           end
         end
       end
 
-      @pad.uniq!
-
       number += 1
     end
 
-    @pad.sort!
-    @pad[63]
+    return @pad.to_a.sort[63]
   end
 end
 
