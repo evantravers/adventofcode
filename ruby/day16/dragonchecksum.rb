@@ -18,12 +18,11 @@ class Disk
     string = string.split('')
     result = ""
 
-    until string.empty?
-      chars = string.shift(2)
+    string.each_slice(2) do |chars|
       if chars.first == chars.last
-        result += "1"
+        result << "1"
       else
-        result += "0"
+        result << "0"
       end
     end
 
