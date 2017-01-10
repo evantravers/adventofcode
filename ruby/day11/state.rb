@@ -11,7 +11,7 @@ class State
     chps = @items.select { |x| x.type == :microchip }
 
     # if any chip is in a room with an RTG
-    fried_chips = chps.select { |c| rtgs.map(&:floor).include? c.floor } 
+    fried_chips = chps.select { |c| rtgs.map(&:floor).include? c.floor }
     # is the chip shielded?
     fried_chips.reject! do |chip|
       compatible_rtg = rtgs.find { |r| r.compatible? chip }
@@ -51,8 +51,8 @@ class State
     states = Set.new
 
     moveable_items = @items.select { |i| i.floor == @elevator }
-    
-    item_combos = moveable_items.combination(2).to_a + 
+
+    item_combos = moveable_items.combination(2).to_a +
                   moveable_items.combination(1).to_a
 
     # the move method is contructed to do nothing if impossible

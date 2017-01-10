@@ -39,11 +39,11 @@ until todo.empty?
 
     unless solved_states.include? state
       solved_states << state
-      todo += state.possible_states(solved_states).to_a
+      todo.concat(state.possible_states(solved_states).to_a)
     else
       todo.delete(state)
     end
-  
-    puts "visited states: #{solved_states.size}, todo states: #{todo.size}, depth: #{state.history.size - 1}"
+
+    # puts "visited states: #{solved_states.size}, todo states: #{todo.size}, depth: #{state.history.size - 1}"
   end
 end
