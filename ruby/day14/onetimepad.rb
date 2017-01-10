@@ -4,7 +4,7 @@ require 'pry'
 
 class String
   def groups_of number
-    self.split('').chunk_while{ |a, b| a == b }.select{ |g| g.size == number }
+    self.split('').chunk_while{ |a, b| a == b }.select{ |g| g.size >= number }
   end
 end
 
@@ -94,9 +94,9 @@ end
 
 puts "Test"
 test = OneTimePad.new "abc"
-result = test.stupid
+result = test.solve
 puts result
-puts 22728.to_s == result
+puts 22728 == result
 
 puts "Problem"
 problem = OneTimePad.new "jlmsuwbz"
