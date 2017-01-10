@@ -12,12 +12,14 @@ class Disk
 end
 
 class Machine
+  INFINITY = 1.0/0
+
   def initialize(file)
     @disks = File.readlines(file).map { |line| Disk.new(line) }
   end
 
   def solve
-    (0..30000000).each do |wait_time|
+    (0..INFINITY).each do |wait_time|
       capsule_position = wait_time
       success          = true
 
