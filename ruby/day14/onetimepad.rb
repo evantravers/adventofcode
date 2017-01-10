@@ -64,32 +64,6 @@ class OneTimePad
 
     return @pad.to_a.sort[63]
   end
-
-  def stupid
-    number = 0
-
-    pad = Set.new
-
-    until pad.length > 70
-      hash = hash(number)
-
-      if !hash.groups_of(3).empty?
-        char = hash.groups_of(3).first[0]
-        (number..number+1000).each do |confirm|
-          confirm_hash = hash(confirm)
-          if confirm_hash.groups_of(5).map {|x| x[0] }.include?(char)
-            puts "found: #{number}"
-            pad << number
-            break
-          end
-        end
-      end
-
-      number += 1
-    end
-
-    return pad.to_a.sort[63]
-  end
 end
 
 puts "Test"
