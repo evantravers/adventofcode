@@ -14,6 +14,8 @@ end
 class Machine
   INFINITY = 1.0/0
 
+  attr_accessor :disks
+
   def initialize(file)
     @disks = File.readlines(file).map { |line| Disk.new(line) }
   end
@@ -42,5 +44,10 @@ test = Machine.new('test.txt')
 puts "Passed" if test.solve == 5
 
 puts "Problem 1:"
-p1 = Machine.new('input.txt')
-puts p1.solve
+problem = Machine.new('input.txt')
+puts problem.solve
+
+puts "Problem 2:"
+problem.disks << Disk.new("Disc #7 has 11 positions; at time=0, it is at position 0.")
+puts problem.solve
+
