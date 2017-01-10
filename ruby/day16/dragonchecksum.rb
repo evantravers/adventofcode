@@ -78,4 +78,7 @@ class DiskTest < MiniTest::Test
   end
 end
 
+puts "Part 1:"
 puts Disk.new('10111100110001111', 272).solve
+puts "Part 2:"
+puts Disk.new('10111100110001111', 35651584).solve
