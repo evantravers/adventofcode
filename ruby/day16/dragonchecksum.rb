@@ -8,8 +8,28 @@ def dragon a
   return a + '0' + b
 end
 
+def checksum string
+  string = string.split('')
+  result = ""
+
+  until string.empty?
+    chars = string.shift(2)
+    if chars.first == chars.last
+      result += "1"
+    else
+      result += "0"
+    end
+  end
+
+  if result.size.even?
+    return checksum(result)
+  else
+    return result
+  end
+end
+
 # Test cases
-class Test < MiniTest::Test
+class DragonTest < MiniTest::Test
   def test_1_becomes_100
     assert_equal dragon('1'), '100'
   end
@@ -27,3 +47,8 @@ class Test < MiniTest::Test
   end
 end
 
+class ChecksumTest < MiniTest::Test
+  def test_110010110100
+    assert_equal checksum('110010110100'), '100'
+  end
+end
