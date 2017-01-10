@@ -21,6 +21,16 @@ class OneTimePad
    @md5.hexdigest(@salt + number.to_s)
   end
 
+  def stretched_hash(number)
+    input = @salt + number.to_s
+
+    2017.times do
+      input = @md5.hexdigest(input)
+    end
+
+    return input
+  end
+
   def has_confirm character, key
     possible_confirms = @confirm[character]
 
@@ -29,11 +39,15 @@ class OneTimePad
     return false
   end
 
-  def solve(instrument=false)
+  def solve(instrument: false, stretch: false)
     number = 0
 
     until @pad.length > 70
-      hash = hash(number)
+      if stretch
+        hash = stretched_hash(number)
+      else
+        hash = hash(number)
+      end
 
       # memoize confirm hashes
       hash.groups_of(5).each do |char|
@@ -66,12 +80,22 @@ class OneTimePad
   end
 end
 
-puts "Test"
+puts "Test Part 1:"
 test = OneTimePad.new "abc"
 result = test.solve
 puts result
 puts 22728 == result
 
-puts "Problem"
+puts "Problem 1:"
 problem = OneTimePad.new "jlmsuwbz"
 puts problem.solve
+
+puts "Test Part 2:"
+test = OneTimePad.new "abc"
+result = test.solve(stretch: true)
+puts result
+puts 22551 == result
+
+puts "Problem 2:"
+problem = OneTimePad.new "jlmsuwbz"
+puts problem.solve(stretch: true)
