@@ -77,3 +77,5 @@ class DiskTest < MiniTest::Test
     assert_equal @disk.solve, '01100'
   end
 end
+
+puts Disk.new('10111100110001111', 272).solve
