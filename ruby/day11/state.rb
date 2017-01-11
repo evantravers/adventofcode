@@ -26,6 +26,22 @@ class State
     return new_copy
   end
 
+  def display_items floor
+    items = @items.select{|x| x.floor == floor}
+    result = []
+    items.each do |item|
+      match = items.find {|m| m.compatible?(item) && m.id != item.id }
+      if match
+        result << :"MATCH"
+        items.delete match
+        items.delete item
+      else
+        result << item.to_s
+      end
+    end
+    return result.sort
+  end
+
   def inspect
     str = ""
     [3,2,1,0].each do |floor|
@@ -34,7 +50,7 @@ class State
       else
         elevator = " "
       end
-      str += "F#{floor+1}:#{elevator}: #{@items.select{|x| x.floor == floor}.sort.map(&:to_s)}\n"
+      str << "F#{floor+1}:#{elevator}: #{display_items(floor)}\n"
     end
     return str
   end

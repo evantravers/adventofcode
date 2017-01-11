@@ -26,7 +26,7 @@ end
 todo << problem_start
 
 until todo.empty?
-  todo.reverse.each do |state|
+  todo.each do |state|
     if state.victory?
       state.history.each do |node|
         puts node.inspect
@@ -44,6 +44,6 @@ until todo.empty?
       todo.delete(state)
     end
 
-    # puts "visited states: #{solved_states.size}, todo states: #{todo.size}, depth: #{state.history.size - 1}"
+    puts "visited states: #{solved_states.size}, todo states: #{todo.size}, depth: #{state.history.size - 1}"
   end
 end
