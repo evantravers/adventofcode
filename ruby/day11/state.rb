@@ -29,12 +29,12 @@ class State
   def display_items floor
     items = @items.select{|x| x.floor == floor}
     result = []
-    items.each do |item|
+    until items.empty?
+      item = items.pop
       match = items.find {|m| m.compatible?(item) && m.id != item.id }
       if match
         result << :"MATCH"
         items.delete match
-        items.delete item
       else
         result << item.to_s
       end
