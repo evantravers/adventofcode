@@ -14,7 +14,6 @@ class Maze
 
     until current_position(path) == [3, 3]
       possible_moves = available_moves(path)
-      # up, down left right
     end
 
     return path.join.upcase
@@ -25,12 +24,13 @@ class Maze
   end
 
   def available_moves path
-    hash       = @md5.hexdigest(@salt + path.join.upcase)
-    open_doors = hash[0..3].split('').map { |x| open_door? x }
-    available  = []
+    working_path = path.dup
+    hash         = @md5.hexdigest(@salt + working_path.join.upcase)
+    open_doors   = hash[0..3].split('').map { |x| open_door? x }
+    available    = []
 
     [[:U, 0], [:D, 1], [:L, 2], [:R, 3]].each do |direction, indice|
-      if open_doors[indice] && in_bounds(current_position(path << direction))
+      if open_doors[indice] && in_bounds(current_position(working_path << direction))
         available << direction
       end
     end
@@ -70,10 +70,10 @@ class SolutionTests < Minitest::Test
     assert_equal maze.current_position([:D, :U, :R, :D, :D]), [1, 2]
   end
 
-  # def test_solve_1
-  #   maze = Maze.new('ihgpwlah')
-  #   assert_equal maze.solve, 'DDRRRD'
-  # end
+  def test_solve_1
+    maze = Maze.new('ihgpwlah')
+    assert_equal maze.solve, 'DDRRRD'
+  end
 
   # def test_solve_2
   #   maze = Maze.new('kglvqrro')
