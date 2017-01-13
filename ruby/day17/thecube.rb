@@ -8,17 +8,17 @@ class Maze
     @md5 = Digest::MD5.new
   end
 
-  def solve
-    visited_histories = [[]]
+  def solve(find_longest: false)
+    todo      = [[]]
 
-    until visited_histories.empty?
-      path = visited_histories.shift
+    until todo.empty?
+      path = todo.shift
 
       return path.join.upcase if current_position(path) == [3, 3]
 
       possible_moves = available_moves(path)
-      possible_moves.each do |move|
-        visited_histories <<(path.dup << move)
+      possible_moves.map do |move|
+        todo << (path.dup << move)
       end
     end
   end
