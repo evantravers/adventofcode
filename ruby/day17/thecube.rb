@@ -1,6 +1,5 @@
 require 'minitest/autorun'
 require 'digest'
-require 'set'
 require 'pry'
 
 class Maze
@@ -10,13 +9,18 @@ class Maze
   end
 
   def solve
-    path = []
+    visited_histories = [[]]
 
-    until current_position(path) == [3, 3]
+    until visited_histories.empty?
+      path = visited_histories.pop
+
+      return path.join.upcase if current_position(path) == [3, 3]
+
       possible_moves = available_moves(path)
+      possible_moves.each do |move|
+        visited_histories << path.dup << move
+      end
     end
-
-    return path.join.upcase
   end
 
   def open_door? char
