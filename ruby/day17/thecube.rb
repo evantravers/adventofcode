@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require 'digest'
+require 'set'
 require 'pry'
 
 class Maze
@@ -77,17 +78,24 @@ class SolutionTests < Minitest::Test
   def test_solve_1
     maze = Maze.new('ihgpwlah')
     assert_equal maze.solve, 'DDRRRD'
+    assert_equal maze.solve(find_longest: true), 370
   end
 
   def test_solve_2
     maze = Maze.new('kglvqrro')
     assert_equal maze.solve, 'DDUDRLRRUDRD'
+    assert_equal maze.solve(find_longest: true), 492
   end
 
   def test_solve_3
     maze = Maze.new('ulqzkmiv')
     assert_equal maze.solve, 'DRURDRUDDLLDLUURRDULRLDUUDDDRR'
+    assert_equal maze.solve(find_longest: true), 830
   end
 end
 
+puts "Part 1:"
 puts Maze.new('udskfozm').solve
+
+puts "Part 2:"
+puts Maze.new('udskfozm').solve(find_longest: true)
