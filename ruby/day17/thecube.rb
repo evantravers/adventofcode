@@ -89,3 +89,5 @@ class SolutionTests < Minitest::Test
     assert_equal maze.solve, 'DRURDRUDDLLDLUURRDULRLDUUDDDRR'
   end
 end
+
+puts Maze.new('udskfozm').solve
