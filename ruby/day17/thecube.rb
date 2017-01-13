@@ -12,13 +12,13 @@ class Maze
     visited_histories = [[]]
 
     until visited_histories.empty?
-      path = visited_histories.pop
+      path = visited_histories.shift
 
       return path.join.upcase if current_position(path) == [3, 3]
 
       possible_moves = available_moves(path)
       possible_moves.each do |move|
-        visited_histories << path.dup << move
+        visited_histories <<(path.dup << move)
       end
     end
   end
@@ -79,13 +79,13 @@ class SolutionTests < Minitest::Test
     assert_equal maze.solve, 'DDRRRD'
   end
 
-  # def test_solve_2
-  #   maze = Maze.new('kglvqrro')
-  #   assert_equal maze.solve, 'DDUDRLRRUDRD'
-  # end
+  def test_solve_2
+    maze = Maze.new('kglvqrro')
+    assert_equal maze.solve, 'DDUDRLRRUDRD'
+  end
 
-  # def test_solve_3
-  #   maze.new('ulqzkmiv')
-  #   assert_equal maze.solve, 'DRURDRUDDLLDLUURRDULRLDUUDDDRR'
-  # end
+  def test_solve_3
+    maze = Maze.new('ulqzkmiv')
+    assert_equal maze.solve, 'DRURDRUDDLLDLUURRDULRLDUUDDDRR'
+  end
 end
