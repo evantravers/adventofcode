@@ -10,18 +10,25 @@ class Maze
   end
 
   def solve(find_longest: false)
+    solutions = Set.new
     todo      = [[]]
 
     until todo.empty?
       path = todo.shift
 
-      return path.join.upcase if current_position(path) == [3, 3]
-
-      possible_moves = available_moves(path)
-      possible_moves.map do |move|
-        todo << (path.dup << move)
+      if current_position(path) == [3, 3]
+        # finishing state
+        return path.join.upcase unless find_longest
+        solutions << path.size
+      else
+        possible_moves = available_moves(path)
+        possible_moves.map do |move|
+          todo << (path.dup << move)
+        end
       end
     end
+
+    return solutions.max
   end
 
   def open_door? char
