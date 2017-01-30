@@ -1,19 +1,37 @@
+require 'pry'
 require 'minitest/autorun'
 
 def solve n
-  elves   = (1..n).to_a
-  player = 0
-
-  until elves.size == 2
-    to_be_stolen = (player + 1) % elves.size
-
-    # stolen and banned!
-    elves.delete_at(to_be_stolen)
-
-    player += 1
+  # set up the board
+  players = []
+  (1..n).each do |elf|
+    players << { name: elf, victim: nil}
   end
 
-  return elves.first
+  players.map.with_index do |elf, index|
+    # choose victim
+    victim = players.first[:name]
+    victim = players[index+1][:name] unless players[index+1].nil?
+
+    elf[:victim] = victim
+  end
+
+  # play
+  turn = 0
+  while players.size > 1
+    current_player = players[turn % players.size]
+
+    # STEALS!
+    victim = players.find { |elf| elf[:name] == current_player[:victim] }
+
+    current_player[:victim] = victim[:victim]
+    players.delete victim
+
+    turn += 1
+    turn = 0 if turn > players.size
+  end
+
+  return players.last[:name]
 end
 
 class ElvesTest < Minitest::Test

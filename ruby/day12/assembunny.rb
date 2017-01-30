@@ -47,7 +47,7 @@ class Computer
   end
 
   def load instructions_file
-    @instruction_set = 
+    @instruction_set =
       File.readlines(instructions_file).map { |line| line.strip }
   end
 
