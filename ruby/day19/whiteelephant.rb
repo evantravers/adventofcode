@@ -1,37 +1,60 @@
 require 'pry'
 require 'minitest/autorun'
 
+class Elf
+  attr_accessor :name, :next
+
+  def initialize name
+    @name = name
+  end
+
+  def steal!
+    @next = @next.next
+  end
+end
+
+class Game
+  attr_accessor :head, :tail
+
+  # player 1!
+  def initialize head
+    @head = head
+    @tail = head
+  end
+
+  def add_player elf
+    @tail.next = elf
+    @tail = @tail.next
+    @tail.next = @head
+  end
+
+  def size
+    count    = 1
+    next_elf = @head.next
+
+    while next_elf != @head
+      next_elf = next_elf.next
+      count += 1
+    end
+
+    count
+  end
+end
+
 def solve n
   # set up the board
-  players = []
-  (1..n).each do |elf|
-    players << { name: elf, victim: nil}
+  game = Game.new(Elf.new(1))
+  (2..n).each do |elf|
+    game.add_player(Elf.new(elf))
   end
 
-  players.map.with_index do |elf, index|
-    # choose victim
-    victim = players.first[:name]
-    victim = players[index+1][:name] unless players[index+1].nil?
-
-    elf[:victim] = victim
+  current_player = game.head
+  until current_player == current_player.next
+    current_player.steal!
+    current_player = current_player.next
   end
 
-  # play
-  turn = 0
-  while players.size > 1
-    current_player = players[turn % players.size]
-
-    # STEALS!
-    victim = players.find { |elf| elf[:name] == current_player[:victim] }
-
-    current_player[:victim] = victim[:victim]
-    players.delete victim
-
-    turn += 1
-    turn = 0 if turn > players.size
-  end
-
-  return players.last[:name]
+  return current_player.name
 end
 
 class ElvesTest < Minitest::Test
