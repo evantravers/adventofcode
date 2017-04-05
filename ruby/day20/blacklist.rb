@@ -1,22 +1,23 @@
+require 'pry'
 require 'minitest/autorun'
 
 class Blacklist
   def initialize file
     @blacklist = File.readlines(file).map { |l| l.scan(/\d+/).map(&:to_i) }
 
-    # find the highest number in the ranges
-    highest = @blacklist.flatten.sort.last
-
-    # initialize an array from 0 to highest
-    @list = (0..highest).to_a
-
-    @blacklist.map do | range_values |
-      @list.reject! { |i| Range.new(*range_values).include? i }
+    # combine ranges
+    @blacklist.sort!
+    @blacklist.each_cons(2) do |items|
+      # where: items.first.max >= items.last.min
+      if items.first.max >= items.last.min
+        items.first[1] = items.last[1]
+        @blacklist.delete items.last
+      end
     end
   end
 
   def lowest
-    @list.first
+    @blacklist.first.max + 1
   end
 end
 
