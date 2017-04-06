@@ -1,4 +1,4 @@
-require 'pry'
+require 'set'
 require 'minitest/autorun'
 
 class Blacklist
@@ -20,6 +20,21 @@ class Blacklist
 
     lowest
   end
+
+  def all
+    # start at the max of the first range
+    lowest       = @blacklist.first.max + 1
+    possible_ips = Set.new
+
+    (0...@blacklist.size).each do |current_range|
+      if !@blacklist.find { |r| r.include? lowest }
+        possible_ips << lowest
+      end
+      lowest = @blacklist[current_range].max + 1
+    end
+
+    possible_ips.reject{|ip| ip > 4294967295 }.size
+  end
 end
 
 class BlacklistTest < Minitest::Test
@@ -35,5 +50,9 @@ class BlacklistTest < Minitest::Test
   end
 end
 
-puts Blacklist.new('input.txt').lowest
+problem = Blacklist.new('input.txt')
+puts "Part 1:"
+puts problem.lowest
+puts "Part 2:"
+puts problem.all
 
