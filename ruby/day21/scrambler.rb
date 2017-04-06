@@ -68,6 +68,18 @@ class Scrambler
     end
     return str
   end
+
+  def decode str
+    @instructions.reverse.each do |instruction|
+      command = COMMANDS.find { |name, pattern| instruction.match pattern }
+      name    = command.first
+
+      args    = instruction.match(command.last).captures
+
+      str     = str.send(name, *args)
+    end
+    return str
+  end
 end
 
 class TestString < Minitest::Test
@@ -110,7 +122,20 @@ class TestScrambler < MiniTest::Test
     s = Scrambler.new('test.txt')
     assert_equal 'decab', s.encode('abcde')
   end
+
+  def test_reverse
+    s = Scrambler.new('test.txt')
+    assert_equal 'abcde', s.decode('decab')
+  end
+
+  def test_input
+    s = Scrambler.new('input.txt')
+    assert_equal 'abcdefgh', s.decode('ghfacdbe')
+  end
 end
 
+s = Scrambler.new('input.txt')
 puts "Part 1:"
-puts Scrambler.new('input.txt').encode('abcdefgh')
+puts s.encode('abcdefgh')
+puts "Part 2:"
+puts s.decode('fbgdceah')
