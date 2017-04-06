@@ -31,6 +31,7 @@ class String
     x, y = x.to_i, y.to_i
 
     self[x..y] = self[x..y].reverse
+    self
   end
 
   def move_position x, y
@@ -100,3 +101,6 @@ class TestScrambler < MiniTest::Test
     assert_equal 'decab', s.encode('abcde')
   end
 end
+
+puts "Part 1:"
+puts Scrambler.new('input.txt').encode('abcdefgh')
