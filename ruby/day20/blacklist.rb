@@ -5,19 +5,20 @@ class Blacklist
   def initialize file
     @blacklist = File.readlines(file).map { |l| l.scan(/\d+/).map(&:to_i) }
 
-    # combine ranges
-    @blacklist.sort!
-    @blacklist.each_cons(2) do |items|
-      # where: items.first.max >= items.last.min
-      if items.first.max >= items.last.min
-        items.first[1] = items.last[1]
-        @blacklist.delete items.last
-      end
-    end
+    @blacklist = @blacklist.sort.map { |r| Range.new(*r) }
   end
 
   def lowest
-    @blacklist.first.max + 1
+    # start at the max of the first range
+    lowest = @blacklist.first.max + 1
+    current_range = 1
+
+    while @blacklist.find { |r| r.include? lowest }
+      lowest = @blacklist[current_range].max + 1
+      current_range += 1
+    end
+
+    lowest
   end
 end
 
@@ -29,3 +30,4 @@ class BlacklistTest < Minitest::Test
 end
 
 puts Blacklist.new('input.txt').lowest
+
