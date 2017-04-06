@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'pry'
 
 class String
   def swap_position x, y
@@ -14,7 +15,7 @@ class String
   end
 
   def rotate_steps dir, x
-    x = x.to_i
+    dir, x = dir.to_sym, x.to_i
 
     x = x * -1 if dir == :right
     self.split('').rotate(x).join
