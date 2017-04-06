@@ -34,12 +34,51 @@ class String
 end
 
 class Scrambler
+  SWAP_POSITION = /swap position (\d) with position (\d)/
+  SWAP_LETTER = /swap letter (\w) with letter (\w)/
+  ROTATE_STEPS = /rotate (\w+) (\d) step/
+  ROTATE_POSITION = /rotate based on position of letter (\w)/
+  REVERSE_POSITIONS = /reverse positions (\d) through (\d)/
+  MOVE_POSITION = /move position (\d) to position (\d)/
+
   def initialize instructions_file
     @instructions = File.readlines(instructions_file).map { |l| l.strip }
   end
 
   def encode str
-    str
+    @instructions.each do |command|
+      case
+        when command.match(SWAP_POSITION)
+          args = command.scan(SWAP_POSITION)
+          args.flatten!.map!(&:to_i)
+          str  = str.swap_position(*args)
+        when command.match(SWAP_LETTER)
+          args = command.scan(SWAP_LETTER)
+          args.flatten!
+          str  = str.swap_letter(*args)
+        when command.match(ROTATE_STEPS)
+          args = command.scan(ROTATE_STEPS)
+          args.flatten!
+          str  = str.rotate_steps(args.first.to_sym, args.last.to_i)
+        when command.match(ROTATE_POSITION)
+          args = command.scan(ROTATE_POSITION)
+          args.flatten!
+          str = str.rotate_position(*args)
+        when command.match(REVERSE_POSITIONS)
+          args = command.scan(REVERSE_POSITIONS)
+          args.flatten!.map!(&:to_i)
+          str  = str.reverse_positions(*args)
+        when command.match(MOVE_POSITION)
+          args = command.scan(MOVE_POSITION)
+          args.flatten!.map!(&:to_i)
+          str  = str.move_position(*args)
+        else
+          puts "ERROR!"
+          exit
+      end
+    end
+
+    return str
   end
 end
 
