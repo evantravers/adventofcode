@@ -72,26 +72,35 @@ end
 class TestString < Minitest::Test
   def test_swap_position
     assert_equal 'ebcda', 'abcde'.swap_position(4, 0)
+    assert_equal 'adcbefg', 'abcdefg'.swap_position(1, 3)
+    assert_equal 'gbcdefa', 'abcdefg'.swap_position(0, 6)
   end
 
   def test_swap_letter
     assert_equal 'edcba', 'ebcda'.swap_letter('d', 'b')
+    assert_equal 'ahcdefgb', 'abcdefgh'.swap_letter('b', 'h')
   end
 
   def test_reverse_positions
     assert_equal 'abcde', 'edcba'.reverse_positions(0, 4)
+    assert_equal 'aedcbfgh', 'abcdefgh'.reverse_positions(1, 4)
   end
 
   def test_rotate_steps
     assert_equal 'bcdea', 'abcde'.rotate_steps(:left, 1)
+    assert_equal 'habcdefg', 'abcdefgh'.rotate_steps(:right, 1)
   end
 
   def test_rotate_position
     assert_equal 'ecabd', 'abdec'.rotate_position('b')
+    assert_equal 'decab', 'ecabd'.rotate_position('d')
+    assert_equal 'abcdefgh', 'abcdefgh'.rotate_position('g')
+    assert_equal 'efghabcd', 'abcdefgh'.rotate_position('d')
   end
 
   def test_move_position
     assert_equal 'bdeac', 'bcdea'.move_position(1, 4)
+    assert_equal 'dabcefgh', 'abcdefgh'.move_position(3, 0)
   end
 end
 
