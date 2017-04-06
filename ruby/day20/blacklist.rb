@@ -23,9 +23,15 @@ class Blacklist
 end
 
 class BlacklistTest < Minitest::Test
+  def setup
+    @b = Blacklist.new('test.txt')
+  end
+
   def test_input
-    b = Blacklist.new('test.txt')
-    assert_equal b.lowest, 3
+    assert_equal 3, @b.lowest
+  end
+  def test_all
+    assert_equal 2, @b.all
   end
 end
 
