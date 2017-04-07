@@ -22,18 +22,20 @@ class Grid
   attr_accessor :nodes
 
   def initialize file
-    @nodes = []
+    @nodes = [[]]
 
     File.readlines(file).map do |line|
       if line.match(/\/dev\/grid\/node/)
-        @nodes << Node.new(line)
+        n = Node.new(line)
+        @nodes[n.x] = [] if @nodes[n.x].nil?
+        @nodes[n.x][n.y] = n
       end
     end
   end
 
   def viable_pairs
     viable_pairs = Set.new
-    nodes.permutation(2).map do |src, dst|
+    @nodes.flatten.permutation(2).map do |src, dst|
       next if src.used == 0
       if src.used <= dst.available_space
         viable_pairs << [src, dst]
