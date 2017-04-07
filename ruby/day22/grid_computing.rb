@@ -56,6 +56,13 @@ class TestNodeClass < Minitest::Test
   end
 end
 
+class TestGridSolve < Minitest::Test
+  def test_input_from_site
+    grid = Grid.new('test.txt')
+    assert_equal 7, grid.solve
+  end
+end
+
 grid = Grid.new('input.txt')
 puts "Part 1:"
 puts grid.viable_pairs
