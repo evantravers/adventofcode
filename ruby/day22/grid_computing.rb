@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'set'
 
 class Node
   NODE_DESCR = /\/dev\/grid\/node-x(?<x>\d+)-y(?<y>\d+)(?: +)(?<size>\d+)T(?: +)(?: +)(?<used>\d+)T(?: +)(?<avail>\d+)T(?: +)(?<usage>\d+)%/
@@ -10,6 +11,10 @@ class Node
     args.names.each do |name|
       instance_variable_set("@#{name}", args[name].to_i)
     end
+  end
+
+  def available_space
+    @size - @used
   end
 end
 
@@ -24,6 +29,18 @@ class Grid
         @nodes << Node.new(line)
       end
     end
+  end
+
+  def viable_pairs
+    viable_pairs = Set.new
+    nodes.permutation(2).map do |src, dst|
+      next if src.used == 0
+      if src.used <= dst.available_space
+        viable_pairs << [src, dst]
+      end
+    end
+
+    viable_pairs.size
   end
 end
 
@@ -40,3 +57,5 @@ class TestNodeClass < Minitest::Test
 end
 
 grid = Grid.new('input.txt')
+puts "Part 1:"
+puts grid.viable_pairs
