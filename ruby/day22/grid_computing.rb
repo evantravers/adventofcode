@@ -16,10 +16,22 @@ class Node
   def available_space
     @size - @used
   end
+
+  def pretty_print
+    ratio = @used.to_f/@size.to_f
+    case
+    when ratio >= 0.9
+      return "#"
+    when ratio >= 0.4
+      return "."
+    when ratio == 0
+      return "_"
+    end
+  end
 end
 
 class Grid
-  attr_accessor :nodes
+  attr_accessor :nodes, :goal
 
   def initialize file
     @nodes = [[]]
@@ -31,6 +43,9 @@ class Grid
         @nodes[n.x][n.y] = n
       end
     end
+
+    # The goal is at x: max, y: 0
+    @goal = {x: @nodes[0].size-1, y: 0}
   end
 
   def viable_pairs
@@ -43,6 +58,25 @@ class Grid
     end
 
     viable_pairs.size
+  end
+
+  def solve
+    self.inspect
+    return 0
+  end
+
+  def inspect
+    @nodes.transpose.each do |row|
+      row.each do |node|
+        if [node.x, node.y] == goal.values
+          print "G"
+        else
+          print node.pretty_print
+        end
+      end
+      puts
+    end
+    puts
   end
 end
 
