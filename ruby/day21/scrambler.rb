@@ -74,17 +74,7 @@ class Scrambler
   end
 
   def decode str
-    iterations = [str]
-    @instructions.reverse.each do |instruction|
-      command = COMMANDS.find { |name, pattern| instruction.match pattern }
-      name    = command.first
-
-      args    = instruction.match(command.last).captures
-
-      str     = str.send(name, *args, reverse: true)
-      iterations << str
-    end
-    return str
+    str.split('').permutation.find { |pass| self.encode(pass.join) == str }.join
   end
 end
 
@@ -127,7 +117,7 @@ class TestScrambler < MiniTest::Test
   def test_from_website
     s = Scrambler.new('test.txt')
     assert_equal 'decab', s.encode('abcde')
-    assert_equal 'abcde', s.decode('decab'), "reversed"
+    assert_equal 'abcde', s.decode('decab'), "It should find the reverse"
   end
 
   def test_input
