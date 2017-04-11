@@ -62,6 +62,7 @@ class Grid
         targets << n unless n.nil?
       end
     end
+    targets.select { |node| src.would_fit_in(node) }
   end
 
   def all_viable_pairs
@@ -117,9 +118,21 @@ class TestNodeClass < Minitest::Test
 end
 
 class TestGridSolve < Minitest::Test
+  def setup
+    @grid = Grid.new('test.txt')
+  end
+
+  def test_possible_pairs
+    pairs = @grid.possible_pairs(2, 2)
+    assert_equal 1, pairs.size
+    assert_equal [1, 1], [pairs[0].x, pairs[0].y]
+    assert_equal [1, 1], [pairs[0].x, pairs[0].y]
+    refute_equal [0, 0], [pairs[0].x, pairs[0].y]
+  end
+
+
   def test_input_from_site
-    grid = Grid.new('test.txt')
-    assert_equal 7, grid.solve
+    assert_equal 7, @grid.solve
   end
 end
 
