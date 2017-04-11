@@ -28,6 +28,10 @@ class Node
       return "_"
     end
   end
+
+  def would_fit_in dst
+    self.used <= dst.available_space
+  end
 end
 
 class Grid
@@ -52,7 +56,7 @@ class Grid
     viable_pairs = Set.new
     @nodes.flatten.permutation(2).map do |src, dst|
       next if src.used == 0
-      if src.used <= dst.available_space
+      if src.would_fit_in dst
         viable_pairs << [src, dst]
       end
     end
