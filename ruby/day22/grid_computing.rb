@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require 'set'
+require 'pry'
 
 class Node
   NODE_DESCR = /\/dev\/grid\/node-x(?<x>\d+)-y(?<y>\d+)(?: +)(?<size>\d+)T(?: +)(?: +)(?<used>\d+)T(?: +)(?<avail>\d+)T(?: +)(?<usage>\d+)%/
@@ -38,23 +39,34 @@ class Grid
   attr_accessor :nodes, :goal
 
   def initialize file
-    @nodes = [[]]
+    @nodes = Hash.new
 
     File.readlines(file).map do |line|
       if line.match(/\/dev\/grid\/node/)
         n = Node.new(line)
-        @nodes[n.x] = [] if @nodes[n.x].nil?
-        @nodes[n.x][n.y] = n
+        @nodes[[n.x, n.y]] = n
       end
     end
 
     # The goal is at x: max, y: 0
-    @goal = {x: @nodes[0].size-1, y: 0}
+    max_x = @nodes.keys.collect(&:last).max
+    @goal = {x: max_x, y: 0}
   end
 
-  def viable_pairs
+  def possible_pairs x, y
+    src          = @nodes[[x, y]]
+    targets      = []
+    (x-1..x+1).each do |this_x|
+      (y-1..y+1).each do |this_y|
+        n = @nodes[[this_x, this_y]]
+        targets << n unless n.nil?
+      end
+    end
+  end
+
+  def all_viable_pairs
     viable_pairs = Set.new
-    @nodes.flatten.permutation(2).map do |src, dst|
+    @nodes.values.permutation(2).map do |src, dst|
       next if src.used == 0
       if src.would_fit_in dst
         viable_pairs << [src, dst]
@@ -70,7 +82,15 @@ class Grid
   end
 
   def inspect
-    @nodes.transpose.each do |row|
+    grid = []
+    @nodes.map do |coords, node|
+      grid[coords.first] = [] if grid[coords.first].nil?
+      grid[coords.first][coords.last] = node
+    end
+
+    puts "\n"
+    puts "-" * grid.size
+    grid.transpose.each do |row|
       row.each do |node|
         if [node.x, node.y] == goal.values
           print "G"
@@ -80,7 +100,7 @@ class Grid
       end
       puts
     end
-    puts
+    puts "-" * grid.size
   end
 end
 
@@ -105,4 +125,6 @@ end
 
 grid = Grid.new('input.txt')
 puts "Part 1:"
-puts grid.viable_pairs
+puts grid.all_viable_pairs
+# puts "Part 2"
+# puts grid.solve
