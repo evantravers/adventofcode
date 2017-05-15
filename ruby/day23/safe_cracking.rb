@@ -23,7 +23,9 @@ class Computer
   def cpy src, dst
     src = evaluate_argument src
 
-    instance_variable_set "@#{dst}", src
+    if is_a_register? dst
+      instance_variable_set "@#{dst}", src
+    end
   end
 
   def jnz test, offset
@@ -40,7 +42,10 @@ class Computer
 
   def tgl offset
     offset       = evaluate_argument offset
-    instruction  = @instruction_set[@instruction_pointer + offset]
+    target       = @instruction_pointer + offset
+    return nil if target < 0 or target > @instruction_set.size
+
+    instruction  = @instruction_set[target]
 
     method, args = extract_args instruction
 
@@ -76,11 +81,11 @@ class Computer
 
   def load instructions
     if instructions.match(/\.txt/)
-      instructions = File.readlines(instructions)
+      instructions = File.readlines(instructions).map(&:strip)
     else
-      instructions = instructions.split(/\n/).reject(&:empty?)
+      instructions = instructions.split(/\n/).map(&:strip).reject(&:empty?)
     end
-    @instruction_set = instructions.map { |line| line.strip }
+    @instruction_set = instructions
   end
 
   def execute
@@ -107,8 +112,12 @@ class Computer
     return method, args
   end
 
+  def is_a_register? arg
+    REGISTERS.include? arg
+  end
+
   def evaluate_argument arg
-    if REGISTERS.include? arg
+    if is_a_register? arg
       instance_variable_get "@#{arg}"
     else
       arg.to_i
@@ -118,51 +127,67 @@ end
 
 class TestTgl < Minitest::Test
   def test_one_arg
-    """
-    For one-argument instructions, inc becomes dec, and all other
-    one-argument instructions become inc.
-    """
+    # For one-argument instructions, inc becomes dec, and all other
+    # one-argument instructions become inc.
     instructions =
-    """
-    cpy 2 a
-    tgl a
-    tgl a
-    tgl a
-    cpy 1 a
-    dec a
-    dec a
-    """
+      """
+      cpy 1 a
+      tgl 1
+      dec a
+      tgl 1
+      inc a
+      """
     computer = Computer.new
     computer.load(instructions)
-    binding.pry
-    puts computer
+    assert_equal 1, computer.execute
   end
 
-  def test_two_arg
-    """
-    For two-argument instructions, jnz becomes cpy, and all other
-    two-instructions become jnz.
-    """
+  def test_two_arg_and_invalid
+    # For two-argument instructions, jnz becomes cpy, and all other
+    # two-instructions become jnz.
+
+    # If toggling produces an invalid instruction (like cpy 1 2) and
+    # an attempt is later made to execute that instruction, skip it
+    # instead.
+    instructions =
+      """
+      cpy 1 a
+      tgl 1
+      jnz a 1
+      tgl 1
+      cpy 1 a
+      """
+    computer = Computer.new
+    computer.load(instructions)
+    assert_equal 1, computer.execute
   end
+
   def test_out_of_bounds
-    """
-    If an attempt is made to toggle an instruction outside the
-    program, nothing happens.
-    """
+    # If an attempt is made to toggle an instruction outside the
+    # program, nothing happens.
+    instructions =
+      """
+      cpy 1 a
+      tgl 7
+      cpy 2 a
+      """
+    computer = Computer.new
+    computer.load(instructions)
+    assert_equal 2, computer.execute
   end
-  def test_invalid
-    """
-    If toggling produces an invalid instruction (like cpy 1 2) and
-    an attempt is later made to execute that instruction, skip it
-    instead.
-    """
-  end
+
   def test_tgl_itself
-    """
-    If tgl toggles itself (for example, if a is 0, tgl a would
-    target itself and become inc a), the resulting instruction is
-    not executed until the next time it is reached.
-    """
+    # If tgl toggles itself (for example, if a is 0, tgl a would
+    # target itself and become inc a), the resulting instruction is
+    # not executed until the next time it is reached.
+    instructions =
+      """
+      cpy 1 a
+      tgl 0
+      """
+    computer = Computer.new
+    computer.load(instructions)
+    assert_equal 1, computer.execute
   end
 end
 
