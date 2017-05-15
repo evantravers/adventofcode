@@ -10,6 +10,10 @@ class Computer
     @instruction_set     = Array.new
   end
 
+  def set_register id, val
+    instance_variable_set "@#{id}", val
+  end
+
   def inc register
     value = instance_variable_get "@#{register}"
     instance_variable_set "@#{register}", value + 1
@@ -79,13 +83,19 @@ class Computer
     puts "========"
   end
 
-  def load instructions
+  def load instructions, regs: {}
     if instructions.match(/\.txt/)
       instructions = File.readlines(instructions).map(&:strip)
     else
       instructions = instructions.split(/\n/).map(&:strip).reject(&:empty?)
     end
     @instruction_set = instructions
+
+    unless regs.empty?
+      regs.each do |reg|
+        set_register reg.first, reg.last
+      end
+    end
   end
 
   def execute
@@ -198,3 +208,7 @@ class TestComputer < Minitest::Test
     assert_equal 3, computer.execute
   end
 end
+
+computer = Computer.new
+computer.load "input.txt", regs: {a: 7}
+puts computer.execute(instrument: true)
