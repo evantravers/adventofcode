@@ -98,8 +98,9 @@ class Computer
     end
   end
 
-  def execute
+  def execute(instrument: false)
     while @instruction_pointer < @instruction_set.length
+      puts self.inspect if instrument
       read @instruction_set[@instruction_pointer]
     end
 
