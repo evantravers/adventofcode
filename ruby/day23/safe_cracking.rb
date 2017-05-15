@@ -210,6 +210,12 @@ class TestComputer < Minitest::Test
   end
 end
 
+puts "Part I:"
 computer = Computer.new
 computer.load "input.txt", regs: {a: 7}
 puts computer.execute
+
+puts "Part II:"
+computer = Computer.new
+computer.load "input.txt", regs: {a: 12}
+puts computer.execute(instrument: true)
