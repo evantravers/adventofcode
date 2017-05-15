@@ -30,6 +30,10 @@ class Node
     end
   end
 
+  def coords
+    [@x, @y]
+  end
+
   def would_fit_in dst
     self.used <= dst.available_space
   end
@@ -53,20 +57,25 @@ class Grid
     @goal = {x: max_x, y: 0}
   end
 
+  def adjacent_nodes x, y
+    [[x+1, y], [x-1, y], [x, y-1], [x, y+1]]
+  end
+
   def possible_pairs x, y
     src          = @nodes[[x, y]]
     targets      = []
-    (x-1..x+1).each do |this_x|
-      (y-1..y+1).each do |this_y|
-        n = @nodes[[this_x, this_y]]
-        targets << n unless n.nil?
-      end
+
+    adjacent_nodes(x, y).each do |this_x, this_y|
+      n = @nodes[[this_x, this_y]]
+      targets << n unless n.nil?
     end
+
     targets.select { |node| src.would_fit_in(node) }
   end
 
   def all_viable_pairs
     viable_pairs = Set.new
+
     @nodes.values.permutation(2).map do |src, dst|
       next if src.used == 0
       if src.would_fit_in dst
@@ -78,7 +87,8 @@ class Grid
   end
 
   def solve
-    self.inspect
+    # we need to move Goal to [0, 0]
+    binding.pry
     return 0
   end
 
@@ -95,6 +105,8 @@ class Grid
       row.each do |node|
         if [node.x, node.y] == goal.values
           print "G"
+        elsif possible_pairs(*node.coords).empty?
+          print "#"
         else
           print node.pretty_print
         end
@@ -123,10 +135,8 @@ class TestGridSolve < Minitest::Test
   end
 
   def test_possible_pairs
-    pairs = @grid.possible_pairs(2, 2)
+    pairs = @grid.possible_pairs(1, 2)
     assert_equal 1, pairs.size
-    assert_equal [1, 1], [pairs[0].x, pairs[0].y]
-    assert_equal [1, 1], [pairs[0].x, pairs[0].y]
     refute_equal [0, 0], [pairs[0].x, pairs[0].y]
   end
 
