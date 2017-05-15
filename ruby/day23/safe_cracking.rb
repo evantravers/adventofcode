@@ -47,7 +47,7 @@ class Computer
   def tgl offset
     offset       = evaluate_argument offset
     target       = @instruction_pointer + offset
-    return nil if target < 0 or target > @instruction_set.size
+    return nil if target < 0 or target > @instruction_set.size - 1
 
     instruction  = @instruction_set[target]
 
@@ -212,4 +212,4 @@ end
 
 computer = Computer.new
 computer.load "input.txt", regs: {a: 7}
-puts computer.execute(instrument: true)
+puts computer.execute
