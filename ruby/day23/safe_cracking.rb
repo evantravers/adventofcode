@@ -60,18 +60,6 @@ class Computer
 
     new_instruction = "#{method} #{args.join ' '}"
     @instruction_set[@instruction_pointer + offset] = new_instruction
-
-    """
-    If an attempt is made to toggle an instruction outside the program, nothing
-    happens.
-
-    If toggling produces an invalid instruction (like cpy 1 2) and an attempt
-    is later made to execute that instruction, skip it instead.
-
-    If tgl toggles itself (for example, if a is 0, tgl a would target itself
-    and become inc a), the resulting instruction is not executed until the next
-    time it is reached.
-    """
   end
 
   def inspect
@@ -86,9 +74,13 @@ class Computer
     puts "========"
   end
 
-  def load instructions_file
-    @instruction_set =
-      File.readlines(instructions_file).map { |line| line.strip }
+  def load instructions
+    if instructions.match(/\.txt/)
+      instructions = File.readlines(instructions)
+    else
+      instructions = instructions.split(/\n/).reject(&:empty?)
+    end
+    @instruction_set = instructions.map { |line| line.strip }
   end
 
   def execute
@@ -125,6 +117,53 @@ class Computer
 end
 
 class TestTgl < Minitest::Test
+  def test_one_arg
+    """
+    For one-argument instructions, inc becomes dec, and all other
+    one-argument instructions become inc.
+    """
+    instructions =
+    """
+    cpy 2 a
+    tgl a
+    tgl a
+    tgl a
+    cpy 1 a
+    dec a
+    dec a
+    """
+    computer = Computer.new
+    computer.load(instructions)
+    binding.pry
+    puts computer
+  end
+
+  def test_two_arg
+    """
+    For two-argument instructions, jnz becomes cpy, and all other
+    two-instructions become jnz.
+    """
+  end
+  def test_out_of_bounds
+    """
+    If an attempt is made to toggle an instruction outside the
+    program, nothing happens.
+    """
+  end
+  def test_invalid
+    """
+    If toggling produces an invalid instruction (like cpy 1 2) and
+    an attempt is later made to execute that instruction, skip it
+    instead.
+    """
+  end
+  def test_tgl_itself
+    """
+    If tgl toggles itself (for example, if a is 0, tgl a would
+    target itself and become inc a), the resulting instruction is
+    not executed until the next time it is reached.
+    """
+  end
 end
 
 class TestComputer < Minitest::Test
