@@ -1,5 +1,4 @@
 require 'minitest/autorun'
-require 'pry'
 
 class Computer
   REGISTERS = ['a', 'b', 'c', 'd']
@@ -8,6 +7,7 @@ class Computer
     @a, @b, @c, @d = 0, 0, 0, 0
     @instruction_pointer = 0
     @instruction_set     = Array.new
+    @tape                = Array.new
   end
 
   def set_register id, val
@@ -71,6 +71,10 @@ class Computer
     @instruction_set[@instruction_pointer + offset] = new_instruction
   end
 
+  def out x
+    @tape << evaluate_argument(x)
+  end
+
   def inspect
     puts "P: #{@instruction_pointer}"
     puts "I: #{@instruction_set[@instruction_pointer]}"
@@ -107,6 +111,11 @@ class Computer
     return @a
   end
 
+  def run
+    execute
+    return @tape
+  end
+
   private
 
   def read line
@@ -136,7 +145,7 @@ class Computer
   end
 end
 
-class TestTgl < Minitest::Test
+class TestCommands < Minitest::Test
   def test_one_arg
     # For one-argument instructions, inc becomes dec, and all other
     # one-argument instructions become inc.
@@ -200,22 +209,30 @@ class TestTgl < Minitest::Test
     computer.load(instructions)
     assert_equal 1, computer.execute
   end
-end
 
-class TestComputer < Minitest::Test
-  def test_sample_data
+  def test_out
+    instructions =
+      """
+      out 1
+      out 0
+      out 1
+      out 0
+      """
     computer = Computer.new
-    computer.load "test.txt"
-    assert_equal 3, computer.execute
+    computer.load(instructions)
+    assert_equal [1, 0, 1, 0], computer.run
+  end
+
+  def test_out2
+    instructions =
+      """
+      cpy 1 a
+      inc a
+      inc a
+      out a
+      """
+    computer = Computer.new
+    computer.load(instructions)
+    assert_equal [3], computer.run
   end
 end
-
-puts "Part I:"
-computer = Computer.new
-computer.load "input.txt", regs: {a: 7}
-puts computer.execute
-
-puts "Part II:"
-computer = Computer.new
-computer.load "input.txt", regs: {a: 12}
-puts computer.execute
