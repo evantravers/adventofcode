@@ -106,7 +106,7 @@ class Computer
     while @instruction_pointer < @instruction_set.length
       puts self.inspect if instrument
       read @instruction_set[@instruction_pointer]
-      yield
+      yield self
     end
     unless block_given?
       return @a
