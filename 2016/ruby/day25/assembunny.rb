@@ -113,19 +113,6 @@ class Computer
     end
   end
 
-  def find_clock_speed
-    speed = 0
-    puts speed
-    while
-      initialize
-      set_register 'a', speed
-      while @instruction_pointer < @instruction_set.length
-        read @instruction_set[@instruction_pointer]
-      end
-      speed += 1
-    end
-  end
-
   private
 
   def read line
