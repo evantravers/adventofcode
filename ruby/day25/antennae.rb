@@ -3,6 +3,8 @@ require 'minitest/autorun'
 class Computer
   REGISTERS = ['a', 'b', 'c', 'd']
 
+  attr_accessor :tape
+
   def initialize
     @a, @b, @c, @d = 0, 0, 0, 0
     @instruction_pointer = 0
@@ -220,7 +222,8 @@ class TestCommands < Minitest::Test
       """
     computer = Computer.new
     computer.load(instructions)
-    assert_equal [1, 0, 1, 0], computer.run
+    computer.execute
+    assert_equal [1, 0, 1, 0], computer.tape
   end
 
   def test_out2
@@ -233,6 +236,7 @@ class TestCommands < Minitest::Test
       """
     computer = Computer.new
     computer.load(instructions)
-    assert_equal [3], computer.run
+    computer.execute
+    assert_equal [3], computer.tape
   end
 end
