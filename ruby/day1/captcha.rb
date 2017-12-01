@@ -34,3 +34,6 @@ class CaptchaTest < Minitest::Test
     assert_equal 9, captcha(91212129)
   end
 end
+
+input = File.readlines('input.txt').first.to_i
+puts captcha(input)
