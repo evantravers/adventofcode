@@ -37,8 +37,7 @@ end
 # it'd be much better to read in by character, but hey
 numbers = IO.read(file, :all)
           |> String.trim
-          |> String.split("")
-          |> Enum.reject(fn(x) -> x == "" end)
+          |> String.split("", [trim: true ])
           |> Enum.map(fn(x) -> String.to_integer(x) end)
 
 IO.puts captcha.(numbers)
