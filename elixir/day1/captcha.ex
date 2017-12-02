@@ -1,16 +1,16 @@
 captcha = fn (array_of_numbers) ->
-  sum  = 0
   size = Enum.count(array_of_numbers)
 
   array_of_numbers
     |> Enum.with_index
-    |> Enum.each( fn ({num, index}) ->
+    |> Enum.reduce(0, fn ({num, index}, acc) ->
 
       next_index = rem(index+1, size)
       next       = Enum.at(array_of_numbers, next_index)
 
-      if num == next do
-        sum = sum + num
+      acc = case num == next do
+        true  -> acc = acc + num
+        false -> acc
       end
     end )
 end
