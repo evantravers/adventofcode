@@ -8,8 +8,8 @@ captcha = fn (array_of_numbers) ->
       next_index = rem(index+1, size)
       next       = Enum.at(array_of_numbers, next_index)
 
-      acc = case num == next do
-        true  -> acc = acc + num
+      case num == next do
+        true  -> acc + num
         false -> acc
       end
     end )
@@ -25,8 +25,8 @@ captcha2 = fn (array_of_numbers) ->
       next_index = rem(index+(div(size,2)), size)
       next       = Enum.at(array_of_numbers, next_index)
 
-      acc = case num == next do
-        true  -> acc = acc + num
+      case num == next do
+        true  -> acc + num
         false -> acc
       end
     end )
