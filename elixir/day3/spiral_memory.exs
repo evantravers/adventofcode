@@ -6,12 +6,18 @@ defmodule Day3 do
   second circle is 3^2
   third circle is 5^2
   1,3,5,7
+
+  target = the number we are looking for
+  n = a level in the spiral
+  d = the diameter of the spiral at that point (1, 3, 5, 7...)
   """
-  def find_level(target_number) do
+  def find_level(target) do
     possible_values =
       Enum.take_every(1..9999, 2)
-      |> Enum.drop_while(fn (number) -> :math.pow(number, 2) > target_number end)
-    hd(possible_values)+1
+      |> Enum.with_index
+      |> Enum.drop_while(fn ({number, index}) -> :math.pow(number, 2) < target end)
+    {_, level} = hd(possible_values)
+    level
   end
 
   def diameter_at_level(n) do
