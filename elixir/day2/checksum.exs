@@ -6,7 +6,6 @@ defmodule Day2 do
       nil ->
         find_divisible tail
       _ ->
-        IO.puts number
         {current, number}
     end
   end
@@ -32,6 +31,8 @@ defmodule Day2 do
 
     part2 =
       file
+      |> Enum.map(&Enum.sort/1)
+      |> Enum.map(&Enum.reverse/1)
       |> Enum.map(&find_divisible/1)
       |> Enum.map(fn({a, b}) -> div(a, b) end)
       |> Enum.sum
