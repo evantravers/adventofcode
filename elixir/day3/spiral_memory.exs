@@ -26,9 +26,10 @@ defmodule Day3 do
   """
   def simulate_circle(n) do
 
-    # the last ring ends at (n-1)^2
-    starting_point = round(:math.pow((n-1), 2) + 1)
-    diameter       = diameter_at_level(n-1)
+    # the last ring ends at (d-1)^2 (where d is 1, 3, 5...)
+    diameter       = diameter_at_level(n)
+    d_prev         = diameter_at_level(n-1)
+    starting_point = round(:math.pow(d_prev, 2) + 1)
 
     circle =
       (starting_point..round(:math.pow(diameter, 2)))
@@ -54,5 +55,7 @@ defmodule Day3 do
   end
 end
 
+IO.inspect Day3.simulate_circle(1)
 IO.inspect Day3.simulate_circle(2)
+IO.inspect Day3.simulate_circle(3)
 Day3.run
