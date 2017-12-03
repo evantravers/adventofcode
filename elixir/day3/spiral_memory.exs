@@ -11,6 +11,8 @@ defmodule Day3 do
   n = a level in the spiral
   d = the diameter of the spiral at that point (1, 3, 5, 7...)
   """
+
+
   def find_level(target) do
     possible_values =
       Enum.take_every(1..9999, 2)
@@ -25,14 +27,10 @@ defmodule Day3 do
     |> Enum.at(n)
   end
 
-  @doc """
-  The distance from a corner is index/round_up((diameter/2))
-  """
   def distance_from_midpoint(index, diameter) do
-    rem(index, round(diameter/2))
   end
 
-  def distance({circle, level, diameter}, target) do
+  defp distance({circle, level, diameter}, target) do
     index = Enum.find_index(circle, &(target == &1))
     distance_from_midpoint(index, diameter) + level
   end
@@ -68,10 +66,10 @@ defmodule Day3 do
   end
 
   def run do
-    IO.puts "ghetto tests"
-    IO.puts distance(12) == 3
-    IO.puts distance(23) == 2
-    IO.puts distance(1024) == 31
+    IO.puts "ghetto tests:\n####################\n"
+    IO.puts "12: should be 3 steps: #{distance(12)}"
+    IO.puts "23: should be 2 steps: #{distance(23)}"
+    IO.puts "1024: should be 31 steps: #{distance(1024)}"
 
     IO.puts distance(265149)
   end
