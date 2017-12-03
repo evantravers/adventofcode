@@ -26,6 +26,13 @@ defmodule Day3 do
   end
 
   @doc """
+  The distance from a corner is index/round_up((diameter/2))
+  """
+  def distance_from_midpoint(index, diameter) do
+    rem(index, round(diameter/2))
+  end
+
+  @doc """
   Returns a list of the numbers in the circle, starting from the bottom
   right corner and going counter-clockwise. Each diameter-th spot is a
   corner.
@@ -47,12 +54,20 @@ defmodule Day3 do
   end
 
   def distance(num) do
-    find_level(num)
+    level    = find_level(num)
+    diameter = diameter_at_level(level)
+
+    index =
+      num
+      |> find_level
+      |> simulate_circle
+      |> Enum.find_index(&(&1 == num))
+
+    distance_from_midpoint(index, diameter) + level
   end
 
   def run do
     IO.puts "ghetto tests"
-    IO.puts distance(1) == 0
     IO.puts distance(12) == 3
     IO.puts distance(23) == 2
     IO.puts distance(1024) == 31
@@ -61,7 +76,4 @@ defmodule Day3 do
   end
 end
 
-IO.inspect Day3.simulate_circle(1)
-IO.inspect Day3.simulate_circle(2)
-IO.inspect Day3.simulate_circle(3)
 Day3.run
