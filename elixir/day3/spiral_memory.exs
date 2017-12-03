@@ -10,10 +10,31 @@ defmodule Day3 do
     hd(possible_values)+1
   end
 
+  def diameter_at_level(n) do
+    Enum.take_every(1..9999, 2)
+    |> Enum.at(n)
+  end
+
+  def simulate_circle(n) do
+    # the last ring ends at (n-1)^2
+    starting_point = round(:math.pow((n-1), 2) + 1)
+    diameter       = diameter_at_level(n-1)
+
+    circle =
+      (starting_point..round(:math.pow(diameter, 2)))
+      |> Enum.to_list
+
+    # rotate(1): the circle starts from just above BR
+    {last, circle} = List.pop_at(circle, -1)
+    [last] ++ circle
+
+    # each n-th spot is a corner
+  end
+
   # distance = steps to midpoint of circle + number of levels you are at
   def distance(num) do
     # determine the number of levels
-    circle = find_level(num)
+    find_level(num)
   end
 
   def run do
@@ -27,4 +48,5 @@ defmodule Day3 do
   end
 end
 
+IO.inspect Day3.simulate_circle(2)
 Day3.run
