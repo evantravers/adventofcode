@@ -27,7 +27,15 @@ defmodule Day3 do
     |> Enum.at(n)
   end
 
+  @doc """
+  The circle array starts from BR (entry point) and cycles around
+  until the end. Each diameter-th index is a corner.
+  """
   def distance_from_midpoint(index, diameter) do
+         d = diameter - 1
+    radius = d/2
+
+    round(abs(radius - rem(index, d)))
   end
 
   defp distance({circle, level, diameter}, target) do
