@@ -15,12 +15,12 @@ defmodule Day3 do
     possible_values =
       Enum.take_every(1..9999, 2)
       |> Enum.with_index
-      |> Enum.drop_while(fn ({number, index}) -> :math.pow(number, 2) < target end)
+      |> Enum.drop_while(fn ({number, _}) -> :math.pow(number, 2) < target end)
     {_, level} = hd(possible_values)
     level
   end
 
-  def diameter_at_level(n) do
+  def find_diameter(n) do
     Enum.take_every(1..9999, 2)
     |> Enum.at(n)
   end
@@ -32,16 +32,23 @@ defmodule Day3 do
     rem(index, round(diameter/2))
   end
 
+  def distance({circle, level, diameter}, target) do
+    index = Enum.find_index(circle, &(target == &1))
+    distance_from_midpoint(index, diameter) + level
+  end
+
   @doc """
   Returns a list of the numbers in the circle, starting from the bottom
   right corner and going counter-clockwise. Each diameter-th spot is a
   corner.
+
+  Returns the list, the level, and the diameter
   """
   def simulate_circle(n) do
 
     # the last ring ends at (d-1)^2 (where d is 1, 3, 5...)
-    diameter       = diameter_at_level(n)
-    d_prev         = diameter_at_level(n-1)
+    diameter       = find_diameter(n)
+    d_prev         = find_diameter(n-1)
     starting_point = round(:math.pow(d_prev, 2) + 1)
 
     circle =
@@ -50,20 +57,14 @@ defmodule Day3 do
 
     # rotate(1): the circle starts from just above BR
     {last, circle} = List.pop_at(circle, -1)
-    [last] ++ circle
+    {[last] ++ circle, n, diameter}
   end
 
   def distance(num) do
-    level    = find_level(num)
-    diameter = diameter_at_level(level)
-
-    index =
-      num
-      |> find_level
-      |> simulate_circle
-      |> Enum.find_index(&(&1 == num))
-
-    distance_from_midpoint(index, diameter) + level
+    num
+    |> find_level
+    |> simulate_circle
+    |> distance(num)
   end
 
   def run do
