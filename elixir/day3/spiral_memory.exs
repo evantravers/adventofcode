@@ -81,11 +81,6 @@ defmodule Day3 do
 
     IO.puts distance(265149)
   end
-
-  # ---------
-
-  def generate_spiral(num) do
-  end
 end
 
 Day3.run
