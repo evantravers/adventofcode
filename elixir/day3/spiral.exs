@@ -5,7 +5,7 @@ defmodule Advent2017 do
   - The structure should look like:
     [[x: 0, y: 0, value: 1], [x: 1, y: 0, value: 2], [x: 1, y: 1, value: 3] ... ]
 
-  Inteval = length of arm
+  Interval = length of arm
   """
 
   def next_space(map, direction) do
