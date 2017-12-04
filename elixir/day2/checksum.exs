@@ -1,4 +1,4 @@
-defmodule Day2 do
+defmodule Advent2017 do
 
   def find_divisible ([current|tail]) do
     number = Enum.find(tail, fn (item) -> rem(current, item) == 0 end)
@@ -43,4 +43,4 @@ defmodule Day2 do
 end
 
 
-Day2.run
+Advent2017.run
