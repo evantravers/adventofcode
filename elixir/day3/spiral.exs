@@ -95,7 +95,7 @@ defmodule Advent2017 do
     last = List.last(map)
     # view_spiral(map)
 
-    if wincond.(target, last[:value]) do # win condition
+    if wincond.(target, last[:value]) do
       "Value: #{last[:value]}\n" <>
       "Distance: #{abs(last[:x]) + abs(last[:y])}"
     else
