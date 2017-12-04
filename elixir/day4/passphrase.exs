@@ -1,28 +1,28 @@
 defmodule Advent2017 do
-  def day4a do
+  def day4a(line) do
+    String.split(line, " ", [trim: true])
+  end
+
+  def day4b(line) do
+    line
+    |> String.split(" ", [trim: true])
+    |> Enum.map(&Enum.sort(to_charlist(&1)))
+  end
+
+  def passphrase(func) do
     {:ok, file} = File.read("input.txt")
 
     file
     |> String.split("\n", [trim: true])
-    |> Enum.map(&String.split(&1, " ", [trim: true]))
+    |> Enum.map(&func.(&1))
     |> Enum.filter(fn (x) -> Enum.count(x) == Enum.count(Enum.uniq(x)) end)
     |> Enum.count
   end
 
-  def day4b do
-    {:ok, file} = File.read("input.txt")
-
-    file
-    |> String.split("\n", [trim: true])
-    |> Enum.map(fn (line) ->
-                  line
-                  |> String.split(" ", [trim: true])
-                  |> Enum.map(&Enum.sort(to_charlist(&1)))
-                end)
-    |> Enum.filter(fn (x) -> Enum.count(x) == Enum.count(Enum.uniq(x)) end)
-    |> Enum.count
+  def run do
+    IO.puts "Part 1: #{passphrase(&day4a/1)}"
+    IO.puts "Part 2: #{passphrase(&day4b/1)}"
   end
 end
 
-IO.puts "Part 1: #{Advent2017.day4a}"
-IO.puts "Part 2: #{Advent2017.day4b}"
+Advent2017.run
