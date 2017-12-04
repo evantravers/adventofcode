@@ -1,4 +1,4 @@
-defmodule Day3 do
+defmodule Advent2017 do
   @moduledoc """
   distance = steps to midpoint of circle + number of levels you are at
 
@@ -73,7 +73,7 @@ defmodule Day3 do
     |> distance(num)
   end
 
-  def run do
+  def day3 do
     IO.puts "ghetto tests:\n####################\n"
     IO.puts "12: should be 3 steps: #{distance(12)}"
     IO.puts "23: should be 2 steps: #{distance(23)}"
@@ -83,4 +83,4 @@ defmodule Day3 do
   end
 end
 
-Day3.run
+Advent2017.day3
