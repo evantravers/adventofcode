@@ -1,15 +1,9 @@
 defmodule Advent2017 do
   @doc """
-  Going to attempt to use streams here.
-
-  I think the first call is:
-
   Notes:
   - I think interval increases by 1 every two iterations: 1, 2, 2, 3, 3...
   - The structure should look like:
     [[x: 0, y: 0, value: 1], [x: 1, y: 0, value: 2], [x: 1, y: 1, value: 3] ... ]
-  - Maybe I should use `get_in` and `put_in` instead... except I need negative
-    values. Rats.
 
   Inteval = length of arm
   """
@@ -84,13 +78,20 @@ defmodule Advent2017 do
     IO.puts "\n"
   end
 
-  def part1(target), do: spiral(target, &part1_wincondition/2, :right, 1, 0, false, &next_space/2, [[x: 0, y: 0, value: 1]])
-  def part2(target), do: spiral(target, &part2_wincondition/2, :right, 1, 0, false, &next_space_fib/2, [[x: 0, y: 0, value: 1]])
+  def p1(target), do: spiral(target, &p1_wincondition/2, &next_space/2)
+  def p2(target), do: spiral(target, &p2_wincondition/2, &next_space_fib/2)
 
-  def part1_wincondition(target, value), do: target == value
-  def part2_wincondition(target, value), do: value > target
+  def p1_wincondition(target, value), do: target == value
+  def p2_wincondition(target, value), do: value > target
 
-  def spiral(target, wincond, direction, interval, traveled, timetogrow, compute_position, map) do
+  def spiral(map        \\ [[x: 0, y: 0, value: 1]],
+             target,
+             wincond,
+             compute_position,
+             direction  \\ :right,
+             interval   \\ 1,
+             traveled   \\ 0,
+             timetogrow \\ false) do
     last = List.last(map)
     # view_spiral(map)
 
@@ -111,10 +112,17 @@ defmodule Advent2017 do
       end
 
       map = map ++ [compute_position.(map, direction)]
-      spiral(target, wincond, direction, interval, traveled+1, timetogrow, compute_position, map)
+      spiral(map,
+             target,
+             wincond,
+             compute_position,
+             direction,
+             interval,
+             traveled+1,
+             timetogrow)
     end
   end
 end
 
-# IO.puts "Part 1: #{Advent2017.part1(265149)}" # this takes twenty or so minutes... see the performant solution in spiral_sim.exs
-IO.puts "Part 1: #{Advent2017.part2(265149)}"
+# IO.puts "Part 1: #{Advent2017.p1(265149)}" # this takes twenty or so minutes... see the performant solution in spiral_sim.exs
+IO.puts "Part 1: #{Advent2017.p2(265149)}"
