@@ -42,7 +42,7 @@ defmodule Advent2017 do
     new_x = last[:x]+adjust_x
     new_y = last[:y]+adjust_y
 
-    IO.inspect surrounding_value =
+    surrounding_value =
       [{1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}]
       |> Enum.map(fn ({x, y}) -> {x+new_x, y+new_y} end) # adjust
       |> Enum.map(fn ({x, y}) -> get(map, {x, y})[:value] end)
@@ -116,5 +116,5 @@ defmodule Advent2017 do
   end
 end
 
-# IO.puts "Part 1: #{Advent2017.part1(265149)}"
+# IO.puts "Part 1: #{Advent2017.part1(265149)}" # this takes twenty or so minutes... see the performant solution in spiral_sim.exs
 IO.puts "Part 1: #{Advent2017.part2(265149)}"
