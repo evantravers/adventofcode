@@ -14,7 +14,8 @@ defmodule Advent2017 do
   Inteval = length of arm
   """
 
-  def next_space(position, direction) do
+  def next_space(map, direction) do
+    last = List.last(map)
     {adjust_x, adjust_y} =
       case direction do
         :right -> {1, 0}
@@ -22,9 +23,36 @@ defmodule Advent2017 do
         :left  -> {-1, 0}
         :down  -> {0, -1}
       end
-    [x:     position[:x]+adjust_x,
-     y:     position[:y]+adjust_y,
-     value: position[:value]+1]
+    [x:     last[:x]+adjust_x,
+     y:     last[:y]+adjust_y,
+     value: last[:value]+1]
+  end
+
+  def next_space_fib(map, direction) do
+    last = List.last(map)
+
+    {adjust_x, adjust_y} =
+      case direction do
+        :right -> {1, 0}
+        :up    -> {0, 1}
+        :left  -> {-1, 0}
+        :down  -> {0, -1}
+      end
+
+    new_x = last[:x]+adjust_x
+    new_y = last[:y]+adjust_y
+
+    IO.inspect surrounding_value =
+      [{1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}]
+      |> Enum.map(fn ({x, y}) -> {x+new_x, y+new_y} end) # adjust
+      |> Enum.map(fn ({x, y}) -> get(map, {x, y})[:value] end)
+      |> Enum.filter(&(is_integer(&1)))
+      |> Enum.sum
+
+
+    [x:     new_x,
+     y:     new_y,
+     value: surrounding_value]
   end
 
   def next_direction(direction) do
@@ -56,14 +84,19 @@ defmodule Advent2017 do
     IO.puts "\n"
   end
 
-  def spiral(target), do: spiral(target, :right, 1, 0, false, [[x: 0, y: 0, value: 1]])
+  def part1(target), do: spiral(target, &part1_wincondition/2, :right, 1, 0, false, &next_space/2, [[x: 0, y: 0, value: 1]])
+  def part2(target), do: spiral(target, &part2_wincondition/2, :right, 1, 0, false, &next_space_fib/2, [[x: 0, y: 0, value: 1]])
 
-  def spiral(target, direction, interval, traveled, timetogrow, map) do
+  def part1_wincondition(target, value), do: target == value
+  def part2_wincondition(target, value), do: value > target
+
+  def spiral(target, wincond, direction, interval, traveled, timetogrow, compute_position, map) do
     last = List.last(map)
     # view_spiral(map)
 
-    if last[:value] == target do # win condition
-      abs(last[:x]) + abs(last[:y])
+    if wincond.(target, last[:value]) do # win condition
+      "Value: #{last[:value]}\n" <>
+      "Distance: #{abs(last[:x]) + abs(last[:y])}"
     else
       if traveled == interval do # time to turn
         direction = next_direction(direction)
@@ -77,10 +110,11 @@ defmodule Advent2017 do
           end
       end
 
-      map = map ++ [next_space(last, direction)]
-      spiral(target, direction, interval, traveled+1, timetogrow, map)
+      map = map ++ [compute_position.(map, direction)]
+      spiral(target, wincond, direction, interval, traveled+1, timetogrow, compute_position, map)
     end
   end
 end
 
-IO.puts "Part 1: #{Advent2017.spiral(265149)}"
+# IO.puts "Part 1: #{Advent2017.part1(265149)}"
+IO.puts "Part 1: #{Advent2017.part2(265149)}"
