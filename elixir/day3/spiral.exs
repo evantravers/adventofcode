@@ -9,7 +9,7 @@ defmodule Advent2017 do
   """
 
   def next_space(map, direction) do
-    last = List.last(map)
+    last = List.first(map)
     {adjust_x, adjust_y} =
       case direction do
         :right -> {1, 0}
@@ -23,7 +23,7 @@ defmodule Advent2017 do
   end
 
   def next_space_fib(map, direction) do
-    last = List.last(map)
+    last = List.first(map)
 
     {adjust_x, adjust_y} =
       case direction do
@@ -92,7 +92,7 @@ defmodule Advent2017 do
              interval   \\ 1,
              traveled   \\ 0,
              timetogrow \\ false) do
-    last = List.last(map)
+    last = List.first(map)
     # view_spiral(map)
 
     if wincond.(target, last[:value]) do
@@ -111,7 +111,7 @@ defmodule Advent2017 do
           end
       end
 
-      map = map ++ [compute_position.(map, direction)]
+      map = [compute_position.(map, direction)] ++ map
       spiral(map,
              target,
              wincond,
@@ -124,5 +124,5 @@ defmodule Advent2017 do
   end
 end
 
-# IO.puts "Part 1: #{Advent2017.p1(265149)}" # this takes twenty or so minutes... see the performant solution in spiral_sim.exs
-IO.puts "Part 1: #{Advent2017.p2(265149)}"
+IO.puts "Part 1: #{Advent2017.p1(265149)}"
+IO.puts "Part 2: #{Advent2017.p2(265149)}"
