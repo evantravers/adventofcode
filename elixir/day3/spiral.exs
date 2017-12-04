@@ -45,8 +45,8 @@ defmodule Advent2017 do
   """
   def view_spiral(map) do
     map
-    Enum.map((-3..3), fn (x) ->
-      Enum.map((-3..3), fn(y) ->
+    Enum.map((-10..10), fn (x) ->
+      Enum.map((-10..10), fn(y) ->
         position = get(map, {x, y})
         val = if is_nil(position), do: " ", else: position[:value]
         IO.binwrite "[#{val}]"
@@ -60,20 +60,21 @@ defmodule Advent2017 do
 
   def spiral(target, direction, interval, traveled, timetogrow, map) do
     last = List.last(map)
-    view_spiral(map)
+    # view_spiral(map)
 
     if last[:value] == target do # win condition
       abs(last[:x]) + abs(last[:y])
     else
-      cond do
-        traveled == interval -> # time to turn
-          direction = next_direction(direction)
-          traveled  = 0
+      if traveled == interval do # time to turn
+        direction = next_direction(direction)
+        traveled  = 0
+
+        {timetogrow, interval} =
           if timetogrow do
-            interval   = interval+1
-            timetogrow = false
+            {false, interval+1}
+          else
+            {true, interval}
           end
-        true -> # keep on straight
       end
 
       map = map ++ [next_space(last, direction)]
@@ -82,4 +83,4 @@ defmodule Advent2017 do
   end
 end
 
-IO.puts "Part 1: #{Advent2017.spiral(4)}"
+IO.puts "Part 1: #{Advent2017.spiral(265149)}"
