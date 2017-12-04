@@ -3,19 +3,18 @@ defmodule Advent2017 do
   Going to attempt to use streams here.
 
   I think the first call is:
-  `spiral(<target>, :right, 1, 2, %{{0, 0} => 1})`
 
   Notes:
   - I think interval increases by 1 every two iterations: 1, 2, 2, 3, 3...
   - The structure should look like:
-    %{{0, 0} => 1, {1, 0} => 2, {1, 1} => 3 ... }
+    [[x: 0, y: 0, value: 1], [x: 1, y: 0, value: 2], [x: 1, y: 1, value: 3] ... ]
   - Maybe I should use `get_in` and `put_in` instead... except I need negative
     values. Rats.
 
   Inteval = length of arm
   """
 
-  def next_space({x, y}, direction, value) do
+  def next_space(position, direction) do
     {adjust_x, adjust_y} =
       case direction do
         :right -> {1, 0}
@@ -23,23 +22,33 @@ defmodule Advent2017 do
         :left  -> {-1, 0}
         :down  -> {0, -1}
       end
-    %{{x+adjust_x, y+adjust_y} => value}
+    [x:     position[:x]+adjust_x,
+     y:     position[:y]+adjust_y,
+     value: position[:value]+1]
   end
 
   def next_direction(direction) do
     case direction do
       :right -> :up
-      :up -> :left
-      :left -> :down
-      :down -> :right
+      :up    -> :left
+      :left  -> :down
+      :down  -> :right
     end
   end
 
+  def get(map, coord) do
+    Enum.find(map, fn (position) -> {position[:x], position[:y]} == coord end)
+  end
+
+  @doc """
+  This visualization is turned 90 because I'm too lazy to write a transpose
+  """
   def view_spiral(map) do
     map
     Enum.map((-3..3), fn (x) ->
       Enum.map((-3..3), fn(y) ->
-        val = if is_nil(map[{x, y}]), do: " ", else: map[{x, y}]
+        position = get(map, {x, y})
+        val = if is_nil(position), do: " ", else: position[:value]
         IO.binwrite "[#{val}]"
       end)
       IO.puts "\n"
@@ -47,33 +56,30 @@ defmodule Advent2017 do
     IO.puts "\n"
   end
 
-  def spiral(target), do: spiral(target, :right, 1, 0, 1, %{{0, 0} => 1})
+  def spiral(target), do: spiral(target, :right, 1, 0, false, [[x: 0, y: 0, value: 1]])
 
-  def spiral(target, direction, interval, traveled, turns, map) do
-
-    {coords, last_value} = Enum.at(map, -1)
+  def spiral(target, direction, interval, traveled, timetogrow, map) do
+    last = List.last(map)
     view_spiral(map)
-    if last_value == target do
-      coords
-      |> Tuple.to_list
-      |> Enum.map(&(abs(&1)))
-      |> Enum.sum
+
+    if last[:value] == target do # win condition
+      abs(last[:x]) + abs(last[:y])
     else
-      if interval == traveled do
-        direction = next_direction(direction)
-        turns = turns + 1
-        # after we've turned two times, increment the interval
-        unless turns > 3 do
-          interval = interval + 1
-          turns    = 0
-        end
+      cond do
+        traveled == interval -> # time to turn
+          direction = next_direction(direction)
+          traveled  = 0
+          if timetogrow do
+            interval   = interval+1
+            timetogrow = false
+          end
+        true -> # keep on straight
       end
 
-      map = Map.merge(map, next_space(coords, direction, last_value + 1))
-
-      spiral(target, direction, interval, traveled+1, turns, map)
+      map = map ++ [next_space(last, direction)]
+      spiral(target, direction, interval, traveled+1, timetogrow, map)
     end
   end
 end
 
-IO.puts "Part 1: #{Advent2017.spiral(7)}"
+IO.puts "Part 1: #{Advent2017.spiral(4)}"
