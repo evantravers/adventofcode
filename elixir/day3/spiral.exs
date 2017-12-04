@@ -9,6 +9,7 @@ defmodule Advent2017 do
   - I think distance increases by 1 every two iterations: 1, 1, 2, 2, 3, 3...
   - The structure should look like:
     %{{0, 0} => 1, {1, 0} => 2, {1, 1} => 3 ... }
+  - Maybe I should use `get_in` and `put_in` instead...
   """
 
   def spiral(target) do: spiral(target, :right, 1, 2, %{})
