@@ -49,6 +49,7 @@ defmodule Advent2017 do
      value: surrounding_value]
   end
 
+  @spec next_direction(atom) :: atom
   def next_direction(direction) do
     case direction do
       :right -> :up
