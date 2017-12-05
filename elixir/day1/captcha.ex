@@ -1,28 +1,11 @@
-captcha = fn (array_of_numbers) ->
+captcha = fn (array_of_numbers, calc_index) ->
   size = Enum.count(array_of_numbers)
 
   array_of_numbers
   |> Enum.with_index
   |> Enum.reduce(0, fn ({num, index}, acc) ->
 
-    next_index = rem(index+1, size)
-    next       = Enum.at(array_of_numbers, next_index)
-
-    case num == next do
-      true  -> acc + num
-      false -> acc
-    end
-  end)
-end
-
-captcha2 = fn (array_of_numbers) ->
-  size = Enum.count(array_of_numbers)
-
-  array_of_numbers
-  |> Enum.with_index
-  |> Enum.reduce(0, fn ({num, index}, acc) ->
-
-    next_index = rem(index+(div(size,2)), size)
+    next_index = calc_index.(index, size)
     next       = Enum.at(array_of_numbers, next_index)
 
     case num == next do
@@ -41,5 +24,9 @@ numbers =
   |> String.split("", [trim: true ])
   |> Enum.map(fn(x) -> String.to_integer(x) end)
 
-IO.puts captcha.(numbers)
-IO.puts captcha2.(numbers)
+IO.puts "Part 1: #{captcha.(numbers, fn (index, size) ->
+  rem(index+1, size)
+end)}"
+IO.puts "Part 2: #{captcha.(numbers, fn (index, size) ->
+  rem(index+(div(size,2)), size)
+end)}"
