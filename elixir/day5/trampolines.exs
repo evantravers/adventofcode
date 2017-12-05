@@ -1,9 +1,5 @@
 defmodule Advent2017 do
-  def trampoline(list) do
-    trampoline(list, 0, 0)
-  end
-
-  def trampoline(list, index, jumps) do
+  def trampoline(list, index, jumps, inc) do
     cond do
       index < 0 ->
         jumps
@@ -14,57 +10,27 @@ defmodule Advent2017 do
         offset = index + value
 
         list
-        |> put_elem(index, value+1)
-        |> trampoline(offset, jumps+1)
+        |> put_elem(index, inc.(value))
+        |> trampoline(offset, jumps+1, inc)
     end
   end
 
-  def stranger(list, index, jumps) do
-    # list
-    # |> Tuple.to_list
-    # |> Enum.with_index
-    # |> Enum.map(fn ({item, i}) -> 
-    #   IO.binwrite if i == index, do: "_", else: " "
-    #   IO.binwrite Integer.to_string(item)
-    #   IO.binwrite if i == index, do: "_", else: " "
-    # end)
-    # IO.puts "\n"
+  def run(inc) do
+    {:ok, file} = File.read("input.txt")
 
-    cond do
-      index < 0 ->
-        jumps
-      index >= tuple_size(list) ->
-        jumps
-      true ->
-        value  = elem(list, index)
-        offset = index + value
-        inc =
-          if value >= 3, do: -1, else: 1
-
-        list
-        |> put_elem(index, value+inc)
-        |> stranger(offset, jumps+1)
-    end
+    file
+    |> String.split("\n", [trim: true])
+    |> Enum.map(&(String.to_integer(&1)))
+    |> List.to_tuple
+    |> trampoline(0, 0, inc)
   end
 
   def part1 do
-    {:ok, file} = File.read("input.txt")
-
-    file
-    |> String.split("\n", [trim: true])
-    |> Enum.map(&(String.to_integer(&1)))
-    |> List.to_tuple
-    |> trampoline
+    run(&(&1 + 1))
   end
 
   def part2 do
-    {:ok, file} = File.read("input.txt")
-
-    file
-    |> String.split("\n", [trim: true])
-    |> Enum.map(&(String.to_integer(&1)))
-    |> List.to_tuple
-    |> stranger(0, 0)
+    run(&(if &1 >= 3, do: &1 - 1, else: &1 + 1))
   end
 end
 
