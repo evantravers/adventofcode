@@ -7,14 +7,14 @@ defmodule Advent2017 do
     cond do
       index < 0 ->
         jumps
-      is_nil(Enum.at(list, index)) ->
+      index >= tuple_size(list) ->
         jumps
       true ->
-        value  = Enum.at(list, index)
+        value  = elem(list, index)
         offset = index + value
 
         list
-        |> List.replace_at(index, value+1)
+        |> put_elem(index, value+1)
         |> trampoline(offset, jumps+1)
     end
   end
@@ -25,6 +25,7 @@ defmodule Advent2017 do
     file
     |> String.split("\n", [trim: true])
     |> Enum.map(&(String.to_integer(&1)))
+    |> List.to_tuple
     |> trampoline
   end
 end
