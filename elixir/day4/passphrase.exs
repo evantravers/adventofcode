@@ -1,7 +1,5 @@
 defmodule Advent2017 do
-  def day4a(line) do
-    String.split(line, " ", [trim: true])
-  end
+  def day4a(line), do: String.split(line, " ", [trim: true])
 
   def day4b(line) do
     line
