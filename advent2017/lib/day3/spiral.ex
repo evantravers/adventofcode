@@ -1,4 +1,4 @@
-defmodule Advent2017 do
+defmodule Advent2017.Day3 do
   @doc """
   Notes:
   - I think interval increases by 1 every two iterations: 1, 2, 2, 3, 3...
@@ -123,7 +123,7 @@ defmodule Advent2017 do
              timetogrow)
     end
   end
-end
 
-IO.puts "Part 1: #{Advent2017.p1(265149)}"
-IO.puts "Part 2: #{Advent2017.p2(265149)}"
+  def p1, do: p1(265149)
+  def p2, do: p2(265149)
+end

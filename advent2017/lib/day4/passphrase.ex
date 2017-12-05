@@ -1,4 +1,4 @@
-defmodule Advent2017 do
+defmodule Advent2017.Day4 do
   def day4a(line), do: String.split(line, " ", [trim: true])
 
   def day4b(line) do
@@ -8,7 +8,7 @@ defmodule Advent2017 do
   end
 
   def passphrase(func) do
-    {:ok, file} = File.read("input.txt")
+    {:ok, file} = File.read("./lib/day4/input.txt")
 
     file
     |> String.split("\n", [trim: true])
@@ -17,10 +17,6 @@ defmodule Advent2017 do
     |> Enum.count
   end
 
-  def run do
-    IO.puts "Part 1: #{passphrase(&day4a/1)}"
-    IO.puts "Part 2: #{passphrase(&day4b/1)}"
-  end
+  def p1, do: passphrase(&day4a/1)
+  def p2, do: passphrase(&day4b/1)
 end
-
-Advent2017.run

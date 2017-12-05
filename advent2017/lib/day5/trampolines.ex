@@ -1,4 +1,4 @@
-defmodule Advent2017 do
+defmodule Advent2017.Day5 do
   def trampoline(list, index, jumps, inc) do
     cond do
       index < 0 ->
@@ -16,7 +16,7 @@ defmodule Advent2017 do
   end
 
   def run(inc) do
-    {:ok, file} = File.read("input.txt")
+    {:ok, file} = File.read("./lib/day5/input.txt")
 
     file
     |> String.split("\n", [trim: true])
@@ -25,14 +25,11 @@ defmodule Advent2017 do
     |> trampoline(0, 0, inc)
   end
 
-  def part1 do
+  def p1 do
     run(&(&1 + 1))
   end
 
-  def part2 do
+  def p2 do
     run(&(if &1 >= 3, do: &1 - 1, else: &1 + 1))
   end
 end
-
-IO.puts "Part 1: #{Advent2017.part1()}"
-IO.puts "Part 2: #{Advent2017.part2()}"
