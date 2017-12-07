@@ -12,7 +12,8 @@ defmodule Advent2017 do
       Advent2017.Day2,
       Advent2017.Day3,
       Advent2017.Day4,
-      Advent2017.Day5
+      Advent2017.Day5,
+      Advent2017.Day6
     ]
     |> Enum.map(fn(day) -> 
       IO.puts "Part 1: #{day.p1()}"
