@@ -69,17 +69,17 @@ defmodule Advent2017.Day6 do
       5
   """
   def balance(configuration) do
-    balance(configuration, [])
+    balance(configuration, MapSet.new)
   end
 
   def balance(configuration, visited) do
     cond do
-      Enum.find(visited, fn(x) -> x == configuration end) ->
+      MapSet.member?(visited, configuration) ->
         Enum.count(visited)
       true ->
         configuration
         |> cycle
-        |> balance([configuration] ++ visited)
+        |> balance(MapSet.put(visited, configuration))
     end
   end
 
