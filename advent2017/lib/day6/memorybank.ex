@@ -42,9 +42,7 @@ defmodule Advent2017.Day6 do
       iex> Advent2017.Day6.rotate_to([1,2,3], 0)
       [1, 2, 3]
   """
-  def rotate_to(list, 0) do
-    list
-  end
+  def rotate_to(list, 0), do: list
 
   def rotate_to(list, index) do
     Enum.slice(list, index..-1) ++ Enum.slice(list, 0..index-1)
@@ -58,9 +56,31 @@ defmodule Advent2017.Day6 do
   end
 
   def largest_bank(list) do
+    # because the list is of tuples where I'm tracking their original location
+    # I have to have a custom sort. I probably would have done better to have
+    # some other structure. :(
     list
     |> Enum.sort(fn({v1, i1}, {v2, i2}) -> i1 <= i2 && v1 >= v2 end)
     |> List.first
+  end
+
+  @doc ~S"""
+      iex> Advent2017.Day6.balance([0, 2, 7, 0])
+      5
+  """
+  def balance(configuration) do
+    balance(configuration, [])
+  end
+
+  def balance(configuration, visited) do
+    cond do
+      Enum.find(visited, fn(x) -> x == configuration end) ->
+        Enum.count(visited)
+      true ->
+        configuration
+        |> cycle
+        |> balance([configuration] ++ visited)
+    end
   end
 
   def load_file do
@@ -71,25 +91,6 @@ defmodule Advent2017.Day6 do
     |> Enum.map(&(String.to_integer(String.trim(&1))))
   end
 
-  def balance(banks) do
-    balance(banks, [])
-  end
-
-  def balance(state, visited) do
-    cond do
-      Enum.find(visited, fn(x) -> x == state end) ->
-        Enum.count(visited)
-      true ->
-        state
-        |> cycle
-        |> balance([state] ++ visited)
-    end
-  end
-
-  @doc ~S"""
-      iex> Advent2017.Day6.balance([0, 2, 7, 0])
-      5
-  """
   def p1 do
     banks = load_file()
 
