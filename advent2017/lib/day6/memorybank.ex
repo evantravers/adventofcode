@@ -96,4 +96,6 @@ defmodule Advent2017.Day6 do
 
     balance(banks)
   end
+
+  def p2, do: "nil"
 end
