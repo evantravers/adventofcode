@@ -2,8 +2,8 @@ defmodule Advent2017.Day7 do
   defmodule Disc do
     defstruct name: "",
               weight: 0,
-              missing_children: MapSet.new,
-              children: MapSet.new
+              missing_children: [],
+              children: []
 
     defp w(weight) do
       weight
@@ -14,7 +14,6 @@ defmodule Advent2017.Day7 do
     defp c(children) do
       children
       |> String.split(", ", [trim: true])
-      |> MapSet.new
     end
 
     def new([name_and_weight]) do
@@ -26,26 +25,15 @@ defmodule Advent2017.Day7 do
       [name, weight] = String.split(name_and_weight, " ")
       %Disc{name: name, weight: w(weight), missing_children: c(children)}
     end
-
-    def add_child(parent, child) do
-      parent
-    end
   end
 
-  def build_tower([child | remaining_nodes]) do
-    # I have a list of nodes that haven't been placed yet.
-    # child
-    #   if List.empty(remaining_nodes)
-    #   check to see if it belongs in remaining_nodes
-    parent =
-      Enum.find(remaining_nodes, &(MapSet.member?(&1.missing_children, child)))
+  def build_tower(root) when length(root) == 0, do: root
 
-    cond do
-      Enum.empty? remaining_nodes -> # win condition
-        MapSet.new([child])
-      parent ->
-        parent = Disc.add_child(parent, child)
-    end
+  def build_tower([orphan | remaining_nodes]) do
+    # I have a list of nodes that haven't been placed yet.
+    # for each element
+    #   look through the tree, make sure there's not a parent waiting for it.
+    #     if all elements come up nil, it's the root, I could stop there.
   end
 
   def load_file_into_nodes(file_name) do
