@@ -55,6 +55,12 @@ defmodule Advent2017.Day6 do
     |> elem(0)
   end
 
+  @doc ~S"""
+      iex> Advent2017.Day6.largest_bank([{1,1}, {2,0}])
+      {2,0}
+      iex> Advent2017.Day6.largest_bank([{2,0}, {1,1}])
+      {2,0}
+  """
   def largest_bank(list) do
     # because the list is of tuples where I'm tracking their original location
     # I have to have a custom sort. I probably would have done better to have
