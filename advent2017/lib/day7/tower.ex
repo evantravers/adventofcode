@@ -25,15 +25,28 @@ defmodule Advent2017.Day7 do
       [name, weight] = String.split(name_and_weight, " ")
       %Disc{name: name, weight: w(weight), missing_children: c(children)}
     end
+
+    def add_child(disc, child) do
+      wishlist = Enum.reject(disc.missing_children, &(&1 == child.name))
+      %{disc | missing_children: wishlist, children: [child | disc.children]}
+    end
   end
 
-  def build_tower(root) when length(root) == 0, do: root
-
+  def build_tower(root) when length(root) == 1, do: root # win condition
   def build_tower([orphan | remaining_nodes]) do
     # I have a list of nodes that haven't been placed yet.
     # for each element
     #   look through the tree, make sure there's not a parent waiting for it.
     #     if all elements come up nil, it's the root, I could stop there.
+    remaining_nodes
+    |> Enum.map(fn(possible) ->
+      cond do
+        Enum.any?(possible.missing_children == orphan.name) ->
+          Disc.add_child(possible, orphan)
+        true -> # next
+          build_tower([remaining_nodes ++ [orphan]])
+      end
+    end)
   end
 
   def load_file_into_nodes(file_name) do
