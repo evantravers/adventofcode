@@ -26,7 +26,7 @@ defmodule Advent2017.Day7 do
       %Disc{name: name, weight: w(weight), missing_children: c(children)}
     end
 
-    def add_child(disc, child) do
+    def find_child(disc, child) do
       wishlist = Enum.reject(disc.missing_children, &(&1 == child.name))
       %{disc | missing_children: wishlist, children: [child | disc.children]}
     end
@@ -41,9 +41,10 @@ defmodule Advent2017.Day7 do
     remaining_nodes
     |> Enum.map(fn(possible) ->
       cond do
-        Enum.any?(possible.missing_children == orphan.name) ->
-          Disc.add_child(possible, orphan)
-        true -> # next
+        # if a match exists
+        #   make a new copy of remaining nodes w/ the updated find_child()
+        #   call build_tower on remaining_nodes
+        true -> # next, put it to the end of the list and keep on
           build_tower([remaining_nodes ++ [orphan]])
       end
     end)
@@ -62,7 +63,6 @@ defmodule Advent2017.Day7 do
     load_file_into_nodes("test.txt")
     |> build_tower
     |> List.first
-    |> Map.fetch(:name)
   end
 
   def p2, do: nil
