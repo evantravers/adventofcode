@@ -26,7 +26,7 @@ defmodule Advent2017.Day7 do
       %Disc{name: name, weight: w(weight), missing_children: c(children)}
     end
 
-    def find_child(disc, child) do
+    def add_child(disc, child) do
       wishlist = Enum.reject(disc.missing_children, &(&1 == child.name))
       %{disc | missing_children: wishlist, children: [child | disc.children]}
     end
@@ -34,20 +34,28 @@ defmodule Advent2017.Day7 do
 
   def build_tower(root) when length(root) == 1, do: root # win condition
   def build_tower([orphan | remaining_nodes]) do
-    # I have a list of nodes that haven't been placed yet.
-    # for each element
-    #   look through the tree, make sure there's not a parent waiting for it.
-    #     if all elements come up nil, it's the root, I could stop there.
-    remaining_nodes
-    |> Enum.map(fn(possible) ->
-      cond do
-        # if a match exists
-        #   make a new copy of remaining nodes w/ the updated find_child()
-        #   call build_tower on remaining_nodes
-        true -> # next, put it to the end of the list and keep on
-          build_tower([remaining_nodes ++ [orphan]])
-      end
-    end)
+    # search remaining for this orphan's parent
+    parent = search(orphan.name, remaining_nodes)
+
+    cond do
+      !is_nil(parent) ->
+        new_parent = Disc.add_child(parent, orphan)
+        build_tower([new_parent | List.delete(remaining_nodes, parent)])
+      true ->
+        build_tower([remaining_nodes ++ [orphan]])
+    end
+  end
+
+  @spec search(charlist, list) :: Disc
+  def search(_, []), do: nil
+  def search(target, [h|t]) do
+    cond do
+      Enum.any?(h.missing_children, &(target == &1)) ->
+        h
+      true ->
+        search(target, h.children)
+        search(target, t)
+    end
   end
 
   def load_file_into_nodes(file_name) do
@@ -62,7 +70,6 @@ defmodule Advent2017.Day7 do
   def p1 do
     load_file_into_nodes("test.txt")
     |> build_tower
-    |> List.first
   end
 
   def p2, do: nil
