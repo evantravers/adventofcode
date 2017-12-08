@@ -60,6 +60,10 @@ defmodule Advent2017.Day6 do
       {2,0}
       iex> Advent2017.Day6.largest_bank([{2,0}, {1,1}])
       {2,0}
+      iex> Advent2017.Day6.largest_bank([{2,0}, {2, 1}, {1,2}])
+      {2,0}
+      iex> Advent2017.Day6.largest_bank([{1, 5}, {5, 0}, {2, 3}, {5, 1}])
+      {5, 0}
   """
   def largest_bank(list) do
     # because the list is of tuples where I'm tracking their original location
@@ -74,11 +78,7 @@ defmodule Advent2017.Day6 do
       iex> Advent2017.Day6.balance([0, 2, 7, 0])
       5
   """
-  def balance(configuration) do
-    balance(configuration, MapSet.new)
-  end
-
-  def balance(configuration, visited) do
+  def balance(configuration, visited \\ MapSet.new) do
     cond do
       MapSet.member?(visited, configuration) ->
         Enum.count(visited)
@@ -90,7 +90,7 @@ defmodule Advent2017.Day6 do
   end
 
   def load_file do
-    {:ok, file} = File.read("lib/day6/input.txt")
+    {:ok, file} = File.read("lib/day6/test.txt")
 
     file
     |> String.split("\t", [trim: true])
@@ -98,9 +98,8 @@ defmodule Advent2017.Day6 do
   end
 
   def p1 do
-    banks = load_file()
-
-    balance(banks)
+    load_file()
+    |> balance
   end
 
   def p2, do: "nil"
