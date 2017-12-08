@@ -91,16 +91,17 @@ defmodule Advent2017.Day6 do
 
   @doc ~S"""
       iex> Advent2017.Day6.balance([0, 2, 7, 0])
-      5
+      %{cycles: 5, distance: 4}
   """
-  def balance(configuration, visited \\ MapSet.new) do
+  def balance(configuration, visited \\ []) do
     cond do
-      MapSet.member?(visited, configuration) ->
-        Enum.count(visited)
+      Enum.any?(visited, &(configuration==&1)) ->
+        %{cycles: Enum.count(visited),
+          distance: Enum.count(visited) - Enum.find_index(visited, &(configuration==&1))}
       true ->
         configuration
         |> cycle
-        |> balance(MapSet.put(visited, configuration))
+        |> balance(visited ++ [configuration])
     end
   end
 
@@ -113,9 +114,18 @@ defmodule Advent2017.Day6 do
   end
 
   def p1 do
-    load_file()
-    |> balance
+    {:ok, answer} =
+      load_file()
+      |> balance
+      |> Map.fetch(:cycles)
+    answer
   end
 
-  def p2, do: "nil"
+  def p2 do
+    {:ok, answer} =
+      load_file()
+      |> balance
+      |> Map.fetch(:distance)
+    answer
+  end
 end
