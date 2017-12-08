@@ -77,13 +77,15 @@ defmodule Advent2017.Day6 do
       {2,0}
       iex> Advent2017.Day6.largest_bank([{1, 5}, {5, 0}, {2, 3}, {5, 1}])
       {5,0}
+      iex> Advent2017.Day6.largest_bank([{1, 5}, {0, 4}, {5, 0}, {6, 2}, {2, 3}, {5, 1}])
+      {6, 2}
   """
   def largest_bank(list) do
     # because the list is of tuples where I'm tracking their original location
     # I have to have a custom sort. I probably would have done better to have
     # some other structure. :(
     list
-    |> Enum.sort(fn({v1, i1}, {v2, i2}) -> i1 <= i2 && v1 >= v2 end)
+    |> Enum.sort(fn({v1, _}, {v2, _}) -> v1 >= v2 end)
     |> List.first
   end
 
