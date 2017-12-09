@@ -34,28 +34,31 @@ defmodule Advent2017.Day7 do
 
   def build_tower(root) when length(root) == 1, do: root # win condition
   def build_tower([orphan | remaining_nodes]) do
-    # search remaining for this orphan's parent
-    parent = search(orphan.name, remaining_nodes)
+    # search_for_parent remaining for this orphan's parent
+    parent = search_for_parent(orphan.name, remaining_nodes)
 
     cond do
       !is_nil(parent) ->
         new_parent = Disc.add_child(parent, orphan)
         build_tower([new_parent | List.delete(remaining_nodes, parent)])
       true ->
-        build_tower([remaining_nodes ++ [orphan]])
+        build_tower(remaining_nodes ++ [orphan])
     end
   end
 
-  @spec search(charlist, list) :: Disc
-  def search(_, []), do: nil
-  def search(target, [h|t]) do
-    cond do
-      Enum.any?(h.missing_children, &(target == &1)) ->
-        h
-      true ->
-        search(target, h.children)
-        search(target, t)
-    end
+  @spec search_for_parent(charlist, list) :: Disc
+  def search_for_parent(childname, []), do: {:cont, childname}
+  def search_for_parent(childname, [h|t]) do
+    t
+    |> Enum.reduce_while(h, fn(possible, childname) ->
+      cond do
+        Enum.any?(possible.missing_children, &(&1 == childname)) ->
+          {:halt, possible}
+        true ->
+          search_for_parent(childname, possible.children)
+          {:cont, childname}
+      end
+    end)
   end
 
   def load_file_into_nodes(file_name) do
