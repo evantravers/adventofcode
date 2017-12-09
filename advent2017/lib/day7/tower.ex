@@ -27,38 +27,39 @@ defmodule Advent2017.Day7 do
     end
 
     def add_child(disc, child) do
-      wishlist = Enum.reject(disc.missing_children, &(&1 == child.name))
-      %{disc | missing_children: wishlist, children: [child | disc.children]}
+      %{disc |
+        missing_children: Enum.reject(disc.missing_children,
+                                      &(&1 == child.name)),
+        children: [child | disc.children]}
     end
   end
 
-  def build_tower(root) when length(root) == 1, do: root # win condition
-  def build_tower([orphan | remaining_nodes]) do
-    # search_for_parent remaining for this orphan's parent
-    parent = search_for_parent(orphan.name, remaining_nodes)
-
-    cond do
-      !is_nil(parent) ->
-        new_parent = Disc.add_child(parent, orphan)
-        build_tower([new_parent | List.delete(remaining_nodes, parent)])
-      true ->
-        build_tower(remaining_nodes ++ [orphan])
-    end
-  end
-
-  @spec search_for_parent(charlist, list) :: Disc
-  def search_for_parent(childname, []), do: {:cont, childname}
-  def search_for_parent(childname, [h|t]) do
-    t
-    |> Enum.reduce_while(h, fn(possible, childname) ->
-      cond do
-        Enum.any?(possible.missing_children, &(&1 == childname)) ->
-          {:halt, possible}
-        true ->
-          search_for_parent(childname, possible.children)
-          {:cont, childname}
+  @doc """
+  find a root node w/ missing_children
+  if nothing, recurse on children
+  """
+  def find_parent([], orphan), do: orphan
+  def find_parent(tree, orphan) do
+    Enum.reduce(tree, fn (possible_parent, tower) ->
+      if Enum.any?(possible_parent.missing_children, orphan.name) do
+        Disc.add_child(possible_parent, orphan)
+      else
+        %{possible_parent | children: find_parent(possible_parent.children, orphan)}
       end
     end)
+  end
+
+  @doc """
+  For each n, we need to find it's proper place in the tower, which is the acc
+  here. We should check tower for a missing_children slot matching n, place it.
+  """
+  def build_tower(tree) when length(tree) == 1, do: tree
+  def build_tower(tree) do
+    Enum.reduce(tree, [], fn(orphan, tower) ->
+      tower
+      |> find_parent(orphan)
+    end)
+    |> build_tower # repeat until we only have one root node
   end
 
   def load_file_into_nodes(file_name) do
@@ -68,6 +69,7 @@ defmodule Advent2017.Day7 do
     |> String.split("\n", [trim: true])
     |> Enum.map(&(String.split(&1, " -> ", [trim: true])))
     |> Enum.map(&(Disc.new &1))
+    |> Enum.sort # this orders the leaf nodes first in the list
   end
 
   def p1 do
