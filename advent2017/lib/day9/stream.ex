@@ -1,6 +1,6 @@
 defmodule Advent2017.Day9 do
   @doc ~S"""
-  `process` needs to go char by char, and fire off recursive functions based on
+  `expression` needs to go char by char, and fire off recursive functions based on
   the character.
 
   - "<" starts a garbage string, which listens for the very next ">" character,
@@ -26,15 +26,61 @@ defmodule Advent2017.Day9 do
     iex> Advent2017.Day9.process("{{<a!>},{<a!>},{<a!>},{<ab>}}")
     3
   """
-  def process([char|input]) do
+  def process(str) do
+    str
+    |> String.graphemes
+    |> group(%{score: 0, level: 0})
+    |> Map.get(:score)
+  end
+
+  def inc(map, key) do
+    {_, new_map} =
+      Map.get_and_update!(map, key, fn(val) -> {val, val + 1} end)
+    new_map
+  end
+
+  def dec(map, key) do
+    {_, new_map} =
+      Map.get_and_update!(map, key, fn(val) -> {val, val - 1} end)
+    new_map
+  end
+
+  def add_score(map) do
+    {_, new_map} =
+      Map.get_and_update!(map, :score, fn(score) -> {score, score + map.level} end)
+    new_map
+  end
+
+  def group([], state), do: state
+  def group([char|input], state) do
     # by character
-    cond do
-      "!" ->
-        process(input, state)
+    case char do
       "{" ->
+        group(input, inc(state, :level))
+      "," ->
         group(input, state)
+      "}" ->
+        group(input, dec(add_score(state), :level))
       "<" ->
         garbage(input, state)
     end
+  end
+
+  def garbage([char|input], state) do
+    case char do
+      "!" ->
+        garbage(tl(input), state) # skip a letter
+      ">" ->
+        group(input, state)
+      _ ->
+        garbage(input, state) # skip random crap
+    end
+  end
+
+  def p1 do
+    {:ok, file} = File.read("./lib/day9/input.txt")
+    file
+    |> String.trim
+    |> process
   end
 end
