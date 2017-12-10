@@ -8,9 +8,7 @@ defmodule Advent2017.Day8 do
 
     file
     |> String.split("\n", [trim: true])
-    |> Enum.map(fn line ->
-      Regex.named_captures(@command_pattern, line)
-    end)
+    |> Enum.map(fn line -> Regex.named_captures(@command_pattern, line) end)
     |> Enum.map(fn(command) ->
       command
       |> Map.update!("value",  &(String.to_integer(&1)))
