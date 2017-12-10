@@ -8,10 +8,13 @@ defmodule Advent2017.Day10 do
 
       iex> Enum.to_list(0..4)
       ...> |> Advent2017.Day10.knot([3, 4, 1, 5])
+      ...> |> elem(1)
       [3, 4, 2, 1, 0]
   """
   def knot(list, current_position \\ 0, skip_size \\ 0, lengths) # defaults
-  def knot(list, _, _, []), do: list
+  def knot(list, current_position, skip_size, []) do
+    {{current_position, skip_size}, list}
+  end
   def knot(list, current_position, skip_size, [l|next_length]) do
     list
     |> rotate(rem(current_position, length(list)))
@@ -36,7 +39,11 @@ defmodule Advent2017.Day10 do
       |> String.split(",", [trim: true])
       |> Enum.map(&(String.to_integer(&1)))
 
-    result = knot(Enum.to_list(0..255), lengths)
-    Enum.at(result, 0) * Enum.at(result, 1)
+    {_, resulting_list} = knot(Enum.to_list(0..255), lengths)
+    Enum.at(resulting_list, 0) * Enum.at(resulting_list, 1)
+  end
+
+  def p2 do
+    # {:ok, file} = File.read("./lib/day10/input.txt")
   end
 end
