@@ -9,21 +9,21 @@ defmodule Advent2017.Day9 do
   - "{" starts a group, which listens for the next "}" to close it. Each level
     gets score+1.
 
-    iex> Advent2017.Day9.process("{}")
+    iex> Advent2017.Day9.process("{}")[:score]
     1
-    iex> Advent2017.Day9.process("{{{}}}")
+    iex> Advent2017.Day9.process("{{{}}}")[:score]
     6
-    iex> Advent2017.Day9.process("{{},{}}")
+    iex> Advent2017.Day9.process("{{},{}}")[:score]
     5
-    iex> Advent2017.Day9.process("{{{},{},{{}}}}")
+    iex> Advent2017.Day9.process("{{{},{},{{}}}}")[:score]
     16
-    iex> Advent2017.Day9.process("{<a>,<a>,<a>,<a>}")
+    iex> Advent2017.Day9.process("{<a>,<a>,<a>,<a>}")[:score]
     1
-    iex> Advent2017.Day9.process("{{<ab>},{<ab>},{<ab>},{<ab>}}")
+    iex> Advent2017.Day9.process("{{<ab>},{<ab>},{<ab>},{<ab>}}")[:score]
     9
-    iex> Advent2017.Day9.process("{{<!!>},{<!!>},{<!!>},{<!!>}}")
+    iex> Advent2017.Day9.process("{{<!!>},{<!!>},{<!!>},{<!!>}}")[:score]
     9
-    iex> Advent2017.Day9.process("{{<a!>},{<a!>},{<a!>},{<ab>}}")
+    iex> Advent2017.Day9.process("{{<a!>},{<a!>},{<a!>},{<ab>}}")[:score]
     3
   """
   def process(str) do
