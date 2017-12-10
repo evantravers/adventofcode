@@ -18,19 +18,23 @@ defmodule Advent2017.Day8 do
     end)
   end
 
-  def run(instructions), do: run(instructions, %{})
-  def run([], state), do: state
-  def run([i|next], state) do
-    target = get_register(state, i["target"])
+  def run(instructions), do: run(instructions, [%{}])
+  def run([], history), do: history
+  def run([i|next], history) do
+    current = hd(history)
+
+    target = get_register(current, i["target"])
 
     {result, _} = Code.eval_string("#{target} #{i["condition"]} #{i["value"]}")
 
-    if result do
-      state =
-        Map.put(state, i["register"], change(i["direction"], get_register(state, i["register"]), i["amount"]))
+    cond do
+      result ->
+        future =
+          Map.put(current, i["register"], change(i["direction"], get_register(current, i["register"]), i["amount"]))
+        run(next, [future | history])
+      true ->
+        run(next, [current | history])
     end
-
-    run(next, state)
   end
 
   def change("inc", num, amount), do: num + amount
@@ -50,6 +54,7 @@ defmodule Advent2017.Day8 do
   def p1 do
     load_instructions("input.txt")
     |> run
+    |> List.first
     |> Map.values
     |> Enum.max
   end
