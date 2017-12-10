@@ -8,8 +8,14 @@ defmodule Advent2017.Day7 do
     file
     |> String.split("\n", [trim: true])
     |> Enum.map(fn (pattern) ->
-      Regex.named_captures(disc, pattern)
-      |> Map.update("children", [], &(String.split(&1, ", ", [trim: true])))
+      for {key, val} <- Regex.named_captures(disc, pattern),
+      into: %{},
+      do: {String.to_atom(key), val}
+    end)
+    |> Enum.map(fn (pattern) ->
+      pattern
+      |> Map.update(:children, [], &(String.split(&1, ", ", [trim: true])))
+      |> Map.update(:weight, 0, &(String.to_integer(&1)))
     end)
     |> Enum.sort
   end
