@@ -61,5 +61,9 @@ defmodule Advent2017.Day8 do
 
   def p2 do
     load_instructions("input.txt")
+    |> run
+    |> Enum.map(&(Map.values(&1)))
+    |> Enum.map(&(Enum.max(&1, fn -> 0 end)))
+    |> Enum.max
   end
 end
