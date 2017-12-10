@@ -29,8 +29,7 @@ defmodule Advent2017.Day9 do
   def process(str) do
     str
     |> String.graphemes
-    |> group(%{score: 0, level: 0})
-    |> Map.get(:score)
+    |> group(%{score: 0, level: 0, garbage: 0})
   end
 
   def inc(map, key) do
@@ -73,14 +72,25 @@ defmodule Advent2017.Day9 do
       ">" ->
         group(input, state)
       _ ->
-        garbage(input, state) # skip random crap
+        garbage(input, inc(state, :garbage)) # count random crap
     end
   end
 
-  def p1 do
+  def load_file do
     {:ok, file} = File.read("./lib/day9/input.txt")
     file
     |> String.trim
+  end
+
+  def p1 do
+    load_file()
     |> process
+    |> Map.get(:score)
+  end
+
+  def p2 do
+    load_file()
+    |> process
+    |> Map.get(:garbage)
   end
 end
