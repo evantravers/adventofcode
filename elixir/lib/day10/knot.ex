@@ -35,7 +35,7 @@ defmodule Advent2017.Day10 do
 
     lengths =
       file
-      |> String.replace("\n", "")
+      |> String.trim
       |> String.split(",", [trim: true])
       |> Enum.map(&(String.to_integer(&1)))
 
