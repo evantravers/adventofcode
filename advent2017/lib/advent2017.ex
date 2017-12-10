@@ -24,3 +24,13 @@ defmodule Advent2017 do
     end)
   end
 end
+
+defmodule Mix.Tasks.RunDays do
+  use Mix.Task
+
+  @shortdoc "Simply runs all the problems from 2017"
+  def run(_) do
+    # calling our Hello.say() function from earlier
+    Advent2017.run
+  end
+end
