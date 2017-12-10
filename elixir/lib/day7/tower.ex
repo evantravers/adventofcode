@@ -14,16 +14,30 @@ defmodule Advent2017.Day7 do
     end)
     |> Enum.map(fn (pattern) ->
       pattern
-      |> Map.update(:children, [], &(String.split(&1, ", ", [trim: true])))
+      |> Map.update(:children, false, &(String.split(&1, ", ", [trim: true])))
       |> Map.update(:weight, 0, &(String.to_integer(&1)))
     end)
     |> Enum.sort
+    |> Enum.reverse # put the branches first
   end
 
-  # take from remaining, put into correct place in tree
   def build_tower(remaining), do: build_tower([], remaining)
-  def build_tower(tree, remaining) do
-    IO.inspect remaining
+  def build_tower(tree, []), do: tree
+  def build_tower(tree, [current|remaining]) do
+    cond do
+      current[:children] ->
+        # find the child, remove from remaining
+        matches = Enum.filter(remaining, fn child ->
+          Enum.find(current[:children], &(&1 == child[:name]))
+        end)
+        build_tower(
+          [ %{current|children: matches} | tree ],
+          remaining
+          |> Enum.reject(fn (found) -> Enum.any?(matches, &(&1 == found[:name])) end)
+        )
+      true ->
+        build_tower([current|tree], remaining)
+    end
   end
 
   def test do
