@@ -22,13 +22,11 @@ defmodule Advent2017.Day7 do
   end
 
   def build_tower(remaining), do: build_tower([], remaining)
-  def build_tower(tree, []), do: tree
-  def build_tower(tree, [current|remaining]) do
+  def build_tower(level, []), do: level # end state?
+  def build_tower(level, [current|remaining]) do
     {matches, remainder} = find_children(remaining, List.wrap(current[:children]))
-    build_tower(
-      [ %{current | children: build_tower(matches, remainder)} | tree ],
-      remainder
-    )
+
+    [ %{current | children: build_tower(matches, remainder)} | level ]
   end
 
   def find_children(remaining, list_of_names) do
