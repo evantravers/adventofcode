@@ -23,7 +23,7 @@ defmodule Advent2017.Day11 do
     steps
     |> String.trim
     |> String.split(",", [trim: true])
-    |> Enum.map(&(String.to_atom(&1)))
+    |> Enum.map(&String.to_atom &1)
     |> track([%{x: 0, y: 0, z: 0}])
   end
 
@@ -41,7 +41,7 @@ defmodule Advent2017.Day11 do
 
   def distance(state) do
     Map.values(state)
-    |> Enum.map(&abs(&1))
+    |> Enum.map(&abs &1)
     |> Enum.sum
     |> div(2)
   end
