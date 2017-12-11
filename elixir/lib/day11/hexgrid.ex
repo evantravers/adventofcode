@@ -1,3 +1,5 @@
+require IEx
+
 defmodule Advent2017.Day11 do
   @doc ~S"""
       iex> Advent2017.Day11.track("ne,ne,ne")
@@ -19,17 +21,31 @@ defmodule Advent2017.Day11 do
   end
   def track([], state), do: state
   def track([step|future], state) do
-    IO.inspect state
     track(future, %{state | step => state[step]+1})
   end
 
+  def eliminate_steps([d1, middle, d2]) do
+    diff = Enum.min([d1, d2])
+    {d1-diff, middle+diff, d2-diff}
+  end
+
   def distance(state) do
-    abs(state[:n] - state[:s]) + abs(state[:ne] - state[:sw]) + abs(state[:nw] - state[:se])
+    [n, ne, nw, s, se, sw] = Map.values(state)
+
+    # in a hexgrid, two steps in directions (seperated by one) direction == 1
+    {n, ne, se} = eliminate_steps([n, ne, se])
+    {ne, se, s} = eliminate_steps([ne, se, s])
+    {se, s, sw} = eliminate_steps([se, s, sw])
+    {s, sw, nw} = eliminate_steps([s, sw, nw])
+    {sw, nw, n} = eliminate_steps([sw, nw, n])
+    {nw, n, ne} = eliminate_steps([nw, n, ne])
+
+    # in a hexgrid, opposite directions cancel each other out
+    abs(n-s)+abs(ne-sw)+abs(nw-se)
   end
 
   def p1 do
     {:ok, file} = File.read("lib/day11/input.txt")
-
     file
     |> track
   end
