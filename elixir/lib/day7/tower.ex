@@ -24,20 +24,23 @@ defmodule Advent2017.Day7 do
   def build_tower(remaining), do: build_tower([], remaining)
   def build_tower(tree, []), do: tree
   def build_tower(tree, [current|remaining]) do
-    cond do
-      current[:children] ->
-        # find the child, remove from remaining
-        matches = Enum.filter(remaining, fn child ->
-          Enum.find(current[:children], &(&1 == child[:name]))
-        end)
-        build_tower(
-          [ %{current|children: matches} | tree ],
-          remaining
-          |> Enum.reject(fn (found) -> Enum.any?(matches, &(&1 == found[:name])) end)
-        )
-      true ->
-        build_tower([current|tree], remaining)
-    end
+    {matches, remainder} = find_children(remaining, List.wrap(current[:children]))
+    build_tower(
+      [ %{current | children: build_tower(matches, remainder)} | tree ],
+      remainder
+    )
+  end
+
+  def find_children(remaining, list_of_names) do
+    matches =
+      Enum.filter(remaining, fn child ->
+        Enum.find(list_of_names, &(&1 == child[:name]))
+      end)
+    {
+      matches,
+      remaining
+      |> Enum.reject(fn (child) -> Enum.any?(list_of_names, &(&1 == child[:name])) end)
+    }
   end
 
   def test do
@@ -47,6 +50,7 @@ defmodule Advent2017.Day7 do
 
   def p1 do
     read_input("input.txt")
+    |> build_tower
   end
 
   def p2, do: nil
