@@ -27,17 +27,17 @@ defmodule Advent2017.Day11 do
     |> track([%{x: 0, y: 0, z: 0}])
   end
 
+  def track([], states), do: states
+  def track([dir|future], states) do
+    track(future, [step(dir, hd(states))|states])
+  end
+
   def step(:n,  c), do: %{c | y: c[:y]+1, z: c[:z]-1}
   def step(:ne, c), do: %{c | x: c[:x]+1, z: c[:z]-1}
   def step(:se, c), do: %{c | x: c[:x]+1, y: c[:y]-1}
   def step(:s,  c), do: %{c | z: c[:z]+1, y: c[:y]-1}
   def step(:sw, c), do: %{c | z: c[:z]+1, x: c[:x]-1}
   def step(:nw, c), do: %{c | y: c[:y]+1, x: c[:x]-1}
-
-  def track([], states), do: states
-  def track([dir|future], states) do
-    track(future, [step(dir, hd(states))|states])
-  end
 
   def distance(state) do
     Map.values(state)
