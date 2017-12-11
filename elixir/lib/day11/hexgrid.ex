@@ -49,4 +49,6 @@ defmodule Advent2017.Day11 do
     file
     |> track
   end
+
+  def p2, do: nil
 end
