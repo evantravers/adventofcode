@@ -17,6 +17,12 @@ defmodule Advent2017.Day12 do
     end)
   end
 
+  @doc """
+  Takes a set of nodes. On being run, it instantiates an empty list for todo
+  and an empty set for visited nodes. It finds the node that matches todo and
+  adds all it's unvisited pipe-nodes to todo, the current node to visited, and
+  runs itself on the new lists.
+  """
   def build_graph(nodes, todos \\ [0], visited \\ MapSet.new)
   def build_graph(nodes, [], visited), do: visited # win condition
   def build_graph(nodes, [todo|todos], visited) do
