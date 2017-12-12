@@ -24,7 +24,7 @@ defmodule Advent2017.Day12 do
   runs itself on the new lists.
   """
   def build_graph(nodes, todos \\ [0], visited \\ MapSet.new)
-  def build_graph(nodes, [], visited), do: visited # win condition
+  def build_graph(_, [], visited), do: visited # win condition
   def build_graph(nodes, [todo|todos], visited) do
     unvisited =
       Enum.find(nodes, & todo == &1[:name])
@@ -33,6 +33,21 @@ defmodule Advent2017.Day12 do
       |> MapSet.to_list
 
     build_graph(nodes, todos ++ unvisited, MapSet.put(visited, todo))
+  end
+
+  @doc """
+  Run `build_graph/3` on the head node. It will return a MapSet group of
+  connected nodes. Remove those nodes from nodes, repeat and count.
+  """
+  def find_groups(nodes, count \\ 0)
+  def find_groups([], count), do: count
+  def find_groups(nodes, count) do
+    start = hd(nodes)[:name]
+    group = build_graph(nodes, [start])
+
+    nodes
+    |> Enum.reject(fn (item) -> MapSet.member?(group, item[:name]) end)
+    |> find_groups(count+1)
   end
 
   def test do
@@ -45,5 +60,10 @@ defmodule Advent2017.Day12 do
     load_nodes("input.txt")
     |> build_graph
     |> MapSet.size
+  end
+
+  def p2 do
+    load_nodes("input.txt")
+    |> find_groups
   end
 end
