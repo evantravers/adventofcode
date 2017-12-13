@@ -32,31 +32,33 @@ defmodule Advent2017.Day13 do
   def load_config(filename) do
     {:ok, file} = File.read("lib/day13/#{filename}")
 
-    input =
-      Regex.scan(~r/\d+/, file)
-      |> List.flatten
-      |> Enum.map(&String.to_integer &1)
-      |> Enum.chunk_every(2)
-      |> Enum.map(&List.to_tuple &1)
-      |> Enum.into(%{})
+    Regex.scan(~r/\d+/, file)
+    |> List.flatten
+    |> Enum.map(&String.to_integer &1)
+    |> Enum.chunk_every(2)
+    |> Enum.map(&List.to_tuple &1)
+    |> Enum.into(%{})
   end
 
-  def step(firewalls, depth \\ 0, delay \\ 0, score \\ 0) do
+  def step(firewalls, delay \\ 0, depth \\ 0, score \\ 0) do
     cond do
       Enum.count(firewalls) == 0 ->
         score
       true ->
         {range, firewalls} = Map.pop(firewalls, depth)
 
-        fault = 0
-
-        if !is_nil range do
-          if firewall_active?(depth+delay, range) do
-            fault = depth*range
+        fault =
+          if !is_nil range do
+            if firewall_active?(depth+delay, range) do
+              depth*range
+            else
+              0
+            end
+          else
+            0
           end
-        end
 
-        step(firewalls, depth+1, delay, score+fault)
+        step(firewalls, delay, depth+1, score+fault)
     end
   end
 
@@ -68,6 +70,22 @@ defmodule Advent2017.Day13 do
   def p1 do
     load_config("input.txt")
     |> step
+  end
+
+  @doc ~S"""
+      iex> Advent2017.Day13.load_config("test.txt")
+      ...> |> Advent2017.Day13.p2(0)
+      10
+  """
+  def p2 do
+    load_config("input.txt")
+    |> p2(0)
+  end
+  def p2(firewalls, delay) do
+    case step(firewalls, delay) do
+      0 -> delay
+      _ -> p2(firewalls, delay+1)
+    end
   end
 end
 
