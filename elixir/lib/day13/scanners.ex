@@ -58,8 +58,7 @@ defmodule Advent2017.Day13 do
 
   def step(firewalls, delay \\ 0, depth \\ 0) do
     cond do
-      Enum.count(firewalls) == 0 ->
-        true
+      Enum.count(firewalls) == 0 -> true
       true ->
         {range, firewalls} = Map.pop(firewalls, depth)
 
@@ -72,8 +71,7 @@ defmodule Advent2017.Day13 do
 
   def step_with_score(firewalls, delay \\ 0, depth \\ 0, score \\ 0) do
     cond do
-      Enum.count(firewalls) == 0 ->
-        score
+      Enum.count(firewalls) == 0 -> score
       true ->
         {range, firewalls} = Map.pop(firewalls, depth)
 
