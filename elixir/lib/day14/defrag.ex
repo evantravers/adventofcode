@@ -43,14 +43,15 @@ defmodule Advent2017.Day14 do
   @spec contiguous(Map, List, MapSet) :: MapSet
   def contiguous(grid, coords, group \\ MapSet.new) do
     case get_in(grid, coords) do
-      nil -> false
-        0 -> false
+      nil -> group
+        0 -> group
         1 ->
-          Enum.map(adjacent(coords), fn adj ->
-            unless MapSet.member?(group, adj) do
-              contiguous(grid, adj, MapSet.put(group, coords))
-            end
+          adjacent(coords)
+          |> Enum.reject(&MapSet.member?(group, &1))
+          |> Enum.map(fn adj ->
+            contiguous(grid, adj, MapSet.put(group, coords))
           end)
+          |> Enum.reduce(fn set1, set2 -> MapSet.union(set1, set2) end)
     end
   end
 
