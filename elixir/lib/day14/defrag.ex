@@ -16,6 +16,20 @@ defmodule Advent2017.Day14 do
     end)
   end
 
+  @doc """
+  Transforms a "grid" of nested lists into a "grid" of nested maps.
+
+  You can then use `get_in/2` and 'update_in/3` to access the grid in the form:
+  `get_in(grid, [x, y])`
+  """
+  def list_grid_to_map_grid(grid) do
+    Enum.into(Enum.with_index(grid), %{}, fn ({v, k}) ->
+      {k, Enum.into(Enum.with_index(v), %{}, fn({a, b}) ->
+        {b, a}
+      end)}
+    end)
+  end
+
   def p1 do
     defrag("ljoxqyyw")
     |> List.flatten
