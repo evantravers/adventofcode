@@ -21,6 +21,8 @@ defmodule Advent2017.Day14 do
 
   You can then use `get_in/2` and 'update_in/3` to access the grid in the form:
   `get_in(grid, [x, y])`
+
+  The reasoning for this is it will hopefully make bound detection easier.
   """
   def list_grid_to_map_grid(grid) do
     Enum.into(Enum.with_index(grid), %{}, fn ({v, k}) ->
@@ -30,10 +32,19 @@ defmodule Advent2017.Day14 do
     end)
   end
 
+  @doc """
+  Expects a list of lists.
+  """
+  def find_groups(grid) do
+  end
+
   def p1 do
     defrag("ljoxqyyw")
     |> List.flatten
     |> Enum.sum
   end
-  def p2, do: nil
+  def p2 do
+    defrag("ljoxqyyw")
+    |> find_groups
+  end
 end
