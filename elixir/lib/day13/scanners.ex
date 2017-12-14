@@ -21,6 +21,21 @@ defmodule Advent2017.Day13 do
       false
       iex> Advent2017.Day13.firewall_active?(4, 3)
       true
+
+      iex> Advent2017.Day13.firewall_active?(0, 4)
+      true
+      iex> Advent2017.Day13.firewall_active?(1, 4)
+      false
+      iex> Advent2017.Day13.firewall_active?(2, 4)
+      false
+      iex> Advent2017.Day13.firewall_active?(3, 4)
+      false
+      iex> Advent2017.Day13.firewall_active?(4, 4)
+      false
+      iex> Advent2017.Day13.firewall_active?(5, 4)
+      false
+      iex> Advent2017.Day13.firewall_active?(6, 4)
+      true
   """
   def firewall_active?(_, nil), do: false
   def firewall_active?(depth, range) do
@@ -41,7 +56,21 @@ defmodule Advent2017.Day13 do
     |> Enum.into(%{})
   end
 
-  def step(firewalls, delay \\ 0, depth \\ 0, score \\ 0) do
+  def step(firewalls, delay \\ 0, depth \\ 0) do
+    cond do
+      Enum.count(firewalls) == 0 ->
+        true
+      true ->
+        {range, firewalls} = Map.pop(firewalls, depth)
+
+        case firewall_active?(depth+delay, range) do
+          true ->  false
+          false -> step(firewalls, delay, depth+1)
+        end
+    end
+  end
+
+  def step_with_score(firewalls, delay \\ 0, depth \\ 0, score \\ 0) do
     cond do
       Enum.count(firewalls) == 0 ->
         score
@@ -54,18 +83,18 @@ defmodule Advent2017.Day13 do
             true -> depth * range
           end
 
-        step(firewalls, delay, depth+1, score+fault)
+        step_with_score(firewalls, delay, depth+1, score+fault)
     end
   end
 
   def test do
     load_config("test.txt")
-    |> step
+    |> step_with_score
   end
 
   def p1 do
     load_config("input.txt")
-    |> step
+    |> step_with_score
   end
 
   @doc ~S"""
@@ -79,8 +108,8 @@ defmodule Advent2017.Day13 do
   end
   def p2(firewalls, delay) do
     case step(firewalls, delay) do
-      0 -> delay
-      _ -> p2(firewalls, delay+1)
+      true  -> delay
+      false -> p2(firewalls, delay+1)
     end
   end
 end
