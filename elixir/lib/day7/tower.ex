@@ -1,6 +1,9 @@
 require IEx
 
 defmodule Advent2017.Day7 do
+  @doc """
+  Tree Structure %{"id" => %{tree: %{}, weight: 0}}
+  """
   def read_input(file_name) do
     {:ok, file} = File.read("lib/day7/#{file_name}")
     disc = ~r/(?<name>.+) \((?<weight>\d+)\)( -> (?<children>.+))*/
@@ -14,29 +17,28 @@ defmodule Advent2017.Day7 do
     end)
     |> Enum.map(fn (pattern) ->
       pattern
-      |> Map.update(:children, false, &(String.split(&1, ", ", [trim: true])))
+      |> Map.update(:children, false, fn children ->
+        (String.split(children, ", ", [trim: true]))
+        |> Enum.map(fn child -> {child, nil} end)
+        |> Enum.into(%{})
+      end)
       |> Map.update(:weight, 0, &(String.to_integer(&1)))
     end)
-    |> Enum.sort
-    |> Enum.reverse # put the branches first
+    |> Enum.map(fn(n) ->
+      {n[:name], %{tree: n[:children], weight: n[:weight]}}
+    end)
+    |> Enum.into(%{})
   end
 
-  def build_tower(remaining), do: build_tower([], remaining)
-
-  def build_tower(tree, []), do: tree
-  def build_tower(tree, remaining) do
+  @doc """
+  - find its children on the nodes and put it in the right place
+  - put it on the back of nodes
+  - continue until there is only one node
+  """
+  def build_tower(nodes) when length(nodes) == 1, do: nodes
+  def build_tower([n|nodes]) when is_binary(n) do # unbuilt leaf
   end
-
-  def find_children(remaining, list_of_names) do
-    matches =
-      Enum.filter(remaining, fn child ->
-        Enum.find(list_of_names, &(&1 == child[:name]))
-      end)
-    {
-      matches,
-      remaining
-      |> Enum.reject(fn (child) -> Enum.any?(list_of_names, &(&1 == child[:name])) end)
-    }
+  def build_tower([n|nodes]) when is_map(n) do # tree node
   end
 
   def test do
