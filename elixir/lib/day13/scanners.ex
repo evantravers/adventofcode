@@ -22,6 +22,7 @@ defmodule Advent2017.Day13 do
       iex> Advent2017.Day13.firewall_active?(4, 3)
       true
   """
+  def firewall_active?(_, nil), do: false
   def firewall_active?(depth, range) do
     rem(depth, (range-1)*2) == 0
   end
@@ -48,14 +49,9 @@ defmodule Advent2017.Day13 do
         {range, firewalls} = Map.pop(firewalls, depth)
 
         fault =
-          if !is_nil range do
-            if firewall_active?(depth+delay, range) do
-              depth*range
-            else
-              0
-            end
-          else
-            0
+          case firewall_active?(depth+delay, range) do
+            false -> 0
+            true -> depth * range
           end
 
         step(firewalls, delay, depth+1, score+fault)
