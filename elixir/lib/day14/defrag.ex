@@ -1,10 +1,6 @@
 defmodule Advent2017.Day14 do
   alias Advent2017.Day10, as: Knot
 
-  @doc ~S"""
-      iex> Advent2017.Day14.hex_to_bin("a0c2017")
-      "10100000110000100000000101110000"
-  """
   def hex_to_bin(str) do
     str
     |> String.to_integer(16)
