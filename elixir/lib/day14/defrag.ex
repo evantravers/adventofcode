@@ -33,9 +33,32 @@ defmodule Advent2017.Day14 do
   end
 
   @doc """
+      iex> Advent2017.Day14.adjacent([2, 2])
+      [[3, 2], [1, 2], [2, 3], [2, 1]]
+  """
+  def adjacent([x, y]) do
+    [[x+1, y], [x-1, y], [x, y+1], [x, y-1]]
+  end
+
+  @spec contiguous(Map, List, MapSet) :: MapSet
+  def contiguous(grid, coords, group \\ MapSet.new) do
+    case get_in(grid, coords) do
+      nil -> false
+        0 -> false
+        1 ->
+          Enum.map(adjacent(coords), fn adj ->
+            unless MapSet.member?(group, adj) do
+              contiguous(grid, adj, MapSet.put(group, coords))
+            end
+          end)
+    end
+  end
+
+  @doc """
   Expects a list of lists.
   """
-  def find_groups(grid) do
+  def find_groups(grid, visited \\ MapSet.new) do
+    map = list_grid_to_map_grid(grid)
   end
 
   def p1 do
