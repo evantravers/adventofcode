@@ -48,9 +48,20 @@ defmodule Advent2017.Day15 do
       iex> Advent2017.Day15.generate(8921, 48271)
       ...> |> Advent2017.Day15.generate(48271)
       1233683848
+
+      iex> Advent2017.Day15.generate(65, 16807, &rem(&1, 4)==0)
+      1352636452
+      iex> Advent2017.Day15.generate(8921, 48271, &rem(&1, 8)==0)
+      ...> |> Advent2017.Day15.generate(48271, &rem(&1, 8)==0)
+      862516352
   """
-  def generate(previous, factor) do
-    rem(previous * factor, 2147483647)
+  def generate(previous, factor, comparison \\ fn (_) -> true end) do
+    val = rem(previous * factor, 2147483647)
+    if comparison.(val) do
+      val
+    else
+      generate(val, factor, comparison)
+    end
   end
 
   def p1, do: p1(783, 325, 40_000_000, 0)
