@@ -63,10 +63,39 @@ defmodule Advent2017.Day14 do
   end
 
   @doc """
-  Expects a list of lists.
+  Returns a coordinate in grid that has a 1 value, but isn't in visited.
   """
-  def find_groups(grid, visited \\ MapSet.new) do
-    map = list_grid_to_map_grid(grid)
+  @spec find_ungrouped(List, MapSet) :: List
+  def find_ungrouped(grid, visited) do
+    results =
+      for x <- Map.keys(grid), y <- Map.keys(grid[x]), do: [[x, y], get_in(grid, [x, y])]
+
+    results
+    |> Enum.filter(fn [_, value] -> value == 1 end)
+    |> Enum.reject(fn [[x, y], _] -> MapSet.member?(visited, [x, y]) end)
+  end
+
+  @doc """
+  Expects the map of maps
+  Algorithm:
+
+  find a 1 block that isn't a member of any group in groups
+    run `contiguous/2` on it to get a MapSet of the group.
+    store the group in groups
+    repeat
+
+  return groups
+  """
+  def find_groups(grid, visited \\ MapSet.new, groups \\ []) do
+    unvisited_nodes = find_ungrouped(grid, visited)
+
+    unless length(unvisited_nodes) == 0 do
+      start_node = hd(hd(unvisited_nodes))
+      group = contiguous(grid, start_node)
+      find_groups(grid, MapSet.union(visited, group), [group | groups] )
+    else
+      groups
+    end
   end
 
   def p1 do
