@@ -105,6 +105,8 @@ defmodule Advent2017.Day14 do
   end
   def p2 do
     defrag("ljoxqyyw")
+    |> list_grid_to_map_grid
     |> find_groups
+    |> Enum.count
   end
 end
