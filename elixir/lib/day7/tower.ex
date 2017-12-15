@@ -10,45 +10,47 @@ defmodule Advent2017.Day7 do
 
     file
     |> String.split("\n", [trim: true])
-    |> Enum.map(fn (pattern) ->
-      for {key, val} <- Regex.named_captures(disc, pattern),
-      into: %{},
-      do: {String.to_atom(key), val}
+    |> Enum.reduce(%{}, fn (pattern, tower) ->
+      if pattern =~ "->" do
+        [_, name, weight, _, children] = Regex.run(disc, pattern)
+        build_tower(tower, name, weight, String.split(children, ", ", [trim: true]))
+      else
+        [_, name, weight] = Regex.run(disc, pattern)
+        build_tower(tower, name, weight)
+      end
     end)
-    |> Enum.map(fn (pattern) ->
-      pattern
-      |> Map.update(:children, false, fn children ->
-        (String.split(children, ", ", [trim: true]))
-        |> Enum.map(fn child -> {child, nil} end)
-        |> Enum.into(%{})
-      end)
-      |> Map.update(:weight, 0, &(String.to_integer(&1)))
-    end)
-    |> Enum.map(fn(n) ->
-      {n[:name], %{tree: n[:children], weight: n[:weight]}}
-    end)
-    |> Enum.into(%{})
   end
 
-  @doc """
-  - find its children on the nodes and put it in the right place
-  - put it on the back of nodes
-  - continue until there is only one node
-  """
-  def build_tower(nodes) when length(nodes) == 1, do: nodes
-  def build_tower([n|nodes]) when is_binary(n) do # unbuilt leaf
+  def w(string), do: String.to_integer(string)
+
+  def build_tower(tower, name, weight \\ nil) do
+    if tower[name] do
+      put_in(tower, [name, :weight], weight)
+    else
+      put_in(tower, [name], %{weight: weight, above: [], below: []})
+    end
   end
-  def build_tower([n|nodes]) when is_map(n) do # tree node
+
+  def build_tower(tower, name, weight, children) do
+    build_tower(tower, name, weight)
+    |> put_in([name, :above], children)
+    |> (&Enum.reduce(children, &1, fn child_name, tower ->
+      new_tower =
+        unless tower[child_name] do
+          build_tower(tower, child_name)
+        else
+          tower
+        end
+      put_in(new_tower, [child_name, :below], new_tower[child_name][:below] ++ [name])
+    end)).()
   end
 
   def test do
     read_input("test.txt")
-    |> build_tower
   end
 
   def p1 do
     read_input("input.txt")
-    |> build_tower
   end
 
   def p2, do: nil
