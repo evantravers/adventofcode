@@ -6,14 +6,6 @@ defmodule Advent2017.Day15 do
   @generatorA 16807
   @generatorB 48271
 
-  @doc ~S"""
-      iex> Advent2017.Day15.generate(65, 16807)
-      1092455
-      iex> Advent2017.Day15.generate(8921, 48271)
-      ...> |> Advent2017.Day15.generate(48271)
-      1233683848
-  """
-
   def first_sixteen(string), do: String.slice(string, -16..-1)
 
   @doc ~S"""
@@ -49,6 +41,14 @@ defmodule Advent2017.Day15 do
       |> Enum.slice(-16..-1)
   end
 
+
+  @doc ~S"""
+      iex> Advent2017.Day15.generate(65, 16807)
+      1092455
+      iex> Advent2017.Day15.generate(8921, 48271)
+      ...> |> Advent2017.Day15.generate(48271)
+      1233683848
+  """
   def generate(previous, factor) do
     rem(previous * factor, 2147483647)
   end
