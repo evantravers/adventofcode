@@ -75,4 +75,16 @@ defmodule Advent2017.Day15 do
       false -> p1(a, b, count-1, score)
     end
   end
+
+  def p2, do: p2(783, 325, 5_000_000, 0)
+  def p2(_, _, 0, score), do: score
+  def p2(a, b, count, score) do
+    a = generate(a, @generatorA, &rem(&1, 4)==0)
+    b = generate(b, @generatorB, &rem(&1, 8)==0)
+
+    case judge_bitwise(a, b) do
+      true  -> p2(a, b, count-1, score+1)
+      false -> p2(a, b, count-1, score)
+    end
+  end
 end
