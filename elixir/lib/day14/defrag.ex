@@ -1,12 +1,16 @@
+require IEx
+
 defmodule Advent2017.Day14 do
   alias Advent2017.Day10, as: Knot
 
+  @spec hex_to_bin(String) :: String
   def hex_to_bin(str) do
     str
     |> String.to_integer(16)
     |> Integer.to_string(2)
   end
 
+  @spec defrag(String) :: List
   def defrag(input) do
     Enum.map(0..127, fn row ->
       Knot.dense_hash("#{input}-#{row}")
@@ -46,12 +50,15 @@ defmodule Advent2017.Day14 do
       nil -> group
         0 -> group
         1 ->
-          adjacent(coords)
-          |> Enum.reject(&MapSet.member?(group, &1))
-          |> Enum.map(fn adj ->
-            contiguous(grid, adj, MapSet.put(group, coords))
-          end)
-          |> Enum.reduce(fn set1, set2 -> MapSet.union(set1, set2) end)
+          neighbors = Enum.reject(adjacent(coords), &MapSet.member?(group, &1))
+          unless Enum.empty? neighbors do
+            Enum.map(neighbors, fn adj ->
+              contiguous(grid, adj, MapSet.put(group, coords))
+            end)
+            |> Enum.reduce(&MapSet.union &1, &2)
+          else
+            group
+          end
     end
   end
 
