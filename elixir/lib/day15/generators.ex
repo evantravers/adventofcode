@@ -53,15 +53,15 @@ defmodule Advent2017.Day15 do
     rem(previous * factor, 2147483647)
   end
 
-  def p1, do: p1(65, 8921, 0, 0)
-  def p1(_, _, 40_000_000, score), do: score
+  def p1, do: p1(783, 325, 40_000_000, 0)
+  def p1(_, _, 0, score), do: score
   def p1(a, b, count, score) do
     a = generate(a, @generatorA)
     b = generate(b, @generatorB)
 
     case judge_bitwise(a, b) do
-      true  -> p1(a, b, count+1, score+1)
-      false -> p1(a, b, count+1, score)
+      true  -> p1(a, b, count-1, score+1)
+      false -> p1(a, b, count-1, score)
     end
   end
 end
