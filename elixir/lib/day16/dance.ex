@@ -77,18 +77,21 @@ defmodule Advent2017.Day16 do
     |> dance("abcdefghijklmnop")
   end
 
-  def p2 do
-    {:ok, file} = File.read("lib/day16/input.txt")
-
-    instructions =
-      file
-      |> String.split(",")
-
-    p2(instructions, "abcdefghijklmnop", 1000000000)
+  def cheat(charlist, mapping) do
+    Enum.map(mapping, fn pos -> Enum.at(charlist, pos) end)
   end
 
-  def p2(_, dancers, 0), do: dancers
-  def p2(instructions, dancers, count) do
-    p2(instructions, dance(instructions, dancers), count-1)
+  def p2 do
+    original = String.to_charlist "abcdefghijklmnop"
+    result   = String.to_charlist p1()
+
+    mapping =
+      Enum.map(result, fn ending_pos->
+        Enum.find_index(original, fn starting_pos-> ending_pos == starting_pos end)
+      end)
+
+    Enum.reduce(1..100, original, fn (_, dancers) ->
+      cheat(dancers, mapping)
+    end)
   end
 end
