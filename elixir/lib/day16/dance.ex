@@ -56,15 +56,17 @@ defmodule Advent2017.Day16 do
 
   def dance([], dancers), do: dancers
   def dance([instruction|instructions], dancers) do
-    case instruction do
+    case String.at(instruction, 0) do
       "s" ->
-        nil
+        [amount] = Regex.run(~r/\d+/, instruction)
+        dance(instructions, s(dancers, String.to_integer(amount)))
       "x" ->
-        nil
+        [_, pos1, pos2] = Regex.run(~r/(\d+)\/(\d+)/, instruction)
+        dance(instructions, x(dancers, String.to_integer(pos1), String.to_integer(pos2)))
       "p" ->
-        nil
+        [_, a, b] = Regex.run(~r/(.)\/(.)/, instruction)
+        dance(instructions, p(dancers, a, b))
     end
-    dance(instructions, dancers)
   end
 
   def p1 do
@@ -73,5 +75,20 @@ defmodule Advent2017.Day16 do
     file
     |> String.split(",")
     |> dance("abcdefghijklmnop")
+  end
+
+  def p2 do
+    {:ok, file} = File.read("lib/day16/input.txt")
+
+    instructions =
+      file
+      |> String.split(",")
+
+    p2(instructions, "abcdefghijklmnop", 1000000000)
+  end
+
+  def p2(_, dancers, 0), do: dancers
+  def p2(instructions, dancers, count) do
+    p2(instructions, dance(instructions, dancers), count-1)
   end
 end
