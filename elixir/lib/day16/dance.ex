@@ -90,8 +90,13 @@ defmodule Advent2017.Day16 do
         Enum.find_index(original, fn starting_pos-> ending_pos == starting_pos end)
       end)
 
-    Enum.reduce(1..100, original, fn (_, dancers) ->
-      cheat(dancers, mapping)
-    end)
+    find_period(original, mapping, [])
+  end
+
+  def find_period(dancers, mapping, visited) do
+    cond do
+      Enum.member? visited, dancers -> Enum.reverse(visited)
+      true -> find_period(cheat(dancers, mapping), mapping, [dancers|visited])
+    end
   end
 end
