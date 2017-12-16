@@ -54,6 +54,13 @@ defmodule Advent2017.Day16 do
     |> Enum.join
   end
 
+  @doc """
+      iex> Advent2017.Day16.dance(["s1", "x3/4", "pe/b"], "abcde")
+      "baedc"
+
+      iex> Advent2017.Day16.dance(["s1", "x3/4", "pe/b"], "baedc")
+      "ceadb"
+  """
   def dance([], dancers), do: dancers
   def dance([instruction|instructions], dancers) do
     case String.at(instruction, 0) do
@@ -77,26 +84,23 @@ defmodule Advent2017.Day16 do
     |> dance("abcdefghijklmnop")
   end
 
-  def cheat(charlist, mapping) do
-    Enum.map(mapping, fn pos -> Enum.at(charlist, pos) end)
-  end
-
   def p2 do
-    original = String.to_charlist "abcdefghijklmnop"
-    result   = String.to_charlist p1()
+    {:ok, file} = File.read("lib/day16/input.txt")
 
-    mapping =
-      Enum.map(result, fn ending_pos->
-        Enum.find_index(original, fn starting_pos-> ending_pos == starting_pos end)
-      end)
+    loop =
+      file
+      |> String.split(",")
+      |> find_period("abcdefghijklmnop", [])
 
-    find_period(original, mapping, [])
+    period = length(loop)
+
+    Enum.at(loop, rem(1_000_000_000, period))
   end
 
-  def find_period(dancers, mapping, visited) do
+  def find_period(instructions, dancers, visited) do
     cond do
       Enum.member? visited, dancers -> Enum.reverse(visited)
-      true -> find_period(cheat(dancers, mapping), mapping, [dancers|visited])
+      true -> find_period(instructions, dance(instructions, dancers), [dancers|visited])
     end
   end
 end
