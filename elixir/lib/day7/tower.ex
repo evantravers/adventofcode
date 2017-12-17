@@ -25,8 +25,20 @@ defmodule Advent2017.Day7 do
   end
 
   def p1 do
-    build_tree("input.txt")
+    build_tree("test.txt")
     |> Graph.topsort
     |> List.first
+  end
+
+  def p2 do
+    g    = build_tree("test.txt")
+    root = p1
+
+    # for each leaf node, calculate the weight between root and leaf and print
+  end
+
+  def circus_weight(g, node) do
+    Graph.edges(Graph.subgraph(g, Graph.reachable(g, [node])))
+    |> Enum.reduce(0, fn edge, sum -> sum + edge.weight end)
   end
 end
