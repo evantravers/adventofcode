@@ -20,8 +20,7 @@ defmodule Advent2017.Day17 do
   def p2 do
     elem(
       Enum.reduce(1..50_000_000, {0, 0}, fn i, {secondElement, index} ->
-        countedTo = rem((index + 394), i)
-
+        countedTo     = rem((index + 394), i)
         secondElement = if countedTo == 0, do: i, else: secondElement
 
         {secondElement, countedTo + 1}
