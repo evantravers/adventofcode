@@ -1,7 +1,7 @@
 require IEx
 
 defmodule Advent2017.Day7 do
-  def read_input(file_name) do
+  def build_tree(file_name) do
     {:ok, file} = File.read("lib/day7/#{file_name}")
 
     edges =
@@ -10,11 +10,13 @@ defmodule Advent2017.Day7 do
       |> Enum.filter(&String.match? &1, ~r/->/)
       |> Enum.map(fn line ->
         [attr, children] = String.split(line, " -> ", [trim: true])
-        [name] = Regex.run(~r/\w+/, attr)
+        [name, weight] = List.flatten(Regex.scan(~r/\w+/, attr))
 
         children
         |> String.split(", ")
-        |> Enum.map(fn child -> {name, child} end)
+        |> Enum.map(fn child ->
+          {name, child, weight: String.to_integer(weight)}
+        end)
       end)
       |> List.flatten
 
@@ -23,8 +25,8 @@ defmodule Advent2017.Day7 do
   end
 
   def p1 do
-    read_input("input.txt")
-    |> Graph.top_sort
+    build_tree("input.txt")
+    |> Graph.topsort
     |> List.first
   end
 end
