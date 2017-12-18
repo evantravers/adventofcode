@@ -47,7 +47,7 @@ defmodule Advent2017.Day11 do
   end
 
   def p1 do
-    {:ok, file} = File.read("lib/day11/input.txt")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
     file
     |> track
     |> List.first
@@ -55,7 +55,7 @@ defmodule Advent2017.Day11 do
   end
 
   def p2 do
-    {:ok, file} = File.read("lib/day11/input.txt")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
     file
     |> track
     |> Enum.map(&distance &1)

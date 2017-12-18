@@ -16,7 +16,7 @@ defmodule Advent2017.Day5 do
   end
 
   def run(inc) do
-    {:ok, file} = File.read("./lib/day5/input.txt")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     file
     |> String.split("\n", [trim: true])

@@ -78,7 +78,7 @@ defmodule Advent2017.Day10 do
   end
 
   def p1 do
-    {:ok, file} = File.read("./lib/day10/input.txt")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     lengths =
       file
@@ -91,7 +91,7 @@ defmodule Advent2017.Day10 do
   end
 
   def p2 do
-    {:ok, file} = File.read("./lib/day10/input.txt")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     dense_hash(file)
   end

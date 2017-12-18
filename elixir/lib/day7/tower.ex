@@ -2,7 +2,7 @@ require IEx
 
 defmodule Advent2017.Day7 do
   def build_tree(file_name) do
-    {:ok, file} = File.read("lib/day7/#{file_name}")
+    {:ok, file} = File.read("#{__DIR__}/#{file_name}")
 
     weights =
       file

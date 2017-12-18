@@ -8,7 +8,7 @@ defmodule Advent2017.Day4 do
   end
 
   def passphrase(func) do
-    {:ok, file} = File.read("./lib/day4/input.txt")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     file
     |> String.split("\n", [trim: true])

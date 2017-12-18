@@ -77,7 +77,7 @@ defmodule Advent2017.Day9 do
   end
 
   def load_file do
-    {:ok, file} = File.read("./lib/day9/input.txt")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
     file
     |> String.trim
   end

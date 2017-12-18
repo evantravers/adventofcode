@@ -106,7 +106,7 @@ defmodule Advent2017.Day6 do
   end
 
   def load_file do
-    {:ok, file} = File.read("lib/day6/input.txt")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     file
     |> String.split("\t", [trim: true])

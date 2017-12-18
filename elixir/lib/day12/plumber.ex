@@ -5,7 +5,7 @@ defmodule Advent2017.Day12 do
   node, and the nested list is the links
   """
   def load_nodes(file) do
-    {:ok, file} = File.read("lib/day12/#{file}")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     file
     |> String.split("\n", [trim: true])

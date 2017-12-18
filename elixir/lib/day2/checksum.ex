@@ -11,7 +11,7 @@ defmodule Advent2017.Day2 do
   end
 
   def file do
-    {:ok, file} = File.read("./lib/day2/input.txt")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     file =
       file

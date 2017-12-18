@@ -46,7 +46,7 @@ defmodule Advent2017.Day13 do
   Returns a map of depths => range
   """
   def load_config(filename) do
-    {:ok, file} = File.read("lib/day13/#{filename}")
+    {:ok, file} = File.read("#{__DIR__}/#{filename}")
 
     Regex.scan(~r/\d+/, file)
     |> List.flatten

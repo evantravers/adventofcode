@@ -4,7 +4,7 @@ defmodule Advent2017.Day8 do
   @command_pattern ~r/(?<register>\w+) (?<direction>\w+) (?<amount>(|-)\d+) if (?<target>\w+) (?<condition>[!<>=]+) (?<value>(|-)\d+)/
 
   def load_instructions(filename) do
-    {:ok, file} = File.read("./lib/day8/#{filename}")
+    {:ok, file} = File.read("#{__DIR__}/#{filename}")
 
     file
     |> String.split("\n", [trim: true])

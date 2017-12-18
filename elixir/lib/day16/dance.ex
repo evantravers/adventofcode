@@ -77,7 +77,7 @@ defmodule Advent2017.Day16 do
   end
 
   def p1 do
-    {:ok, file} = File.read("lib/day16/input.txt")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     file
     |> String.split(",")
@@ -85,7 +85,7 @@ defmodule Advent2017.Day16 do
   end
 
   def p2 do
-    {:ok, file} = File.read("lib/day16/input.txt")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     loop =
       file

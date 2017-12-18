@@ -128,7 +128,7 @@ defmodule Advent2017.Day18 do
   end
 
   def p1 do
-    {:ok, file} = File.read("lib/day18/input.txt")
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     file
     |> String.split("\n")
