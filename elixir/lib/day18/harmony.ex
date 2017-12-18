@@ -98,4 +98,21 @@ defmodule Advent2017.Day18 do
         String.to_integer(var)
     end
   end
+
+  def run(instructions, state \\ %{})
+  def run([], state), do: state
+  def run([instruction|instructions], state) do
+    IO.puts instruction
+    [method|args] = String.split(instruction, " ", [trim: true])
+
+    run(instructions, apply(Advent2017.Day18, a(method), [state | args]))
+  end
+
+  def p1 do
+    {:ok, file} = File.read("lib/day18/input.txt")
+
+    file
+    |> String.split("\n")
+    |> run
+  end
 end
