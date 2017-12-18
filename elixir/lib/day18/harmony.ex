@@ -1,3 +1,5 @@
+require IEx
+
 defmodule Advent2017.Day18 do
   @doc ~S"""
   snd X plays a sound with a frequency equal to the value of X.
@@ -69,7 +71,7 @@ defmodule Advent2017.Day18 do
   """
   def rcv(state, x) do
     if e(state, x) != 0 do
-      state[:snd]
+      Map.put(state, :halt, true)
     end
   end
 
@@ -107,18 +109,22 @@ defmodule Advent2017.Day18 do
     end
   end
 
-  def run(instructions, state \\ %{}, opts \\ [])
-  def run([], state, _), do: state
-  def run([instruction|instructions], state, opts) do
-    if opts[:debug] do
-      IO.inspect state
-      IO.puts "------"
-      IO.puts instruction
+  def run(instructions, state, opts \\ [])
+  def run(instructions, state, opts) do
+    case state[:halt] do
+      true -> state
+      _ ->
+        instruction   = Enum.at(instructions, state[:pointer])
+        [method|args] = String.split(instruction, " ", [trim: true])
+
+        if opts[:debug] do
+          IO.inspect state
+          IO.puts "------"
+          IO.puts instruction
+        end
+
+        run(instructions, apply(Advent2017.Day18, a(method), [state | args]))
     end
-
-    [method|args] = String.split(instruction, " ", [trim: true])
-
-    run(instructions, apply(Advent2017.Day18, a(method), [state | args]))
   end
 
   def p1 do
