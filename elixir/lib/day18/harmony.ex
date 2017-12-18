@@ -94,6 +94,8 @@ defmodule Advent2017.Day18 do
     cond do
       Enum.member?(Map.keys(state), a(var)) ->
         state[a(var)]
+      Regex.match?(~r/[a-z]/, var) ->
+        0
       true ->
         String.to_integer(var)
     end
