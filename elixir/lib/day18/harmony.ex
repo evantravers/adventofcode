@@ -134,12 +134,6 @@ defmodule Advent2017.Day18 do
         instruction   = Enum.at(instructions, state[:pointer])
         [method|args] = String.split(instruction, " ", trim: true)
 
-        if opts[:debug] do
-          IO.inspect state
-          IO.puts "------"
-          IO.puts instruction
-        end
-
         run(instructions, apply(Advent2017.Day18, a(method), [state | args]))
     end
   end
