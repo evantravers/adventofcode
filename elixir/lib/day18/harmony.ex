@@ -71,9 +71,17 @@ defmodule Advent2017.Day18 do
   """
   def rcv(state, x) do
     receive do
-      {:snd, int} -> set(state, x, int)
+      {:snd, int} when is_integer(int) ->
+        set(state, x, int)
+
+        if state[:limit] == state[:rcv_count] do
+          stop(state)
+        else
+          next(%{state | rcv_count: state[:rcv_count] + 1})
+        end
+    after
+      5000 -> stop(state)
     end
-    next(state)
   end
 
   @doc ~S"""
@@ -95,6 +103,7 @@ defmodule Advent2017.Day18 do
 
   def a(str), do: String.to_atom(str)
   def next(state), do: Map.update!(state, :pointer, &(&1+1))
+  def stop(state), do: Map.put(state, :halt, true)
 
   @doc ~S"""
   e evaluates a variable by the stack. If there's a register, it returns that.
@@ -140,7 +149,7 @@ defmodule Advent2017.Day18 do
 
     file
     |> String.split("\n")
-    |> run(%{}, debug: true)
+    |> run(%{limit: 1, rcv_count: 0})
   end
 
   def p2 do
