@@ -19,7 +19,7 @@ defmodule Advent2017.Day7 do
       |> Enum.filter(&String.match? &1, ~r/->/)
       |> Enum.map(fn line ->
         [attr, children] = String.split(line, " -> ", [trim: true])
-        [parent, weight] = List.flatten(Regex.scan(~r/\w+/, attr))
+        [parent, _] = List.flatten(Regex.scan(~r/\w+/, attr))
 
         children
         |> String.split(", ")
@@ -33,17 +33,37 @@ defmodule Advent2017.Day7 do
     |> Graph.add_edges(edges)
   end
 
-  def p1 do
-    build_tree("test.txt")
-    |> Graph.topsort
-    |> List.first
+  def all_the_same(list) do
+    length(Enum.uniq(Enum.map(list, fn {weight, _} -> weight end))) == 1
   end
 
-  def p2 do
-    g    = build_tree("test.txt")
-    root = p1
+  def find_weakest_link(graph, n) do
+    weights =
+      graph
+      |> Graph.out_neighbors(n)
+      |> Enum.map(fn child -> {circus_weight(graph, child), child} end)
+      |> List.keysort(0)
+      |> Enum.reverse
 
-    # for each leaf node, calculate the weight between root and leaf and print
+    # if all my children have equal weights, I'm the fatty
+    cond do
+       all_the_same(weights) ->
+         n
+      true ->
+        find_weakest_link(graph, elem(hd(weights), 1))
+    end
+  end
+
+  def correct_weight(g, n) do
+    [edge|_] = Graph.in_edges(g, n)
+
+    [low, high] =
+      Graph.out_neighbors(g, edge.v1)
+      |> Enum.map(fn neighbor -> circus_weight(g, neighbor) end)
+      |> Enum.uniq
+      |> Enum.sort
+
+    edge.weight - (high - low)
   end
 
   def circus_weight(g, node) do
@@ -56,5 +76,18 @@ defmodule Advent2017.Day7 do
       |> Enum.reduce(0, fn edge, sum -> sum + edge.weight end)
 
     ownweight + children
+  end
+
+  def p1 do
+    build_tree("input.txt")
+    |> Graph.topsort
+    |> List.first
+  end
+
+  def p2 do
+    g    = build_tree("input.txt")
+    root = p1()
+
+    correct_weight(g, find_weakest_link(g, root))
   end
 end
