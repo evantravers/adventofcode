@@ -121,8 +121,8 @@ defmodule Advent2017.Day18 do
     end
   end
 
-  def run(instructions, state \\ %{}, opts \\ [])
-  def run(instructions, state, opts) do
+  def run(instructions, state \\ %{})
+  def run(instructions, state) do
     state =
       state
       |> Map.put_new(:pointer, 0)
