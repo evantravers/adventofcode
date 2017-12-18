@@ -135,4 +135,9 @@ defmodule Advent2017.Day18 do
     |> run(%{pointer: 0})
     |> Map.fetch!(:snd)
   end
+
+  def p2 do
+    # I guess I'm going to have to spin up some actors and use `send/3` and
+    # `receive/1`... let's do some real concurrency!
+  end
 end
