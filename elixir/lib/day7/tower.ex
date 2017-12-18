@@ -45,7 +45,7 @@ defmodule Advent2017.Day7 do
       |> List.keysort(0)
       |> Enum.reverse
 
-    # if all my children have equal weights, I'm the fatty
+    # if all my children have equal weights, I'm the problem child
     cond do
        all_the_same(weights) ->
          n
