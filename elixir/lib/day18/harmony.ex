@@ -2,14 +2,14 @@ require IEx
 
 defmodule Advent2017.Day18 do
   @doc ~S"""
-  snd X plays a sound with a frequency equal to the value of X.
+  snd X sends the value of X to the other program. These values wait in a queue
+  until that program is ready to receive them. Each program has its own message
+  queue, so a program can never receive a message it sent.
 
-      iex> Advent2017.Day18.snd(%{pointer: 0}, "12")
-      %{snd: 12, pointer: 1}
   """
   def snd(state, x) do
-    Map.put(state, :snd, e(state, x))
-    |> next
+    send(state[:target], {:snd, e(state, x)})
+    next(state)
   end
 
   @doc ~S"""
@@ -63,16 +63,17 @@ defmodule Advent2017.Day18 do
   end
 
   @doc ~S"""
-  rcv X recovers the frequency of the last sound played, but only when the
-  value of X is not zero. (If it is zero, the command does nothing.)
+  rcv X receives the next value and stores it in register X. If no values are
+  in the queue, the program waits for a value to be sent to it. Programs do not
+  continue to the next instruction until they have received a value. Values are
+  received in the order they are sent.
 
-      iex> Advent2017.Day18.rcv(%{pointer: 0, f: 3, snd: 12}, "f")
-      12
   """
   def rcv(state, x) do
-    if e(state, x) != 0 do
-      Map.put(state, :halt, true)
+    receive do
+      {:snd, int} -> set(state, x, int)
     end
+    next(state)
   end
 
   @doc ~S"""
@@ -100,6 +101,8 @@ defmodule Advent2017.Day18 do
   """
   def e(state, var) do
     cond do
+      is_integer(var) ->
+        var
       Enum.member?(Map.keys(state), a(var)) ->
         state[a(var)]
       Regex.match?(~r/[a-z]/, var) ->
@@ -109,13 +112,18 @@ defmodule Advent2017.Day18 do
     end
   end
 
-  def run(instructions, state, opts \\ [])
+  def run(instructions, state \\ %{}, opts \\ [])
   def run(instructions, state, opts) do
+    state =
+      state
+      |> Map.put_new(:pointer, 0)
+      |> Map.put_new(:target, self())
+
     case state[:halt] do
       true -> state
       _ ->
         instruction   = Enum.at(instructions, state[:pointer])
-        [method|args] = String.split(instruction, " ", [trim: true])
+        [method|args] = String.split(instruction, " ", trim: true)
 
         if opts[:debug] do
           IO.inspect state
@@ -132,12 +140,16 @@ defmodule Advent2017.Day18 do
 
     file
     |> String.split("\n")
-    |> run(%{pointer: 0})
-    |> Map.fetch!(:snd)
+    |> run(%{}, debug: true)
   end
 
   def p2 do
     # I guess I'm going to have to spin up some actors and use `send/3` and
     # `receive/1`... let's do some real concurrency!
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
+
+    instructions =
+      file
+      |> String.split("\n")
   end
 end
