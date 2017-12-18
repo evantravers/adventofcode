@@ -29,7 +29,7 @@ defmodule Advent2017.Day18 do
       %{f: 6}
   """
   def add(state, x, y) do
-    Map.put(state, a(x), state[a(x)] + e(state, y))
+    Map.put(state, a(x), e(state, x) + e(state, y))
   end
 
   @doc ~S"""
@@ -40,7 +40,7 @@ defmodule Advent2017.Day18 do
       %{f: 9}
   """
   def mul(state, x, y) do
-    Map.put(state, a(x), state[a(x)] * e(state, y))
+    Map.put(state, a(x), e(state, x) * e(state, y))
   end
 
   @doc ~S"""
@@ -52,7 +52,7 @@ defmodule Advent2017.Day18 do
       %{f: 1}
   """
   def mod(state, x, y) do
-    Map.put(state, a(x), rem(state[a(x)], e(state,y)))
+    Map.put(state, a(x), rem(e(state, x), e(state,y)))
   end
 
   @doc ~S"""
@@ -101,10 +101,15 @@ defmodule Advent2017.Day18 do
     end
   end
 
-  def run(instructions, state \\ %{})
-  def run([], state), do: state
-  def run([instruction|instructions], state) do
-    IO.puts instruction
+  def run(instructions, state \\ %{}, opts \\ [])
+  def run([], state, _), do: state
+  def run([instruction|instructions], state, opts) do
+    if opts[:debug] do
+      IO.inspect state
+      IO.puts "------"
+      IO.puts instruction
+    end
+
     [method|args] = String.split(instruction, " ", [trim: true])
 
     run(instructions, apply(Advent2017.Day18, a(method), [state | args]))
@@ -115,6 +120,6 @@ defmodule Advent2017.Day18 do
 
     file
     |> String.split("\n")
-    |> run
+    |> run(debug: true)
   end
 end
