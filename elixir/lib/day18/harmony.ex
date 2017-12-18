@@ -75,7 +75,9 @@ defmodule Advent2017.Day18 do
         set(state, x, int)
 
         if state[:limit] == state[:rcv_count] do
-          stop(state)
+          state
+          |> Map.put(:last_rcv, e(state, x))
+          |> stop
         else
           next(%{state | rcv_count: state[:rcv_count] + 1})
         end
@@ -126,6 +128,7 @@ defmodule Advent2017.Day18 do
     state =
       state
       |> Map.put_new(:pointer, 0)
+      |> Map.put_new(:rcv_count, 0)
       |> Map.put_new(:target, self())
 
     case state[:halt] do
@@ -143,7 +146,8 @@ defmodule Advent2017.Day18 do
 
     file
     |> String.split("\n")
-    |> run(%{limit: 1, rcv_count: 0})
+    |> run(%{limit: 1})
+    |> Map.get(:last_rcv)
   end
 
   def p2 do
