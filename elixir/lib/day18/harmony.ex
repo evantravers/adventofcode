@@ -9,7 +9,9 @@ defmodule Advent2017.Day18 do
   """
   def snd(state, x) do
     send(state[:target], {:snd, e(state, x)})
-    next(state)
+    state
+    |> Map.update!(:snd, fn history -> [e(state, x)|history] end)
+    |> next
   end
 
   @doc ~S"""
@@ -74,12 +76,14 @@ defmodule Advent2017.Day18 do
       {:snd, int} when is_integer(int) ->
         set(state, x, int)
 
-        if state[:limit] == state[:rcv_count] do
+        if state[:limit] == length(state[:rcv]) do
           state
-          |> Map.put(:last_rcv, e(state, x))
+          |> Map.update!(:rcv, fn history -> [e(state, x)|history] end)
           |> stop
         else
-          next(%{state | rcv_count: state[:rcv_count] + 1})
+          state
+          |> Map.update!(:rcv, fn history -> [e(state, x)|history] end)
+          |> next
         end
     after
       5000 -> stop(state)
@@ -128,7 +132,8 @@ defmodule Advent2017.Day18 do
     state =
       state
       |> Map.put_new(:pointer, 0)
-      |> Map.put_new(:rcv_count, 0)
+      |> Map.put_new(:rcv, [])
+      |> Map.put_new(:snd, [])
       |> Map.put_new(:target, self())
 
     case state[:halt] do
@@ -147,7 +152,8 @@ defmodule Advent2017.Day18 do
     file
     |> String.split("\n")
     |> run(%{limit: 1})
-    |> Map.get(:last_rcv)
+    |> Map.get(:rcv)
+    |> List.first
   end
 
   def p2 do
