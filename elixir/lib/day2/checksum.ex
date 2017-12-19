@@ -13,14 +13,13 @@ defmodule Advent2017.Day2 do
   def file do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
-    file =
-      file
-      |> String.split("\n", [trim: true])
-      |> Enum.map(
-        fn (line) ->
-          String.split(line, "\t")
-          |> Enum.map(&(String.to_integer(&1)))
-        end)
+    file
+    |> String.split("\n", [trim: true])
+    |> Enum.map(
+      fn (line) ->
+        String.split(line, "\t")
+        |> Enum.map(&(String.to_integer(&1)))
+      end)
   end
 
   def p1 do
