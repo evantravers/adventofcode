@@ -12,32 +12,51 @@ defmodule Advent2017.Day19 do
   """
 
   def mazerunner(maze, start, history \\ []) do
-    v(maze, start, :d, history)
+    straight(maze, {:d, start}, history)
   end
 
-  def v(maze, pos, direction, history) do
+  @doc """
+  We've hit a "+" node, and we are gonig to turn. Turn identifies which coords
+  to check, and calls whichway on them to determine which fork is valid.
+  """
+  def turn(maze, [x, y], previous_direction, history) do
+    pose = case previous_direction do
+      d when d in [:u, :d] ->
+        whichway(maze, [{:l, [x-1, y]}, {:r, [x+1, y]}], "-")
+      d when d in [:l, :r] ->
+        whichway(maze, [{:u, [x, y-1]}, {:d, [x, y+1]}], "|")
+    end
+    straight(maze, pose, history)
+  end
+
+
+  @doc """
+  Keep moving in the current direction, until we hit a "+" for a turn.  At
+  first I was catching all the different cases possible, but it tunrs out we
+  just keep moving straight until we hit a turn, recording all the things we
+  pass.
+  """
+  def straight(maze, {direction, pos}, history) do
     case n = get(maze, pos) do
-      "+" -> turn(maze, pos, direction, [n|history]) # turn
+      "+" -> turn(maze, pos, direction, [n|history])
       " " -> Enum.reverse(history)
-      _ -> v(maze, next(pos, direction), direction, [n|history]) # record and skip
+      _ -> straight(maze, {direction, next(pos, direction)}, [n|history])
     end
   end
 
-  def h(maze, pos, direction, history) do
-    case n = get(maze, pos) do
-      "+" -> turn(maze, pos, direction, [n|history]) # turn
-      " " -> Enum.reverse(history)
-      _ -> h(maze, next(pos, direction), direction, [n|history]) # record and skip
-    end
-  end
-
+  @doc """
+  Return the next coordinate in a direction.
+  """
   def next([x, y], :u), do: [x, y-1]
   def next([x, y], :d), do: [x, y+1]
   def next([x, y], :l), do: [x-1, y]
   def next([x, y], :r), do: [x+1, y]
 
-  @doc ~S"""
-  returns a tuple of direction and new coordinate {dir, {x, y}}
+  @doc """
+  All turns are 90 degree turns from the current point in the current direction.
+  Valid turns are either a new line character ("-" or "|") or a letter.
+
+  Returns a tuple of direction and new coordinate {dir, {x, y}}
   """
   def whichway(maze, list_of_coords, target) do
     Enum.find(list_of_coords, fn {_, coords} ->
@@ -45,22 +64,15 @@ defmodule Advent2017.Day19 do
     end)
   end
 
-  def turn(maze, [x, y], previous_direction, history) do
-    case previous_direction do
-      vert when vert == :u or vert == :d ->
-        {new_dir, new_pos} = whichway(maze, [{:l, [x-1, y]}, {:r, [x+1, y]}], "-")
-        h(maze, new_pos, new_dir, history)
-      hor when hor == :l or hor == :r ->
-        {new_dir, new_pos} = whichway(maze, [{:u, [x, y-1]}, {:d, [x, y+1]}], "|")
-        v(maze, new_pos, new_dir, history)
-    end
-  end
-
-  def get(maze, [x, y]), do: get_in(maze, [y, x]) # map isn't transposed
+  @doc """
+  A quick wrapper for get_in that "transposes" the map
+  """
+  def get(maze, [x, y]), do: get_in(maze, [y, x])
 
   @doc """
-  returns {start_pos, maze}
+  Maze is a 2d grid turned into a map for bound detection
   """
+  @spec load_maze(String) :: {List, Map}
   def load_maze(filename) do
     {:ok, file} = File.read(__DIR__ <> "/#{filename}")
 
