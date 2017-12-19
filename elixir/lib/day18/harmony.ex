@@ -87,7 +87,7 @@ defmodule Advent2017.Day18 do
             |> next
         end
     after
-      5000 -> stop(state)
+      50 -> stop(state)
     end
   end
 
@@ -137,22 +137,25 @@ defmodule Advent2017.Day18 do
   end
 
   def run(state, instructions) do
-    state = setup_state(state)
-
     case state[:halt] do
       true -> state
       _ ->
         instruction   = Enum.at(instructions, state[:pointer])
-        [method|args] = String.split(instruction, " ", trim: true)
+        if is_nil(instruction) do
+          state
+        else
+          [method|args] = String.split(instruction, " ", trim: true)
 
-        run(apply(Advent2017.Day18, a(method), [state | args]), instructions)
+          run(apply(Advent2017.Day18, a(method), [state | args]), instructions)
+        end
     end
   end
 
   def p1 do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
-    run(%{limit: 1}, String.split(file, "\n", trim: true))
+    setup_state(%{limit: 1})
+    |> run(String.split(file, "\n", trim: true))
     |> Map.get(:rcv)
     |> List.first
   end
@@ -174,5 +177,10 @@ defmodule Advent2017.Day18 do
 
     Agent.cast(p0, __MODULE__, :run, [instructions])
     Agent.cast(p1, __MODULE__, :run, [instructions])
+
+    Agent.get(p0, fn state -> state end)
+    Agent.get(p1, fn state -> state end)
+    |> Map.get(:snd)
+    |> Enum.count
   end
 end
