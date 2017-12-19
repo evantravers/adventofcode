@@ -16,22 +16,24 @@ defmodule Advent2017.Day19 do
   end
 
   def v(maze, pos, direction, history) do
-    case get(maze, pos) do
-      "|" -> v(maze, next(pos, direction), direction, history) # continue
-      "+" -> turn(maze, pos, direction, history) # turn
-      "-" -> v(maze, next(pos, direction), direction, history) # skip
+    n = get(maze, pos)
+    case n do
+      "|" -> v(maze, next(pos, direction), direction, [n|history]) # continue
+      "+" -> turn(maze, pos, direction, [n|history]) # turn
+      "-" -> v(maze, next(pos, direction), direction, [n|history]) # skip
       " " -> Enum.reverse(history)
-      _ -> v(maze, next(pos, direction), direction, [get(maze, pos)|history]) # record and skip
+      _ -> v(maze, next(pos, direction), direction, [n|history]) # record and skip
     end
   end
 
   def h(maze, pos, direction, history) do
+    n = get(maze, pos)
     case get(maze, pos) do
-      "-" -> h(maze, next(pos, direction), direction, history) # continue
-      "+" -> turn(maze, pos, direction, history) # turn
-      "|" -> h(maze, next(pos, direction), direction, history) # skip
+      "-" -> h(maze, next(pos, direction), direction, [n|history]) # continue
+      "+" -> turn(maze, pos, direction, [n|history]) # turn
+      "|" -> h(maze, next(pos, direction), direction, [n|history]) # skip
       " " -> Enum.reverse(history)
-      _ -> h(maze, next(pos, direction), direction, [get(maze, pos)|history]) # record and skip
+      _ -> h(maze, next(pos, direction), direction, [n|history]) # record and skip
     end
   end
 
@@ -88,13 +90,19 @@ defmodule Advent2017.Day19 do
   def test do
     {start, maze} = load_maze("test.txt")
     mazerunner(maze, start)
+    |> Enum.filter(&Regex.match?(~r/[A-Z]/, &1))
     |> Enum.join
   end
 
   def p1 do
     {start, maze} = load_maze("input.txt")
     mazerunner(maze, start)
+    |> Enum.filter(&Regex.match?(~r/[A-Z]/, &1))
     |> Enum.join
   end
-  def p2, do: nil
+  def p2 do
+    {start, maze} = load_maze("input.txt")
+    mazerunner(maze, start)
+    |> Enum.count
+  end
 end
