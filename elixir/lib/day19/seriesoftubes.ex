@@ -31,14 +31,10 @@ defmodule Advent2017.Day19 do
     end
   end
 
-  def next([x, y], direction) do
-    case direction do
-      :u -> [x, y-1]
-      :d -> [x, y+1]
-      :l -> [x-1, y]
-      :r -> [x+1, y]
-    end
-  end
+  def next([x, y], :u), do: [x, y-1]
+  def next([x, y], :d), do: [x, y+1]
+  def next([x, y], :l), do: [x-1, y]
+  def next([x, y], :r), do: [x+1, y]
 
   @doc ~S"""
   returns a tuple of direction and new coordinate {dir, {x, y}}
