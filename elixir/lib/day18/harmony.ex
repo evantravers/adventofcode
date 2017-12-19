@@ -76,14 +76,15 @@ defmodule Advent2017.Day18 do
       {:snd, int} when is_integer(int) ->
         set(state, x, int)
 
-        if state[:limit] == length(state[:rcv]) do
-          state
-          |> Map.update!(:rcv, fn history -> [e(state, x)|history] end)
-          |> stop
-        else
-          state
-          |> Map.update!(:rcv, fn history -> [e(state, x)|history] end)
-          |> next
+        cond do
+          state[:limit] == length(state[:rcv]) ->
+            state
+            |> Map.update!(:rcv, fn history -> [e(state, x)|history] end)
+            |> stop
+          true ->
+            state
+            |> Map.update!(:rcv, fn history -> [e(state, x)|history] end)
+            |> next
         end
     after
       5000 -> stop(state)
@@ -127,14 +128,16 @@ defmodule Advent2017.Day18 do
     end
   end
 
-  def run(instructions, state \\ %{})
-  def run(instructions, state) do
-    state =
-      state
-      |> Map.put_new(:pointer, 0)
-      |> Map.put_new(:rcv, [])
-      |> Map.put_new(:snd, [])
-      |> Map.put_new(:target, self())
+  def setup_state(state \\ %{}) do
+    state
+    |> Map.put_new(:pointer, 0)
+    |> Map.put_new(:rcv, [])
+    |> Map.put_new(:snd, [])
+    |> Map.put_new(:target, self())
+  end
+
+  def run(state, instructions) do
+    state = setup_state(state)
 
     case state[:halt] do
       true -> state
@@ -142,16 +145,14 @@ defmodule Advent2017.Day18 do
         instruction   = Enum.at(instructions, state[:pointer])
         [method|args] = String.split(instruction, " ", trim: true)
 
-        run(instructions, apply(Advent2017.Day18, a(method), [state | args]))
+        run(apply(Advent2017.Day18, a(method), [state | args]), instructions)
     end
   end
 
   def p1 do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
-    file
-    |> String.split("\n")
-    |> run(%{limit: 1})
+    run(%{limit: 1}, String.split(file, "\n", trim: true))
     |> Map.get(:rcv)
     |> List.first
   end
