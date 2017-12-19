@@ -16,7 +16,7 @@ defmodule Advent2017.Day19 do
   end
 
   @doc """
-  We've hit a "+" node, and we are gonig to turn. Turn identifies which coords
+  We've hit a "+" node, and we are going to turn. Turn identifies which coords
   to check, and calls whichway on them to determine which fork is valid.
   """
   def turn(maze, [x, y], previous_direction, history) do
@@ -32,7 +32,7 @@ defmodule Advent2017.Day19 do
 
   @doc """
   Keep moving in the current direction, until we hit a "+" for a turn.  At
-  first I was catching all the different cases possible, but it tunrs out we
+  first I was catching all the different cases possible, but it turns out we
   just keep moving straight until we hit a turn, recording all the things we
   pass.
   """
