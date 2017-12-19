@@ -18,9 +18,7 @@ defmodule Advent2017.Day19 do
   def v(maze, pos, direction, history) do
     n = get(maze, pos)
     case n do
-      "|" -> v(maze, next(pos, direction), direction, [n|history]) # continue
       "+" -> turn(maze, pos, direction, [n|history]) # turn
-      "-" -> v(maze, next(pos, direction), direction, [n|history]) # skip
       " " -> Enum.reverse(history)
       _ -> v(maze, next(pos, direction), direction, [n|history]) # record and skip
     end
@@ -28,10 +26,8 @@ defmodule Advent2017.Day19 do
 
   def h(maze, pos, direction, history) do
     n = get(maze, pos)
-    case get(maze, pos) do
-      "-" -> h(maze, next(pos, direction), direction, [n|history]) # continue
+    case n do
       "+" -> turn(maze, pos, direction, [n|history]) # turn
-      "|" -> h(maze, next(pos, direction), direction, [n|history]) # skip
       " " -> Enum.reverse(history)
       _ -> h(maze, next(pos, direction), direction, [n|history]) # record and skip
     end
