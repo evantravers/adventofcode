@@ -16,8 +16,7 @@ defmodule Advent2017.Day19 do
   end
 
   def v(maze, pos, direction, history) do
-    n = get(maze, pos)
-    case n do
+    case n = get(maze, pos) do
       "+" -> turn(maze, pos, direction, [n|history]) # turn
       " " -> Enum.reverse(history)
       _ -> v(maze, next(pos, direction), direction, [n|history]) # record and skip
@@ -25,8 +24,7 @@ defmodule Advent2017.Day19 do
   end
 
   def h(maze, pos, direction, history) do
-    n = get(maze, pos)
-    case n do
+    case n = get(maze, pos) do
       "+" -> turn(maze, pos, direction, [n|history]) # turn
       " " -> Enum.reverse(history)
       _ -> h(maze, next(pos, direction), direction, [n|history]) # record and skip
@@ -51,8 +49,7 @@ defmodule Advent2017.Day19 do
     end)
   end
 
-  def turn(maze, pos, previous_direction, history) do
-    [x, y] = pos
+  def turn(maze, [x, y], previous_direction, history) do
     case previous_direction do
       vert when vert == :u or vert == :d ->
         {new_dir, new_pos} = whichway(maze, [{:l, [x-1, y]}, {:r, [x+1, y]}], "-")
