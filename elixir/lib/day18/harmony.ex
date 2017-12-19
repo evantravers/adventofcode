@@ -164,6 +164,15 @@ defmodule Advent2017.Day18 do
 
     instructions =
       file
-      |> String.split("\n")
+      |> String.split("\n", trim: true)
+
+    {:ok, p0} = Agent.start_link(fn -> setup_state(%{p: 0}) end)
+    {:ok, p1} = Agent.start_link(fn -> setup_state(%{p: 1}) end)
+
+    Agent.update(p0, fn state -> %{state | target: p1} end)
+    Agent.update(p1, fn state -> %{state | target: p0} end)
+
+    Agent.cast(p0, __MODULE__, :run, [instructions])
+    Agent.cast(p1, __MODULE__, :run, [instructions])
   end
 end
