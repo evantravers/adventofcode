@@ -57,8 +57,12 @@ defmodule Advent2017.Day20 do
   def p1 do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
-    file
-    |> String.split("\n", trim: true)
-    |> Enum.map(&Particle.new &1)
+    particle_field =
+      file
+      |> String.split("\n", trim: true)
+      |> Enum.map(&Particle.new &1)
+
+      # run the simulation until *all* particles are headed away from origin
+      # closest particle is winner
   end
 end
