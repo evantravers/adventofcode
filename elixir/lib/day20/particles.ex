@@ -4,7 +4,8 @@ defmodule Advent2017.Day20 do
   defmodule Particle do
     defstruct p: [nil, nil, nil],
               v: [nil, nil, nil],
-              a: [nil, nil, nil]
+              a: [nil, nil, nil],
+              blue_shift: false
 
 
     def new(string) do
@@ -30,12 +31,16 @@ defmodule Advent2017.Day20 do
         ...> |> Advent2017.Day20.Particle.tick
         %Advent2017.Day20.Particle{a: [-1, 0, 0],
                                    p: [4, 0, 0],
-                                   v: [1, 0, 0]}
+                                   v: [1, 0, 0],
+                                   blue_shift: true}
     """
     def tick(p) do
-      v = increase_by(p[:v], p[:a])
-      %Particle{p | v: v,
-                    p: increase_by(p[:p], v)}
+      new_velocity = increase_by(p[:v], p[:a])
+      new_position = increase_by(p[:p], new_velocity)
+      %Particle{p | v: new_velocity,
+                    p: new_position,
+                    blue_shift: distance(new_position) > distance(p[:p])
+      }
     end
     def increase_by(list1, list2) do
         Enum.zip(list1, list2)
@@ -43,26 +48,48 @@ defmodule Advent2017.Day20 do
     end
 
     @doc ~S"""
-        iex> Advent2017.Day20.Particle.new("p=<3,-2,1>, v=<2,0,0>, a=<-1,0,0>")
+        iex> Advent2017.Day20.Particle.new("p=<3,-2,1>, v=<2,0,0>, a=<-1,0,0>")[:p]
         ...> |> Advent2017.Day20.Particle.distance
         6
     """
-    def distance(particle, dest \\ [0, 0, 0]) do
-      Enum.zip(particle[:p], dest)
+    def distance(particle, dest \\ [0, 0, 0])
+    def distance(particle, dest) when is_map(particle) do
+      distance(particle[:p], dest)
+    end
+    def distance(coords, dest) when is_list(coords) do
+      Enum.zip(coords, dest)
       |> Enum.map(fn {v1, v2} -> abs(v2 - v1) end)
       |> Enum.sum
+    end
+  end
+
+
+  @doc """
+  Run the simulation until *all* particles are headed away from origin.
+  Closest particle is winner.
+  """
+  def simulate(particles) do
+    cond do
+      Enum.all?(particles, fn p -> p[:blue_shift] end) ->
+        particles
+      true ->
+        simulate(Enum.map(particles, &Particle.tick &1))
     end
   end
 
   def p1 do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
-    particle_field =
-      file
-      |> String.split("\n", trim: true)
-      |> Enum.map(&Particle.new &1)
-
-      # run the simulation until *all* particles are headed away from origin
-      # closest particle is winner
+    file
+    |> String.split("\n", trim: true)
+    |> Enum.map(&Particle.new &1)
+    |> simulate
+    |> Enum.map(fn p -> Particle.distance(p) end)
+    |> Enum.with_index
+    |> List.keysort(0)
+    |> hd
+    |> (fn {v, i} -> "The particle at #{i} w/ a distance of #{v}" end).()
   end
+
+  def p2, do: nil
 end
