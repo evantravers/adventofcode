@@ -18,7 +18,7 @@ defmodule Advent2017.Day20 do
     def fetch(map, val), do: Map.fetch(map, val)
 
 
-    @doc """
+    @doc ~S"""
     Increase the X velocity by the X acceleration.
     Increase the Y velocity by the Y acceleration.
     Increase the Z velocity by the Z acceleration.
@@ -42,8 +42,15 @@ defmodule Advent2017.Day20 do
         |> Enum.map(fn {v1, v2} -> v1 + v2 end)
     end
 
-    def distance_from([x, y, z]) do
-      [x, y, z]
+    @doc ~S"""
+        iex> Advent2017.Day20.Particle.new("p=<3,-2,1>, v=<2,0,0>, a=<-1,0,0>")
+        ...> |> Advent2017.Day20.Particle.distance
+        6
+    """
+    def distance(particle, dest \\ [0, 0, 0]) do
+      Enum.zip(particle[:p], dest)
+      |> Enum.map(fn {v1, v2} -> abs(v2 - v1) end)
+      |> Enum.sum
     end
   end
 
