@@ -2,9 +2,9 @@ require IEx
 
 defmodule Advent2017.Day20 do
   defmodule Particle do
-    defstruct p: [x: nil, y: nil, z: nil],
-              v: [x: nil, y: nil, z: nil],
-              a: [x: nil, y: nil, z: nil]
+    defstruct p: [nil, nil, nil],
+              v: [nil, nil, nil],
+              a: [nil, nil, nil]
 
 
     def new(string) do
@@ -12,7 +12,6 @@ defmodule Advent2017.Day20 do
       |> List.flatten
       |> Enum.map(&String.to_integer &1)
       |> Enum.chunk_every(3)
-      |> Enum.map(&Enum.zip([:x, :y, :z], &1))
       |> (fn [p, v, a] -> %Particle{p: p, v: v, a: a} end).()
     end
 
@@ -29,18 +28,22 @@ defmodule Advent2017.Day20 do
 
         iex> Advent2017.Day20.Particle.new("p=<3,0,0>, v=<2,0,0>, a=<-1,0,0>")
         ...> |> Advent2017.Day20.Particle.tick
-        %Advent2017.Day20.Particle{a: [x: -1, y: 0, z: 0],
-                                   p: [x: 4, y: 0, z: 0],
-                                   v: [x: 1, y: 0, z: 0]}
+        %Advent2017.Day20.Particle{a: [-1, 0, 0],
+                                   p: [4, 0, 0],
+                                   v: [1, 0, 0]}
     """
     def tick(p) do
-      v = increment_by(p[:v], p[:a])
+      v = increase_by(p[:v], p[:a])
       %Particle{p | v: v,
-                    p: increment_by(p[:p], v)}
+                    p: increase_by(p[:p], v)}
     end
-    def increment_by(list1, list2) do
+    def increase_by(list1, list2) do
         Enum.zip(list1, list2)
-        |> Enum.map(fn {{key, val1,}, {_, val2}} -> {key, val1 + val2} end)
+        |> Enum.map(fn {v1, v2} -> v1 + v2 end)
+    end
+
+    def distance_from([x, y, z]) do
+      [x, y, z]
     end
   end
 
