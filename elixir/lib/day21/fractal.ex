@@ -77,6 +77,11 @@ defmodule Advent2017.Day21 do
     |> rotate(num-1)
   end
 
+  def all_combinations(grid) do
+    Enum.map((0..3), fn int -> [rotate(grid, int), flip(rotate(grid, int))] end)
+    |> Enum.reduce(&Enum.concat(&1, &2))
+  end
+
   def print(grid) do
     Enum.map(grid, fn row ->
       Enum.map(row, fn col ->
