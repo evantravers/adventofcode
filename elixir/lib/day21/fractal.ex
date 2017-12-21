@@ -32,20 +32,24 @@ defmodule Advent2017.Day21 do
   example, the following rules correspond to the adjacent patterns:
   """
 
-  def rule(rule_string) do
-    # read in a rule from a string
+  @doc """
+  Read in a rule from a string and generate a map with every possible matching
+  rule leading to the same result pattern
+  """
+  def rule(rule_string, rules \\ %{}) do
     [pattern, result] =
       String.split(rule_string, " => ", trim: true)
       |> Enum.map(&to_grid &1)
 
-    # generate a map of all the rotated/flipped options leading to the same
-    # result pattern
+    all_combinations(pattern)
+
   end
 
   @doc """
   Takes in the format of the rule, outputs a two dimensional array of booleans.
-  I think I'd like to explore doing this in place... in a single array
-  possibly.
+
+  TODO: I think I'd like to explore doing this in place... in a single array
+  possibly. Can we rotate and flip w/out transforming the 1d array into 2d?
   """
   def to_grid(str) do
     String.split(str, "/", trim: true)
