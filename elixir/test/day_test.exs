@@ -11,4 +11,5 @@ defmodule Advent2017Test do
   doctest Advent2017.Day18
   doctest Advent2017.Day20
   doctest Advent2017.Day20.Particle
+  doctest Advent2017.Day21
 end
