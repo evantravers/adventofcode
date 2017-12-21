@@ -95,4 +95,28 @@ defmodule Advent2017.Day21 do
     end)
     |> Enum.join
   end
+
+  @doc """
+  Splits an "odd" grid up into 3x3 squares
+  TODO: Make this work
+  """
+  def iterate(grid) when rem(length(grid), 3) == 0 do
+    subgrid_size = div(length(grid), 3)
+
+    grid
+    |> Enum.chunk_every(subgrid_size)
+  end
+
+  @doc """
+  Splits an "even" grid up into 2x2 squares
+  TODO: Make this work
+  """
+  def iterate(grid) when rem(length(grid), 2) == 0 do
+    number_of_subgrids = div(length(grid), 2)
+
+    grid
+    |> List.flatten
+    |> Enum.chunk_every(2)
+    |> Enum.chunk_every(number_of_subgrids)
+  end
 end
