@@ -66,9 +66,15 @@ defmodule Advent2017.Day21 do
   @doc """
   Rotates the grid 90 degrees clockwise using a transpose and a flip. Is there
   a better way? Maybe.
+
+  By default, rotates 1 time, you can provide an integer (1-3) to keep
+  rotating.
   """
-  def rotate(grid) do
+  def rotate(grid, num \\ 1)
+  def rotate(grid, num) when num == 0, do: grid
+  def rotate(grid, num) when num > 0 do
     flip(List.zip(grid) |> Enum.map(&Tuple.to_list(&1)))
+    |> rotate(num-1)
   end
 
   def print(grid) do
