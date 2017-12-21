@@ -5,3 +5,12 @@ solutions, run `mix run_all`. I've been developing and testing by running `iex
 -S mix` and running solutions in iex by typing `Advent2017.Day<num>.p1`. You
 can also run a specific day's solution w/ `mix day <num>`.
 
+## TODO
+
+- Refactor for speed:
+  - [ ] Day 5
+  - [ ] Day 13
+  - [ ] Day 15
+- Finish P2:
+  - [ ] Day 14
+  - [ ] Day 18
