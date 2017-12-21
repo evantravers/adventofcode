@@ -1,19 +1,26 @@
 require IEx
 
 defmodule Advent2017.Day20 do
+  @moduledoc """
+  New plan, "borrowed" from clever redditor: Run the sim. If the farthest
+  particle has the highest acceleration and velocity, remove it, it has
+  "escaped" it has "escaped". If collision, remove from set. When you have one
+  left, that's the closest to origin.
+  """
+
   defmodule Particle do
-    defstruct p: [nil, nil, nil],
-              v: [nil, nil, nil],
-              a: [nil, nil, nil],
-              blue_shift: false
+    defstruct pos: [nil, nil, nil],
+              vel: [nil, nil, nil],
+              acc: [nil, nil, nil],
+              id: nil
 
 
-    def new(string) do
+    def new({string, id}) do
       Regex.scan(~r/-*\d+/, string)
       |> List.flatten
       |> Enum.map(&String.to_integer &1)
       |> Enum.chunk_every(3)
-      |> (fn [p, v, a] -> %Particle{p: p, v: v, a: a} end).()
+      |> (fn [p, v, a] -> %Particle{id: id, pos: p, vel: v, acc: a} end).()
     end
 
     def fetch(map, val), do: Map.fetch(map, val)
@@ -27,19 +34,19 @@ defmodule Advent2017.Day20 do
     Increase the Y position by the Y velocity.
     Increase the Z position by the Z velocity.
 
-        iex> Advent2017.Day20.Particle.new("p=<3,0,0>, v=<2,0,0>, a=<-1,0,0>")
+        iex> Advent2017.Day20.Particle.new({"p=<3,0,0>, v=<2,0,0>, a=<-1,0,0>", 2})
         ...> |> Advent2017.Day20.Particle.tick
-        %Advent2017.Day20.Particle{a: [-1, 0, 0],
-                                   p: [4, 0, 0],
-                                   v: [1, 0, 0],
-                                   blue_shift: true}
+        %Advent2017.Day20.Particle{acc: [-1, 0, 0],
+                                   pos: [4, 0, 0],
+                                   vel: [1, 0, 0],
+                                   id: 2}
     """
+    @spec tick(Particle) :: Particle
     def tick(p) do
-      new_velocity = increase_by(p[:v], p[:a])
-      new_position = increase_by(p[:p], new_velocity)
-      %Particle{p | v: new_velocity,
-                    p: new_position,
-                    blue_shift: distance(new_position) > distance(p[:p])
+      new_velocity = increase_by(p[:vel], p[:acc])
+      new_position = increase_by(p[:pos], new_velocity)
+      %Particle{p | vel: new_velocity,
+                    pos: new_position,
       }
     end
     def increase_by(list1, list2) do
@@ -48,14 +55,11 @@ defmodule Advent2017.Day20 do
     end
 
     @doc ~S"""
-        iex> Advent2017.Day20.Particle.new("p=<3,-2,1>, v=<2,0,0>, a=<-1,0,0>")[:p]
+        iex> Advent2017.Day20.Particle.new({"p=<3,-2,1>, v=<2,0,0>, a=<-1,0,0>", 0})[:pos]
         ...> |> Advent2017.Day20.Particle.distance
         6
     """
     def distance(particle, dest \\ [0, 0, 0])
-    def distance(particle, dest) when is_map(particle) do
-      distance(particle[:p], dest)
-    end
     def distance(coords, dest) when is_list(coords) do
       Enum.zip(coords, dest)
       |> Enum.map(fn {v1, v2} -> abs(v2 - v1) end)
@@ -64,17 +68,48 @@ defmodule Advent2017.Day20 do
   end
 
 
-  @doc """
-  Run the simulation until *all* particles are headed away from origin.
-  Closest particle is winner.
-  """
+  def simulate(particles) when length(particles) == 1, do: particles
   def simulate(particles) do
+    particles
+    |> Enum.map(&Particle.tick &1)
+    |> collision_detection
+    |> filter_escapees
+    |> simulate
+  end
+
+  def greatest(particles, attr) do
+    Enum.sort(particles, fn p1, p2 ->
+      Particle.distance(p1[attr]) < Particle.distance(p2[attr])
+    end)
+    |> Enum.reverse
+  end
+
+  def filter_escapees(particles) do
     cond do
-      Enum.all?(particles, fn p -> p[:blue_shift] end) ->
-        particles
-      true ->
-        simulate(Enum.map(particles, &Particle.tick &1))
+      hd(greatest(particles, :pos)) == hd(greatest(particles, :acc)) ->
+        filter_escapees(List.delete(particles, hd(greatest(particles, :pos))))
+      hd(greatest(particles, :pos)) == hd(greatest(particles, :vel)) ->
+        filter_escapees(List.delete(particles, hd(greatest(particles, :pos))))
+      true -> particles
     end
+  end
+
+  @doc ~S"""
+  Remove particles who are occuping the same [x, y, z]
+
+      iex> [%Advent2017.Day20.Particle{pos: [1, 2, 4], vel: [2, 2, 0]}, %Advent2017.Day20.Particle{pos: [1, 2, 4], vel: [2, 0, 0]}]
+      ...> |> Advent2017.Day20.collision_detection
+      ...> |> Enum.count
+      0
+  """
+  def collision_detection(particles) do
+    particles
+    |> Enum.reduce([], fn particle, list ->
+      cond do
+        Enum.find(Enum.map(list, & &1[:pos]), fn match -> match[:pos] == particle[:pos] end) -> list
+        true -> [particle|list]
+      end
+    end)
   end
 
   def p1 do
@@ -82,14 +117,21 @@ defmodule Advent2017.Day20 do
 
     file
     |> String.split("\n", trim: true)
+    |> Enum.with_index
     |> Enum.map(&Particle.new &1)
     |> simulate
-    |> Enum.map(fn p -> Particle.distance(p) end)
-    |> Enum.with_index
-    |> List.keysort(0)
-    |> hd
-    |> (fn {v, i} -> "The particle at #{i} w/ a distance of #{v}" end).()
   end
 
-  def p2, do: nil
+  def p2 do
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
+
+    {_, escapees} =
+      file
+      |> String.split("\n", trim: true)
+      |> Enum.with_index
+      |> Enum.map(&Particle.new &1)
+      |> simulate
+
+    escapees
+  end
 end
