@@ -31,4 +31,53 @@ defmodule Advent2017.Day21 do
   listed as single units, ordered top-down, and separated by slashes. For
   example, the following rules correspond to the adjacent patterns:
   """
+
+  def rule(rule_string) do
+    # read in a rule from a string
+    [pattern, result] =
+      String.split(rule_string, " => ", trim: true)
+      |> Enum.map(&to_grid &1)
+
+    # generate a map of all the rotated/flipped options leading to the same
+    # result pattern
+  end
+
+  @doc """
+  Takes in the format of the rule, outputs a two dimensional array of booleans.
+  I think I'd like to explore doing this in place... in a single array
+  possibly.
+  """
+  def to_grid(str) do
+    String.split(str, "/", trim: true)
+    |> Enum.map(fn substr ->
+      String.split(substr, "", trim: true)
+      |> Enum.map(& &1 == "#")
+    end)
+  end
+
+  def flip(grid) do
+    Enum.map(grid, fn row -> Enum.reverse(row) end)
+  end
+
+  @doc """
+  Rotates the grid 90 degrees clockwise using a transpose and a flip. Is there
+  a better way? Maybe.
+  """
+  def rotate(grid) do
+    flip(List.zip(grid) |> Enum.map(&Tuple.to_list(&1)))
+  end
+
+  def print(grid) do
+    Enum.map(grid, fn row ->
+      Enum.map(row, fn col ->
+        case col do
+           true -> "#"
+          false -> "."
+        end
+      end)
+      |> Enum.join
+      |> Kernel.<>("\n")
+    end)
+    |> Enum.join
+  end
 end
