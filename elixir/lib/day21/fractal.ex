@@ -32,6 +32,75 @@ defmodule Advent2017.Day21 do
   example, the following rules correspond to the adjacent patterns:
   """
 
+  defmodule Grid do
+    @moduledoc """
+    A Grid is a MapSet of coords and a memoized size attribute.
+
+    I'm hoping to do splits and joins between the "patterns" easier here, using
+    Enum.with_index to provide an offset...
+
+    To split a Grid, you iterate over the possible slices of coordinates,
+    collecting the coordinates in each one and subtracting their size *
+    subgrid_index from their [x, y].
+
+    To join any number of Grids, you put them in an 2d list, and add their
+    size * subgrid_index to their x and y values.
+    """
+    defstruct coords: MapSet.new, size: 0
+
+    def put(g, coord)do
+      %Grid{g | coords: MapSet.put(g.coords, coord)}
+    end
+
+    def flip(g) do
+      flipped =
+        g.coords
+        |> Enum.map(fn [x, y] -> [(g.size-1) - x, y] end)
+        |> MapSet.new
+      %Grid{g | coords: flipped}
+    end
+
+    @doc """
+    Rotates the grid 90 degrees clockwise using a transpose and a flip. Is there
+    a better way? Maybe.
+
+    By default, rotates 1 time, you can provide an integer (1-3) to keep
+    rotating.
+    """
+    def rotate(g, num \\ 1)
+    def rotate(g, num) when num == 0, do: g
+    def rotate(g, num) when num > 0 do
+      Map.update(g, :coords, MapSet.new, &MapSet.new(Enum.map(&1, fn [x, y] -> [y, x] end)))
+      |> flip
+      |> rotate(num-1)
+    end
+
+    def all_combinations(grid) do
+      grid
+      # Enum.map((0..3), fn int -> [rotate(grid, int), flip(rotate(grid, int))] end)
+      # |> Enum.reduce(&Enum.concat(&1, &2))
+    end
+
+    @doc """
+    Pretty print my weird grid implementation, for debugging.
+    """
+    def pp(grid) do
+      size = grid.size-1
+      Enum.map(0..size, fn y ->
+        Enum.map(0..size, fn x ->
+          case MapSet.member? grid.coords, [x, y] do
+            true -> "#"
+            false -> "."
+          end
+        end)
+        |> Enum.join
+      end)
+      |> Enum.intersperse("\n")
+      |> Enum.join
+      |> IO.puts
+    end
+  end
+
   @doc """
   Read in a rule from a string and generate a map with every possible matching
   rule leading to the same result pattern
@@ -40,83 +109,37 @@ defmodule Advent2017.Day21 do
     [pattern, result] =
       String.split(rule_string, " => ", trim: true)
       |> Enum.map(&to_grid &1)
-
-    all_combinations(pattern)
-
+    {pattern, result}
   end
 
   @doc """
-  Takes in the format of the rule, outputs a two dimensional array of booleans.
-
-  TODO: I think I'd like to explore doing this in place... in a single array
-  possibly. Can we rotate and flip w/out transforming the 1d array into 2d?
+  Takes in the format of the rule, outputs a set of coordinates of the "true"
+  values in a Grid struct
   """
-  def to_grid(str) do
-    String.split(str, "/", trim: true)
-    |> Enum.map(fn substr ->
-      String.split(substr, "", trim: true)
-      |> Enum.map(& &1 == "#")
-    end)
-  end
-
-  def flip(grid) do
-    Enum.map(grid, fn row -> Enum.reverse(row) end)
-  end
-
-  @doc """
-  Rotates the grid 90 degrees clockwise using a transpose and a flip. Is there
-  a better way? Maybe.
-
-  By default, rotates 1 time, you can provide an integer (1-3) to keep
-  rotating.
-  """
-  def rotate(grid, num \\ 1)
-  def rotate(grid, num) when num == 0, do: grid
-  def rotate(grid, num) when num > 0 do
-    flip(List.zip(grid) |> Enum.map(&Tuple.to_list(&1)))
-    |> rotate(num-1)
-  end
-
-  def all_combinations(grid) do
-    Enum.map((0..3), fn int -> [rotate(grid, int), flip(rotate(grid, int))] end)
-    |> Enum.reduce(&Enum.concat(&1, &2))
-  end
-
-  def print(grid) do
-    Enum.map(grid, fn row ->
-      Enum.map(row, fn col ->
-        case col do
-           true -> "#"
-          false -> "."
-        end
+  def to_grid(pattern) do
+    rows = String.split(pattern, "/", trim: true)
+    c =
+      rows
+      |> Enum.with_index
+      |> Enum.map(fn {row, y} ->
+        String.split(row, "", trim: true)
+        |> Enum.with_index
+        |> Enum.reduce([], fn {char, x}, list ->
+          case char do
+            "#" -> [[x, y] | list]
+            "." -> list
+          end
+        end)
       end)
-      |> Enum.join
-      |> Kernel.<>("\n")
-    end)
-    |> Enum.join
+      |> Enum.concat
+      |> MapSet.new
+    %Grid{coords: c, size: length(rows)}
   end
 
-  @doc """
-  Splits an "odd" grid up into 3x3 squares
-  TODO: Make this work
-  """
-  def iterate(grid) when rem(length(grid), 3) == 0 do
-    subgrid_size = div(length(grid), 3)
+  def p1 do
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
-    grid
-    |> Enum.chunk_every(subgrid_size)
-  end
-
-  @doc """
-  Splits an "even" grid up into 2x2 squares
-  TODO: Make this work
-  """
-  def iterate(grid) when rem(length(grid), 2) == 0 do
-    number_of_subgrids = div(length(grid), 2)
-
-    grid
-    |> List.flatten
-    |> Enum.chunk_every(2)
-    |> Enum.chunk_every(number_of_subgrids)
+    file
+    |> String.split("\n", trim: true)
   end
 end
