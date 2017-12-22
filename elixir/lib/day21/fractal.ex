@@ -110,23 +110,28 @@ defmodule Advent2017.Day21 do
       |> Enum.reduce(&Enum.concat(&1, &2))
     end
 
-    @doc """
-    Pretty print my weird grid implementation, for debugging.
-    """
     defimpl Inspect do
+      @doc """
+      Pretty print my weird grid implementation, for debugging.
+      """
       def inspect(grid, _) do
-        size = grid.size-1
-        Enum.map(0..size, fn y ->
-          Enum.map(0..size, fn x ->
-            case MapSet.member? grid.coords, [x, y] do
-              true -> "#"
-              false -> "."
-            end
+        """
+
+        #{
+          size = grid.size-1
+          Enum.map(0..size, fn y ->
+            Enum.map(0..size, fn x ->
+              case MapSet.member? grid.coords, [x, y] do
+                true -> "#"
+                false -> "."
+              end
+            end)
+            |> Enum.join
           end)
+          |> Enum.intersperse("\n")
           |> Enum.join
-        end)
-        |> Enum.intersperse("\n")
-        |> Enum.join
+        }
+        """
       end
     end
   end
