@@ -131,14 +131,20 @@ defmodule Advent2017.Day21 do
     end
   end
 
+  def build_rulebook(rules) do
+    rules
+    |> String.split("\n", trim: true)
+    |> Enum.map(&rule &1)
+  end
+
   @doc """
   Read in a rule from a string and generate a map with every possible matching
   rule leading to the same result pattern
   """
-  def rule(rule_string, rules \\ %{}) do
+  def rule(rule_string) do
     [pattern, result] =
       String.split(rule_string, " => ", trim: true)
-      |> Enum.map(&to_grid &1)
+      |> Enum.map(&Grid.new &1)
     {pattern, result}
   end
 
@@ -146,6 +152,6 @@ defmodule Advent2017.Day21 do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     file
-    |> String.split("\n", trim: true)
+    |> build_rulebook
   end
 end
