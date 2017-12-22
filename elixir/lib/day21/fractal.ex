@@ -53,11 +53,11 @@ defmodule Advent2017.Day21 do
     end
 
     def flip(g) do
-      flipped =
-        g.coords
+      Map.update!(g, :coords, fn coords ->
+        coords
         |> Enum.map(fn [x, y] -> [(g.size-1) - x, y] end)
         |> MapSet.new
-      %Grid{g | coords: flipped}
+      end)
     end
 
     @doc """
@@ -70,7 +70,7 @@ defmodule Advent2017.Day21 do
     def rotate(g, num \\ 1)
     def rotate(g, num) when num == 0, do: g
     def rotate(g, num) when num > 0 do
-      Map.update(g, :coords, MapSet.new, &MapSet.new(Enum.map(&1, fn [x, y] -> [y, x] end)))
+      Map.update!(g, :coords, &MapSet.new(Enum.map(&1, fn [x, y] -> [y, x] end)))
       |> flip
       |> rotate(num-1)
     end
