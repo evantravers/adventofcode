@@ -149,6 +149,26 @@ defmodule Advent2017.Day21 do
       subgridsize*offset..subgridsize*offset+(subgridsize-1)
     end
 
+    def join(grid_of_grids) do
+      joinedsize = length(grid_of_grids) * hd(List.flatten(grid_of_grids)).size
+
+      grid_of_grids
+      |> Enum.with_index
+      |> Enum.map(fn {row, y_offset} ->
+        row
+        |> Enum.with_index
+        |> Enum.map(fn {grid, x_offset} ->
+          grid.coords
+          |> Enum.map(fn [x, y] ->
+            [x + x_offset*grid.size, y + y_offset*grid.size]
+          end)
+        end)
+        |> Enum.concat
+      end)
+      |> Enum.concat
+      |> Grid.new(joinedsize)
+    end
+
     def all_combinations(grid) do
       Enum.map((0..3), fn int -> [rotate(grid, int), flip(rotate(grid, int))] end)
       |> Enum.reduce(&Enum.concat(&1, &2))
