@@ -101,7 +101,7 @@ defmodule Advent2017.Day21 do
 
     def match(src, target) do
       Enum.any?(all_combinations(src), fn rule ->
-        MapSet.subset?(rule.coords, target.coords)
+        rule.coords == target.coords
       end)
     end
 
