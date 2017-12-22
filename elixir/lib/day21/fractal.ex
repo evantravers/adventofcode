@@ -52,7 +52,7 @@ defmodule Advent2017.Day21 do
     Takes in the format of the rule, outputs a set of coordinates of the "true"
     values in a Grid struct
     """
-    def new(pattern) do
+    def new(pattern) when is_binary(pattern) do
       rows = String.split(pattern, "/", trim: true)
       c =
         rows
@@ -70,6 +70,10 @@ defmodule Advent2017.Day21 do
         |> Enum.concat
         |> MapSet.new
       %Grid{coords: c, size: length(rows)}
+    end
+
+    def new(coords, size) when is_list(coords) do
+      %Grid{coords: MapSet.new(coords), size: size}
     end
 
     def put(g, coord)do
@@ -103,6 +107,46 @@ defmodule Advent2017.Day21 do
       Enum.any?(all_combinations(src), fn rule ->
         rule.coords == target.coords
       end)
+    end
+
+    @doc """
+    This function takes a grid and returns a 2d array of Grids to be compared
+    against the rules.
+
+    Essentially, I figure out how many possible "buckets" the grid is going to
+    be subdivided into. I then iterate over those buckets, and take the
+    matching coords from the parent grid and put them in there.
+
+    I then adjust the x and y on the subgrid's coords to fit their new state as
+    smaller grids.
+    """
+    def subdivide(grid) do
+      cond do
+        rem(grid.size, 2) == 0 -> subdivide(grid, 2)
+        rem(grid.size, 3) == 0 -> subdivide(grid, 3)
+      end
+    end
+    def subdivide(grid, subgridsize) do
+      number_of_subgrids = div(grid.size, subgridsize)
+      subgrid_index = number_of_subgrids - 1
+      Enum.map(0..subgrid_index, fn y_offset ->
+        Enum.map(0..subgrid_index, fn x_offset ->
+          Enum.filter(grid.coords, fn [x, y] ->
+            Enum.member?(subrange(subgridsize, x_offset), x)
+            &&
+            Enum.member?(subrange(subgridsize, y_offset), y)
+          end)
+          |> Enum.map(fn [x, y] -> [x - x_offset*subgridsize, y - y_offset*subgridsize] end)
+          |> Grid.new(subgridsize)
+        end)
+      end)
+    end
+
+    @doc """
+    Returns an offset range for subdivide/2.
+    """
+    def subrange(subgridsize, offset \\ 0) do
+      subgridsize*offset..subgridsize*offset+(subgridsize-1)
     end
 
     def all_combinations(grid) do
