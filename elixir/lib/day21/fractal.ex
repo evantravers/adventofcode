@@ -1,4 +1,6 @@
 defmodule Advent2017.Day21 do
+  @glider ".#./..#/###"
+
   @moduledoc """
   You find a program trying to generate some art. It uses a strange process
   that involves repeatedly enhancing the detail of an image through a set of
@@ -103,7 +105,7 @@ defmodule Advent2017.Day21 do
       |> rotate(num-1)
     end
 
-    def match(src, target) do
+    def match?(src, target) do
       Enum.any?(all_combinations(src), fn rule ->
         rule.coords == target.coords
       end)
@@ -200,6 +202,21 @@ defmodule Advent2017.Day21 do
     end
   end
 
+  def iterate(grid, rules, count \\ 1)
+  def iterate(grid, _, 0), do: grid
+  def iterate(grid, rules, count) do
+    grid
+    |> Grid.subdivide
+    |> Enum.map(fn row ->
+      Enum.map(row, fn pattern ->
+        {_, result} = Enum.find(rules, 0, fn {rule, _} -> Grid.match?(rule, pattern) end)
+        result
+      end)
+    end)
+    |> Grid.join
+    |> iterate(rules, count - 1)
+  end
+
   def build_rulebook(rules) do
     rules
     |> String.split("\n", trim: true)
@@ -217,10 +234,39 @@ defmodule Advent2017.Day21 do
     {pattern, result}
   end
 
+  def test do
+    {:ok, file} = File.read(__DIR__ <> "/test.txt")
+
+    rulebook = build_rulebook file
+
+    grid = Grid.new(@glider)
+
+    iterate(grid, rulebook, 2)
+    |> Map.get(:coords)
+    |> Enum.count
+  end
+
   def p1 do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
-    file
-    |> build_rulebook
+    rulebook = build_rulebook file
+
+    grid = Grid.new(@glider)
+
+    iterate(grid, rulebook, 5)
+    |> Map.get(:coords)
+    |> Enum.count
+  end
+
+  def p2 do
+    {:ok, file} = File.read(__DIR__ <> "/input.txt")
+
+    rulebook = build_rulebook file
+
+    grid = Grid.new(@glider)
+
+    iterate(grid, rulebook, 18)
+    |> Map.get(:coords)
+    |> Enum.count
   end
 end
