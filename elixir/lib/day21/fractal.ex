@@ -48,6 +48,30 @@ defmodule Advent2017.Day21 do
     """
     defstruct coords: MapSet.new, size: 0
 
+    @doc """
+    Takes in the format of the rule, outputs a set of coordinates of the "true"
+    values in a Grid struct
+    """
+    def new(pattern) do
+      rows = String.split(pattern, "/", trim: true)
+      c =
+        rows
+        |> Enum.with_index
+        |> Enum.map(fn {row, y} ->
+          String.split(row, "", trim: true)
+          |> Enum.with_index
+          |> Enum.reduce([], fn {char, x}, list ->
+            case char do
+              "#" -> [[x, y] | list]
+              "." -> list
+            end
+          end)
+        end)
+        |> Enum.concat
+        |> MapSet.new
+      %Grid{coords: c, size: length(rows)}
+    end
+
     def put(g, coord)do
       %Grid{g | coords: MapSet.put(g.coords, coord)}
     end
@@ -110,30 +134,6 @@ defmodule Advent2017.Day21 do
       String.split(rule_string, " => ", trim: true)
       |> Enum.map(&to_grid &1)
     {pattern, result}
-  end
-
-  @doc """
-  Takes in the format of the rule, outputs a set of coordinates of the "true"
-  values in a Grid struct
-  """
-  def to_grid(pattern) do
-    rows = String.split(pattern, "/", trim: true)
-    c =
-      rows
-      |> Enum.with_index
-      |> Enum.map(fn {row, y} ->
-        String.split(row, "", trim: true)
-        |> Enum.with_index
-        |> Enum.reduce([], fn {char, x}, list ->
-          case char do
-            "#" -> [[x, y] | list]
-            "." -> list
-          end
-        end)
-      end)
-      |> Enum.concat
-      |> MapSet.new
-    %Grid{coords: c, size: length(rows)}
   end
 
   def p1 do
