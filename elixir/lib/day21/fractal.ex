@@ -113,20 +113,21 @@ defmodule Advent2017.Day21 do
     @doc """
     Pretty print my weird grid implementation, for debugging.
     """
-    def pp(grid) do
-      size = grid.size-1
-      Enum.map(0..size, fn y ->
-        Enum.map(0..size, fn x ->
-          case MapSet.member? grid.coords, [x, y] do
-            true -> "#"
-            false -> "."
-          end
+    defimpl Inspect do
+      def inspect(grid, _) do
+        size = grid.size-1
+        Enum.map(0..size, fn y ->
+          Enum.map(0..size, fn x ->
+            case MapSet.member? grid.coords, [x, y] do
+              true -> "#"
+              false -> "."
+            end
+          end)
+          |> Enum.join
         end)
+        |> Enum.intersperse("\n")
         |> Enum.join
-      end)
-      |> Enum.intersperse("\n")
-      |> Enum.join
-      |> IO.puts
+      end
     end
   end
 
