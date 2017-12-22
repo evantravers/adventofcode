@@ -99,10 +99,15 @@ defmodule Advent2017.Day21 do
       |> rotate(num-1)
     end
 
+    def match(src, target) do
+      Enum.any?(all_combinations(src), fn rule ->
+        MapSet.subset?(rule.coords, target.coords)
+      end)
+    end
+
     def all_combinations(grid) do
-      grid
-      # Enum.map((0..3), fn int -> [rotate(grid, int), flip(rotate(grid, int))] end)
-      # |> Enum.reduce(&Enum.concat(&1, &2))
+      Enum.map((0..3), fn int -> [rotate(grid, int), flip(rotate(grid, int))] end)
+      |> Enum.reduce(&Enum.concat(&1, &2))
     end
 
     @doc """
