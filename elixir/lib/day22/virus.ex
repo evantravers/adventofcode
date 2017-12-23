@@ -29,7 +29,30 @@ defmodule Advent2017.Day22 do
   """
 
   defmodule Virus do
+    @moduledoc """
+    If it is clean, it turns left.
+
+    If it is weakened, it does not turn, and will continue moving in the same
+    direction.
+
+    If it is infected, it turns right.
+
+    If it is flagged, it reverses direction, and will go back the way it came.
+    """
     defstruct coord: {0, 0}, dir: :u, infected: 0
+
+    def evolved_burst({virus, grid}) do
+      case Map.get(grid, virus.coord) do
+        :weakened ->
+          {virus |> move |> inc_infected, infect(grid, virus)}
+        :infected ->
+          {virus |> turn(:r) |> move, flag(grid, virus)}
+        :flagged ->
+          {virus |> turn(:l) |> turn(:l) |> move, clean(grid, virus)}
+        nil -> # uninfected
+          {virus |> turn(:l) |> move, weaken(grid, virus)}
+      end
+    end
 
     def burst({virus, grid}) do
       if Enum.member? Map.keys(grid), virus.coord do # infected
@@ -73,6 +96,16 @@ defmodule Advent2017.Day22 do
 
     def clean(g, v) do
       Map.delete(g, v.coord)
+    end
+
+    def flag(g, v) do
+      {x, y} = v.coord
+      Map.put(g, {x, y}, :flagged)
+    end
+
+    def weaken(g, v) do
+      {x, y} = v.coord
+      Map.put(g, {x, y}, :weakened)
     end
 
     def pp(grid, virus \\ %Virus{}) do
@@ -125,18 +158,29 @@ defmodule Advent2017.Day22 do
   end
 
   def iterate({virus, grid}, 0), do: {virus, grid}
-  def iterate({virus, grid}, count) do
+  def iterate({virus, grid}, count, bu) do
     iterate(Virus.burst({virus, grid}), count - 1)
+  end
+
+  def iterate_evolved({virus, grid}, 0), do: {virus, grid}
+  def iterate_evolved({virus, grid}, count) do
+    iterate_evolved(Virus.evolved_burst({virus, grid}), count - 1)
   end
 
   def test do
     grid = load_node_map("test.txt")
-    {virus, grid} = iterate({%Virus{}, grid}, 10_000)
+    {virus, grid} = iterate_evolved({%Virus{}, grid}, 10_000_000)
   end
 
   def p1 do
     grid = load_node_map("input.txt")
     {virus, grid} = iterate({%Virus{}, grid}, 10_000)
+    virus.infected
+  end
+
+  def p2 do
+    grid = load_node_map("input.txt")
+    {virus, grid} = iterate_evolved({%Virus{}, grid}, 10_000_000)
     virus.infected
   end
 end
