@@ -77,6 +77,8 @@ defmodule Advent2017.Day20 do
 
   def simulate(particles) when length(particles) == 1, do: particles
   def simulate(particles) do
+    IO.puts length(particles)
+
     particles
     |> Enum.map(&Particle.tick &1)
     |> collision_detection
