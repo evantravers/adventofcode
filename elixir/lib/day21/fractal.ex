@@ -209,8 +209,7 @@ defmodule Advent2017.Day21 do
     |> Grid.subdivide
     |> Enum.map(fn row ->
       Enum.map(row, fn pattern ->
-        {_, result} = Enum.find(rules, 0, fn {rule, _} -> Grid.match?(rule, pattern) end)
-        result
+        Map.get(rules, pattern)
       end)
     end)
     |> Grid.join
@@ -221,6 +220,7 @@ defmodule Advent2017.Day21 do
     rules
     |> String.split("\n", trim: true)
     |> Enum.map(&rule &1)
+    |> Enum.reduce(%{}, &Map.merge(&1, &2))
   end
 
   @doc """
@@ -231,7 +231,9 @@ defmodule Advent2017.Day21 do
     [pattern, result] =
       String.split(rule_string, " => ", trim: true)
       |> Enum.map(&Grid.new &1)
-    {pattern, result}
+
+    Enum.map(Grid.all_combinations(pattern), fn rule -> {rule, result} end)
+    |> Map.new
   end
 
   def test do
