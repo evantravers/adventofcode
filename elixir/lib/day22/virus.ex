@@ -29,7 +29,7 @@ defmodule Advent2017.Day22 do
   """
 
   defmodule Virus do
-    defstruct coord: {0, 0}, dir: :u
+    defstruct coord: {0, 0}, dir: :u, infected: 0
 
     def burst({virus, grid}) do
       cond do
@@ -63,12 +63,42 @@ defmodule Advent2017.Day22 do
       end
     end
 
-    def infect(g, c) do
-      MapSet.put(g, c)
+    def inc_infected(virus) do
+      %Virus{virus | infected: virus.infected + 1}
     end
 
-    def clean(g, c) do
-      MapSet.delete(g, c)
+    def infect(g, v) do
+      MapSet.put(g, v.coord)
+    end
+
+    def clean(g, v) do
+      MapSet.delete(g, v.coord)
+    end
+
+    def pp(grid, virus \\ %Virus{}) do
+      limit =
+        grid
+        |> Enum.map(&Tuple.to_list &1)
+        |> List.flatten
+        |> Enum.map(&abs &1)
+        |> Enum.max
+      representation = ""
+      Enum.map(-limit..limit, fn y ->
+        Enum.map(-limit..limit, fn x ->
+          d =
+            case {x, y} == virus.coord do
+              true -> "^"
+              false -> " "
+            end
+          case MapSet.member? grid, {x, y} do
+            true -> representation <> "#{d}##{d}"
+            false -> representation <> "#{d}.#{d}"
+          end
+        end)
+        |> Enum.join
+        |> Kernel.<>("\n")
+      end)
+      |> Enum.join
     end
   end
 
@@ -94,25 +124,19 @@ defmodule Advent2017.Day22 do
     |> MapSet.new
   end
 
-  def pp(grid) do
-    limit = elem(Enum.max(grid), 0)
-    representation = ""
-    Enum.map(-limit..limit, fn y ->
-      Enum.map(-limit..limit, fn x ->
-        case MapSet.member? grid, {x, y} do
-          true -> representation <> "#"
-          false -> representation <> "."
-        end
-      end)
-      |> Enum.join
-      |> Kernel.<>("\n")
-    end)
-    |> Enum.join
+  def iterate({virus, grid}, 0), do: {virus, grid}
+  def iterate({virus, grid}, count) do
+    iterate(Virus.burst({virus, grid}), count - 1)
+  end
+
+  def test do
+    grid = load_node_map("test.txt")
+    {virus, grid} = iterate({%Virus{}, grid}, 10_000)
   end
 
   def p1 do
-    load_node_map("input.txt")
-
-    IEx.pry
+    grid = load_node_map("input.txt")
+    {virus, grid} = iterate({%Virus{}, grid}, 10_000)
+    virus.infected
   end
 end
