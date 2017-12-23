@@ -112,11 +112,12 @@ defmodule Advent2017.Day20 do
   """
   def collision_detection(particles) do
     particles
-    |> Enum.reduce([], fn particle, list ->
-      if Enum.find(Enum.map(list, & &1[:pos]), fn match -> match[:pos] == particle[:pos] end) do
-        list
+    |> Enum.reduce([], fn particle, acc ->
+      match = Enum.find(acc, fn search -> search.pos == particle.pos end)
+      if is_nil(match) do
+        [particle|acc]
       else
-        [particle|list]
+        List.delete(acc, match)
       end
     end)
   end
