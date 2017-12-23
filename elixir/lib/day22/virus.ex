@@ -157,30 +157,25 @@ defmodule Advent2017.Day22 do
     |> Map.new
   end
 
-  def iterate({virus, grid}, 0), do: {virus, grid}
-  def iterate({virus, grid}, count, bu) do
-    iterate(Virus.burst({virus, grid}), count - 1)
-  end
-
-  def iterate_evolved({virus, grid}, 0), do: {virus, grid}
-  def iterate_evolved({virus, grid}, count) do
-    iterate_evolved(Virus.evolved_burst({virus, grid}), count - 1)
+  def iterate({virus, grid}, _, 0), do: {virus, grid}
+  def iterate({virus, grid}, burst_function, count) do
+    iterate(burst_function.({virus, grid}), burst_function, count - 1)
   end
 
   def test do
     grid = load_node_map("test.txt")
-    {virus, grid} = iterate_evolved({%Virus{}, grid}, 10_000_000)
+    iterate({%Virus{}, grid}, &Virus.evolved_burst/1, 100)
   end
 
   def p1 do
     grid = load_node_map("input.txt")
-    {virus, grid} = iterate({%Virus{}, grid}, 10_000)
+    {virus, _} = iterate({%Virus{}, grid}, &Virus.burst/1, 10_000)
     virus.infected
   end
 
   def p2 do
     grid = load_node_map("input.txt")
-    {virus, grid} = iterate_evolved({%Virus{}, grid}, 10_000_000)
+    {virus, _} = iterate({%Virus{}, grid}, &Virus.evolved_burst/1, 10_000_000)
     virus.infected
   end
 end
