@@ -32,11 +32,10 @@ defmodule Advent2017.Day22 do
     defstruct coord: {0, 0}, dir: :u, infected: 0
 
     def burst({virus, grid}) do
-      cond do
-        Enum.member? grid, virus.coord -> # infected
-          {virus |> turn(:r) |> move, clean(grid, virus.coord)}
-        true -> # uninfected
-          {virus |> turn(:l) |> move, infect(grid, virus.coord)}
+      if Enum.member? grid, virus.coord do # infected
+        {virus |> turn(:r) |> move, clean(grid, virus)}
+      else
+        {virus |> turn(:l) |> move |> inc_infected, infect(grid, virus)}
       end
     end
 
@@ -56,10 +55,10 @@ defmodule Advent2017.Day22 do
     def move(virus) do
       {x, y} = virus.coord
       case virus.dir do
-        :u -> %{virus | coord: {x, y+1}}
-        :d -> %{virus | coord: {x, y-1}}
-        :l -> %{virus | coord: {x-1, y}}
-        :r -> %{virus | coord: {x+1, y}}
+        :u -> %{virus | coord: {x, y - 1}}
+        :d -> %{virus | coord: {x, y + 1}}
+        :l -> %{virus | coord: {x - 1, y}}
+        :r -> %{virus | coord: {x + 1, y}}
       end
     end
 
