@@ -32,7 +32,7 @@ defmodule Advent2017.Day22 do
     defstruct coord: {0, 0}, dir: :u, infected: 0
 
     def burst({virus, grid}) do
-      if Enum.member? grid, virus.coord do # infected
+      if Enum.member? Map.keys(grid), virus.coord do # infected
         {virus |> turn(:r) |> move, clean(grid, virus)}
       else
         {virus |> turn(:l) |> move |> inc_infected, infect(grid, virus)}
@@ -67,11 +67,12 @@ defmodule Advent2017.Day22 do
     end
 
     def infect(g, v) do
-      MapSet.put(g, v.coord)
+      {x, y} = v.coord
+      Map.put(g, {x, y}, :infected)
     end
 
     def clean(g, v) do
-      MapSet.delete(g, v.coord)
+      Map.delete(g, v.coord)
     end
 
     def pp(grid, virus \\ %Virus{}) do
@@ -89,7 +90,7 @@ defmodule Advent2017.Day22 do
               true -> "^"
               false -> " "
             end
-          case MapSet.member? grid, {x, y} do
+          case Enum.member? grid, {x, y} do
             true -> representation <> "#{d}##{d}"
             false -> representation <> "#{d}.#{d}"
           end
@@ -114,13 +115,13 @@ defmodule Advent2017.Day22 do
       |> Enum.reduce([], fn {val, x}, coords ->
         offset = div(length(row), 2)
         case val do
-          "#" -> [{x-offset, y-offset}|coords]
+          "#" -> [{{x-offset, y-offset}, :infected}|coords]
           "." -> coords
         end
       end)
     end)
     |> Enum.concat
-    |> MapSet.new
+    |> Map.new
   end
 
   def iterate({virus, grid}, 0), do: {virus, grid}
