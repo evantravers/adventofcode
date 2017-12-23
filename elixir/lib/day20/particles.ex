@@ -9,6 +9,10 @@ defmodule Advent2017.Day20 do
   """
 
   defmodule Particle do
+    @moduledoc """
+    Representing a single particle, with functions to manipulate its state.
+    """
+
     defstruct pos: [nil, nil, nil],
               vel: [nil, nil, nil],
               acc: [nil, nil, nil],
@@ -16,7 +20,8 @@ defmodule Advent2017.Day20 do
 
 
     def new({string, id}) do
-      Regex.scan(~r/-*\d+/, string)
+      ~r/-*\d+/
+      |> Regex.scan(string)
       |> List.flatten
       |> Enum.map(&String.to_integer &1)
       |> Enum.chunk_every(3)
@@ -50,8 +55,9 @@ defmodule Advent2017.Day20 do
       }
     end
     def increase_by(list1, list2) do
-        Enum.zip(list1, list2)
-        |> Enum.map(fn {v1, v2} -> v1 + v2 end)
+      list1
+      |> Enum.zip(list2)
+      |> Enum.map(fn {v1, v2} -> v1 + v2 end)
     end
 
     @doc ~S"""
@@ -61,7 +67,8 @@ defmodule Advent2017.Day20 do
     """
     def distance(particle, dest \\ [0, 0, 0])
     def distance(coords, dest) when is_list(coords) do
-      Enum.zip(coords, dest)
+      coords
+      |> Enum.zip(dest)
       |> Enum.map(fn {v1, v2} -> abs(v2 - v1) end)
       |> Enum.sum
     end
@@ -78,7 +85,8 @@ defmodule Advent2017.Day20 do
   end
 
   def greatest(particles, attr) do
-    Enum.sort(particles, fn p1, p2 ->
+    particles
+    |> Enum.sort(fn p1, p2 ->
       Particle.distance(p1[attr]) < Particle.distance(p2[attr])
     end)
     |> Enum.reverse
@@ -105,9 +113,10 @@ defmodule Advent2017.Day20 do
   def collision_detection(particles) do
     particles
     |> Enum.reduce([], fn particle, list ->
-      cond do
-        Enum.find(Enum.map(list, & &1[:pos]), fn match -> match[:pos] == particle[:pos] end) -> list
-        true -> [particle|list]
+      if Enum.find(Enum.map(list, & &1[:pos]), fn match -> match[:pos] == particle[:pos] end) do
+        list
+      else
+        [particle|list]
       end
     end)
   end
