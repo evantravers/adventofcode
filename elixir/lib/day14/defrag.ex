@@ -13,7 +13,8 @@ defmodule Advent2017.Day14 do
   @spec defrag(String) :: List
   def defrag(input) do
     Enum.map(0..127, fn row ->
-      Knot.dense_hash("#{input}-#{row}")
+      "#{input}-#{row}"
+      |> Knot.dense_hash
       |> hex_to_bin
       |> String.split("", [trim: true])
       |> Enum.map(&String.to_integer &1)
@@ -41,7 +42,7 @@ defmodule Advent2017.Day14 do
       [[3, 2], [1, 2], [2, 3], [2, 1]]
   """
   def adjacent([x, y]) do
-    [[x+1, y], [x-1, y], [x, y+1], [x, y-1]]
+    [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]
   end
 
   @spec contiguous(Map, List, MapSet) :: MapSet
@@ -51,13 +52,14 @@ defmodule Advent2017.Day14 do
         0 -> group
         1 ->
           neighbors = Enum.reject(adjacent(coords), &MapSet.member?(group, &1))
-          unless Enum.empty? neighbors do
-            Enum.map(neighbors, fn adj ->
+          if Enum.empty? neighbors do
+            group
+          else
+            neighbors
+            |> Enum.map(fn adj ->
               contiguous(grid, adj, MapSet.put(group, coords))
             end)
             |> Enum.reduce(&MapSet.union &1, &2)
-          else
-            group
           end
     end
   end
@@ -89,22 +91,24 @@ defmodule Advent2017.Day14 do
   def find_groups(grid, visited \\ MapSet.new, groups \\ []) do
     unvisited_nodes = find_ungrouped(grid, visited)
 
-    unless length(unvisited_nodes) == 0 do
+    if Enum.empty?(unvisited_nodes) do
       start_node = hd(hd(unvisited_nodes))
       group = contiguous(grid, start_node)
-      find_groups(grid, MapSet.union(visited, group), [group | groups] )
+      find_groups(grid, MapSet.union(visited, group), [group | groups])
     else
       groups
     end
   end
 
   def p1 do
-    defrag("ljoxqyyw")
+    "ljoxqyyw"
+    |> defrag
     |> List.flatten
     |> Enum.sum
   end
   def p2 do
-    defrag("ljoxqyyw")
+    "ljoxqyyw"
+    |> defrag
     |> list_grid_to_map_grid
     |> find_groups
     |> Enum.count
