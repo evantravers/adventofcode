@@ -1,6 +1,48 @@
 require IEx
 
 defmodule Advent2017.Day18 do
+  @moduledoc """
+  You discover a tablet containing some strange assembly code labeled simply
+  "Duet". Rather than bother the sound card with it, you decide to run the code
+  yourself. Unfortunately, you don't see any documentation, so you're left to
+  figure out what the instructions mean on your own.
+
+  It seems like the assembly is meant to operate on a set of registers that are
+  each named with a single letter and that can each hold a single integer. You
+  suppose each register should start with a value of 0.
+
+  There aren't that many instructions, so it shouldn't be hard to figure out
+  what they do. Here's what you determine:
+
+   - snd X plays a sound with a frequency equal to the value of X.
+
+   - set X Y sets register X to the value of Y.
+
+   - add X Y increases register X by the value of Y.
+
+   - mul X Y sets register X to the result of multiplying the value contained
+  in register X by the value of Y.
+
+   - mod X Y sets register X to the remainder of dividing the value contained
+  in register X by the value of Y (that is, it sets X to the result of X modulo
+  Y).
+
+   - rcv X recovers the frequency of the last sound played, but only when the
+  value of X is not zero.  (If it is zero, the command does nothing.)
+
+   - jgz X Y jumps with an offset of the value of Y, but only if the value of X
+   is greater than zero. (An offset of 2 skips the next instruction, an offset
+   of -1 jumps to the previous instruction, and so on.)
+
+  Many of the instructions can take either a register (a single letter) or a
+  number. The value of a register is the integer it contains; the value of a
+  number is that number.
+
+  After each jump instruction, the program continues with the instruction to
+  which the jump jumped. After any other instruction, the program continues
+  with the next instruction.  Continuing (or jumping) off either end of the
+  program terminates it.
+  """
   @doc ~S"""
   snd X sends the value of X to the other program. These values wait in a queue
   until that program is ready to receive them. Each program has its own message
@@ -24,7 +66,8 @@ defmodule Advent2017.Day18 do
       %{f: 3, x: 3, pointer: 1}
   """
   def set(state, x, y) do
-    Map.put(state, a(x), e(state, y))
+    state
+    |> Map.put(a(x), e(state, y))
     |> next
   end
 
@@ -35,7 +78,8 @@ defmodule Advent2017.Day18 do
       %{f: 6, pointer: 1}
   """
   def add(state, x, y) do
-    Map.put(state, a(x), e(state, x) + e(state, y))
+    state
+    |> Map.put(a(x), e(state, x) + e(state, y))
     |> next
   end
 
@@ -47,7 +91,8 @@ defmodule Advent2017.Day18 do
       %{f: 9, pointer: 1}
   """
   def mul(state, x, y) do
-    Map.put(state, a(x), e(state, x) * e(state, y))
+    state
+    |> Map.put(a(x), e(state, x) * e(state, y))
     |> next
   end
 
@@ -60,7 +105,8 @@ defmodule Advent2017.Day18 do
       %{f: 1, pointer: 1}
   """
   def mod(state, x, y) do
-    Map.put(state, a(x), rem(e(state, x), e(state,y)))
+    state
+    |> Map.put(a(x), rem(e(state, x), e(state, y)))
     |> next
   end
 
@@ -76,15 +122,14 @@ defmodule Advent2017.Day18 do
       {:snd, int} when is_integer(int) ->
         set(state, x, int)
 
-        cond do
-          state[:limit] == length(state[:rcv]) ->
-            state
-            |> Map.update!(:rcv, fn history -> [e(state, x)|history] end)
-            |> stop
-          true ->
-            state
-            |> Map.update!(:rcv, fn history -> [e(state, x)|history] end)
-            |> next
+        if state[:limit] == length(state[:rcv]) do
+          state
+          |> Map.update!(:rcv, fn history -> [e(state, x)|history] end)
+          |> stop
+        else
+          state
+          |> Map.update!(:rcv, fn history -> [e(state, x)|history] end)
+          |> next
         end
     after
       50 -> stop(state)
@@ -109,7 +154,7 @@ defmodule Advent2017.Day18 do
   end
 
   def a(str), do: String.to_atom(str)
-  def next(state), do: Map.update!(state, :pointer, &(&1+1))
+  def next(state), do: Map.update!(state, :pointer, &(&1 + 1))
   def stop(state), do: Map.put(state, :halt, true)
 
   @doc ~S"""
@@ -154,7 +199,8 @@ defmodule Advent2017.Day18 do
   def p1 do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
-    setup_state(%{limit: 1})
+    %{limit: 1}
+    |> setup_state
     |> run(String.split(file, "\n", trim: true))
     |> Map.get(:rcv)
     |> List.first
@@ -179,7 +225,9 @@ defmodule Advent2017.Day18 do
     Agent.cast(p1, __MODULE__, :run, [instructions])
 
     Agent.get(p0, fn state -> state end)
-    Agent.get(p1, fn state -> state end)
+    answer = Agent.get(p1, fn state -> state end)
+
+    answer
     |> Map.get(:snd)
     |> Enum.count
   end
