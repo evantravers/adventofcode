@@ -29,7 +29,7 @@ defmodule Advent2017.Day22 do
   """
 
   defmodule Virus do
-    defstruct coord: [0, 0], dir: :u
+    defstruct coord: {0, 0}, dir: :u
 
     def burst({virus, grid}) do
       cond do
@@ -54,12 +54,12 @@ defmodule Advent2017.Day22 do
     end
 
     def move(virus) do
-      [x, y] = virus.coord
+      {x, y} = virus.coord
       case virus.dir do
-        :u -> %{virus | coord: [x, y+1]}
-        :d -> %{virus | coord: [x, y-1]}
-        :l -> %{virus | coord: [x-1, y]}
-        :r -> %{virus | coord: [x+1, y]}
+        :u -> %{virus | coord: {x, y+1}}
+        :d -> %{virus | coord: {x, y-1}}
+        :l -> %{virus | coord: {x-1, y}}
+        :r -> %{virus | coord: {x+1, y}}
       end
     end
 
@@ -85,13 +85,29 @@ defmodule Advent2017.Day22 do
       |> Enum.reduce([], fn {val, x}, coords ->
         offset = div(length(row), 2)
         case val do
-          "#" -> [[x-offset, y-offset]|coords]
+          "#" -> [{x-offset, y-offset}|coords]
           "." -> coords
         end
       end)
     end)
     |> Enum.concat
     |> MapSet.new
+  end
+
+  def pp(grid) do
+    limit = elem(Enum.max(grid), 0)
+    representation = ""
+    Enum.map(-limit..limit, fn y ->
+      Enum.map(-limit..limit, fn x ->
+        case MapSet.member? grid, {x, y} do
+          true -> representation <> "#"
+          false -> representation <> "."
+        end
+      end)
+      |> Enum.join
+      |> Kernel.<>("\n")
+    end)
+    |> Enum.join
   end
 
   def p1 do
