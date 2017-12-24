@@ -264,11 +264,9 @@ defmodule Advent2017.Day18 do
       {:DOWN, ^r0, _, _, _} ->
         IO.puts("End of p0")
       {:DOWN, ^r1, _, _, _} ->
-        Process.info(p1)
+        IO.puts "End of p1"
       {:result, machine} ->
         machine
-        |> Map.get(:snd)
-        |> length
     end
   end
 end
