@@ -1,10 +1,29 @@
 require IEx
 
 defmodule Advent2017.Day15 do
+  @moduledoc """
+  Here, you encounter a pair of dueling generators. The generators, called
+  generator A and generator B, are trying to agree on a sequence of numbers.
+  However, one of them is malfunctioning, and so the sequences don't always
+  match.
+
+  As they do this, a judge waits for each of them to generate its next value,
+  compares the lowest 16 bits of both values, and keeps track of the number of
+  times those parts of the values match.
+
+  The generators both work on the same principle. To create its next value, a
+  generator will take the previous value it produced, multiply it by a factor
+  (generator A uses 16807; generator B uses 48271), and then keep the remainder
+  of dividing that resulting product by 2147483647. That final remainder is the
+  value it produces next.
+
+  To calculate each generator's first value, it instead uses a specific
+  starting value as its "previous value" (as listed in your puzzle input).
+  """
   use Bitwise
 
-  @generatorA 16807
-  @generatorB 48271
+  @generator_a 16_807
+  @generator_b 48_271
 
   def first_sixteen(string), do: String.slice(string, -16..-1)
 
@@ -36,7 +55,8 @@ defmodule Advent2017.Day15 do
    """
   def judge_bitwise(genA, genB) do
     '0000000000000000' ==
-      genA ^^^ genB
+      genA
+      |> Bitwise.^^^ genB
       |> Integer.to_charlist(2)
       |> Enum.slice(-16..-1)
   end
@@ -56,7 +76,7 @@ defmodule Advent2017.Day15 do
       862516352
   """
   def generate(previous, factor, comparison \\ fn (_) -> true end) do
-    val = rem(previous * factor, 2147483647)
+    val = rem(previous * factor, 2_147_483_647)
     if comparison.(val) do
       val
     else
@@ -67,24 +87,24 @@ defmodule Advent2017.Day15 do
   def p1, do: p1(783, 325, 40_000_000, 0)
   def p1(_, _, 0, score), do: score
   def p1(a, b, count, score) do
-    a = generate(a, @generatorA)
-    b = generate(b, @generatorB)
+    a = generate(a, @generator_a)
+    b = generate(b, @generator_b)
 
     case judge_bitwise(a, b) do
-      true  -> p1(a, b, count-1, score+1)
-      false -> p1(a, b, count-1, score)
+      true  -> p1(a, b, count - 1, score + 1)
+      false -> p1(a, b, count - 1, score)
     end
   end
 
   def p2, do: p2(783, 325, 5_000_000, 0)
   def p2(_, _, 0, score), do: score
   def p2(a, b, count, score) do
-    a = generate(a, @generatorA, &rem(&1, 4)==0)
-    b = generate(b, @generatorB, &rem(&1, 8)==0)
+    a = generate(a, @generator_a, &rem(&1, 4) == 0)
+    b = generate(b, @generator_b, &rem(&1, 8) == 0)
 
     case judge_bitwise(a, b) do
-      true  -> p2(a, b, count-1, score+1)
-      false -> p2(a, b, count-1, score)
+      true  -> p2(a, b, count - 1, score + 1)
+      false -> p2(a, b, count - 1, score)
     end
   end
 end
