@@ -43,32 +43,52 @@ defmodule Advent2017.Day18 do
   with the next instruction.  Continuing (or jumping) off either end of the
   program terminates it.
   """
-  @doc ~S"""
-  snd X sends the value of X to the other program. These values wait in a queue
-  until that program is ready to receive them. Each program has its own message
-  queue, so a program can never receive a message it sent.
 
-  """
-  def snd(state, x) do
-    send(state[:target], {:snd, e(state, x)})
-    state
-    |> Map.update!(:snd, fn history -> [e(state, x)|history] end)
-    |> next
+  defmodule Machine do
+    @moduledoc "Represents the state of my machine"
+    defstruct pointer: 0,
+              reg: %{},
+              rcv: [],
+              snd: [],
+              target: self(),
+              instructions: [],
+              limit: nil,
+              halt: false
+
+    def put(machine, x, y) do
+      Map.update!(machine, :reg, fn reg -> Map.put(reg, String.to_atom(x), y) end)
+    end
   end
 
   @doc ~S"""
   set X Y sets register X to the value of Y.
 
-      iex> Advent2017.Day18.set(%{pointer: 0, f: 0}, "f", "3")
-      %{f: 3, pointer: 1}
+      iex> Advent2017.Day18.set(%Advent.Day18.Machine{}, "f", "3")
+      %Advent.Day18.Machine{f: 3, pointer: 1}
 
       iex> Advent2017.Day18.set(%{pointer: 0, f: 3}, "x", "f")
       %{f: 3, x: 3, pointer: 1}
   """
-  def set(state, x, y) do
-    state
-    |> Map.put(a(x), e(state, y))
+  def set(machine, x, y) do
+    machine
+    |> Machine.put(x, e(machine, y))
     |> next
+  end
+
+  @doc ~S"""
+  e evaluates a variable by the stack. If there's a register, it returns that.
+  """
+  def e(machine, var) do
+    cond do
+      is_integer(var) ->
+        var
+      Enum.member?(Map.keys(machine.reg), String.to_atom(var)) ->
+        machine.reg[String.to_atom(var)]
+      Regex.match?(~r/[a-z]/, var) ->
+        0
+      true ->
+        String.to_integer(var)
+    end
   end
 
   @doc ~S"""
@@ -77,9 +97,9 @@ defmodule Advent2017.Day18 do
       iex> Advent2017.Day18.add(%{pointer: 0, f: 3}, "f", "f")
       %{f: 6, pointer: 1}
   """
-  def add(state, x, y) do
-    state
-    |> Map.put(a(x), e(state, x) + e(state, y))
+  def add(machine, x, y) do
+    machine
+    |> Machine.put(x, e(machine, x) + e(machine, y))
     |> next
   end
 
@@ -90,9 +110,9 @@ defmodule Advent2017.Day18 do
       iex> Advent2017.Day18.mul(%{pointer: 0, f: 3}, "f", "f")
       %{f: 9, pointer: 1}
   """
-  def mul(state, x, y) do
-    state
-    |> Map.put(a(x), e(state, x) * e(state, y))
+  def mul(machine, x, y) do
+    machine
+    |> Machine.put(x, e(machine, x) * e(machine, y))
     |> next
   end
 
@@ -104,9 +124,22 @@ defmodule Advent2017.Day18 do
       iex> Advent2017.Day18.mod(%{pointer: 0, f: 3}, "f", "2")
       %{f: 1, pointer: 1}
   """
-  def mod(state, x, y) do
-    state
-    |> Map.put(a(x), rem(e(state, x), e(state, y)))
+  def mod(machine, x, y) do
+    machine
+    |> Machine.put(x, rem(e(machine, x), e(machine, y)))
+    |> next
+  end
+
+  @doc ~S"""
+  snd X sends the value of X to the other program. These values wait in a queue
+  until that program is ready to receive them. Each program has its own message
+  queue, so a program can never receive a message it sent.
+
+  """
+  def snd(machine, x) do
+    send(machine.target, e(machine, x))
+    machine
+    |> Map.update!(:snd, fn history -> [e(machine, x)|history] end)
     |> next
   end
 
@@ -117,22 +150,20 @@ defmodule Advent2017.Day18 do
   received in the order they are sent.
 
   """
-  def rcv(state, x) do
+  def rcv(machine, x) do
     receive do
-      {:snd, int} when is_integer(int) ->
-        set(state, x, int)
-
-        if state[:limit] == length(state[:rcv]) do
-          state
-          |> Map.update!(:rcv, fn history -> [e(state, x)|history] end)
+      val -> set(machine, x, val)
+        if machine.limit == length(machine.rcv) do
+          machine
+          |> Map.update!(:rcv, fn history -> [e(machine, x)|history] end)
           |> stop
         else
-          state
-          |> Map.update!(:rcv, fn history -> [e(state, x)|history] end)
+          machine
+          |> Map.update!(:rcv, fn history -> [e(machine, x)|history] end)
           |> next
         end
     after
-      50 -> stop(state)
+      50 -> stop(machine)
     end
   end
 
@@ -146,62 +177,42 @@ defmodule Advent2017.Day18 do
       iex> Advent2017.Day18.jgz(%{pointer: 0, f: 3}, "-3", "2")
       %{pointer: 1, f: 3}
   """
-  def jgz(state, x, y) do
-    case e(state, x) > 0 do
-      true  -> Map.update!(state, :pointer, &(&1 + e(state, y)))
-      false -> next(state)
+  def jgz(machine, x, y) do
+    case e(machine, x) > 0 do
+      true  -> Map.update!(machine, :pointer, &(&1 + e(machine, y)))
+      false -> next(machine)
     end
   end
 
-  def a(str), do: String.to_atom(str)
-  def next(state), do: Map.update!(state, :pointer, &(&1 + 1))
-  def stop(state), do: Map.put(state, :halt, true)
+  def next(machine), do: Map.update!(machine, :pointer, &(&1 + 1))
+  def stop(machine), do: Map.put(machine, :halt, true)
 
-  @doc ~S"""
-  e evaluates a variable by the stack. If there's a register, it returns that.
-  """
-  def e(state, var) do
-    cond do
-      is_integer(var) ->
-        var
-      Enum.member?(Map.keys(state), a(var)) ->
-        state[a(var)]
-      Regex.match?(~r/[a-z]/, var) ->
-        0
-      true ->
-        String.to_integer(var)
+  def setup() do
+    receive do
+      {:machine, machine} -> run(machine)
     end
   end
 
-  def setup_state(state \\ %{}) do
-    state
-    |> Map.put_new(:pointer, 0)
-    |> Map.put_new(:rcv, [])
-    |> Map.put_new(:snd, [])
-    |> Map.put_new(:target, self())
-  end
+  def run(machine) do
+    if Map.get(machine, :halt) do
+      machine
+    else
+      instruction = Enum.at(machine.instructions, machine.pointer)
+      if is_nil(instruction) do
+        machine
+      else
+        [method|args] = String.split(instruction, " ", trim: true)
 
-  def run(state, instructions) do
-    case state[:halt] do
-      true -> state
-      _ ->
-        instruction   = Enum.at(instructions, state[:pointer])
-        if is_nil(instruction) do
-          state
-        else
-          [method|args] = String.split(instruction, " ", trim: true)
-
-          run(apply(Advent2017.Day18, a(method), [state | args]), instructions)
-        end
+        run(apply(Advent2017.Day18, String.to_atom(method), [machine | args]))
+      end
     end
   end
 
   def p1 do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
-    %{limit: 1}
-    |> setup_state
-    |> run(String.split(file, "\n", trim: true))
+    %Machine{limit: 1, instructions: String.split(file, "\n", trim: true)}
+    |> run()
     |> Map.get(:rcv)
     |> List.first
   end
@@ -214,21 +225,5 @@ defmodule Advent2017.Day18 do
     instructions =
       file
       |> String.split("\n", trim: true)
-
-    {:ok, p0} = Agent.start_link(fn -> setup_state(%{p: 0}) end)
-    {:ok, p1} = Agent.start_link(fn -> setup_state(%{p: 1}) end)
-
-    Agent.update(p0, fn state -> %{state | target: p1} end)
-    Agent.update(p1, fn state -> %{state | target: p0} end)
-
-    Agent.cast(p0, __MODULE__, :run, [instructions])
-    Agent.cast(p1, __MODULE__, :run, [instructions])
-
-    Agent.get(p0, fn state -> state end)
-    answer = Agent.get(p1, fn state -> state end)
-
-    answer
-    |> Map.get(:snd)
-    |> Enum.count
   end
 end
