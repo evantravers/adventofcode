@@ -225,5 +225,23 @@ defmodule Advent2017.Day18 do
     instructions =
       file
       |> String.split("\n", trim: true)
+
+    p0 = spawn &setup/0
+    p1 = spawn &setup/0
+
+    machine0 = %Machine{instructions: instructions, reg: %{p: 0}, target: p1}
+    machine1 = %Machine{instructions: instructions, reg: %{p: 1}, target: p0}
+
+    send(p0, {:machine, machine0})
+    send(p1, {:machine, machine1})
+
+    r0 = Process.monitor(p0)
+    r1 = Process.monitor(p1)
+    receive do
+      {:DOWN, ^r0, _, _, _} ->
+        IO.puts("End of p0")
+      {:DOWN, ^r1, _, _, _} ->
+        IO.puts("End of p1")
+    end
   end
 end
