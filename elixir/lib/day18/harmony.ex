@@ -53,7 +53,8 @@ defmodule Advent2017.Day18 do
               target: self(),
               instructions: [],
               limit: nil,
-              halt: false
+              parent: nil,
+              id: nil
 
     def put(machine, x, y) do
       Map.update!(machine, :reg, fn reg -> Map.put(reg, String.to_atom(x), y) end)
@@ -185,7 +186,9 @@ defmodule Advent2017.Day18 do
   end
 
   def next(machine), do: Map.update!(machine, :pointer, &(&1 + 1))
-  def stop(machine), do: Map.put(machine, :halt, true)
+  def stop(machine) do
+    Map.put(machine, :pointer, 99_999_999_999)
+  end
 
   def setup() do
     receive do
@@ -194,27 +197,34 @@ defmodule Advent2017.Day18 do
   end
 
   def run(machine) do
-    if Map.get(machine, :halt) do
-      machine
+    instruction = Enum.at(machine.instructions, machine.pointer)
+    if is_nil(instruction) do
+      send(machine.parent, {:result, machine})
     else
-      instruction = Enum.at(machine.instructions, machine.pointer)
-      if is_nil(instruction) do
-        machine
-      else
-        [method|args] = String.split(instruction, " ", trim: true)
+      [method|args] = String.split(instruction, " ", trim: true)
 
-        run(apply(Advent2017.Day18, String.to_atom(method), [machine | args]))
-      end
+      run(apply(Advent2017.Day18, String.to_atom(method), [machine | args]))
     end
   end
 
   def p1 do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
-    %Machine{limit: 1, instructions: String.split(file, "\n", trim: true)}
-    |> run()
-    |> Map.get(:rcv)
-    |> List.first
+    p0 = spawn &setup/0
+    machine =
+      %Machine{
+        limit: 1,
+        instructions: String.split(file, "\n", trim: true),
+        target: p0,
+        parent: self()}
+
+    send(p0, {:machine, machine})
+
+    receive do
+      {:result, machine} ->
+        machine.rcv
+        |> List.first
+    end
   end
 
   def p2 do
@@ -229,8 +239,21 @@ defmodule Advent2017.Day18 do
     p0 = spawn &setup/0
     p1 = spawn &setup/0
 
-    machine0 = %Machine{instructions: instructions, reg: %{p: 0}, target: p1}
-    machine1 = %Machine{instructions: instructions, reg: %{p: 1}, target: p0}
+    machine0 =
+      %Machine{
+        instructions: instructions,
+        reg: %{p: 0},
+        target: p1,
+        parent: self(),
+        id: 0}
+
+    machine1 =
+      %Machine{
+        instructions: instructions,
+        reg: %{p: 1},
+        target: p0,
+        parent: self(),
+        id: 1}
 
     send(p0, {:machine, machine0})
     send(p1, {:machine, machine1})
@@ -241,7 +264,11 @@ defmodule Advent2017.Day18 do
       {:DOWN, ^r0, _, _, _} ->
         IO.puts("End of p0")
       {:DOWN, ^r1, _, _, _} ->
-        IO.puts("End of p1")
+        Process.info(p1)
+      {:result, machine} ->
+        machine
+        |> Map.get(:snd)
+        |> length
     end
   end
 end
