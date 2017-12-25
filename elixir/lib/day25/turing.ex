@@ -41,10 +41,107 @@ defmodule Advent2017.Day25 do
   or right one slot, and which state to use next.
   """
 
-  def read_input_into_states(filename) do
-    {:ok, file} = File.read(filename)
+  defmodule Turing do
+    @moduledoc "Representing the state of the turing machine"
+    defstruct current_state: nil, tape: %{0 => 0}, pointer: 0, states: %{}, checksum: 0, count: 0
 
-    file
-    |> String.split("\n", trim: true)
+    def read_header(turing, header) do
+      [_, current, checksum] =
+        ~r/Begin in state (?<current>[A-Z]).\nPerform a diagnostic checksum after (?<checksum>\d+) steps./
+        |> Regex.run(header)
+
+      %Turing{turing |
+        current_state: String.to_atom(current),
+        checksum: String.to_integer(checksum)}
+    end
+
+    @doc """
+    The goal datastructure for the state is:
+
+    {<current state>, %{symbol => [write, move, next]}
+
+    Example:
+    {:A, %{0 => [1, 1, :B], 1 => [0, 1, :C]}}
+    """
+    def read_states(turing, states) do
+      states
+      |> Enum.map(&new_state &1)
+      |> Enum.reduce(turing, fn state, turing ->
+        %Turing{turing | states: Map.merge(state, turing.states)}
+      end)
+    end
+
+    def get_tape(turing) do
+      if is_nil(turing.tape[turing.pointer]) do
+        0
+      else
+        turing.tape[turing.pointer]
+      end
+    end
+
+    def get_checksum(turing) do
+      Enum.sum Map.values(turing.tape)
+    end
+
+    defp new_state(state_string) do
+      [header|transitions] = String.split(state_string, ~r/If.*:/)
+
+      [_, name] = Regex.run(~r/([A-Z]):/, header)
+
+      [zero, one] =
+        transitions
+        |> Enum.map(&String.trim &1)
+        |> Enum.map(fn rules ->
+          ~r/\s(\w+|\d+)\.$/m
+          |> Regex.scan(rules)
+          |> Enum.map(fn [_, v] -> v end)
+        end)
+        |> Enum.map(&clean_up_rule &1)
+
+      %{String.to_atom(name) => %{0 => zero, 1 => one}}
+    end
+
+    defp clean_up_rule([write, direction, next]) do
+      dir =
+        case direction do
+          "left" -> -1
+          "right" -> 1
+        end
+      [String.to_integer(write), dir, String.to_atom(next)]
+    end
+  end
+
+  def run(m) do
+    if m.count == m.checksum do
+      m
+    else
+      [write, offset, next] =
+        get_in(m.states, [m.current_state, Turing.get_tape(m)])
+
+      m
+      |> Map.update!(:tape, fn t -> Map.put(t, m.pointer, write) end) # write
+      |> Map.update!(:pointer, & &1 + offset) # move
+      |> Map.put(:current_state, next) # next
+      |> Map.update!(:count, & &1 + 1) # count steps
+      |> run
+    end
+  end
+
+  def boot_up_machine(filename) do
+    {:ok, file} = File.read(__DIR__ <> "/#{filename}")
+
+    [header|states] = String.split(file, "\n\n", trim: true)
+
+    %Turing{}
+    |> Turing.read_header(header)
+    |> Turing.read_states(states)
+  end
+
+  def p1 do
+    machine = boot_up_machine("input.txt")
+
+    machine
+    |> run
+    |> Turing.get_checksum
   end
 end
