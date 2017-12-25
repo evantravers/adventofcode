@@ -47,7 +47,7 @@ defmodule Advent2017.Day25 do
 
     def read_header(turing, header) do
       [_, current, checksum] =
-        ~r/Begin in state (?<current>[A-Z]).\nPerform a diagnostic checksum after (?<checksum>\d+) steps./
+        ~r/Begin.*(?<current>[A-Z]).\nPerform .* after (?<checksum>\d+) steps./
         |> Regex.run(header)
 
       %Turing{turing |
