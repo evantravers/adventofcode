@@ -24,7 +24,12 @@ defmodule Advent2017 do
       Advent2017.Day15,
       Advent2017.Day16,
       Advent2017.Day17,
-      Advent2017.Day18
+      Advent2017.Day18,
+      Advent2017.Day19,
+      Advent2017.Day20,
+      Advent2017.Day21,
+      Advent2017.Day22,
+      Advent2017.Day25
     ]
     |> Enum.map(fn(day) ->
       IO.puts "#{day}\n" <>
