@@ -144,4 +144,6 @@ defmodule Advent2017.Day25 do
     |> run
     |> Turing.get_checksum
   end
+
+  def p2, do: "Merry Christmas!"
 end
