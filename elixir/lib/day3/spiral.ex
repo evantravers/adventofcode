@@ -68,8 +68,8 @@ defmodule Advent2017.Day3 do
   """
   def view_spiral(map) do
     map
-    Enum.map((-10..10), fn (x) ->
-      Enum.map((-10..10), fn(y) ->
+    Enum.each((-10..10), fn (x) ->
+      Enum.each((-10..10), fn(y) ->
         position = get(map, {x, y})
         val = if is_nil(position), do: " ", else: position[:value]
         IO.binwrite "[#{val}]"
