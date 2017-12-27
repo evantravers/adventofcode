@@ -1,4 +1,24 @@
 defmodule Advent2017.Day6 do
+  @moduledoc """
+  A debugger program here is having an issue: it is trying to repair a memory
+  reallocation routine, but it keeps getting stuck in an infinite loop.
+
+  In this area, there are sixteen memory banks; each memory bank can hold any
+  number of blocks. The goal of the reallocation routine is to balance the
+  blocks between the memory banks.
+
+  The reallocation routine operates in cycles. In each cycle, it finds the
+  memory bank with the most blocks (ties won by the lowest-numbered memory
+  bank) and redistributes those blocks among the banks. To do this, it removes
+  all of the blocks from the selected bank, then moves to the next (by index)
+  memory bank and inserts one of the blocks. It continues doing this until it
+  runs out of blocks; if it reaches the last memory bank, it wraps around to
+  the first one.
+
+  The debugger would like to know how many redistributions can be done before a
+  blocks-in-banks configuration is produced that has been seen before.
+  """
+
   @doc ~S"""
   Finds the most populated bank in `list`, and redistributes it across the
   other banks.
@@ -23,9 +43,10 @@ defmodule Advent2017.Day6 do
     list = List.replace_at(list, index_of_max, {0, index_of_max})
 
     # rotate the list to the bank after the "max" bank
-    rotated_list = rotate_to(list, index_of_max+1)
+    rotated_list = rotate_to(list, index_of_max + 1)
 
-    redistribute(rotated_list, max)
+    rotated_list
+    |> redistribute(max)
     |> sort_banks
   end
 
@@ -38,7 +59,7 @@ defmodule Advent2017.Day6 do
 
   def redistribute([h|t], spare_blocks) do
     {head, index} = h
-    redistribute(t ++ [{head+1, index}], spare_blocks-1)
+    redistribute(t ++ [{head + 1, index}], spare_blocks - 1)
   end
 
   @doc ~S"""
@@ -50,7 +71,7 @@ defmodule Advent2017.Day6 do
   def rotate_to(list, 0), do: list
 
   def rotate_to(list, index) do
-    Enum.slice(list, index..-1) ++ Enum.slice(list, 0..index-1)
+    Enum.slice(list, index..-1) ++ Enum.slice(list, 0..index - 1)
   end
 
   @doc ~S"""
@@ -94,14 +115,13 @@ defmodule Advent2017.Day6 do
       %{cycles: 5, distance: 4}
   """
   def balance(configuration, visited \\ []) do
-    cond do
-      Enum.any?(visited, &(configuration==&1)) ->
-        %{cycles: Enum.count(visited),
-          distance: Enum.count(visited) - Enum.find_index(visited, &(configuration==&1))}
-      true ->
-        configuration
-        |> cycle
-        |> balance(visited ++ [configuration])
+    if Enum.any?(visited, &(configuration == &1)) do
+      %{cycles: Enum.count(visited),
+        distance: Enum.count(visited) - Enum.find_index(visited, &(configuration == &1))}
+    else
+      configuration
+      |> cycle
+      |> balance(visited ++ [configuration])
     end
   end
 
