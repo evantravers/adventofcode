@@ -53,9 +53,6 @@ defmodule Advent2017.Day14 do
   @doc """
   Transforms a "grid" of nested lists into a "grid" of nested maps.
 
-  You can then use `get_in/2` and 'update_in/3` to access the grid in the form:
-  `get_in(grid, [x, y])`
-
   The reasoning for this is it will hopefully make bound detection easier.
   """
   def list_grid_to_map_grid(grid) do
@@ -67,7 +64,7 @@ defmodule Advent2017.Day14 do
   end
 
   @doc """
-      iex> Advent2017.Day14.adjacent([2, 2])
+      iex> adjacent([2, 2])
       [[3, 2], [1, 2], [2, 3], [2, 1]]
   """
   def adjacent([x, y]) do
@@ -98,7 +95,6 @@ defmodule Advent2017.Day14 do
   @doc """
   Returns a coordinate in grid that has a 1 value, but isn't in visited.
   """
-  @spec find_ungrouped(List, MapSet) :: List
   def find_ungrouped(grid, visited) do
     results =
       for y <- Map.keys(grid), x <- Map.keys(grid[y]), do: [[x, y], get(grid, [x, y])]
@@ -138,6 +134,7 @@ defmodule Advent2017.Day14 do
     |> List.flatten
     |> Enum.sum
   end
+
   def p2 do
     "ljoxqyyw"
     |> defrag
