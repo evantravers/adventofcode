@@ -36,6 +36,7 @@ defmodule Advent2017.Day14 do
     str
     |> String.to_integer(16)
     |> Integer.to_string(2)
+    |> String.pad_leading(128, "0")
   end
 
   @spec defrag(String) :: List
