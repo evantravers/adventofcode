@@ -64,11 +64,11 @@ defmodule Advent2017.Day18 do
   @doc ~S"""
   set X Y sets register X to the value of Y.
 
-      iex> Advent2017.Day18.set(%Advent.Day18.Machine{}, "f", "3")
-      %Advent.Day18.Machine{f: 3, pointer: 1}
+      iex> set(%Advent2017.Day18.Machine{}, "f", "3")
+      %Advent2017.Day18.Machine{reg: %{f: 3}, pointer: 1}
 
-      iex> Advent2017.Day18.set(%{pointer: 0, f: 3}, "x", "f")
-      %{f: 3, x: 3, pointer: 1}
+      iex> set(%Advent2017.Day18.Machine{pointer: 0, reg: %{f: 3}}, "x", "f")
+      %Advent2017.Day18.Machine{reg: %{f: 3, x: 3}, pointer: 1}
   """
   def set(machine, x, y) do
     machine
@@ -95,8 +95,8 @@ defmodule Advent2017.Day18 do
   @doc ~S"""
   add X Y increases register X by the value of Y.
 
-      iex> Advent2017.Day18.add(%{pointer: 0, f: 3}, "f", "f")
-      %{f: 6, pointer: 1}
+      iex> add(%Advent2017.Day18.Machine{pointer: 0, reg: %{f: 3}}, "f", "f")
+      %Advent2017.Day18.Machine{reg: %{f: 6}, pointer: 1}
   """
   def add(machine, x, y) do
     machine
@@ -108,8 +108,8 @@ defmodule Advent2017.Day18 do
   mul X Y sets register X to the result of multiplying the value contained in
   register X by the value of Y.
 
-      iex> Advent2017.Day18.mul(%{pointer: 0, f: 3}, "f", "f")
-      %{f: 9, pointer: 1}
+      iex> mul(%Advent2017.Day18.Machine{pointer: 0, reg: %{f: 3}}, "f", "f")
+      %Advent2017.Day18.Machine{reg: %{f: 9}, pointer: 1}
   """
   def mul(machine, x, y) do
     machine
@@ -122,8 +122,8 @@ defmodule Advent2017.Day18 do
   register X by the value of Y (that is, it sets X to the result of X modulo
   Y).
 
-      iex> Advent2017.Day18.mod(%{pointer: 0, f: 3}, "f", "2")
-      %{f: 1, pointer: 1}
+      iex> mod(%Advent2017.Day18.Machine{pointer: 0, reg: %{f: 3}}, "f", "2")
+      %Advent2017.Day18.Machine{reg: %{f: 1}, pointer: 1}
   """
   def mod(machine, x, y) do
     machine
@@ -173,10 +173,10 @@ defmodule Advent2017.Day18 do
   is greater than zero. (An offset of 2 skips the next instruction, an offset
   of -1 jumps to the previous instruction, and so on.)
 
-      iex> Advent2017.Day18.jgz(%{pointer: 0, f: 3}, "3", "2")
-      %{pointer: 2, f: 3}
-      iex> Advent2017.Day18.jgz(%{pointer: 0, f: 3}, "-3", "2")
-      %{pointer: 1, f: 3}
+      iex> jgz(%Advent2017.Day18.Machine{pointer: 0, reg: %{f: 3}}, "3", "2")
+      %Advent2017.Day18.Machine{pointer: 2, reg: %{f: 3}}
+      iex> jgz(%Advent2017.Day18.Machine{pointer: 0, reg: %{f: 3}}, "-3", "2")
+      %Advent2017.Day18.Machine{pointer: 1, reg: %{f: 3}}
   """
   def jgz(machine, x, y) do
     case e(machine, x) > 0 do
