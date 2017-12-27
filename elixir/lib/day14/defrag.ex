@@ -73,22 +73,24 @@ defmodule Advent2017.Day14 do
     [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]
   end
 
-  @spec contiguous(Map, List, MapSet) :: MapSet
-  def contiguous(grid, coords, group \\ MapSet.new) do
-    case get_in(grid, coords) do
-      nil -> group
-        0 -> group
-        1 ->
-          neighbors = Enum.reject(adjacent(coords), &MapSet.member?(group, &1))
-          if Enum.empty? neighbors do
-            group
-          else
-            neighbors
-            |> Enum.map(fn adj ->
-              contiguous(grid, adj, MapSet.put(group, coords))
-            end)
-            |> Enum.reduce(&MapSet.union &1, &2)
-          end
+  def get(grid, [x, y]) do
+    get_in(grid, [y, x])
+  end
+
+  def contiguous(grid, coord), do: contiguous(grid, [coord], MapSet.new)
+
+  def contiguous(_, [], group), do: group
+
+  def contiguous(grid, [square|todo], group) do
+    skip = fn -> contiguous(grid, todo, group) end
+
+    cond do
+      Enum.member?(group, square) ->
+        skip.()
+      get(grid, square) == 1 ->
+        contiguous(grid, adjacent(square) ++ todo, MapSet.put(group, square))
+      true -> # nil or 0
+        skip.()
     end
   end
 
@@ -98,7 +100,7 @@ defmodule Advent2017.Day14 do
   @spec find_ungrouped(List, MapSet) :: List
   def find_ungrouped(grid, visited) do
     results =
-      for x <- Map.keys(grid), y <- Map.keys(grid[x]), do: [[x, y], get_in(grid, [x, y])]
+      for y <- Map.keys(grid), x <- Map.keys(grid[y]), do: [[x, y], get(grid, [x, y])]
 
     results
     |> Enum.filter(fn [_, value] -> value == 1 end)
@@ -120,11 +122,12 @@ defmodule Advent2017.Day14 do
     unvisited_nodes = find_ungrouped(grid, visited)
 
     if Enum.empty?(unvisited_nodes) do
-      start_node = hd(hd(unvisited_nodes))
+      groups
+    else
+      [start_node, _] = hd(unvisited_nodes)
+
       group = contiguous(grid, start_node)
       find_groups(grid, MapSet.union(visited, group), [group | groups])
-    else
-      groups
     end
   end
 
