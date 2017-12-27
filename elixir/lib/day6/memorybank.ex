@@ -3,11 +3,11 @@ defmodule Advent2017.Day6 do
   Finds the most populated bank in `list`, and redistributes it across the
   other banks.
 
-      iex> Advent2017.Day6.cycle([0, 2, 7, 0])
+      iex> cycle([0, 2, 7, 0])
       [2, 4, 1, 2]
-      iex> Advent2017.Day6.cycle([2, 4, 1, 2])
+      iex> cycle([2, 4, 1, 2])
       [3, 1, 2, 3]
-      iex> Advent2017.Day6.cycle([3, 1, 2, 3])
+      iex> cycle([3, 1, 2, 3])
       [0, 2, 3, 4]
   """
   @spec cycle(list) :: list
@@ -30,7 +30,7 @@ defmodule Advent2017.Day6 do
   end
 
   @doc ~S"""
-      iex> Advent2017.Day6.redistribute([{1, 0}, {2, 1}, {3, 2}, {0, 3}], 3)
+      iex> redistribute([{1, 0}, {2, 1}, {3, 2}, {0, 3}], 3)
       ...> |> Advent2017.Day6.sort_banks
       [2, 3, 4, 0]
   """
@@ -42,9 +42,9 @@ defmodule Advent2017.Day6 do
   end
 
   @doc ~S"""
-      iex> Advent2017.Day6.rotate_to([1,2,3], 1)
+      iex> rotate_to([1,2,3], 1)
       [2, 3, 1]
-      iex> Advent2017.Day6.rotate_to([1,2,3], 0)
+      iex> rotate_to([1,2,3], 0)
       [1, 2, 3]
   """
   def rotate_to(list, 0), do: list
@@ -56,9 +56,9 @@ defmodule Advent2017.Day6 do
   @doc ~S"""
   Sorts a list of tuples (from `Enum.with_index`) back into it's original state
 
-      iex> Advent2017.Day6.sort_banks([{1, 0}, {2, 1}, {3, 2}])
+      iex> sort_banks([{1, 0}, {2, 1}, {3, 2}])
       [1, 2, 3]
-      iex> Advent2017.Day6.sort_banks([{1, 1}, {2, 2}, {3, 0}])
+      iex> sort_banks([{1, 1}, {2, 2}, {3, 0}])
       [3, 1, 2]
   """
   def sort_banks(list) do
@@ -69,15 +69,15 @@ defmodule Advent2017.Day6 do
   end
 
   @doc ~S"""
-      iex> Advent2017.Day6.largest_bank([{1,1}, {2,0}])
+      iex> largest_bank([{1,1}, {2,0}])
       {2,0}
-      iex> Advent2017.Day6.largest_bank([{2,0}, {1,1}])
+      iex> largest_bank([{2,0}, {1,1}])
       {2,0}
-      iex> Advent2017.Day6.largest_bank([{2,0}, {2, 1}, {1,2}])
+      iex> largest_bank([{2,0}, {2, 1}, {1,2}])
       {2,0}
-      iex> Advent2017.Day6.largest_bank([{1, 5}, {5, 0}, {2, 3}, {5, 1}])
+      iex> largest_bank([{1, 5}, {5, 0}, {2, 3}, {5, 1}])
       {5,0}
-      iex> Advent2017.Day6.largest_bank([{1, 5}, {0, 4}, {5, 0}, {6, 2}, {2, 3}, {5, 1}])
+      iex> largest_bank([{1, 5}, {0, 4}, {5, 0}, {6, 2}, {2, 3}, {5, 1}])
       {6, 2}
   """
   def largest_bank(list) do
@@ -90,7 +90,7 @@ defmodule Advent2017.Day6 do
   end
 
   @doc ~S"""
-      iex> Advent2017.Day6.balance([0, 2, 7, 0])
+      iex> balance([0, 2, 7, 0])
       %{cycles: 5, distance: 4}
   """
   def balance(configuration, visited \\ []) do
