@@ -16,3 +16,4 @@ can also run a specific day's solution w/ `mix day <num>`.
   - [ ] Day 18
   - [ ] Day 20
   - [ ] Day 21
+- Move Day18 + Day23 shared code into a shared class w/ composition
