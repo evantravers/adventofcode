@@ -12,6 +12,6 @@ defmodule Advent2017Test do
   doctest Advent2017.Day18.Machine, import: true
   doctest Advent2017.Day20
   doctest Advent2017.Day20.Particle
-  doctest Advent2017.Day21
+  doctest Advent2017.Day23
   doctest Advent2017.Day25
 end
