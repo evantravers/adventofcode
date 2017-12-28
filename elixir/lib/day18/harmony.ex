@@ -232,15 +232,13 @@ defmodule Advent2017.Day18 do
     send(p0, {:machine, machine})
 
     receive do
-      {:result, machine} ->
+      {:result, _, machine} ->
         machine.rcv
         |> List.first
     end
   end
 
   def p2 do
-    # I guess I'm going to have to spin up some actors and use `send/3` and
-    # `receive/1`... let's do some real concurrency!
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     instructions =
