@@ -59,6 +59,12 @@ defmodule Advent2017.Day18 do
     def put(machine, x, y) do
       Map.update!(machine, :reg, fn reg -> Map.put(reg, String.to_atom(x), y) end)
     end
+
+    defimpl Inspect do
+      def inspect(machine, _) do
+        "#{machine.id}: #{Kernel.inspect machine.reg}\nSND: #{length machine.snd}"
+      end
+    end
   end
 
   @doc ~S"""
@@ -153,18 +159,23 @@ defmodule Advent2017.Day18 do
   """
   def rcv(machine, x) do
     receive do
-      val -> set(machine, x, val)
-        if machine.limit == length(machine.rcv) do
-          machine
-          |> Map.update!(:rcv, fn history -> [e(machine, x)|history] end)
-          |> stop
-        else
-          machine
-          |> Map.update!(:rcv, fn history -> [e(machine, x)|history] end)
-          |> next
-        end
+      val ->
+        stop_or_next =
+          if machine.limit == length(machine.rcv) do
+            &stop/1
+          else
+            &next/1
+          end
+
+        machine
+        |> Machine.put(x, e(machine, val))
+        |> Map.update!(:rcv, fn history -> [e(machine, x)|history] end)
+        |> stop_or_next.()
     after
-      50 -> stop(machine)
+      50 ->
+        send(machine.parent, {:deadlock, self(), machine})
+        machine
+        |> stop
     end
   end
 
@@ -199,7 +210,7 @@ defmodule Advent2017.Day18 do
   def run(machine) do
     instruction = Enum.at(machine.instructions, machine.pointer)
     if is_nil(instruction) do
-      send(machine.parent, {:result, machine})
+      send(machine.parent, {:result, self(), machine})
     else
       [method|args] = String.split(instruction, " ", trim: true)
 
@@ -258,15 +269,9 @@ defmodule Advent2017.Day18 do
     send(p0, {:machine, machine0})
     send(p1, {:machine, machine1})
 
-    r0 = Process.monitor(p0)
-    r1 = Process.monitor(p1)
     receive do
-      {:DOWN, ^r0, _, _, _} ->
-        IO.puts("End of p0")
-      {:DOWN, ^r1, _, _, _} ->
-        IO.puts "End of p1"
-      {:result, machine} ->
-        machine
+      {:deadlock, ^p1, machine} ->
+        "p#{machine.id}: #{length machine.snd}"
     end
   end
 end
