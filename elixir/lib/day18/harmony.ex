@@ -160,17 +160,11 @@ defmodule Advent2017.Day18 do
   def rcv(machine, x) do
     receive do
       val ->
-        stop_or_next =
-          if machine.limit == length(machine.rcv) do
-            &stop/1
-          else
-            &next/1
-          end
 
         machine
-        |> Machine.put(x, e(machine, val))
+        |> set(x, val)
+        |> limit_check
         |> Map.update!(:rcv, fn history -> [e(machine, x)|history] end)
-        |> stop_or_next.()
     after
       50 ->
         send(machine.parent, {:deadlock, self(), machine})
@@ -199,6 +193,14 @@ defmodule Advent2017.Day18 do
   def next(machine), do: Map.update!(machine, :pointer, &(&1 + 1))
   def stop(machine) do
     Map.put(machine, :pointer, 99_999_999_999)
+  end
+
+  def limit_check(machine) do
+    if machine.limit == length(machine.rcv) do
+      stop(machine)
+    else
+      machine
+    end
   end
 
   def setup() do
