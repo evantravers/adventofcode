@@ -13,9 +13,11 @@ defmodule Advent2017.Day20 do
     Representing a single particle, with functions to manipulate its state.
     """
 
-    defstruct pos: [nil, nil, nil],
-              vel: [nil, nil, nil],
-              acc: [nil, nil, nil],
+    defstruct pos:      [nil, nil, nil],
+              last_pos: [nil, nil, nil],
+              vel:      [nil, nil, nil],
+              acc:      [nil, nil, nil],
+              red_shift: false,
               id: nil
 
 
@@ -25,7 +27,7 @@ defmodule Advent2017.Day20 do
       |> List.flatten
       |> Enum.map(&String.to_integer &1)
       |> Enum.chunk_every(3)
-      |> (fn [p, v, a] -> %Particle{id: id, pos: p, vel: v, acc: a} end).()
+      |> (fn [p, v, a] -> %Particle{id: id, pos: p, last_pos: p, vel: v, acc: a} end).()
     end
 
     def fetch(map, val), do: Map.fetch(map, val)
@@ -42,8 +44,10 @@ defmodule Advent2017.Day20 do
         iex> Advent2017.Day20.Particle.new({"p=<3,0,0>, v=<2,0,0>, a=<-1,0,0>", 2})
         ...> |> Advent2017.Day20.Particle.tick
         %Advent2017.Day20.Particle{acc: [-1, 0, 0],
+                                   last_pos: [3, 0, 0],
                                    pos: [4, 0, 0],
                                    vel: [1, 0, 0],
+                                   red_shift: false,
                                    id: 2}
     """
     @spec tick(Particle) :: Particle
@@ -65,44 +69,49 @@ defmodule Advent2017.Day20 do
         ...> |> Advent2017.Day20.Particle.distance
         6
     """
-    def distance(particle, dest \\ [0, 0, 0])
-    def distance(coords, dest) when is_list(coords) do
-      coords
-      |> Enum.zip(dest)
+    def distance(val) do
+      val
+      |> Enum.zip([0, 0, 0])
       |> Enum.map(fn {v1, v2} -> abs(v2 - v1) end)
       |> Enum.sum
     end
   end
 
-
-  def simulate(particles, 0), do: particles
-  def simulate(particles, count) do
-    IO.inspect count
-    particles
-    |> Enum.map(&Particle.tick &1)
-    |> collision_detection
-    |> simulate(count - 1)
+  def simulate(particles, opts \\ []) do
+    if Enum.all?(particles, fn p -> p.red_shift end) do
+      particles
+    else
+      if opts[:collision] do
+        particles
+        |> Enum.map(&Particle.tick &1)
+        |> collision_detection
+        |> red_shift
+        |> simulate(opts)
+      else
+        particles
+        |> Enum.map(&Particle.tick &1)
+        |> red_shift
+        |> simulate(opts)
+      end
+    end
   end
 
-  def greatest(particles, attr) do
+  def sort_by(particles, attr) do
     particles
     |> Enum.sort(fn p1, p2 ->
       Particle.distance(p1[attr]) < Particle.distance(p2[attr])
     end)
-    |> Enum.reverse
   end
 
-  def filter_escapees(particles) when length(particles) == 1, do: particles
-  def filter_escapees(particles) do
-    cond do
-      hd(greatest(particles, :pos)) == hd(greatest(particles, :acc)) ->
-        IO.puts "ESCAPED: #{Kernel.inspect hd(greatest(particles, :pos))}"
-        filter_escapees(List.delete(particles, hd(greatest(particles, :pos))))
-      hd(greatest(particles, :pos)) == hd(greatest(particles, :vel)) ->
-        IO.puts "ESCAPED: #{Kernel.inspect hd(greatest(particles, :pos))}"
-        filter_escapees(List.delete(particles, hd(greatest(particles, :pos))))
-      true -> particles
-    end
+  def red_shift(particles) do
+    particles
+    |> Enum.map(fn p ->
+      if Particle.distance(p.pos) > Particle.distance(p.last_pos) do
+        Map.put(p, :red_shift, true)
+      else
+        Map.put(p, :red_shift, false)
+      end
+    end)
   end
 
   @doc ~S"""
@@ -120,23 +129,43 @@ defmodule Advent2017.Day20 do
     end)
   end
 
-  def p1 do
-    {:ok, file} = File.read(__DIR__ <> "/test.txt")
+  def closest(particles) do
+    particles
+    |> sort_by(:acc)
+    |> Enum.chunk_by(&Particle.distance(&1.acc))
+    |> List.first
+    |> sort_by(:vel)
+    |> Enum.chunk_by(&Particle.distance(&1.vel))
+    |> List.first
+    |> sort_by(:pos)
+    |> Enum.chunk_by(&Particle.distance(&1.pos))
+    |> List.first
+    |> List.first
+  end
+
+  def load_particles(filename) do
+    {:ok, file} = File.read(__DIR__ <> "/#{filename}")
 
     file
     |> String.split("\n", trim: true)
     |> Enum.with_index
     |> Enum.map(&Particle.new &1)
-    |> simulate(5000)
+  end
+
+  def p1 do
+    particles = load_particles("input.txt")
+
+    particles
+    |> simulate
+    |> closest
+    |> Map.get(:id)
   end
 
   def p2 do
-    {:ok, file} = File.read(__DIR__ <> "/input.txt")
+    particles = load_particles("input.txt")
 
-    file
-    |> String.split("\n", trim: true)
-    |> Enum.with_index
-    |> Enum.map(&Particle.new &1)
-    |> simulate(5000)
+    particles
+    |> simulate(collision: true)
+    |> Enum.count
   end
 end
