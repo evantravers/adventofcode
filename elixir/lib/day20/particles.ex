@@ -4,7 +4,7 @@ defmodule Advent2017.Day20 do
   @moduledoc """
   New plan, "borrowed" from clever redditor: Run the sim. If the farthest
   particle has the highest acceleration and velocity, remove it, it has
-  "escaped" it has "escaped". If collision, remove from set. When you have one
+  "escaped". If collision, remove from set. When you have one
   left, that's the closest to origin.
   """
 
