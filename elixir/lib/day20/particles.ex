@@ -2,10 +2,8 @@ require IEx
 
 defmodule Advent2017.Day20 do
   @moduledoc """
-  New plan, "borrowed" from clever redditor: Run the sim. If the farthest
-  particle has the highest acceleration and velocity, remove it, it has
-  "escaped". If collision, remove from set. When you have one
-  left, that's the closest to origin.
+  Keep track of all the particles... when they are all headed away from origin,
+  stop the sim.
   """
 
   defmodule Particle do
