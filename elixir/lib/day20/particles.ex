@@ -75,15 +75,13 @@ defmodule Advent2017.Day20 do
   end
 
 
-  def simulate(particles) when length(particles) == 1, do: particles
-  def simulate(particles) do
-    IO.puts length(particles)
-
+  def simulate(particles, 0), do: particles
+  def simulate(particles, count) do
+    IO.inspect count
     particles
     |> Enum.map(&Particle.tick &1)
     |> collision_detection
-    |> filter_escapees
-    |> simulate
+    |> simulate(count - 1)
   end
 
   def greatest(particles, attr) do
@@ -94,11 +92,14 @@ defmodule Advent2017.Day20 do
     |> Enum.reverse
   end
 
+  def filter_escapees(particles) when length(particles) == 1, do: particles
   def filter_escapees(particles) do
     cond do
       hd(greatest(particles, :pos)) == hd(greatest(particles, :acc)) ->
+        IO.puts "ESCAPED: #{Kernel.inspect hd(greatest(particles, :pos))}"
         filter_escapees(List.delete(particles, hd(greatest(particles, :pos))))
       hd(greatest(particles, :pos)) == hd(greatest(particles, :vel)) ->
+        IO.puts "ESCAPED: #{Kernel.inspect hd(greatest(particles, :pos))}"
         filter_escapees(List.delete(particles, hd(greatest(particles, :pos))))
       true -> particles
     end
@@ -114,36 +115,28 @@ defmodule Advent2017.Day20 do
   """
   def collision_detection(particles) do
     particles
-    |> Enum.reduce([], fn particle, acc ->
-      match = Enum.find(acc, fn search -> search.pos == particle.pos end)
-      if is_nil(match) do
-        [particle|acc]
-      else
-        List.delete(acc, match)
-      end
+    |> Enum.reject(fn particle ->
+      Enum.member?(Enum.map(particles -- [particle], & &1.pos), particle.pos)
     end)
   end
 
   def p1 do
+    {:ok, file} = File.read(__DIR__ <> "/test.txt")
+
+    file
+    |> String.split("\n", trim: true)
+    |> Enum.with_index
+    |> Enum.map(&Particle.new &1)
+    |> simulate(5000)
+  end
+
+  def p2 do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
     file
     |> String.split("\n", trim: true)
     |> Enum.with_index
     |> Enum.map(&Particle.new &1)
-    |> simulate
-  end
-
-  def p2 do
-    {:ok, file} = File.read(__DIR__ <> "/input.txt")
-
-    {_, escapees} =
-      file
-      |> String.split("\n", trim: true)
-      |> Enum.with_index
-      |> Enum.map(&Particle.new &1)
-      |> simulate
-
-    escapees
+    |> simulate(5000)
   end
 end
