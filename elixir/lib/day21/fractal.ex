@@ -209,31 +209,84 @@ defmodule Advent2017.Day21 do
     |> Grid.subdivide
     |> Enum.map(fn row ->
       Enum.map(row, fn pattern ->
-        Map.get(rules, pattern)
+        {_, result} = Enum.find(rules, fn {rule, _} ->
+          Grid.match?(pattern, rule)
+        end)
+
+        result
       end)
     end)
     |> Grid.join
     |> iterate(rules, count - 1)
   end
 
-  def build_rulebook(rules) do
-    rules
+  def meta_iterate(ids, _, 0), do: ids
+  def meta_iterate(ids, rules, count) do
+    ids
+    |> List.wrap
+    |> Enum.map(fn grid_id -> Map.get(rules, grid_id) end)
+    |> Enum.map(fn g -> meta_iterate(g, rules, count - 1) end)
+  end
+
+  def build_rulebook(file) do
+    file
     |> String.split("\n", trim: true)
-    |> Enum.map(&rule &1)
-    |> Enum.reduce(%{}, &Map.merge(&1, &2))
+    |> Enum.map(&new_rule &1)
   end
 
   @doc """
-  Read in a rule from a string and generate a map with every possible matching
-  rule leading to the same result pattern
+  As long as we know what it's going to do, we don't actually have to do it.
+
+  After three iterations, each 3x3 grid becomes nine separate 3x3 grids, every
+  time. We are told to look for 18 iterations, so 6 of these should do the trick.
+
+  The trick is going to be assigning numbers to each of the known 3x3s, then
+  instead of recording their resulting grid, recording the ids of the known
+  grids that results in.
+
+  TODO:
+  - write a meta_iterate function that looks at an ID, turns it into a list of
+    the 9 IDs it would iterate to, and recurses as deep as you need.
   """
-  def rule(rule_string) do
+  def build_meta_rulebook(file) do
+    original_rules = build_rulebook(file)
+
+    {rules, results} =
+      original_rules
+      |> Enum.filter(fn {rule, _} -> rule.size == 3 end)
+      |> Enum.with_index
+      |> Enum.reduce({[], []}, fn {{rule, result}, index}, {rules, results} ->
+        {[{rule, index}|rules], [{result, index}|results]}
+      end)
+
+    results =
+      results
+      |> Enum.map(fn {result, index} ->
+        resulting_ids =
+          result
+          |> iterate(build_rulebook(file), 2)
+          |> Grid.subdivide(3)
+          |> List.flatten
+          |> Enum.map(fn subresult ->
+            {_, index} = Enum.find(rules, fn {rule, _} ->
+              Grid.match?(subresult, rule)
+            end)
+            index
+          end)
+        {index, resulting_ids}
+      end)
+      |> Map.new
+    {rules, results}
+  end
+
+  @doc """
+  Read in a rule from a string and generate a tuple of the {rule, result}
+  """
+  def new_rule(rule_string) do
     [pattern, result] =
       String.split(rule_string, " => ", trim: true)
       |> Enum.map(&Grid.new &1)
-
-    Enum.map(Grid.all_combinations(pattern), fn rule -> {rule, result} end)
-    |> Map.new
+    {pattern, result}
   end
 
   def test do
@@ -263,12 +316,21 @@ defmodule Advent2017.Day21 do
   def p2 do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
-    rulebook = build_rulebook file
+    {start_rules, rulebook} =
+      file
+      |> build_meta_rulebook
 
     grid = Grid.new(@glider)
+    {_, start_id} = Enum.find(start_rules, fn {rule, _} ->
+      Grid.match?(grid, rule)
+    end)
 
-    iterate(grid, rulebook, 18)
-    |> Map.get(:coords)
-    |> Enum.count
+    meta_iterate(start_id, rulebook, div(18, 3)) # meta_iterate jumps 2 steps
+    |> List.flatten
+    |> Enum.map(fn grid_id ->
+      {rule, _} = Enum.find(start_rules, fn {_, id} -> grid_id == id end)
+      Enum.count(rule.coords)
+    end)
+    |> Enum.sum
   end
 end
