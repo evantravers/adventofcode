@@ -2,7 +2,7 @@
 
 This mix application is just for testing and such. If you want to run all the
 solutions, run `mix day all`. I've been developing and testing by running `iex
--S mix` and running solutions in iex by typing `Advent2017.Day<num>.p1`. You
+-S mix` and running solutions in iex by typing `Day<num>.p1`. You
 can also run a specific day's solution w/ `mix day <num>`.
 
 ## TODO
@@ -12,7 +12,6 @@ can also run a specific day's solution w/ `mix day <num>`.
   - [ ] Day 13
   - [ ] Day 15
 - Finish P2:
-  - [ ] Day 14
-  - [ ] Day 18
   - [ ] Day 21
+  - [ ] Day 23
 - Move Day18 + Day23 shared code into a shared class w/ composition
