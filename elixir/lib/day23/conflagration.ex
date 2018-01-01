@@ -151,6 +151,119 @@ defmodule Advent2017.Day23 do
 
     %Machine{instructions: String.split(file, "\n", trim: true), reg: %{a: 1}}
     |> run
-    |> Map.get(:mul_count)
+  end
+
+  def put(regs, r1, r2) when is_atom(r2) do
+    Map.put(regs, r1, Map.get(regs, r2))
+  end
+
+  def put(regs, r1, r2) when is_integer(r2) do
+    Map.put(regs, r1, r2)
+  end
+
+  def psub(regs, r1, r2) when is_atom(r2) do
+    Map.update!(regs, r1, & &1 - Map.get(regs, r2))
+  end
+
+  def pmul(regs, r1, r2) when is_atom(r2) do
+    Map.update!(regs, r1, & &1 * Map.get(regs, r2))
+  end
+
+  def solution(regs \\ %{}) do
+    empty_registers =
+      for char <- ?a..?h,
+    into: %{},
+      do: {String.to_atom(to_string([char])), 0}
+
+    regs =
+      empty_registers
+      |> Map.merge(regs)
+      |> Map.put(:mul, 0)
+      |> put(:b, 93)
+      |> put(:c, :b)
+
+    if regs[:a] != 0 do
+      regs =
+        regs
+        |> Map.update!(:b, & &1 * 100)
+        |> Map.update!(:mul, & &1 + 1)
+        |> Map.update!(:b, & &1 + 100_000)
+        |> put(:c, :b)
+        |> Map.update!(:c, & &1 + 17_000)
+    end
+
+    regs =
+      first_loop(regs)
+
+    regs
+  end
+
+  def first_loop(regs) do
+    regs =
+      regs
+      |> put(:f, 1)
+      |> put(:d, 2)
+      |> second_loop
+
+    if regs[:f] == 0 do
+      IO.inspect regs
+      regs =
+        regs
+        |> Map.update!(:h, & &1 + 1)
+    end
+
+    regs =
+      regs
+      |> put(:g, :b)
+      |> psub(:g, :c) # TODO: TERRIBLE
+
+    if regs[:g] != 0 do
+      regs
+      |> Map.update!(:b, & &1 + 17)
+      |> first_loop
+    else
+      regs
+    end
+  end
+
+  def second_loop(regs) do
+    regs =
+      regs
+      |> put(:e, 2)
+      |> third_loop
+      |> Map.update!(:d, & &1 + 1)
+      |> put(:g, :d)
+      |> psub(:g, :b)
+
+    if regs[:g] != 0 do # TODO: TERRIBLE
+      second_loop(regs)
+    else
+      regs
+    end
+  end
+
+  def third_loop(regs) do
+    regs =
+      regs
+      |> put(:g, :d)
+      |> pmul(:g, :e)
+      |> Map.update!(:mul, & &1 + 1)
+      |> psub(:g, :b)
+
+    if regs[:g] == 0 do
+      regs = regs |> put(:f, 0)
+    end
+
+    regs =
+      regs
+      |> Map.update!(:e, & &1 + 1)
+      |> put(:g, :e)
+      |> psub(:g, :b)
+
+    if regs[:g] != 0 do
+      third_loop(regs)
+    else
+      regs
+    end
   end
 end
