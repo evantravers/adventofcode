@@ -1,5 +1,6 @@
 defmodule Advent2017.Day23 do
   @moduledoc """
+  Part 1:
   You decide to head directly to the CPU and fix the printer from there. As you
   get close, you find an experimental coprocessor doing so much work that the
   local programs are afraid it will halt and catch fire. This would cause
@@ -20,13 +21,26 @@ defmodule Advent2017.Day23 do
 
   The coprocessor is currently set to some kind of debug mode, which allows for
   testing, but prevents it from doing any meaningful work.
+
+  Part 2:
+
+  There are four ways to handle this that I can see: Write a machine fast
+  enough to complete in time, write code in elixir that optimizes the loops in
+  the assembly, optimize the assembly input, or hand trace and understand the
+  assembly. 1 seems impossible, 2 seems really complex, 5 is a solved problem
+  so I believe I'm going to try and optimize the assembly.
+
+  I'm going to build a quick heatmap of what instructions get called so that I
+  can identify which is the tightest inner loop, then try to unwrap it a little
+  bit while not changing the answer to p1. Theoretically I may be able to lower
+  the complexity sufficiently that p2 just completes in time.
   """
   defmodule Machine do
     @moduledoc "Represents the state of my machine"
     defstruct pointer: 0,
               reg: %{},
               instructions: [],
-              mul_count: 0
+              heatmap: %{}
 
     def put(machine, x, y) do
       Map.update!(machine, :reg, fn reg -> Map.put(reg, String.to_atom(x), y) end)
@@ -34,7 +48,12 @@ defmodule Advent2017.Day23 do
 
     defimpl Inspect do
       def inspect(machine, _) do
-        "#{Kernel.inspect machine.reg}"
+        """
+        #{Kernel.inspect machine.reg}
+        #{Kernel.inspect machine.heatmap}
+
+        #{Enum.at(machine.instructions, machine.pointer)}
+        """
       end
     end
   end
@@ -60,7 +79,6 @@ defmodule Advent2017.Day23 do
   def mul(machine, x, y) do
     machine
     |> Machine.put(x, e(machine, x) * e(machine, y))
-    |> Map.update!(:mul_count, & &1 + 1)
     |> next
   end
 
@@ -103,15 +121,20 @@ defmodule Advent2017.Day23 do
 
   def run(machine) do
     instruction = Enum.at(machine.instructions, machine.pointer)
-    IO.puts instruction
-    IO.inspect machine
     if is_nil(instruction) do
       machine
     else
       [method|args] = String.split(instruction, " ", trim: true)
 
-      run(apply(Advent2017.Day23, String.to_atom(method), [machine | args]))
+      run(apply(Advent2017.Day23, String.to_atom(method), [instrument(machine) | args]))
     end
+  end
+
+  def instrument(machine) do
+    IO.inspect machine
+    Map.update!(machine, :heatmap, fn heatmap ->
+      Map.update(heatmap, machine.pointer, 1, & &1 + 1)
+    end)
   end
 
   def p1 do
@@ -119,7 +142,8 @@ defmodule Advent2017.Day23 do
 
     %Machine{instructions: String.split(file, "\n", trim: true)}
     |> run
-    |> Map.get(:mul_count)
+    |> Map.get(:heatmap)
+    |> Map.get(12)
   end
 
   def p2 do
