@@ -147,123 +147,46 @@ defmodule Advent2017.Day23 do
   end
 
   def p2 do
-    {:ok, file} = File.read(__DIR__ <> "/input.txt")
-
-    %Machine{instructions: String.split(file, "\n", trim: true), reg: %{a: 1}}
-    |> run
-  end
-
-  def put(regs, r1, r2) when is_atom(r2) do
-    Map.put(regs, r1, Map.get(regs, r2))
-  end
-
-  def put(regs, r1, r2) when is_integer(r2) do
-    Map.put(regs, r1, r2)
-  end
-
-  def psub(regs, r1, r2) when is_atom(r2) do
-    Map.update!(regs, r1, & &1 - Map.get(regs, r2))
-  end
-
-  def pmul(regs, r1, r2) when is_atom(r2) do
-    Map.update!(regs, r1, & &1 * Map.get(regs, r2))
-  end
-
-  def solution(regs \\ %{}) do
-    empty_registers =
-      for char <- ?a..?h,
-    into: %{},
-      do: {String.to_atom(to_string([char])), 0}
-
-    regs =
-      empty_registers
-      |> Map.merge(regs)
-      |> Map.put(:mul, 0)
-      |> put(:b, 93)
-      |> put(:c, :b)
-
-    if regs[:a] != 0 do
-      regs =
-        regs
-        |> Map.update!(:b, & &1 * 100)
-        |> Map.update!(:mul, & &1 + 1)
-        |> Map.update!(:b, & &1 + 100_000)
-        |> put(:c, :b)
-        |> Map.update!(:c, & &1 + 17_000)
+    """
+    b = 93             # set b 93
+    c = b              # set c b
+    if a != 0 do       # jnz a 2 ; jnz 1 5 (a != 0)
+      b = b * 100      # mul b 100
+      b = b + 100_000  # sub b -100000
+      c = b            # set c b
+      c = c + 17_000   # sub c -17000
     end
-
-    regs =
-      first_loop(regs)
-
-    regs
-  end
-
-  def first_loop(regs) do
-    regs =
-      regs
-      |> put(:f, 1)
-      |> put(:d, 2)
-      |> second_loop
-
-    if regs[:f] == 0 do
-      IO.inspect regs
-      regs =
-        regs
-        |> Map.update!(:h, & &1 + 1)
-    end
-
-    regs =
-      regs
-      |> put(:g, :b)
-      |> psub(:g, :c) # TODO: TERRIBLE
-
-    if regs[:g] != 0 do
-      regs
-      |> Map.update!(:b, & &1 + 17)
-      |> first_loop
-    else
-      regs
-    end
-  end
-
-  def second_loop(regs) do
-    regs =
-      regs
-      |> put(:e, 2)
-      |> third_loop
-      |> Map.update!(:d, & &1 + 1)
-      |> put(:g, :d)
-      |> psub(:g, :b)
-
-    if regs[:g] != 0 do # TODO: TERRIBLE
-      second_loop(regs)
-    else
-      regs
-    end
-  end
-
-  def third_loop(regs) do
-    regs =
-      regs
-      |> put(:g, :d)
-      |> pmul(:g, :e)
-      |> Map.update!(:mul, & &1 + 1)
-      |> psub(:g, :b)
-
-    if regs[:g] == 0 do
-      regs = regs |> put(:f, 0)
-    end
-
-    regs =
-      regs
-      |> Map.update!(:e, & &1 + 1)
-      |> put(:g, :e)
-      |> psub(:g, :b)
-
-    if regs[:g] != 0 do
-      third_loop(regs)
-    else
-      regs
-    end
+    loop do            # (jnz 1 -23 :32)
+      f = 1            # set f 1
+      d = 2            # set d 2
+      loop g != 0 do   # (jnz g -13 :24)
+        e = 2          # set e 2
+        loop g != 0 do # (jnz g -8 :20)
+          g = d        # set g d
+          g = g * e    # mul g e
+          g = g - b    # sub g b
+          if g == 0 do # jnz g 2 (g == 0)
+            f = 0      # set f 0
+          end
+          e = e + 1    # sub e -1 (e + 1)
+          g = e        # set g e
+          g = g - b    # sub g b
+        end            # jnz g -8
+        d = d + 1      # sub d -1 (d + 1)
+        g = d          # set g d
+        g = g - b      # sub g b
+      end              # jnz g -13
+      if f != 0 do     # jnz f 2 (f == 0)
+        h = h + 1      # sub h -1
+      end
+      g = b            # set g b
+      g = g - c        # sub g c
+      if g != 0 do     # jnz g 2 jnz 1 3 (g != 0)
+        b = b + 17     # sub b -17
+      else
+        exit
+      end
+    end                # jnz 1 -23
+    """
   end
 end
