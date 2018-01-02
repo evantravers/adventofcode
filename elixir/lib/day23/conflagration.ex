@@ -137,6 +137,27 @@ defmodule Advent2017.Day23 do
     end)
   end
 
+  def is_prime?(num, primes) do
+    Enum.member?(primes, num)
+  end
+
+  def is_prime?(num) do
+    hd(sieve(num)) == num
+  end
+
+  def sieve(num) when is_integer(num) do
+    2..num
+    |> Enum.to_list
+    |> sieve([])
+  end
+
+  def sieve([], primes), do: primes
+  def sieve([number|numbers], primes) do
+    numbers
+    |> Enum.reject(& rem(&1, number) == 0)
+    |> sieve([number|primes])
+  end
+
   def p1 do
     {:ok, file} = File.read(__DIR__ <> "/input.txt")
 
@@ -146,47 +167,59 @@ defmodule Advent2017.Day23 do
     |> Map.get(12)
   end
 
-  def p2 do
-    """
-    b = 93             # set b 93
-    c = b              # set c b
-    if a != 0 do       # jnz a 2 ; jnz 1 5 (a != 0)
-      b = b * 100      # mul b 100
-      b = b + 100_000  # sub b -100000
-      c = b            # set c b
-      c = c + 17_000   # sub c -17000
+  @doc """
+  b = 93             # set b 93
+  c = b              # set c b
+  if a != 0 do       # jnz a 2 ; jnz 1 5 (a != 0)
+    b = b * 100      # mul b 100
+    b = b + 100_000  # sub b -100000
+    c = b            # set c b
+    c = c + 17_000   # sub c -17000
+  end
+
+  A:                 # (jnz 1 -23 :32)
+    f = 1            # set f 1
+    d = 2            # set d 2
+    B:
+      e = 2          # set e 2
+      C:             # (jnz g -8 :20)
+        g = d        # set g d           |
+        g = g * e    # mul g e           |
+        g = g - b    # sub g b           |-> if d * e - b == 0 then f = 0
+        if g == 0 do # jnz g 2 (g == 0)  |
+          f = 0      # set f 0           |
+        end
+        e = e + 1    # sub e -1 (e + 1)
+        g = e        # set g e
+        g = g - b    # sub g b
+      jnz g C        # jnz g -8
+      d = d + 1      # sub d -1 (d + 1)
+      g = d          # set g d
+      g = g - b      # sub g b
+    jnz g B          # jnz g -13
+    if f != 0 do     # jnz f 2 (f == 0)
+      h = h + 1      # sub h -1
     end
-    loop do            # (jnz 1 -23 :32)
-      f = 1            # set f 1
-      d = 2            # set d 2
-      loop g != 0 do   # (jnz g -13 :24)
-        e = 2          # set e 2
-        loop g != 0 do # (jnz g -8 :20)
-          g = d        # set g d
-          g = g * e    # mul g e
-          g = g - b    # sub g b
-          if g == 0 do # jnz g 2 (g == 0)
-            f = 0      # set f 0
-          end
-          e = e + 1    # sub e -1 (e + 1)
-          g = e        # set g e
-          g = g - b    # sub g b
-        end            # jnz g -8
-        d = d + 1      # sub d -1 (d + 1)
-        g = d          # set g d
-        g = g - b      # sub g b
-      end              # jnz g -13
-      if f != 0 do     # jnz f 2 (f == 0)
-        h = h + 1      # sub h -1
-      end
-      g = b            # set g b
-      g = g - c        # sub g c
-      if g != 0 do     # jnz g 2 jnz 1 3 (g != 0)
-        b = b + 17     # sub b -17
+    g = b            # set g b
+    g = g - c        # sub g c
+    if g != 0 do     # jnz g 2 jnz 1 3 (g != 0)
+      b = b + 17     # sub b -17
+    else
+      exit
+    end
+  jnz 1 A
+  """
+  def p2 do
+    b  = 109_300 # (lower bound?)
+    c  = 126_300 # (higher bound?)
+    primes = sieve(c)
+
+    Enum.reduce(Enum.take_every(b..c, 17), 0, fn num, non_primes ->
+      if is_prime?(num, primes) do
+        non_primes
       else
-        exit
+        non_primes + 1
       end
-    end                # jnz 1 -23
-    """
+    end)
   end
 end
