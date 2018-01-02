@@ -243,10 +243,6 @@ defmodule Advent2017.Day21 do
   The trick is going to be assigning numbers to each of the known 3x3s, then
   instead of recording their resulting grid, recording the ids of the known
   grids that results in.
-
-  TODO:
-  - write a meta_iterate function that looks at an ID, turns it into a list of
-    the 9 IDs it would iterate to, and recurses as deep as you need.
   """
   def build_meta_rulebook(file) do
     original_rules = build_rulebook(file)
