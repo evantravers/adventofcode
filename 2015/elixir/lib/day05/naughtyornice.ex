@@ -81,6 +81,10 @@ defmodule Advent2015.Day5 do
   end
 
   @doc ~S"""
+  It contains a pair of any two letters that appears at least twice in the
+  string without overlapping, like xyxy (xy) or aabcdefgaa (aa), but not like
+  aaa (aa, but it overlaps)
+
       iex> Advent2015.Day5.has_pair("xyxy")
       true
       iex> Advent2015.Day5.has_pair("aabcdefgaa")
@@ -107,6 +111,9 @@ defmodule Advent2015.Day5 do
   end
 
   @doc ~S"""
+  It contains at least one letter which repeats with exactly one letter between
+  them, like xyx, abcdefeghi (efe), or even aaa.
+
       iex> Advent2015.Day5.has_sandwhich("xyx")
       true
       iex> Advent2015.Day5.has_sandwhich("abcdefeghi")
