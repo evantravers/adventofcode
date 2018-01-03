@@ -52,5 +52,13 @@ defmodule Advent2015.Day3 do
     |> sleighride
     |> count_houses
   end
-  def p2, do: nil
+
+  def p2 do
+    instructions = load_input()
+    santa        = Enum.take_every(instructions, 2)
+    robosanta    = Enum.take_every(tl(instructions), 2)
+
+    sleighride(santa) ++ sleighride(robosanta)
+    |> count_houses
+  end
 end
