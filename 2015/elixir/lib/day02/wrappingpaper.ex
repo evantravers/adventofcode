@@ -20,7 +20,7 @@ defmodule Advent2015.Day2 do
   end
 
   @doc ~S"""
-      iex> Advent2015.Day2.surface_area([2,3,4])
+      iex> surface_area([2,3,4])
       58
   """
   def surface_area([l, w, h]) do
@@ -34,7 +34,7 @@ defmodule Advent2015.Day2 do
   end
 
   @doc ~S"""
-      iex> Advent2015.Day2.volume([2, 3, 4])
+      iex> volume([2, 3, 4])
       24
   """
   def volume(p) do
@@ -42,7 +42,7 @@ defmodule Advent2015.Day2 do
   end
 
   @doc ~S"""
-      iex> Advent2015.Day2.ribbon_length([2, 3, 4])
+      iex> ribbon_length([2, 3, 4])
       34
   """
   def ribbon_length(package) do

@@ -22,8 +22,8 @@ defmodule Advent2015.Day1 do
   @doc ~S"""
       iex> "()())"
       ...> |> String.graphemes
-      ...> |> Advent2015.Day1.parse
-      ...> |> Advent2015.Day1.find_basement
+      ...> |> parse
+      ...> |> find_basement
       5
   """
   def find_basement(floor_history) do
