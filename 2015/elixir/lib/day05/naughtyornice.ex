@@ -95,23 +95,24 @@ defmodule Advent2015.Day5 do
   def has_pair(str) do
     str
     |> String.graphemes()
-    |> Enum.reduce(%{str: str, result: false, p_char: <<0>>}, &match/2)
+    |> Enum.reduce_while(%{str: str, result: false, p_char: <<0>>}, &match/2)
     |> Map.get(:result)
   end
 
-  defp match(_, acc = %{result: true}), do: acc
-  defp match(c, acc = %{p_char: <<0>>}), do: %{acc | p_char: c}
+  defp match(c, acc = %{p_char: <<0>>}), do: {:cont, %{acc | p_char: c}}
 
   defp match(c, acc) do
-    %{
-      acc
-      | p_char: c,
-        result:
-          ~r/#{acc.p_char}#{c}/
-          |> Regex.scan(acc.str)
-          |> Enum.count()
-          |> Kernel.>=(2)
-    }
+    matches =
+      ~r/#{acc.p_char}#{c}/
+      |> Regex.scan(acc.str)
+      |> Enum.count()
+      |> Kernel.>=(2)
+
+    if matches do
+      {:halt, %{acc | result: true}}
+    else
+      {:cont, %{acc | p_char: c}}
+    end
   end
 
   @doc ~S"""
