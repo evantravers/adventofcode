@@ -47,7 +47,7 @@ defmodule Advent2015.Day5 do
   def has_three_vowels(str) do
     ~r/a|e|i|o|u/
     |> Regex.scan(str)
-    |> Enum.count
+    |> Enum.count()
     |> Kernel.>(2)
   end
 
@@ -61,9 +61,9 @@ defmodule Advent2015.Day5 do
 
   def p1 do
     load_input()
-    |> Enum.map(&nice? &1)
+    |> Enum.map(&nice?(&1))
     |> Enum.filter(& &1)
-    |> Enum.count
+    |> Enum.count()
   end
 
   @doc ~S"""
@@ -95,18 +95,21 @@ defmodule Advent2015.Day5 do
   def has_pair(str) do
     {return, _} =
       str
-      |> String.graphemes
+      |> String.graphemes()
       |> Enum.reduce({false, false}, fn char, {truthy, previous} ->
         if previous do
-          foundmatch = ~r/#{previous}#{char}/
-                       |> Regex.scan(str)
-                       |> Enum.count
-                       |> Kernel.>=(2)
+          foundmatch =
+            ~r/#{previous}#{char}/
+            |> Regex.scan(str)
+            |> Enum.count()
+            |> Kernel.>=(2)
+
           {truthy or foundmatch, char}
         else
           {false, char}
         end
       end)
+
     return
   end
 
@@ -127,8 +130,8 @@ defmodule Advent2015.Day5 do
 
   def p2 do
     load_input()
-    |> Enum.map(& {&1, better_nice &1})
+    |> Enum.map(&{&1, better_nice(&1)})
     |> Enum.filter(fn {_, x} -> x end)
-    |> Enum.count
+    |> Enum.count()
   end
 end
