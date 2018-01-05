@@ -37,7 +37,7 @@ defmodule Advent2015.Day5 do
   end
 
   @doc """
-  iex> Advent2015.Day5.nice?("ugknbfddgicrmopn")
+  iex> nice?("ugknbfddgicrmopn")
   true
   """
   def nice?(str) do
@@ -47,7 +47,7 @@ defmodule Advent2015.Day5 do
   def has_three_vowels(str) do
     ~r/a|e|i|o|u/
     |> Regex.scan(str)
-    |> Enum.count
+    |> Enum.count()
     |> Kernel.>(2)
   end
 
@@ -61,19 +61,19 @@ defmodule Advent2015.Day5 do
 
   def p1 do
     load_input()
-    |> Enum.map(&nice? &1)
+    |> Enum.map(&nice?(&1))
     |> Enum.filter(& &1)
-    |> Enum.count
+    |> Enum.count()
   end
 
   @doc ~S"""
-      iex> Advent2015.Day5.better_nice("qjhvhtzxzqqjkmpb")
+      iex> better_nice("qjhvhtzxzqqjkmpb")
       true
-      iex> Advent2015.Day5.better_nice("xxyxx")
+      iex> better_nice("xxyxx")
       true
-      iex> Advent2015.Day5.better_nice("uurcxstgmygtbstg")
+      iex> better_nice("uurcxstgmygtbstg")
       false
-      iex> Advent2015.Day5.better_nice("ieodomkazucvgmuy")
+      iex> better_nice("ieodomkazucvgmuy")
       false
   """
   def better_nice(str) do
@@ -85,40 +85,45 @@ defmodule Advent2015.Day5 do
   string without overlapping, like xyxy (xy) or aabcdefgaa (aa), but not like
   aaa (aa, but it overlaps)
 
-      iex> Advent2015.Day5.has_pair("xyxy")
+      iex> has_pair("xyxy")
       true
-      iex> Advent2015.Day5.has_pair("aabcdefgaa")
+      iex> has_pair("aabcdefgaa")
       true
-      iex> Advent2015.Day5.has_pair("aaa")
+      iex> has_pair("aaa")
       false
   """
   def has_pair(str) do
-    {return, _} =
-      str
-      |> String.graphemes
-      |> Enum.reduce({false, false}, fn char, {truthy, previous} ->
-        if previous do
-          foundmatch = ~r/#{previous}#{char}/
-                       |> Regex.scan(str)
-                       |> Enum.count
-                       |> Kernel.>=(2)
-          {truthy or foundmatch, char}
-        else
-          {false, char}
-        end
-      end)
-    return
+    str
+    |> String.graphemes()
+    |> Enum.reduce_while(%{str: str, result: false, p_char: <<0>>}, &match/2)
+    |> Map.get(:result)
+  end
+
+  defp match(c, acc = %{p_char: <<0>>}), do: {:cont, %{acc | p_char: c}}
+
+  defp match(c, acc) do
+    matches =
+      ~r/#{acc.p_char}#{c}/
+      |> Regex.scan(acc.str)
+      |> Enum.count()
+      |> Kernel.>=(2)
+
+    if matches do
+      {:halt, %{acc | result: true}}
+    else
+      {:cont, %{acc | p_char: c}}
+    end
   end
 
   @doc ~S"""
   It contains at least one letter which repeats with exactly one letter between
   them, like xyx, abcdefeghi (efe), or even aaa.
 
-      iex> Advent2015.Day5.has_sandwhich("xyx")
+      iex> has_sandwhich("xyx")
       true
-      iex> Advent2015.Day5.has_sandwhich("abcdefeghi")
+      iex> has_sandwhich("abcdefeghi")
       true
-      iex> Advent2015.Day5.has_sandwhich("aaa")
+      iex> has_sandwhich("aaa")
       true
   """
   def has_sandwhich(str) do
@@ -127,8 +132,8 @@ defmodule Advent2015.Day5 do
 
   def p2 do
     load_input()
-    |> Enum.map(& {&1, better_nice &1})
+    |> Enum.map(&{&1, better_nice(&1)})
     |> Enum.filter(fn {_, x} -> x end)
-    |> Enum.count
+    |> Enum.count()
   end
 end
