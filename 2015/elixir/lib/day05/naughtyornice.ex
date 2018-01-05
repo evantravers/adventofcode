@@ -37,7 +37,7 @@ defmodule Advent2015.Day5 do
   end
 
   @doc """
-  iex> Advent2015.Day5.nice?("ugknbfddgicrmopn")
+  iex> nice?("ugknbfddgicrmopn")
   true
   """
   def nice?(str) do
@@ -67,13 +67,13 @@ defmodule Advent2015.Day5 do
   end
 
   @doc ~S"""
-      iex> Advent2015.Day5.better_nice("qjhvhtzxzqqjkmpb")
+      iex> better_nice("qjhvhtzxzqqjkmpb")
       true
-      iex> Advent2015.Day5.better_nice("xxyxx")
+      iex> better_nice("xxyxx")
       true
-      iex> Advent2015.Day5.better_nice("uurcxstgmygtbstg")
+      iex> better_nice("uurcxstgmygtbstg")
       false
-      iex> Advent2015.Day5.better_nice("ieodomkazucvgmuy")
+      iex> better_nice("ieodomkazucvgmuy")
       false
   """
   def better_nice(str) do
@@ -85,11 +85,11 @@ defmodule Advent2015.Day5 do
   string without overlapping, like xyxy (xy) or aabcdefgaa (aa), but not like
   aaa (aa, but it overlaps)
 
-      iex> Advent2015.Day5.has_pair("xyxy")
+      iex> has_pair("xyxy")
       true
-      iex> Advent2015.Day5.has_pair("aabcdefgaa")
+      iex> has_pair("aabcdefgaa")
       true
-      iex> Advent2015.Day5.has_pair("aaa")
+      iex> has_pair("aaa")
       false
   """
   def has_pair(str) do
@@ -117,11 +117,11 @@ defmodule Advent2015.Day5 do
   It contains at least one letter which repeats with exactly one letter between
   them, like xyx, abcdefeghi (efe), or even aaa.
 
-      iex> Advent2015.Day5.has_sandwhich("xyx")
+      iex> has_sandwhich("xyx")
       true
-      iex> Advent2015.Day5.has_sandwhich("abcdefeghi")
+      iex> has_sandwhich("abcdefeghi")
       true
-      iex> Advent2015.Day5.has_sandwhich("aaa")
+      iex> has_sandwhich("aaa")
       true
   """
   def has_sandwhich(str) do
