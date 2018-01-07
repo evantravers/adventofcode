@@ -30,8 +30,9 @@ defmodule Advent2015.Day3 do
   def d({x, y}), do: {x, y - 1}
   def l({x, y}), do: {x - 1, y}
 
+  def sleighride(instructions, history \\ [{0, 0}])
   def sleighride([], history), do: history
-  def sleighride([direction|instructions], history \\ [{0, 0}]) do
+  def sleighride([direction|instructions], history) do
     last_position = hd history
     case direction do
       "^" -> sleighride(instructions, [u(last_position)|history])
