@@ -4,4 +4,5 @@ defmodule Advent2015Test do
   doctest Advent2015.Day2, import: true
   doctest Advent2015.Day4, import: true
   doctest Advent2015.Day5, import: true
+  doctest Advent2015.Day5.StringHasPairs, import: true
 end
