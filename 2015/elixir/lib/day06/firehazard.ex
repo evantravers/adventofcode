@@ -35,7 +35,16 @@ defmodule Advent2015.Day6 do
     end)
   end
 
-  def toggle(grid, x1, y1, x2, y2) do
+  def toggle({:p1, grid}, x1, y1, x2, y2) do
+    changed =
+      for x <- x1..x2, y <- y1..y2, into: %{} do
+        {[x, y], !Map.get(grid, [x, y])}
+      end
+
+    Map.merge(grid, changed)
+  end
+
+  def toggle({:p2, grid}, x1, y1, x2, y2) do
     changed =
       for x <- x1..x2, y <- y1..y2, into: %{} do
         {[x, y], (fn [x, y] -> Map.get(grid, [x, y]) end).([x, y]) + 2}
@@ -44,7 +53,16 @@ defmodule Advent2015.Day6 do
     Map.merge(grid, changed)
   end
 
-  def on(grid, x1, y1, x2, y2) do
+  def on({:p1, grid}, x1, y1, x2, y2) do
+    changed =
+      for x <- x1..x2, y <- y1..y2, into: %{} do
+        {[x, y], true}
+      end
+
+    Map.merge(grid, changed)
+  end
+
+  def on({:p2, grid}, x1, y1, x2, y2) do
     changed =
       for x <- x1..x2, y <- y1..y2, into: %{} do
         {[x, y], Map.get(grid, [x, y]) + 1}
@@ -53,7 +71,16 @@ defmodule Advent2015.Day6 do
     Map.merge(grid, changed)
   end
 
-  def off(grid, x1, y1, x2, y2) do
+  def off({:p1, grid}, x1, y1, x2, y2) do
+    changed =
+      for x <- x1..x2, y <- y1..y2, into: %{} do
+        {[x, y], false}
+      end
+
+    Map.merge(grid, changed)
+  end
+
+  def off({:p2, grid}, x1, y1, x2, y2) do
     changed =
       for x <- x1..x2, y <- y1..y2, into: %{} do
         val = Map.get(grid, [x, y])
@@ -68,20 +95,20 @@ defmodule Advent2015.Day6 do
     Map.merge(grid, changed)
   end
 
-  def command(grid, [command, x1, y1, x2, y2]) do
-    apply(Advent2015.Day6, command, [grid, x1, y1, x2, y2])
+  def command(grid, [command, x1, y1, x2, y2], problem) do
+    apply(Advent2015.Day6, command, [{problem, grid}, x1, y1, x2, y2])
   end
 
   def p1 do
     grid =
-      for x <- 0..999, y <- 0..999, into: %{}, do: {[x, y], 0}
+      for x <- 0..999, y <- 0..999, into: %{}, do: {[x, y], false}
 
     load_input()
     |> Enum.reduce(grid, fn instruction, g ->
-      command(g, instruction)
+      command(g, instruction, :p1)
     end)
     |> Map.to_list
-    |> Enum.filter(fn {_, on} -> on > 0 end)
+    |> Enum.filter(fn {_, onoroff} -> onoroff end)
     |> Enum.count
   end
 
@@ -91,7 +118,7 @@ defmodule Advent2015.Day6 do
 
     load_input()
     |> Enum.reduce(grid, fn instruction, g ->
-      command(g, instruction)
+      command(g, instruction, :p2)
     end)
     |> Map.to_list
     |> Enum.map(fn {_, val} -> val end)
