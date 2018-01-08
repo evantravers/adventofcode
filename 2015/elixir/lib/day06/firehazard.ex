@@ -47,7 +47,7 @@ defmodule Advent2015.Day6 do
   def on(grid, x1, y1, x2, y2) do
     changed =
       for x <- x1..x2, y <- y1..y2, into: %{} do
-        {[x, y], (fn [x, y] -> Map.get(grid, [x, y]) end).([x, y]) + 1}
+        {[x, y], Map.get(grid, [x, y]) + 1}
       end
 
     Map.merge(grid, changed)
@@ -56,7 +56,13 @@ defmodule Advent2015.Day6 do
   def off(grid, x1, y1, x2, y2) do
     changed =
       for x <- x1..x2, y <- y1..y2, into: %{} do
-        {[x, y], (fn [x, y] -> Map.get(grid, [x, y]) end).([x, y]) - 1}
+        val = Map.get(grid, [x, y])
+
+        if val == 0 do
+          {[x, y], 0}
+        else
+          {[x, y], val - 1}
+        end
       end
 
     Map.merge(grid, changed)
