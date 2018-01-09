@@ -28,7 +28,9 @@ defmodule Advent2016.Day19 do
   @total_number_of_elves 3005290
 
   def setup_game(num) do
-    Enum.to_list(1..num)
+    1..num
+    |> Enum.to_list
+    |> Enum.reverse
   end
 
   @doc ~S"""
@@ -36,8 +38,9 @@ defmodule Advent2016.Day19 do
       3
   """
   def steal_from_left(players) when length(players) == 1, do: hd(players)
-  def steal_from_left([current|players]) do
-    steal_from_left(tl(players) ++ [current])
+  def steal_from_left(players) do
+    {current, players} = List.pop_at(players, -1)
+    steal_from_left([current|Enum.slice(players, 0..-2)])
   end
 
   @doc ~S"""
@@ -45,8 +48,9 @@ defmodule Advent2016.Day19 do
       2
   """
   def steal_across(players) when length(players) == 1, do: hd(players)
-  def steal_across([current|players]) do
-    steal_across(List.delete_at(players, div(length(players), 2) - 1) ++ [current])
+  def steal_across(players) do
+    {current, players} = List.pop_at(players, -1)
+    steal_across([current|List.delete_at(players, div(length(players), 2))])
   end
 
   def p1 do
@@ -54,5 +58,8 @@ defmodule Advent2016.Day19 do
     |> steal_from_left
   end
 
-  def p2, do: nil
+  def p2 do
+    setup_game(@total_number_of_elves)
+    |> steal_across
+  end
 end
