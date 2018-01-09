@@ -22,51 +22,57 @@ defmodule Advent2015.Day7 do
   end
 
   def e(state, x) do
-    if Map.has_key?(state, x) do
-      Map.get(state, x)
-    else
-      (fn -> Map.get(state, x) end) # A promise to be delivered later
-    end
+    Map.get(state, x)
   end
 
   @doc """
   123 -> x means that the signal 123 is provided to wire x.
   """
-  def cmd(state, [val, "->", target]), do: Map.put(state, target, val)
+  def cmd(state, [src, "->", dest]), do: Map.put(state, dest, e(state, src))
 
   @doc """
   x AND y -> z means that the bitwise AND of wire x and wire y is provided to
   wire z.
   """
-  def cmd(state, [x, "AND", y, "->", target]) do
-    Map.put(state, target, band(e(state, x), e(state, y)))
+  def cmd(state, [x, "AND", y, "->", dest]) do
+    Map.put(state, dest, band(e(state, x), e(state, y)))
   end
-  def cmd(state, [x, "OR", y, "->", target]) do
-    Map.put(state, target, bor(e(state, x), e(state, y)))
+  def cmd(state, [x, "OR", y, "->", dest]) do
+    Map.put(state, dest, bor(e(state, x), e(state, y)))
   end
 
   @doc """
   p LSHIFT 2 -> q means that the value from wire p is left-shifted by 2 and
   then provided to wire q.
   """
-  def cmd(state, [wire, "LSHIFT", amt, "->", target]) do
-    Map.put(state, target, bsl(e(state, wire), amt))
+  def cmd(state, [wire, "LSHIFT", amt, "->", dest]) do
+    Map.put(state, dest, bsl(e(state, wire), amt))
   end
-  def cmd(state, [wire, "RSHIFT", amt, "->", target]) do
-    Map.put(state, target, bsr(e(state, wire), amt))
+  def cmd(state, [wire, "RSHIFT", amt, "->", dest]) do
+    Map.put(state, dest, bsr(e(state, wire), amt))
   end
 
   @doc """
   NOT e -> f means that the bitwise complement of the value from wire e is
   provided to wire f.
   """
-  def cmd(state, ["NOT", wire, "->", target]) do
-    Map.put(state, target, bnot(e(state, wire)))
+  def cmd(state, ["NOT", wire, "->", dest]) do
+    Map.put(state, dest, bnot(e(state, wire)))
   end
 
   def p1 do
-    load_input()
-    |> Enum.reduce(%{}, fn instruction, state -> cmd(state, instruction) end)
+    p1 load_input()
+  end
+
+  def p1([instruction|instructions], state \\ %{}) do
+    IO.inspect state
+    IO.puts Enum.count instructions
+    try do
+      p1(instructions, cmd(state, instruction))
+    rescue
+      x ->
+        p1(instructions ++ [instruction], state)
+    end
   end
 
   def p2, do: nil
