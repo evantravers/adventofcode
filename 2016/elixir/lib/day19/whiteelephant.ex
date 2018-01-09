@@ -28,19 +28,21 @@ defmodule Advent2016.Day19 do
   @total_number_of_elves 3005290
 
   def setup_game(num) do
-    1..num
-    |> Enum.to_list
-    |> Enum.reverse
+    Enum.into(Enum.reverse(1..num), Deque.new(num))
   end
 
   @doc ~S"""
       iex> setup_game(5) |> steal_from_left
       3
   """
-  def steal_from_left(players) when length(players) == 1, do: hd(players)
   def steal_from_left(players) do
-    {current, players} = List.pop_at(players, -1)
-    steal_from_left([current|Enum.slice(players, 0..-2)])
+    if Enum.count(players) == 1 do
+      Enum.at(players, 0)
+    else
+      {current, players} = Deque.pop(players)
+      {_, players}       = Deque.pop(players) # steal!
+      steal_from_left(Deque.appendleft(players, current))
+    end
   end
 
   @doc ~S"""
