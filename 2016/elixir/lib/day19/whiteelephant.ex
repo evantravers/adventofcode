@@ -31,9 +31,22 @@ defmodule Advent2016.Day19 do
     Enum.to_list(1..num)
   end
 
+  @doc ~S"""
+      iex> setup_game(5) |> steal_from_left
+      3
+  """
   def steal_from_left(players) when length(players) == 1, do: hd(players)
   def steal_from_left([current|players]) do
     steal_from_left(tl(players) ++ [current])
+  end
+
+  @doc ~S"""
+      iex> setup_game(5) |> steal_across
+      2
+  """
+  def steal_across(players) when length(players) == 1, do: hd(players)
+  def steal_across([current|players]) do
+    steal_across(List.delete_at(players, div(length(players), 2) - 1) ++ [current])
   end
 
   def p1 do
