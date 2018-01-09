@@ -25,7 +25,7 @@ defmodule Advent2016.Day19 do
   the presents?
   """
 
-  @total_number_of_elves 3005290
+  @total_number_of_elves 3_005_290
 
   def setup_game(num) do
     Enum.into(Enum.reverse(1..num), Deque.new(num))
@@ -49,10 +49,20 @@ defmodule Advent2016.Day19 do
       iex> setup_game(5) |> steal_across
       2
   """
-  def steal_across(players) when length(players) == 1, do: hd(players)
   def steal_across(players) do
-    {current, players} = List.pop_at(players, -1)
-    steal_across([current|List.delete_at(players, div(length(players), 2))])
+    if Enum.count(players) == 1 do
+      Enum.at(players, 0)
+    else
+      {current, players} = Deque.pop(players)
+
+      players =
+        players
+        |> Enum.to_list
+        |> List.delete_at(div(Enum.count(players), 2))
+        |> Enum.into(Deque.new())
+
+      steal_across(Deque.appendleft(players,current))
+    end
   end
 
   def p1 do
