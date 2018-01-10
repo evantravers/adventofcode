@@ -61,17 +61,19 @@ defmodule Advent2016.Day19 do
         |> List.delete_at(div(Enum.count(players), 2))
         |> Enum.into(Deque.new())
 
-      steal_across(Deque.appendleft(players,current))
+      steal_across(Deque.appendleft(players, current))
     end
   end
 
   def p1 do
-    setup_game(@total_number_of_elves)
+    @total_number_of_elves
+    |> setup_game
     |> steal_from_left
   end
 
   def p2 do
-    setup_game(@total_number_of_elves)
+    @total_number_of_elves
+    |> setup_game
     |> steal_across
   end
 end
