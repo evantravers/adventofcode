@@ -8,28 +8,24 @@ defmodule Advent2016.Day24 do
   Numbers behave like open passages.
   """
 
-  def build_map({str, y_index}, map) do
-    str
-    |> String.split("", trim: true)
-    |> Enum.with_index
-    |> Enum.reduce([], fn {val, x_index}, result ->
-      case val do
-        "#" -> result
-        "." -> [{true, x_index, y_index}|result]
-          _ -> [{String.to_integer(val), x_index, y_index}|result]
-      end
-    end)
-    |> MapSet.new()
-    |> MapSet.union(map)
+  def load_list_of_coords(binary) do
+    coords =
+      binary
+      |> String.split("\n", trim: true)
+      |> Enum.map(&String.split(&1, "", trim: true))
+
+    for {row, y} <- Enum.with_index(coords),
+        {val, x} <- Enum.with_index(row)
+    do
+      {{x, y}, val}
+    end
   end
 
   def load_input(file \\ "input.txt") do
     {:ok, file} = File.read("#{__DIR__}/#{file}")
 
     file
-    |> String.split("\n", trim: true)
-    |> Enum.with_index
-    |> Enum.reduce(MapSet.new, &build_map(&1, &2))
+    |> load_list_of_coords
   end
 
   def p1, do: nil
