@@ -22,7 +22,8 @@ defmodule Advent2016.Mixfile do
   defp deps do
     [
       {:deque, "~> 1.0"},
-      {:credo, "~> 0.8", only: [:dev, :test], runtime: false}
+      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:libgraph, "~> 0.11"}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
     ]
