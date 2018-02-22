@@ -134,18 +134,14 @@ defmodule Advent2017.Day6 do
   end
 
   def p1 do
-    {:ok, answer} =
-      load_file()
-      |> balance
-      |> Map.fetch(:cycles)
-    answer
+    load_file()
+    |> balance
+    |> Map.fetch!(:cycles)
   end
 
   def p2 do
-    {:ok, answer} =
-      load_file()
-      |> balance
-      |> Map.fetch(:distance)
-    answer
+    load_file()
+    |> balance
+    |> Map.fetch!(:distance)
   end
 end
