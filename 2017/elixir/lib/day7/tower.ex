@@ -1,6 +1,11 @@
-require IEx
-
 defmodule Advent2017.Day7 do
+  @moduledoc """
+  Before you're ready to help them, you need to make sure your information is
+  correct. What is the name of the bottom program?
+
+  http://adventofcode.com/2017/day/7
+  """
+
   def build_tree(file_name) do
     {:ok, file} = File.read("#{__DIR__}/#{file_name}")
 
@@ -46,11 +51,10 @@ defmodule Advent2017.Day7 do
       |> Enum.reverse
 
     # if all my children have equal weights, I'm the problem child
-    cond do
-       all_the_same(weights) ->
-         n
-      true ->
-        find_weakest_link(graph, elem(hd(weights), 1))
+    if all_the_same(weights) do
+       n
+    else
+      find_weakest_link(graph, elem(hd(weights), 1))
     end
   end
 
@@ -58,7 +62,8 @@ defmodule Advent2017.Day7 do
     [edge|_] = Graph.in_edges(g, n)
 
     [low, high] =
-      Graph.out_neighbors(g, edge.v1)
+      g
+      |> Graph.out_neighbors(edge.v1)
       |> Enum.map(fn neighbor -> circus_weight(g, neighbor) end)
       |> Enum.uniq
       |> Enum.sort
@@ -72,14 +77,16 @@ defmodule Advent2017.Day7 do
       |> Enum.reduce(0, fn edge, sum -> sum + edge.weight end)
 
     ownweight =
-      Graph.in_edges(g, node)
+      g
+      |> Graph.in_edges(node)
       |> Enum.reduce(0, fn edge, sum -> sum + edge.weight end)
 
     ownweight + children
   end
 
   def p1 do
-    build_tree("input.txt")
+    "input.txt"
+    |> build_tree
     |> Graph.topsort
     |> List.first
   end
