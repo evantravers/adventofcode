@@ -73,7 +73,9 @@ defmodule Advent2017.Day7 do
 
   def circus_weight(g, node) do
     children =
-      Graph.edges(Graph.subgraph(g, Graph.reachable(g, [node])))
+      g
+      |> Graph.subgraph(Graph.reachable(g, [node]))
+      |> Graph.edges
       |> Enum.reduce(0, fn edge, sum -> sum + edge.weight end)
 
     ownweight =
