@@ -97,6 +97,7 @@ defmodule Advent2017.Day7 do
     g    = build_tree("input.txt")
     root = p1()
 
-    correct_weight(g, find_weakest_link(g, root))
+    g
+    |> correct_weight(find_weakest_link(g, root))
   end
 end

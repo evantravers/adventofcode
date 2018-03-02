@@ -1,6 +1,10 @@
 require IEx
 
 defmodule Advent2017.Day8 do
+  @moduledoc """
+  http://adventofcode.com/2017/day/8
+  """
+
   @command_pattern ~r/(?<register>\w+) (?<direction>\w+) (?<amount>(|-)\d+) if (?<target>\w+) (?<condition>[!<>=]+) (?<value>(|-)\d+)/
 
   def load_instructions(filename) do
@@ -25,13 +29,12 @@ defmodule Advent2017.Day8 do
 
     {result, _} = Code.eval_string("#{target} #{i["condition"]} #{i["value"]}")
 
-    cond do
-      result ->
-        future =
-          Map.put(current, i["register"], change(i["direction"], get_register(current, i["register"]), i["amount"]))
-        run(next, [future | history])
-      true ->
-        run(next, [current | history])
+    if result do
+      future =
+        Map.put(current, i["register"], change(i["direction"], get_register(current, i["register"]), i["amount"]))
+      run(next, [future | history])
+    else
+      run(next, [current | history])
     end
   end
 
@@ -43,14 +46,16 @@ defmodule Advent2017.Day8 do
   end
 
   def test do
-    load_instructions("test.txt")
+    "test.txt"
+    |> load_instructions
     |> run
     |> Map.values
     |> Enum.max
   end
 
   def p1 do
-    load_instructions("input.txt")
+    "input.txt"
+    |> load_instructions
     |> run
     |> List.first
     |> Map.values
@@ -58,7 +63,8 @@ defmodule Advent2017.Day8 do
   end
 
   def p2 do
-    load_instructions("input.txt")
+    "input.txt"
+    |> load_instructions
     |> run
     |> Enum.map(&(Map.values(&1)))
     |> Enum.map(&(Enum.max(&1, fn -> 0 end)))
