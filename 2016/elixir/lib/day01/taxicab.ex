@@ -35,8 +35,16 @@ defmodule Advent2016.Day1 do
     |> step(distance - 1)
   end
 
-  def walk(state, []), do: state
-  def walk(state, [instruction|instructions]) do
+  def calc_distance(pos) do
+    pos
+    |> Tuple.to_list
+    |> Enum.map(&abs &1)
+    |> Enum.sum
+  end
+
+  def walk(state, instructions, options \\ [])
+  def walk(state, [], _), do: state
+  def walk(state, [instruction|instructions], options) do
     # take an instruction
     [_, direction, distance] = Regex.run(~r/([L|R])(.*)/, instruction)
 
@@ -45,20 +53,20 @@ defmodule Advent2016.Day1 do
     state
     |> turn(direction)
     |> step(distance)
-    |> walk(instructions)
+    |> walk(instructions, options)
   end
 
   def p1 do
-    the_long_walk =
-      %{compass: "N", visited: [{0, 0}]}
-      |> walk(load_instructions())
-
-    the_long_walk.visited
+    %{compass: "N", visited: [{0, 0}]}
+    |> walk(load_instructions())
+    |> Map.get(:visited)
     |> hd
-    |> Tuple.to_list
-    |> Enum.map(&abs &1)
-    |> Enum.sum
+    |> calc_distance
   end
 
-  def p2, do: nil
+  def p2 do
+    %{compass: "N", visited: [{0, 0}]}
+    |> walk(load_instructions(), find_first: true)
+    |> Map.get(:visited)
+  end
 end
