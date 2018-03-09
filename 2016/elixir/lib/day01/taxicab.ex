@@ -1,6 +1,6 @@
 defmodule Advent2016.Day1 do
   @moduledoc """
-    http://adventofcode.com/2016/day/1
+  http://adventofcode.com/2016/day/1
   """
 
   def load_instructions(input \\ "input") do
@@ -15,9 +15,9 @@ defmodule Advent2016.Day1 do
   def turn(state = %{compass: "E"}, "L"), do: %{state | compass: "N"}
 
   def turn(state = %{compass: "N"}, "R"), do: %{state | compass: "E"}
-  def turn(state = %{compass: "W"}, "R"), do: %{state | compass: "S"}
+  def turn(state = %{compass: "E"}, "R"), do: %{state | compass: "S"}
   def turn(state = %{compass: "S"}, "R"), do: %{state | compass: "W"}
-  def turn(state = %{compass: "E"}, "R"), do: %{state | compass: "N"}
+  def turn(state = %{compass: "W"}, "R"), do: %{state | compass: "N"}
 
   def step(state, 0), do: state
   def step(state, distance) do
