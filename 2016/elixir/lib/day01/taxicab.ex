@@ -42,9 +42,9 @@ defmodule Advent2016.Day1 do
     |> Enum.sum
   end
 
-  def walk(state, instructions, options \\ [])
-  def walk(state, [], _), do: state
-  def walk(state, [instruction|instructions], options) do
+  def walk(state, instructions)
+  def walk(state, []), do: state
+  def walk(state, [instruction|instructions]) do
     # take an instruction
     [_, direction, distance] = Regex.run(~r/([L|R])(.*)/, instruction)
 
@@ -53,20 +53,29 @@ defmodule Advent2016.Day1 do
     state
     |> turn(direction)
     |> step(distance)
-    |> walk(instructions, options)
+    |> walk(instructions)
   end
 
   def p1 do
     %{compass: "N", visited: [{0, 0}]}
     |> walk(load_instructions())
     |> Map.get(:visited)
-    |> hd
+    |> List.first
     |> calc_distance
   end
 
   def p2 do
     %{compass: "N", visited: [{0, 0}]}
-    |> walk(load_instructions(), find_first: true)
+    |> walk(load_instructions())
     |> Map.get(:visited)
+    |> Enum.reverse
+    |> Enum.reduce_while([], fn (element, seen) ->
+      if Enum.member?(seen, element) do
+        {:halt, element}
+      else
+        {:cont, [element|seen]}
+      end
+    end)
+    |> calc_distance
   end
 end
