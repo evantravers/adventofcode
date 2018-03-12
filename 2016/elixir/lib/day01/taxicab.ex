@@ -42,13 +42,16 @@ defmodule Advent2016.Day1 do
     |> Enum.sum
   end
 
+  def read_instruction(instruction) do
+    [_, direction, distance] = Regex.run(~r/([L|R])(.*)/, instruction)
+    [direction, String.to_integer(distance)]
+  end
+
   def walk(state, instructions)
   def walk(state, []), do: state
   def walk(state, [instruction|instructions]) do
     # take an instruction
-    [_, direction, distance] = Regex.run(~r/([L|R])(.*)/, instruction)
-
-    distance = String.to_integer(distance)
+    [direction, distance] = read_instruction(instruction)
 
     state
     |> turn(direction)
