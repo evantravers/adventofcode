@@ -1,6 +1,8 @@
-require IEx
-
 defmodule Advent2017.Day10 do
+  @moduledoc """
+  http://adventofcode.com/2017/day/10
+  """
+
   use Bitwise
 
   @doc ~S"""
@@ -64,7 +66,8 @@ defmodule Advent2017.Day10 do
   def dense_hash(input) do
     lengths = prep_lengths(input)
 
-    Enum.to_list(0..255)
+    0..255
+    |> Enum.to_list
     |> hash(0, 0, lengths, 64)
     |> Enum.chunk_every(16)
     |> Enum.map(fn(chunk) -> 
