@@ -1,4 +1,12 @@
 defmodule Advent2017.Day9 do
+  @moduledoc """
+  Your goal is to find the total score for all groups in your input. Each group
+  is assigned a score which is one more than the score of the group that
+  immediately contains it. (The outermost group gets a score of 1.)
+
+  http://adventofcode.com/2017/day/9
+  """
+
   @doc ~S"""
   `expression` needs to go char by char, and fire off recursive functions based on
   the character.
