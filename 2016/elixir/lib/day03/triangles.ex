@@ -16,7 +16,7 @@ defmodule Advent2016.Day3 do
     Enum.all?(sides, & &1 < Enum.sum(List.delete(sides, &1)))
   end
 
-  def p1 do
+  def load_input_by_rows do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt"), do: file
     |> String.split("\n", trim: true)
     |> Enum.map(fn (sides) ->
@@ -24,7 +24,24 @@ defmodule Advent2016.Day3 do
       |> String.split(" ", trim: true)
       |> Enum.map(& String.to_integer &1)
     end)
+  end
+
+  def load_input_by_columns do
+    load_input_by_rows
+    |> Enum.reduce([[], [], []], fn ([a, b, c], [res_a, res_b, res_c]) ->
+      [[a|res_a], [b|res_b], [c|res_c]]
+    end)
+    |> List.flatten
+    |> Enum.chunk_every(3)
+  end
+
+  def p1 do
+    load_input_by_rows
     |> Enum.count(&possible &1)
   end
-  def p2, do: nil
+
+  def p2 do
+    load_input_by_columns
+    |> Enum.count(&possible &1)
+  end
 end
