@@ -28,9 +28,8 @@ defmodule Advent2016.Day3 do
 
   def load_input_by_columns do
     load_input_by_rows
-    |> Enum.reduce([[], [], []], fn ([a, b, c], [res_a, res_b, res_c]) ->
-      [[a|res_a], [b|res_b], [c|res_c]]
-    end)
+    |> List.zip
+    |> Enum.map(&Tuple.to_list(&1))
     |> List.flatten
     |> Enum.chunk_every(3)
   end
