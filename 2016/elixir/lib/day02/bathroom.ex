@@ -5,7 +5,7 @@ defmodule Advent2016.Day2 do
 
   def load_instructions(file) do
     with {:ok, file} <- File.read("#{__DIR__}/#{file}"), do: file
-    |> String.split("\n", trim: true)
+    |> String.split("\n")
     |> Enum.map(&String.split(&1, "", trim: true))
   end
 
@@ -16,8 +16,8 @@ defmodule Advent2016.Day2 do
     get_in(pad, [y, x])
   end
 
-  def move({x, y}, "U"), do: {x, y+1}
-  def move({x, y}, "D"), do: {x, y-1}
+  def move({x, y}, "U"), do: {x, y-1}
+  def move({x, y}, "D"), do: {x, y+1}
   def move({x, y}, "L"), do: {x-1, y}
   def move({x, y}, "R"), do: {x+1, y}
 
@@ -36,6 +36,16 @@ defmodule Advent2016.Day2 do
     end)
   end
 
+  def solve(list_of_moves, state) do
+    list_of_moves
+    |> Enum.reduce(state, fn (list_of_moves, state) ->
+      state
+      |> calculate_next_button(list_of_moves)
+      |> Map.update(:answer, "", &(&1 <> get(state.finger, state.pad)))
+    end)
+    |> Map.get(:answer)
+  end
+
   def p1 do
     pad =
       %{0 => %{0 => "1", 1 => "2", 2 => "3"},
@@ -44,13 +54,7 @@ defmodule Advent2016.Day2 do
 
     "input.txt"
     |> load_instructions
-    |> Enum.reduce(%{pad: pad, finger: {1, 1}}, fn (list_of_moves, state) ->
-      IO.inspect list_of_moves
-      state
-      |> calculate_next_button(list_of_moves)
-      |> Map.update(:answer, "", &(&1 <> get(state.finger, state.pad)))
-    end)
-    |> Map.get(:answer)
+    |> solve(%{pad: pad, finger: {1, 1}})
   end
 
   def p2 do
@@ -62,7 +66,10 @@ defmodule Advent2016.Day2 do
         3 =>           %{1 => "A", 2 => "B", 3 => "C"},
         4 =>                     %{2 => "D"}
       }
-    %{pad: pad, finger: {0, 2}}
+
+    "input.txt"
+    |> load_instructions
+    |> solve(%{pad: pad, finger: {0, 2}})
   end
 end
 
