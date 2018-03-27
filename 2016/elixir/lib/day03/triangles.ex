@@ -16,6 +16,15 @@ defmodule Advent2016.Day3 do
     Enum.all?(sides, & &1 < Enum.sum(List.delete(sides, &1)))
   end
 
-  def p1, do: nil
+  def p1 do
+    with {:ok, file} <- File.read("#{__DIR__}/input.txt"), do: file
+    |> String.split("\n", trim: true)
+    |> Enum.map(fn (sides) ->
+      sides
+      |> String.split(" ", trim: true)
+      |> Enum.map(& String.to_integer &1)
+    end)
+    |> Enum.count(&possible &1)
+  end
   def p2, do: nil
 end
