@@ -1,0 +1,94 @@
+defmodule Advent2016.Day4 do
+  @moduledoc """
+  http://adventofcode.com/2016/day/4
+  """
+
+  @room_description ~r/(?<encrypted_name>(\w+-*)+)-(?<sector_id>\d+)\[(?<checksum>\w+)\]/
+  @alphabet String.split(to_string(Enum.to_list(97..122)), "", trim: true)
+
+  @doc """
+  This function takes the encrypted name, counts the occurrences of the
+  characters, sorts them first by count then by alphabetical, then takes the top 5
+  """
+  def sort(name) do
+    with name <- String.graphemes(name), do:
+      name
+      |> Enum.map(fn (char) -> {Enum.count(name, & &1 == char), char} end)
+      |> Enum.uniq
+      |> Enum.sort(fn ({first_count, first}, {second_count, second}) ->
+        if first_count == second_count do
+          first < second
+        else
+          first_count > second_count
+        end
+      end)
+      |> Enum.map(fn {_, char} -> char end)
+      |> Enum.join
+  end
+
+  @doc ~S"""
+      iex> is_room?(string_to_room("aaaaa-bbb-z-y-x-123[abxyz]"))
+      true
+      iex> is_room?(string_to_room("a-b-c-d-e-f-g-h-987[abcde]"))
+      true
+      iex> is_room?(string_to_room("not-a-real-room-404[oarel]"))
+      true
+      iex> is_room?(string_to_room("totally-real-room-200[decoy]"))
+      false
+  """
+  def is_room?(room) do
+    room["encrypted_name"] =~ room["checksum"]
+  end
+
+  def string_to_room(str) do
+    @room_description
+    |> Regex.named_captures(str)
+    |> Map.update!("sector_id", &String.to_integer &1)
+    |> Map.update!("encrypted_name", fn (name) ->
+      name
+      |> String.replace("-", "")
+      |> sort
+    end)
+  end
+
+  @doc ~S"""
+      iex> rotate("qzmtzixmtkozyivhz", 343)
+      "veryencryptedname"
+  """
+  def rotate(r) when is_map(r) do
+    %{r | "encrypted_name": rotate(r["encrypted_name"], r["sector_id"])}
+  end
+  def rotate(char, num) when byte_size(char) == 1 do
+    Enum.at(@alphabet, rem(Enum.find_index(@alphabet, & &1 == char) + num, 26))
+  end
+  def rotate(string, num) do
+    string
+    |> String.graphemes
+    |> Enum.map(& rotate(&1, num))
+    |> Enum.join
+  end
+
+  def load_input do
+    with {:ok, file} <- File.read("#{__DIR__}/input.txt"), do: file
+    |> String.split("\n", trim: true)
+    |> Enum.map(&string_to_room &1)
+  end
+
+  def p1 do
+    load_input
+    |> Enum.reduce(0, fn (room, sum_of_sector_ids) ->
+      if is_room? room do
+        sum_of_sector_ids + room["sector_id"]
+      else
+        sum_of_sector_ids
+      end
+    end)
+  end
+
+  def p2 do
+    load_input
+    |> Enum.map(fn (room) ->
+      rotate(room)
+    end)
+  end
+end
