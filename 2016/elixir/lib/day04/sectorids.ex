@@ -8,11 +8,12 @@ defmodule Advent2016.Day4 do
 
   @doc """
   This function takes the encrypted name, counts the occurrences of the
-  characters, sorts them first by count then by alphabetical, then takes the top 5
+  characters, sorts them first by count then by alphabetical.
   """
   def sort(name) do
     with name <- String.graphemes(name), do:
       name
+      |> Enum.reject(& &1 == " ")
       |> Enum.map(fn (char) -> {Enum.count(name, & &1 == char), char} end)
       |> Enum.uniq
       |> Enum.sort(fn ({first_count, first}, {second_count, second}) ->
@@ -27,37 +28,42 @@ defmodule Advent2016.Day4 do
   end
 
   @doc ~S"""
-      iex> is_room?(string_to_room("aaaaa-bbb-z-y-x-123[abxyz]"))
+      iex> is_room?(build_room("aaaaa-bbb-z-y-x-123[abxyz]"))
       true
-      iex> is_room?(string_to_room("a-b-c-d-e-f-g-h-987[abcde]"))
+      iex> is_room?(build_room("a-b-c-d-e-f-g-h-987[abcde]"))
       true
-      iex> is_room?(string_to_room("not-a-real-room-404[oarel]"))
+      iex> is_room?(build_room("not-a-real-room-404[oarel]"))
       true
-      iex> is_room?(string_to_room("totally-real-room-200[decoy]"))
+      iex> is_room?(build_room("totally-real-room-200[decoy]"))
       false
   """
   def is_room?(room) do
     room["encrypted_name"] =~ room["checksum"]
   end
 
-  def string_to_room(str) do
+  @doc """
+  Takes a string and turns it into a map modeling the aspects of the room
+  description.
+  """
+  def build_room(str) do
     @room_description
     |> Regex.named_captures(str)
     |> Map.update!("sector_id", &String.to_integer &1)
     |> Map.update!("encrypted_name", fn (name) ->
       name
-      |> String.replace("-", "")
+      |> String.replace("-", " ")
       |> sort
     end)
   end
 
   @doc ~S"""
-      iex> rotate("qzmtzixmtkozyivhz", 343)
-      "veryencryptedname"
+  This function takes a string and an amount, and rotates the characters
+  forward on a simple cipher.
+
+      iex> rotate("qzmt-zixmtkozy-ivhz", 343)
+      "very encrypted name"
   """
-  def rotate(r) when is_map(r) do
-    %{r | "encrypted_name": rotate(r["encrypted_name"], r["sector_id"])}
-  end
+  def rotate("-", _), do: " "
   def rotate(char, num) when byte_size(char) == 1 do
     Enum.at(@alphabet, rem(Enum.find_index(@alphabet, & &1 == char) + num, 26))
   end
@@ -71,7 +77,7 @@ defmodule Advent2016.Day4 do
   def load_input do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt"), do: file
     |> String.split("\n", trim: true)
-    |> Enum.map(&string_to_room &1)
+    |> Enum.map(&build_room &1)
   end
 
   def p1 do
@@ -86,9 +92,5 @@ defmodule Advent2016.Day4 do
   end
 
   def p2 do
-    load_input
-    |> Enum.map(fn (room) ->
-      rotate(room)
-    end)
   end
 end
