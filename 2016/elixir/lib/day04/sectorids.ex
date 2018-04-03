@@ -13,7 +13,7 @@ defmodule Advent2016.Day4 do
   def sort(name) do
     with name <- String.graphemes(name), do:
       name
-      |> Enum.reject(& &1 == " ")
+      |> Enum.reject(& &1 == "-")
       |> Enum.map(fn (char) -> {Enum.count(name, & &1 == char), char} end)
       |> Enum.uniq
       |> Enum.sort(fn ({first_count, first}, {second_count, second}) ->
@@ -38,7 +38,7 @@ defmodule Advent2016.Day4 do
       false
   """
   def is_room?(room) do
-    room["encrypted_name"] =~ room["checksum"]
+    sort(room["encrypted_name"]) =~ room["checksum"]
   end
 
   @doc """
@@ -49,11 +49,10 @@ defmodule Advent2016.Day4 do
     @room_description
     |> Regex.named_captures(str)
     |> Map.update!("sector_id", &String.to_integer &1)
-    |> Map.update!("encrypted_name", fn (name) ->
-      name
-      |> String.replace("-", " ")
-      |> sort
-    end)
+  end
+
+  def decode_room(r) do
+    Map.put(r, "decrypted_name", rotate(r["encrypted_name"], r["sector_id"]))
   end
 
   @doc ~S"""
@@ -92,5 +91,9 @@ defmodule Advent2016.Day4 do
   end
 
   def p2 do
+    load_input
+    |> Enum.map(&decode_room/1)
+    |> Enum.find(fn(room) -> String.contains?(room["decrypted_name"], "pole") end)
+    |> Map.get("sector_id")
   end
 end
