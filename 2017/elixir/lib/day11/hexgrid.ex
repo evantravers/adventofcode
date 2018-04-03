@@ -1,22 +1,20 @@
-require IEx
-
 defmodule Advent2017.Day11 do
   @doc ~S"""
-      iex> Advent2017.Day11.track("ne,ne,ne")
+      iex> track("ne,ne,ne")
       ...> |> List.first
-      ...> |> Advent2017.Day11.distance
+      ...> |> distance
       3
-      iex> Advent2017.Day11.track("ne,ne,sw,sw")
+      iex> track("ne,ne,sw,sw")
       ...> |> List.first
-      ...> |> Advent2017.Day11.distance
+      ...> |> distance
       0
-      iex> Advent2017.Day11.track("ne,ne,s,s")
+      iex> track("ne,ne,s,s")
       ...> |> List.first
-      ...> |> Advent2017.Day11.distance
+      ...> |> distance
       2
-      iex> Advent2017.Day11.track("se,sw,se,sw,sw")
+      iex> track("se,sw,se,sw,sw")
       ...> |> List.first
-      ...> |> Advent2017.Day11.distance
+      ...> |> distance
       3
   """
   def track(steps) do
