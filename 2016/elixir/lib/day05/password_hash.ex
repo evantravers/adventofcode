@@ -3,28 +3,27 @@ defmodule Advent2016.Day5 do
   http://adventofcode.com/2016/day/5
   """
 
+  use Bitwise
   @input "uqwqemis"
 
   def encrypt(input, number) do
-    Base.encode16(:crypto.hash(:md5, "#{input}#{number}"))
+    :crypto.hash(:md5, "#{input}#{number}")
   end
 
   def matches(input, number) do
-    # I feel like there's a way to do this with <<0, 0, 15>>...
-    encrypt(input, number) =~ ~r/^00000/
+    binary_part(encrypt(input, number), 0, 3) <= <<0, 0, 15>>
   end
 
-  def sixth_char(str) do
-    str
+  def sixth_char(binary) do
+    binary
+    |> Base.encode16
     |> String.graphemes
     |> Enum.at(5)
   end
 
   def decode(input, number \\ 0, password \\ [])
   def decode(_, _, password) when length(password) == 8 do
-    password
-    |> Enum.reverse
-    |> Enum.join
+    password |> Enum.reverse |> Enum.join
   end
   def decode(input, number, password) do
     if matches(input, number) do
