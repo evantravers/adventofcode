@@ -7,13 +7,13 @@ defmodule Advent2016.Day3 do
   In a valid triangle, the sum of any two sides must be larger than the
   remaining side.
 
-        iex> possible([5, 10, 25])
+        iex> triangle?([5, 10, 25])
         false
-        iex> possible([3, 4, 5])
+        iex> triangle?([3, 4, 5])
         true
   """
-  def possible(sides) do
-    Enum.all?(sides, & &1 < Enum.sum(List.delete(sides, &1)))
+  def triangle?([a, b, c]) do
+    (a + b > c) && (b + c > a) && (c + a > b)
   end
 
   def load_input_by_rows do
@@ -36,11 +36,11 @@ defmodule Advent2016.Day3 do
 
   def p1 do
     load_input_by_rows
-    |> Enum.count(&possible &1)
+    |> Enum.count(&triangle? &1)
   end
 
   def p2 do
     load_input_by_columns
-    |> Enum.count(&possible &1)
+    |> Enum.count(&triangle? &1)
   end
 end
