@@ -1,5 +1,6 @@
-require IEx
 defmodule Advent2017.Day12 do
+  @moduledoc "http://adventofcode.com/2017/day/12"
+
   @doc ~S"""
   Returns a list of lists, where the index in the first list is the id of the
   node, and the nested list is the links
@@ -10,7 +11,8 @@ defmodule Advent2017.Day12 do
     file
     |> String.split("\n", [trim: true])
     |> Enum.map(fn pattern ->
-      Regex.scan(~r/\d+/, pattern)
+      ~r/\d+/
+      |> Regex.scan(pattern)
       |> List.flatten
       |> Enum.map(&String.to_integer &1)
       |> (fn(n) -> %{name: hd(n), pipes: MapSet.new(tl(n))} end).()
@@ -27,7 +29,8 @@ defmodule Advent2017.Day12 do
   def build_graph(_, [], visited), do: visited # win condition
   def build_graph(nodes, [todo|todos], visited) do
     unvisited =
-      Enum.find(nodes, & todo == &1[:name])
+      nodes
+      |> Enum.find(& todo == &1[:name])
       |> Map.fetch!(:pipes)
       |> MapSet.difference(visited) # list of unvisited
       |> MapSet.to_list
@@ -51,19 +54,22 @@ defmodule Advent2017.Day12 do
   end
 
   def test do
-    load_nodes("test.txt")
+    "test.txt"
+    |> load_nodes
     |> build_graph
     |> MapSet.size
   end
 
   def p1 do
-    load_nodes("input.txt")
+    "input.txt"
+    |> load_nodes
     |> build_graph
     |> MapSet.size
   end
 
   def p2 do
-    load_nodes("input.txt")
+    "input.txt"
+    |> load_nodes
     |> find_groups
   end
 end
