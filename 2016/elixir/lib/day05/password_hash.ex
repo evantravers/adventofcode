@@ -4,7 +4,6 @@ defmodule Advent2016.Day5 do
   """
 
   use Bitwise
-  @input "uqwqemis"
 
   def encrypt(input, number) do
     :crypto.hash(:md5, "#{input}#{number}")
@@ -64,10 +63,10 @@ defmodule Advent2016.Day5 do
   end
 
   def p1 do
-    decode(@input, &sixth_char/2)
+    decode("uqwqemis", &sixth_char/2)
   end
 
   def p2 do
-    decode(@input, &magic_char/2)
+    decode("uqwqemis", &magic_char/2)
   end
 end
