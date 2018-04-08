@@ -11,7 +11,7 @@ defmodule Advent2016.Day6 do
     |> String.split("\n", trim: true)
   end
 
-  def find_frequency(list_of_strings) do
+  def find_frequency(list_of_strings, frequency) do
     list_of_strings
     |> Enum.map(&String.graphemes/1)
     |> Enum.zip # boy this is magic
@@ -19,7 +19,9 @@ defmodule Advent2016.Day6 do
       tuple_of_chars
       |> Tuple.to_list
       |> count_occurrences
-      |> most_frequent
+      |> frequency.()
+      |> List.first
+      |> (fn({_, char}) ->  char end).()
     end)
     |> Enum.join
   end
@@ -30,18 +32,24 @@ defmodule Advent2016.Day6 do
     |> Enum.uniq
   end
 
-  def most_frequent(list_of_chars) do
+  def least_frequent(list_of_chars) do
     list_of_chars
     |> Enum.sort
+  end
+
+  def most_frequent(list_of_chars) do
+    list_of_chars
+    |> least_frequent
     |> Enum.reverse
-    |> List.first
-    |> (fn({_, char}) ->  char end).()
   end
 
   def p1 do
     load_input()
-    |> find_frequency
+    |> find_frequency(&most_frequent/1)
   end
 
-  def p2, do: nil
+  def p2 do
+    load_input()
+    |> find_frequency(&least_frequent/1)
+  end
 end
