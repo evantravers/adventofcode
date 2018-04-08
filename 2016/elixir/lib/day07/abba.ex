@@ -23,35 +23,53 @@ defmodule Advent2016.Day7 do
     string
     |> String.graphemes
     |> scan
+    |> Map.get(:tls)
+  end
+
+  @doc ~S"""
+      iex> support_ssl?("aba[bab]xyz")
+      true
+      iex> support_ssl?("xyx[xyx]xyx")
+      false
+      iex> support_ssl?("aaa[kek]eke")
+      true
+      iex> support_ssl?("zazbz[bzb]cdb")
+      true
+  """
+  def support_ssl?(string) do
+    string
+    |> String.graphemes
+    |> scan
+    |> Map.get(:ssl)
   end
 
   @doc """
   This is basically a reduce, but I like the clarity of writing it myself.
   """
-  def scan(chars, tls \\ false)
-  def scan([], tls), do: tls
-  def scan([char|chars], tls) do
+  def scan(chars, state \\ %{tls: nil})
+  def scan([], state), do: state
+  def scan([char|chars], state) do
     cond do
       char == "[" ->
-        hypernet(chars, tls)
+        hypernet(chars, state)
 
-      abba?([char|chars]) ->
-        scan(chars, true)
+      abba?([char|chars]) && state[:tls] != false ->
+        scan(chars, %{state | tls: true})
 
       true ->
-        scan(chars, tls)
+        scan(chars, state)
     end
   end
-  def hypernet([char|chars], tls) do
+  def hypernet([char|chars], state) do
     cond do
       char == "]" ->
-        scan(chars, tls)
+        scan(chars, state)
 
       abba?([char|chars]) ->
-        false
+        hypernet(chars, %{state | tls: false})
 
       true ->
-        hypernet(chars, tls)
+        hypernet(chars, state)
     end
   end
 
