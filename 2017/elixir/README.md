@@ -7,6 +7,7 @@ can also run a specific day's solution w/ `mix day <num>`.
 
 ## TODO
 
+- Wire in a benchmarking system.
 - Refactor for speed:
   - [ ] Day 5
   - [ ] Day 13

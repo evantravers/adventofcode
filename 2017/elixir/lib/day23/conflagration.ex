@@ -131,7 +131,6 @@ defmodule Advent2017.Day23 do
   end
 
   def instrument(machine) do
-    IO.inspect machine
     Map.update!(machine, :heatmap, fn heatmap ->
       Map.update(heatmap, machine.pointer, 1, & &1 + 1)
     end)

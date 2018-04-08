@@ -37,7 +37,7 @@ defmodule Advent2017.Day1 do
   end
 
   def numbers do
-    {:ok, file} = File.open "./lib/day1/input.txt"
+    {:ok, file} = File.open "#{__DIR__}/input.txt"
 
     # it'd be much better to read in by character, but hey
     file
