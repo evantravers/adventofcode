@@ -63,6 +63,16 @@ defmodule Advent2016.Day7 do
     abba?(Enum.take(list, 4))
   end
 
-  def p1, do: nil
+  def load_input do
+    with {:ok, file} <- File.read("#{__DIR__}/input"), do: file
+    |> String.split("\n", trim: true)
+  end
+
+  def p1 do
+    load_input
+    |> Enum.map(&support_tls?/1)
+    |> Enum.count(& &1) # testing the truthyness of each element in the list
+  end
+
   def p2, do: nil
 end
