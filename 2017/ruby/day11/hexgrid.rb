@@ -79,7 +79,7 @@ end
 
 def p2
   instructions = File.read("./input.txt").strip.split(",")
-  track(instructions).history.map{|x| x.distance }.max
+  track(instructions).history.max_by(&:distance).distance
 end
 
 puts "Part 1:"
