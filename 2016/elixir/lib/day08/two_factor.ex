@@ -8,6 +8,15 @@ defmodule Advent2016.Day8 do
   screen which is A wide and B tall.
   """
   def rect(screen, a, b) do
+    for y <- 0..a-1 do
+      for x <- 0..b-1 do
+        {x, y}
+      end
+    end
+    |> List.flatten
+    |> Enum.reduce(screen, fn ({x, y}, s) ->
+      put_in(s, [y, x], true)
+    end)
   end
 
   @doc """
@@ -50,6 +59,8 @@ defmodule Advent2016.Day8 do
   end
 
   def test do
+    screen(5, 5)
+    |> rect(2, 3)
   end
 
   def p1, do: nil
