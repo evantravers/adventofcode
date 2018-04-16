@@ -26,6 +26,32 @@ defmodule Advent2016.Day8 do
   def rotate(screen, :column, x, b) do
   end
 
+  def display(screen) do
+    for y <- 0..screen.y-1 do
+      for x <- 0..screen.x-1 do
+        case get_in(screen, [y, x]) do
+          true  -> "#"
+          false -> "."
+        end
+      end
+      |> Enum.join
+      |> Kernel.<> "\n"
+    end
+    |> Enum.join
+  end
+
+  @doc "builds a map of maps of size x, y"
+  def screen(x, y) do
+    for y <- 0..y-1, into: %{} do
+      {y, (for x <- 0..x-1, into: %{}, do: {x, false})}
+    end
+    |> Map.put(:x, x)
+    |> Map.put(:y, y)
+  end
+
+  def test do
+  end
+
   def p1, do: nil
   def p2, do: nil
 end
