@@ -8,12 +8,7 @@ defmodule Advent2016.Day8 do
   """
 
   def rect(screen, [x, y]) do
-    for x <- 0..x-1 do
-      for y <- 0..y-1 do
-        {x, y}
-      end
-    end
-    |> List.flatten
+    (for x <- 0..x-1, y <- 0..y-1, do: {x, y})
     |> Kernel.++(screen)
     |> Enum.uniq # You could make a rectangle *over* existing "on" lights
   end
@@ -93,6 +88,6 @@ defmodule Advent2016.Day8 do
     end)
   end
 
-  def p1, do: run |> Enum.count
-  def p2, do: run |> print
+  def p1, do: run() |> Enum.count
+  def p2, do: run() |> print
 end
