@@ -32,6 +32,24 @@ defmodule Advent2016.Day8 do
     |> Kernel.++(remainder)
   end
 
+  def print(screen) do
+    {max_x, _} = Enum.max_by(screen, fn({x, _}) -> x end)
+    {_, max_y} = Enum.max_by(screen, fn({_, y}) -> y end)
+
+    for y <- 0..max_y do
+      for x <- 0..max_x do
+        case Enum.member?(screen, {x, y}) do
+           true -> "#"
+          false -> "."
+        end
+      end
+      |> Enum.join
+      |> Kernel.<>("\n")
+    end
+    |> Enum.join
+    |> IO.puts
+  end
+
   def p1, do: nil
   def p2, do: nil
 end
