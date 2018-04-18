@@ -27,7 +27,7 @@ defmodule Advent2016.Day8 do
       screen
       |> Enum.split_with(fn({_, target}) -> target = x end)
 
-    row
+    column
     |> Enum.map(fn({x, y}) -> {x + rem(offset, 6), y} end)
     |> Kernel.++(remainder)
   end
