@@ -15,20 +15,20 @@ defmodule Advent2016.Day8 do
   def rotate(screen, :row, y, offset) do
     {row, remainder} =
       screen
-      |> Enum.split_with(fn({_, target}) -> target = y end)
+      |> Enum.split_with(fn({_, target}) -> target == y end)
 
     row
-    |> Enum.map(fn({x, y}) -> {x, y + rem(offset, 50)} end)
+    |> Enum.map(fn({x, y}) -> {rem(x + offset, 50), y} end)
     |> Kernel.++(remainder)
   end
 
   def rotate(screen, :column, x, offset) do
     {column, remainder} =
       screen
-      |> Enum.split_with(fn({_, target}) -> target = x end)
+      |> Enum.split_with(fn({target, _}) -> target == x end)
 
     column
-    |> Enum.map(fn({x, y}) -> {x + rem(offset, 6), y} end)
+    |> Enum.map(fn({x, y}) -> {x, rem(y + offset, 6)} end)
     |> Kernel.++(remainder)
   end
 
