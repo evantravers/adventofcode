@@ -1,6 +1,10 @@
 defmodule Advent2016.Day8 do
   @moduledoc """
   http://adventofcode.com/2016/day/8
+
+  Instead of using a 2d array/list, I'm just storing tuples of the "on" lights.
+  This makes rotating a matter of selecting the right coordinates, and shifting
+  all of their x or y values by the offset % size of the screen.
   """
 
   def rect(screen, [x, y]) do
