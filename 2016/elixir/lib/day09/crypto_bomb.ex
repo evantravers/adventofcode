@@ -34,18 +34,34 @@ defmodule Advent2016.Day9 do
     |> decrypt
   end
 
+  def current_multiplier(multipliers) do
+    multipliers
+    |> Enum.reduce(1, fn({_, multiplier}, total) -> total * multiplier end)
+  end
+
+  def decrement(multipliers) do
+    multipliers
+    |> Enum.map(fn({len, multiplier}) -> {len-1, multiplier} end)
+  end
+
   def decrypt(string, score \\ 0, multipliers \\ [])
   def decrypt([], score, _), do: score
   def decrypt([char|chars], score, multipliers) do
     case char do
-      "(" -> nil# it's a control marker!
+      "(" -> # it's a control marker!
+        {len, multiplier} = marker(chars)
+        marker_length = byte_size("#{len}x#{multiplier})") # skip ahead
+
+        decrypt(Enum.drop(chars, marker_length), score, [{len, multiplier}|multipliers])
       _   -> nil
+        decrypt(chars, score + current_multiplier(multipliers), decrement(multipliers))
     end
   end
 
   @doc ~S"""
   This might be the most offensive function I've ever written. It's very
   opaque:
+
   1) It goes through the marker, looking for an "x".
   2) Once it finds an "x", it stops, converts that string to an integer, and
      runs itself on the next part of the string.
@@ -59,7 +75,7 @@ defmodule Advent2016.Day9 do
   def marker([char|chars], number) do
     case char do
       "x" ->
-        {String.to_integer(number), marker(chars, ""), chars}
+        {String.to_integer(number), marker(chars, "")}
       ")" ->
         String.to_integer(number)
       _   ->
@@ -75,5 +91,8 @@ defmodule Advent2016.Day9 do
   end
 
   def p1, do: nil
-  def p2, do: nil
+  def p2 do
+    load_input()
+    |> decompress
+  end
 end
