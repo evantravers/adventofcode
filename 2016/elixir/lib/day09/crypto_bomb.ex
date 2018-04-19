@@ -28,7 +28,51 @@ defmodule Advent2016.Day9 do
       iex> decompress("X(8x2)(3x3)ABCY")
       18
   """
-  def decompress(string), do: nil
+  def decompress(string) do
+    string
+    |> String.graphemes
+    |> decrypt
+  end
+
+  def decrypt(string, score \\ 0, multipliers \\ [])
+  def decrypt([], score, _), do: score
+  def decrypt([char|chars], score, multipliers) do
+    case char do
+      "(" -> nil# it's a control marker!
+      _   -> nil
+    end
+  end
+
+  @doc ~S"""
+  This might be the most offensive function I've ever written. It's very
+  opaque:
+  1) It goes through the marker, looking for an "x".
+  2) Once it finds an "x", it stops, converts that string to an integer, and
+     runs itself on the next part of the string.
+  3) Once the second copy finds a ")", it stops and returns its integer.
+  4) It returns back to the caller which returns the tuple.
+
+      iex> marker(String.graphemes("3x5)"))
+      {3, 5}
+  """
+  def marker(chars, number \\ "")
+  def marker([char|chars], number) do
+    case char do
+      "x" ->
+        {String.to_integer(number), marker(chars, ""), chars}
+      ")" ->
+        String.to_integer(number)
+      _   ->
+        marker(chars, number <> char)
+    end
+  end
+
+  def load_input do
+    with {:ok, file} <- File.read("#{__DIR__}/input") do
+      file
+      |> String.replace(~r/\s/, "")
+    end
+  end
 
   def p1, do: nil
   def p2, do: nil
