@@ -19,12 +19,7 @@ def firewall_inactive?(depth, range)
   !firewall_active?(depth, range)
 end
 
-def divisor_of_known_failure?(num, failures)
-  if failures.empty?
-    false
-  else
-    failures.any?{|failure| num % failure == 0}
-  end
+def filter_delays(possible, failed_delay)
 end
 
 def run_the_gauntlet(delay, gauntlet)
@@ -33,19 +28,18 @@ def run_the_gauntlet(delay, gauntlet)
 end
 
 def find_delay(gauntlet, max=4_000_000)
-  failures = Set.new
+  possible_delays = (2..max).to_a
 
-  (2..max).each do |delay|
-    unless divisor_of_known_failure?(delay, failures)
-      case run_the_gauntlet(delay, gauntlet)
-      when true
-        return delay
-      else
-        failures << delay
-      end
+  until possible_delays.empty?
+    delay = possible_delays.shift
+
+    case run_the_gauntlet(delay, gauntlet)
+    when true
+      return delay
+    else
+      possible_delays = filter_delays(possible_delays, delay)
     end
   end
-  return false
 end
 
 def p2
@@ -72,5 +66,3 @@ class GauntletTest < Minitest::Test
     assert_equal 10, find_delay([[0, 3], [1, 2], [4, 4], [6, 4]], 15)
   end
 end
-
-puts p2
