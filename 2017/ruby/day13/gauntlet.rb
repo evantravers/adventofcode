@@ -19,12 +19,26 @@ def firewall_inactive?(depth, range)
   !firewall_active?(depth, range)
 end
 
-def filter_delays(possible, failed_delay)
+def period(delay, range)
+  ((range - 1) * 2)
 end
 
-def run_the_gauntlet(delay, gauntlet)
+# FIXME this is broken
+# for a failure, delete all options in possible where
+# (n*period_of_gate)+delay
+# after writing functional code, this seems awful
+def filter(possible, failure, depth_and_delay)
+  (0..possible.max/2).each do |n|
+    possible.delete((n * period( * failure)) + depth_and_delay)
+  end
+  possible
+end
+
+# returns either nil or an array of [delay, range], man this is making miss
+# functional programming
+def failed_the_gauntlet?(delay, gauntlet)
   gauntlet.map{|(d, r)| [d+delay, r]}
-          .all?{|(depth, range)| firewall_inactive?(depth, range) }
+          .find{|(depth, range)| firewall_inactive?(depth, range)}
 end
 
 def find_delay(gauntlet, max=4_000_000)
@@ -33,11 +47,11 @@ def find_delay(gauntlet, max=4_000_000)
   until possible_delays.empty?
     delay = possible_delays.shift
 
-    case run_the_gauntlet(delay, gauntlet)
-    when true
+    failure = failed_the_gauntlet?(delay, gauntlet)
+    unless failure
       return delay
     else
-      possible_delays = filter_delays(possible_delays, delay)
+      possible_delays = filter(possible_delays, failure, delay)
     end
   end
 end
@@ -57,12 +71,14 @@ class FirewallTest < Minitest::Test
 end
 
 class GauntletTest < Minitest::Test
-  def test_run_the_gauntlet
-    refute run_the_gauntlet(9, [[0, 3], [1, 2], [4, 4], [6, 4]])
-    assert run_the_gauntlet(10, [[0, 3], [1, 2], [4, 4], [6, 4]])
+  def test_gauntlet
+    assert !failed_the_gauntlet?(9, [[0, 3], [1, 2], [4, 4], [6, 4]]).nil?
+    assert_equal nil, failed_the_gauntlet?(10, [[0, 3], [1, 2], [4, 4], [6, 4]])
   end
 
   def test_find_delay
     assert_equal 10, find_delay([[0, 3], [1, 2], [4, 4], [6, 4]], 15)
   end
 end
+
+# puts p2
