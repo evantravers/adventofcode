@@ -106,15 +106,18 @@ defmodule Advent2017.Day13 do
       10
   """
   def p2 do
-    "input.txt"
-    |> load_config
-    |> p2(0)
-  end
-  def p2(firewalls, delay) do
-    case step(firewalls, delay) do
-      true  -> delay
-      false -> p2(firewalls, delay + 1)
-    end
+    scanners =
+      "input.txt"
+      |> load_config
+
+    0..5_000_000
+    |> Enum.reject(fn (delay) ->
+      scanners
+      |> Enum.any?(fn ({depth, range})->
+        firewall_active?(depth+delay, range)
+      end)
+    end)
+    |> Enum.min
   end
 end
 
