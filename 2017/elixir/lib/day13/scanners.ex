@@ -59,33 +59,18 @@ defmodule Advent2017.Day13 do
     |> Enum.into(%{})
   end
 
-  def step(firewalls, delay \\ 0, depth \\ 0) do
-    if Enum.empty?(firewalls) do
-      true
-    else
-      {range, firewalls} = Map.pop(firewalls, depth)
+  def step_with_score(firewalls, delay \\ 0, depth \\ 0, score \\ 0)
+  def step_with_score(firewalls, _, _, score) when firewalls == %{}, do: score
+  def step_with_score(firewalls, delay, depth, score) do
+    {range, firewalls} = Map.pop(firewalls, depth)
 
+    fault =
       case firewall_active?(depth + delay, range) do
-        true ->  false
-        false -> step(firewalls, delay, depth + 1)
+        false -> 0
+        true -> depth * range
       end
-    end
-  end
 
-  def step_with_score(firewalls, delay \\ 0, depth \\ 0, score \\ 0) do
-    if Enum.empty?(firewalls) do
-      score
-    else
-        {range, firewalls} = Map.pop(firewalls, depth)
-
-        fault =
-          case firewall_active?(depth + delay, range) do
-            false -> 0
-            true -> depth * range
-          end
-
-        step_with_score(firewalls, delay, depth + 1, score + fault)
-    end
+    step_with_score(firewalls, delay, depth + 1, score + fault)
   end
 
   def test do
