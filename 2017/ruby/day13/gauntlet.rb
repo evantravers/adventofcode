@@ -7,7 +7,7 @@ def load_input
   File
   .read("./input.txt")
   .split("\n")
-    .map{|l| l.scan(/\d+/).map(&:to_i)}
+  .map{|l| l.scan(/\d+/).map(&:to_i)}
 end
 
 def firewall_active?(depth, range)
@@ -23,7 +23,7 @@ def p2
 
   options = (0..5_000_000).to_a
 
-  gauntlet.each do |(depth, range)|
+  gauntlet.map do |(depth, range)|
     options.reject!{|delay| firewall_active?(delay+depth, range)}
   end
 
