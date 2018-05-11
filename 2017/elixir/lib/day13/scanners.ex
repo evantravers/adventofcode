@@ -85,11 +85,6 @@ defmodule Advent2017.Day13 do
     |> step_with_score
   end
 
-  @doc ~S"""
-      iex> Advent2017.Day13.load_config("test.txt")
-      ...> |> Advent2017.Day13.p2(0)
-      10
-  """
   def p2 do
     "input.txt"
     |> load_config
