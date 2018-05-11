@@ -18,14 +18,14 @@ defmodule Advent2017.Day5 do
     cond do
       index < 0 ->
         jumps
-      index >= tuple_size(list) ->
+      index >= map_size(list) ->
         jumps
       true ->
-        value  = elem(list, index)
+        value  = Map.get(list, index)
         offset = index + value
 
         list
-        |> put_elem(index, inc.(value))
+        |> Map.put(index, inc.(value))
         |> trampoline(offset, jumps + 1, inc)
     end
   end
@@ -36,7 +36,9 @@ defmodule Advent2017.Day5 do
     file
     |> String.split("\n", [trim: true])
     |> Enum.map(&(String.to_integer(&1)))
-    |> List.to_tuple
+    |> Enum.with_index
+    |> Enum.map(fn({val, ind}) -> {ind, val} end)
+    |> Enum.into(%{})
     |> trampoline(0, 0, inc)
   end
 
