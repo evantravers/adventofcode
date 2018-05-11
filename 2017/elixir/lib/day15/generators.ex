@@ -1,5 +1,3 @@
-require IEx
-
 defmodule Advent2017.Day15 do
   @moduledoc """
   Here, you encounter a pair of dueling generators. The generators, called
@@ -25,7 +23,8 @@ defmodule Advent2017.Day15 do
   @generator_a 16_807
   @generator_b 48_271
 
-  def first_sixteen(string), do: String.slice(string, -16..-1)
+  def first_sixteen(string), do: Enum.slice(string, -16..-1)
+
 
   @doc ~S"""
       iex> judge(1181022009, 1233683848)
@@ -34,26 +33,6 @@ defmodule Advent2017.Day15 do
       true
    """
   def judge(genA, genB) do
-    a =
-      genA
-      |> Integer.to_string(2)
-      |> String.pad_leading(16, "0")
-
-    b =
-      genB
-      |> Integer.to_string(2)
-      |> String.pad_leading(16, "0")
-
-    first_sixteen(a) == first_sixteen(b)
-  end
-
-  @doc ~S"""
-      iex> judge_bitwise(1181022009, 1233683848)
-      false
-      iex> judge_bitwise(245556042, 1431495498)
-      true
-   """
-  def judge_bitwise(genA, genB) do
     '0000000000000000' ==
       genA
       |> Bitwise.^^^(genB)
@@ -90,7 +69,7 @@ defmodule Advent2017.Day15 do
     a = generate(a, @generator_a)
     b = generate(b, @generator_b)
 
-    case judge_bitwise(a, b) do
+    case judge(a, b) do
       true  -> p1(a, b, count - 1, score + 1)
       false -> p1(a, b, count - 1, score)
     end
@@ -99,10 +78,10 @@ defmodule Advent2017.Day15 do
   def p2, do: p2(783, 325, 5_000_000, 0)
   def p2(_, _, 0, score), do: score
   def p2(a, b, count, score) do
-    a = generate(a, @generator_a, &rem(&1, 4) == 0)
-    b = generate(b, @generator_b, &rem(&1, 8) == 0)
+    a = generate(a, @generator_a, & rem(&1, 4) == 0)
+    b = generate(b, @generator_b, & rem(&1, 8) == 0)
 
-    case judge_bitwise(a, b) do
+    case judge(a, b) do
       true  -> p2(a, b, count - 1, score + 1)
       false -> p2(a, b, count - 1, score)
     end
