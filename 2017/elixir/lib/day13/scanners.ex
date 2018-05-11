@@ -91,14 +91,10 @@ defmodule Advent2017.Day13 do
       10
   """
   def p2 do
-    scanners =
-      "input.txt"
-      |> load_config
-
-    0..5_000_000
-    |> Enum.reject(fn (delay) ->
-      scanners
-      |> Enum.any?(fn ({depth, range})->
+    "input.txt"
+    |> load_config
+    |> Enum.reduce(0..5_000_000, fn({depth, range}, delays)->
+      Enum.reject(delays, fn(delay) ->
         firewall_active?(depth+delay, range)
       end)
     end)
