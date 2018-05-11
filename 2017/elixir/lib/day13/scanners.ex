@@ -73,6 +73,19 @@ defmodule Advent2017.Day13 do
     step_with_score(firewalls, delay, depth + 1, score + fault)
   end
 
+  @doc """
+  Given an enumberable of delays in the form {depth, range}, rejects any delay
+  that would strike a scanner in the firewall.
+  """
+  def reject_bad_delays(delays) do
+    delays
+    |> Enum.reduce(0..5_000_000, fn({depth, range}, delays) ->
+      Enum.reject(delays, fn(delay) ->
+        firewall_active?(depth+delay, range)
+      end)
+    end)
+  end
+
   def test do
     "test.txt"
     |> load_config
@@ -88,11 +101,7 @@ defmodule Advent2017.Day13 do
   def p2 do
     "input.txt"
     |> load_config
-    |> Enum.reduce(0..5_000_000, fn({depth, range}, delays)->
-      Enum.reject(delays, fn(delay) ->
-        firewall_active?(depth+delay, range)
-      end)
-    end)
+    |> reject_bad_delays
     |> Enum.min
   end
 end
