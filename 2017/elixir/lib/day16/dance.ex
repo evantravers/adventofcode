@@ -1,4 +1,8 @@
 defmodule Advent2017.Day16 do
+  @moduledoc """
+  http://adventofcode.com/2017/day/16
+  """
+
   @doc """
   Spin, written sX, makes X programs move from the end to the front, but
   maintain their order otherwise. (For example, s3 on abcde produces cdeab).
@@ -98,9 +102,10 @@ defmodule Advent2017.Day16 do
   end
 
   def find_period(instructions, dancers, visited) do
-    cond do
-      Enum.member? visited, dancers -> Enum.reverse(visited)
-      true -> find_period(instructions, dance(instructions, dancers), [dancers|visited])
+    if Enum.member? visited, dancers do
+      Enum.reverse(visited)
+    else
+      find_period(instructions, dance(instructions, dancers), [dancers|visited])
     end
   end
 end
