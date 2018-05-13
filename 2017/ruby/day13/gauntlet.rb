@@ -1,5 +1,5 @@
 # WITH MATHS!
-require 'pry'
+require 'benchmark'
 require 'minitest/autorun'
 
 # Load the input to an array of arrays [distance/delay, range of scanner]
@@ -19,15 +19,22 @@ def firewall_inactive?(depth, range)
 end
 
 def p2
-  gauntlet = load_input
+  p2 = nil
 
-  options = (0..5_000_000).to_a
+  timing = Benchmark.measure {
+    gauntlet = load_input
 
-  gauntlet.map do |(depth, range)|
-    options.reject!{|delay| firewall_active?(delay+depth, range)}
-  end
+    options = (0..5_000_000).to_a
 
-  options.min
+    gauntlet.map do |(depth, range)|
+      options.reject!{|delay| firewall_active?(delay+depth, range)}
+    end
+
+    p2 = options.min
+  }
+
+  puts p2
+  puts timing
 end
 
 class FirewallTest < Minitest::Test
