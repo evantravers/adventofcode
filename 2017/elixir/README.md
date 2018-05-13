@@ -10,6 +10,6 @@ can also run a specific day's solution w/ `mix day <num>`.
 - Wire in a benchmarking system.
 - Refactor for speed:
   - [ ] Day 5
-  - [ ] Day 13
+  - [X] Day 13
   - [ ] Day 15
 - Move Day18 + Day23 shared code into a shared class w/ composition
