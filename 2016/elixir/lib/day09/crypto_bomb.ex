@@ -75,7 +75,7 @@ defmodule Advent2016.Day9 do
     |> decrement_multipliers
   end
 
-  def marker(state = %{chars: [char|chars]}, length \\ nil, acc \\ "") do
+  def marker(state = %{chars: [char|_]}, length \\ nil, acc \\ "") do
     if Map.has_key?(state, :simple) && !Enum.empty?(state.mul) do
       state
       |> increase_score
@@ -114,7 +114,7 @@ defmodule Advent2016.Day9 do
   end
 
   def count(state = %{chars: []}), do: state.score
-  def count(state = %{chars: [char|chars]}) do
+  def count(state = %{chars: [char|_]}) do
     case char do
       "(" ->
         state
