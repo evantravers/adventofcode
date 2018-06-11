@@ -60,25 +60,28 @@ defmodule Advent2016.Day9 do
     state |> Map.update(:score, 0, & &1 + multiplier(state))
   end
 
+  def advance_to_next_char(state) do
+    state
+    |> Map.update!(:chars, & tl(&1))
+    |> decrement_multipliers
+  end
+
   def marker(state = %{chars: [char|chars]}, length \\ nil, acc \\ "") do
     case char do
       "x" ->
         state
-        |> decrement_multipliers
-        |> Map.put(:chars, chars)
+        |> advance_to_next_char
         |> marker(String.to_integer(acc), "")
       ")" ->
         state
-        |> decrement_multipliers
-        |> Map.put(:chars, chars)
+        |> advance_to_next_char
         |> Map.update(:mul, [], fn(mul) ->
           [{length, String.to_integer(acc)}|mul]
         end)
         |> count
       _   ->
         state
-        |> decrement_multipliers
-        |> Map.put(:chars, chars)
+        |> advance_to_next_char
         |> marker(length, acc <> char)
     end
   end
@@ -98,14 +101,12 @@ defmodule Advent2016.Day9 do
     case char do
       "(" ->
         state
-        |> decrement_multipliers
-        |> Map.put(:chars, chars)
+        |> advance_to_next_char
         |> marker
       _ ->
         state
-        |> decrement_multipliers
+        |> advance_to_next_char
         |> increase_score
-        |> Map.put(:chars, chars) # essentially continue the reduce
         |> count
     end
   end
