@@ -91,7 +91,12 @@ defmodule Advent2016.Day10 do
   end
 
   def p2 do
-    setup_sim()
-    |> run
+    result =
+      setup_sim()
+      |> run
+
+    hd(get_in(result, [:output, 0, :cargo]))
+    * hd(get_in(result, [:output, 1, :cargo]))
+    * hd(get_in(result, [:output, 2, :cargo]))
   end
 end
