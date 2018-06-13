@@ -64,6 +64,14 @@ defmodule Advent2016.Day10 do
     end)
   end
 
+  def find_watched_comparison(sim, watch) do
+    sim
+    |> find_unresolved_bots
+    |> Enum.find(fn({id, attr}) ->
+      Map.get(attr, :cargo) == watch
+    end)
+  end
+
   @doc """
   Takes in a list of unresolved bots (bots w/ two chips) and the sim, and puts
   out a sim where their chips have been evaluated.
@@ -85,8 +93,8 @@ defmodule Advent2016.Day10 do
     if Enum.empty?(find_unresolved_bots(sim)) do
       sim
     else
-      if Enum.find(find_unresolved_bots(sim), fn({id, attr}) -> Map.get(attr, :cargo) == watch end) do
-        Enum.find(find_unresolved_bots(sim), fn({id, attr}) -> Map.get(attr, :cargo) == watch end) |> elem(0)
+      if find_watched_comparison(sim, watch) do
+        find_watched_comparison(sim, watch) |> elem(0)
       else
         sim
         |> find_unresolved_bots
