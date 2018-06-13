@@ -44,10 +44,9 @@ defmodule Advent2016.Day10 do
   def read_instruction(match = "value" <> _, sim) do # input
     [[_, value], [_, bot_id]] = extract_arguments(match)
 
-    sim
-    |> update_in(
-      [Access.key(:bot, %{}), Access.key(bot_id, %{}), Access.key(:cargo, [])],
-      fn(cargo) -> cargo ++ List.wrap(value) end)
+    update_in(sim,
+              build_path([:bot, bot_id]) ++ [Access.key(:cargo, [])],
+              fn(cargo) -> [value|cargo] end)
   end
   def read_instruction(match = "bot" <> _, sim) do # rules
     [[:bot, bot_id], low, high] = extract_arguments(match)
@@ -82,14 +81,18 @@ defmodule Advent2016.Day10 do
   @doc """
   Find bots w/ two cargo, resolve, repeat until done.
   """
-  def run(sim, target \\ [-1, -1]) do
+  def run(sim, watch \\ [-1, -1]) do
     if Enum.empty?(find_unresolved_bots(sim)) do
       sim
     else
-      sim
-      |> find_unresolved_bots
-      |> redistribute_chips(sim)
-      |> run(target)
+      if Enum.find(find_unresolved_bots(sim), fn({id, attr}) -> Map.get(attr, :cargo) == watch end) do
+        Enum.find(find_unresolved_bots(sim), fn({id, attr}) -> Map.get(attr, :cargo) == watch end) |> elem(0)
+      else
+        sim
+        |> find_unresolved_bots
+        |> redistribute_chips(sim)
+        |> run(watch)
+      end
     end
   end
 
