@@ -73,6 +73,11 @@ defmodule Advent2016.Day11 do
   @doc """
   A state is invalid if there's an unshielded chip on the same floor as an
   unshielded generator.
+
+    iex> load_input("test") |> valid?
+    true
+    iex> load_input("fail") |> valid?
+    false
   """
   def valid?(world = %{objects: objects}) do
     objects
