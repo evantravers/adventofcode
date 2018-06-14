@@ -79,7 +79,7 @@ defmodule Advent2016.Day11 do
     iex> load_input("fail") |> valid?
     false
   """
-  def valid?(world = %{objects: objects}) do
+  def valid?(%{objects: objects}) do
     objects
     |> Enum.filter(& &1.type == :microchip)
     |> Enum.any?(fn(chip) ->
