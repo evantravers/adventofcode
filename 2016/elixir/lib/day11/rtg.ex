@@ -17,6 +17,8 @@ defmodule Advent2016.Day11 do
   Part 2:
   What is the minimum number of steps required to bring all of the objects,
   including these four new ones, to the fourth floor?
+
+  TODO: from a state, generate possible `valid?` states
   """
 
   def load_input(file \\ "input") do
@@ -74,10 +76,10 @@ defmodule Advent2016.Day11 do
   A state is invalid if there's an unshielded chip on the same floor as an
   unshielded generator.
 
-    iex> load_input("test") |> valid?
-    true
-    iex> load_input("fail") |> valid?
-    false
+      iex> load_input("test") |> valid?
+      true
+      iex> load_input("fail") |> valid?
+      false
   """
   def valid?(%{objects: objects}) do
     objects
