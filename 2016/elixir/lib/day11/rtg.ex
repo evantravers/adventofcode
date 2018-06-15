@@ -115,6 +115,69 @@ defmodule Advent2016.Day11 do
     objects |> Enum.filter(& &1.floor == floor_num)
   end
 
+  def valid_elevator_moves(%{elevator: 0}), do: [1]
+  def valid_elevator_moves(%{elevator: 1}), do: [0, 2]
+  def valid_elevator_moves(%{elevator: 2}), do: [1, 3]
+  def valid_elevator_moves(%{elevator: 3}), do: [2]
+
+  @doc """
+  We can move one or two things from the current floor to a new floor, either
+  up or down.
+
+  FIXME: This isn't finished yet... it's not moving both for some reason, and
+  it's returning duplicate options?
+  """
+  def valid_moves(world) do
+    with twos <- world |> floor |> Combination.combine(2),
+         ones <- world |> floor |> Combination.combine(1)
+    do
+      movable_objects = ones ++ twos
+
+      for list_of_obj <- movable_objects,
+          new_floor <- valid_elevator_moves(world) do
+        list_of_obj
+        |> Enum.map(& move_to_floor(world, &1, new_floor))
+      end
+    end
+    |> List.flatten
+  end
+
+  @doc """
+  Very obtuse, probably because my data sttructure stinks
+  """
+  def move_to_floor(world, object, floor) do
+    world
+    |> Map.update!(:objects, fn(objects) ->
+      [%{object|floor: floor} | objects] |> List.delete(object)
+    end)
+    |> Map.put(:elevator, floor)
+  end
+
+  def victory?(%{objects: objects}) do
+    Enum.all?(objects, fn(obj) -> obj.floor == 3 end)
+  end
+
+  def solve(input) when is_binary(input) do
+    input
+    |> load_input
+    |> solve
+  end
+
+  def solve(world, visited \\ MapSet.new, moves \\ 0) when is_map(world) do
+    # FIXME this will keep going nearly infinitely, it won't break when it
+    # finds the solution. I need to implement a system that doesn't really
+    # recurse... maybe use a queue? Otherwise, I need to find a way to send a
+    # message when it's done perhaps.
+    if victory?(world) do
+      {world, moves}
+    else
+      world
+      |> valid_moves
+      |> MapSet.difference(visited)
+      |> Enum.map(& solve(&1, MapSet.put(world), moves + 1))
+    end
+  end
+
   def p1, do: nil
   def p2, do: nil
 end
