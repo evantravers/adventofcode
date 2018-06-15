@@ -109,6 +109,8 @@ defmodule Advent2016.Day11 do
     find_complement(objects, object).floor == object.floor
   end
 
+  def floor(world) when is_map(world), do: floor(world.objects, world.elevator)
+
   def floor(objects, floor_num) do
     objects |> Enum.filter(& &1.floor == floor_num)
   end
