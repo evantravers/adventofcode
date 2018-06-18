@@ -17,8 +17,6 @@ defmodule Advent2016.Day11 do
   Part 2:
   What is the minimum number of steps required to bring all of the objects,
   including these four new ones, to the fourth floor?
-
-  TODO: from a state, generate possible `valid?` states
   """
 
   def load_input(file \\ "input") do
@@ -123,9 +121,6 @@ defmodule Advent2016.Day11 do
   @doc """
   We can move one or two things from the current floor to a new floor, either
   up or down.
-
-  FIXME: This isn't finished yet... it's not moving both for some reason, and
-  it's returning duplicate options?
   """
   def valid_moves(world) do
     with twos <- world |> floor |> Combination.combine(2),
@@ -135,11 +130,11 @@ defmodule Advent2016.Day11 do
 
       for list_of_obj <- movable_objects,
           new_floor <- valid_elevator_moves(world) do
-        list_of_obj
-        |> Enum.map(& move_to_floor(world, &1, new_floor))
+            Enum.reduce(list_of_obj, world, fn(obj, world) ->
+              move_to_floor(world, obj, new_floor)
+            end)
       end
     end
-    |> List.flatten
   end
 
   @doc """
