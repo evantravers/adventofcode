@@ -17,6 +17,10 @@ defmodule Advent2016.Day11 do
   Part 2:
   What is the minimum number of steps required to bring all of the objects,
   including these four new ones, to the fourth floor?
+
+  TODO: Optimize the lookup/complement datastructure... probably need a struct
+  with a part that holds the position, and a hash that looks up the id of a
+  complement... right now `find_complement/2` seems really expensive...
   """
 
   def load_input(file \\ "input") do
@@ -156,6 +160,7 @@ defmodule Advent2016.Day11 do
   def solve(input) when is_binary(input) do
     input
     |> load_input
+    |> List.wrap
     |> solve
   end
 
