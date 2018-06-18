@@ -30,7 +30,7 @@ defmodule Advent2016.Day11 do
         end)
       end
 
-    %{elevator: 0, objects: objects}
+    %{elevator: 0, objects: objects, moves: 0}
   end
 
   def build_floor(world, string, number) do
@@ -135,6 +135,7 @@ defmodule Advent2016.Day11 do
             end)
       end
     end
+    |> Enum.map(fn(world) -> Map.update!(world, :moves, & &1 + 1) end)
   end
 
   @doc """
@@ -158,21 +159,25 @@ defmodule Advent2016.Day11 do
     |> solve
   end
 
-  def solve(world, visited \\ MapSet.new, moves \\ 0) when is_map(world) do
-    # FIXME this will keep going nearly infinitely, it won't break when it
-    # finds the solution. I need to implement a system that doesn't really
-    # recurse... maybe use a queue? Otherwise, I need to find a way to send a
-    # message when it's done perhaps.
+  def solve([world|stack], visited \\ MapSet.new) do
     if victory?(world) do
-      {world, moves}
-    else
       world
-      |> valid_moves
-      |> MapSet.difference(visited)
-      |> Enum.map(& solve(&1, MapSet.put(world), moves + 1))
+    else
+      new_positions =
+        world
+        |> valid_moves
+        |> MapSet.new
+        |> MapSet.difference(visited)
+        |> MapSet.to_list
+
+      solve(new_positions ++ stack, MapSet.put(visited, world))
     end
   end
 
-  def p1, do: nil
+  def p1 do
+    load_input()
+    |> solve
+    |> Map.get(:moves)
+  end
   def p2, do: nil
 end
