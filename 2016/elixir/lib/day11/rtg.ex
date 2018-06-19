@@ -127,17 +127,20 @@ defmodule Advent2016.Day11 do
   up or down.
   """
   def valid_moves(world) do
-    with twos <- world |> floor |> Combination.combine(2),
-         ones <- world |> floor |> Combination.combine(1)
-    do
-      movable_objects = ones ++ twos
-
-      for list_of_obj <- movable_objects,
-          new_floor <- valid_elevator_moves(world) do
-            Enum.reduce(list_of_obj, world, fn(obj, world) ->
-              move_to_floor(world, obj, new_floor)
-            end)
+    movable_objects =
+      if Enum.count(floor(world)) > 1 do
+        twos = world |> floor |> Combination.combine(2)
+        ones = world |> floor |> Combination.combine(1)
+        ones ++ twos
+      else
+        world |> floor |> Combination.combine(1)
       end
+
+    for list_of_obj <- movable_objects,
+        new_floor <- valid_elevator_moves(world) do
+          Enum.reduce(list_of_obj, world, fn(obj, world) ->
+            move_to_floor(world, obj, new_floor)
+          end)
     end
     |> Enum.map(fn(world) -> Map.update!(world, :moves, & &1 + 1) end)
   end
