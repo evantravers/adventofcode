@@ -174,9 +174,12 @@ defmodule Advent2016.Day11 do
     Enum.all?(objects, fn(obj) -> obj.floor == 3 end)
   end
 
-  def solve(input) when is_binary(input) do
-    input
-    |> load_input
+  def visited?(visited, %{objects: objects}) do
+    MapSet.member?(visited, objects)
+  end
+
+  def solve(starting_state) when is_map(starting_state) do
+    starting_state
     |> List.wrap
     |> solve
   end
@@ -188,9 +191,7 @@ defmodule Advent2016.Day11 do
       new_positions =
         world
         |> valid_moves
-        |> MapSet.new
-        |> MapSet.difference(visited)
-        |> MapSet.to_list
+        |> Enum.reject(&visited?(visited, &1))
 
       solve(new_positions ++ stack, MapSet.put(visited, world))
     end
