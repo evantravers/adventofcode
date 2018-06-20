@@ -183,8 +183,7 @@ defmodule Advent2016.Day11 do
     |> List.wrap
     |> solve
   end
-
-  def solve([world|stack], visited \\ MapSet.new) do
+  def solve([world|queue], visited \\ MapSet.new) do
     if victory?(world) do
       world
     else
@@ -193,7 +192,7 @@ defmodule Advent2016.Day11 do
         |> valid_moves
         |> Enum.reject(&visited?(visited, &1))
 
-      solve(new_positions ++ stack, MapSet.put(visited, world))
+      solve(queue ++ new_positions, MapSet.put(visited, world.objects))
     end
   end
 
