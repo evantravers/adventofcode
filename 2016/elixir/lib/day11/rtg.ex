@@ -118,8 +118,8 @@ defmodule Advent2016.Day11 do
   end
 
   def valid_elevator_moves(%{elevator: 0}), do: [1]
-  def valid_elevator_moves(%{elevator: 1}), do: [0, 2]
-  def valid_elevator_moves(%{elevator: 2}), do: [1, 3]
+  def valid_elevator_moves(%{elevator: 1}), do: [2, 0]
+  def valid_elevator_moves(%{elevator: 2}), do: [3, 1]
   def valid_elevator_moves(%{elevator: 3}), do: [2]
 
   @doc """
