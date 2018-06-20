@@ -3,6 +3,7 @@ defmodule Advent2016.Day11 do
   http://adventofcode.com/2016/day/11
 
   In other words, if a chip is ever left in the same area as another RTG, and
+
   it's not connected to its own RTG, the chip will be fried. Therefore, it is
   assumed that you will follow procedure and keep chips connected to their
   corresponding RTG when they're in the same room, and away from other RTGs
@@ -17,11 +18,24 @@ defmodule Advent2016.Day11 do
   Part 2:
   What is the minimum number of steps required to bring all of the objects,
   including these four new ones, to the fourth floor?
-
-  TODO: Optimize the lookup/complement datastructure... probably need a struct
-  with a part that holds the position, and a hash that looks up the id of a
-  complement... right now `find_complement/2` seems really expensive...
   """
+
+  defmodule Sim do
+    @moduledoc """
+    TODO: Optimize the lookup/complement datastructure... probably need a struct
+    with a part that holds the position, and a hash that looks up the id of a
+    complement... right now `find_complement/2` seems really expensive...
+
+    ## Current thinking:
+    - history_tree is a hash of position_ids (possibly using
+      `:erlang.unique_integer`) pointing at unique object_configurations
+    - object_configurations is a hash of %{position_ids => state_hash}
+
+    This would allow me to generate a "history" of positions for a given
+    solution for debugging purposes without storing huge copies of everything.
+    """
+    defstruct history_tree: %{}, object_configurations: %{}
+  end
 
   def load_input(file \\ "input") do
     objects =
