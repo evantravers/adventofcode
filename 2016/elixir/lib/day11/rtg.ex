@@ -90,7 +90,7 @@ defmodule Advent2016.Day11 do
 
   @doc """
   A state is invalid if there's an unshielded chip on the same floor as an
-  unshielded generator.
+  generator.
 
       iex> load_input("test") |> valid?
       true
@@ -100,11 +100,9 @@ defmodule Advent2016.Day11 do
   def valid?(%{objects: objects}) do
     objects
     |> Enum.filter(& &1.type == :microchip)
+    |> Enum.reject(&shielded?(objects, &1))
     |> Enum.any?(fn(chip) ->
-      objects
-      |> floor(chip.floor)
-      |> Enum.filter(& &1.type == :generator)
-      |> Enum.any?(&!shielded?(objects, &1))
+      Enum.any?(floor(objects, chip.floor), & &1.type == :generator)
     end)
     |> Kernel.!
   end
@@ -137,10 +135,13 @@ defmodule Advent2016.Day11 do
   def valid_elevator_moves(%{elevator: 3}), do: [2]
 
   @doc """
+  Generates *all* possible moves given a world. Does not check for the validity
+  of the position.
+
   We can move one or two things from the current floor to a new floor, either
   up or down.
   """
-  def valid_moves(world) do
+  def possible_moves(world) do
     movable_objects =
       if Enum.count(floor(world)) > 1 do
         twos = world |> floor |> Combination.combine(2)
@@ -189,8 +190,9 @@ defmodule Advent2016.Day11 do
     else
       new_positions =
         world
-        |> valid_moves
+        |> possible_moves
         |> Enum.reject(&visited?(visited, &1))
+        |> Enum.filter(&valid?/1)
 
       solve(queue ++ new_positions, MapSet.put(visited, world.objects))
     end
