@@ -161,7 +161,7 @@ defmodule Advent2016.Day11 do
   end
 
   @doc """
-  Very obtuse, probably because my data sttructure stinks
+  Very obtuse, probably because my data structure stinks
   """
   def move_to_floor(world, object, floor) do
     world
