@@ -22,9 +22,9 @@ defmodule Advent2016.Day11 do
 
   defmodule Sim do
     @moduledoc """
-    TODO: Optimize the lookup/complement datastructure... probably need a struct
-    with a part that holds the position, and a hash that looks up the id of a
-    complement... right now `find_complement/2` seems really expensive...
+    TODO: Optimize the lookup/complement datastructure... probably need a
+    struct with a part that holds the position, and a hash that looks up the id
+    of a complement... right now `find_complement/2` seems really expensive...
 
     ## Current thinking:
     - history_tree is a hash of position_ids (possibly using
@@ -110,6 +110,7 @@ defmodule Advent2016.Day11 do
   def complement_type(:generator), do: :microchip
   def complement_type(:microchip), do: :generator
 
+  # FIXME: This is possibly very expensive
   def find_complement(objects, object) do
     objects
     |> Enum.find(fn(target) ->
@@ -119,6 +120,7 @@ defmodule Advent2016.Day11 do
     end)
   end
 
+  # FIXME: This is possible very expensive
   def shielded?(objects, object) do
     find_complement(objects, object).floor == object.floor
   end
