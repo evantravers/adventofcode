@@ -9,3 +9,4 @@ TODO:
 
 - Why does Day5 never finish when run from mix, whereas it works out of iex:
 - Refactor Day10, it's ugly
+- Refactor Day11, it is too slow to finish
