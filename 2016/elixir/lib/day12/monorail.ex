@@ -20,6 +20,7 @@ defmodule Advent2016.Day12 do
       |> Enum.map(fn(str) ->
         str
         |> String.split(" ")
+        |> clean
       end)
       |> Enum.with_index
       |> Enum.map(fn({v, i}) -> {i, v} end)
@@ -27,11 +28,20 @@ defmodule Advent2016.Day12 do
     end
   end
 
-  def resolve(state, "a"), do: Map.get(state, :a)
-  def resolve(state, "b"), do: Map.get(state, :b)
-  def resolve(state, "c"), do: Map.get(state, :c)
-  def resolve(state, "d"), do: Map.get(state, :d)
-  def resolve(state, num), do: String.to_integer(num)
+  def clean([cmd|args]) do
+    [String.to_atom(cmd)|Enum.map(args, &clean_arg/1)]
+  end
+
+  def clean_arg("a"), do: :a
+  def clean_arg("b"), do: :b
+  def clean_arg("c"), do: :c
+  def clean_arg("d"), do: :d
+  def clean_arg(num), do: String.to_integer(num)
+
+  def resolve(state, reg) when is_atom(reg), do: Map.get(state, reg)
+  def resolve(_, num) when is_integer(num), do: num
+
+  def next_instruction(state), do: Map.update!(state, :pointer, & &1 + 1)
 
   def run(state = %{instructions: instructions, pointer: pointer}) do
     # unless the pointer is pointing at nothing
