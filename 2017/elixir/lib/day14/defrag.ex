@@ -51,28 +51,28 @@ defmodule Advent2017.Day14 do
   end
 
   @doc """
-  Transforms a "grid" of nested lists into a "grid" of nested maps.
+  Transforms a "grid" of nested lists into a map of the form:
 
-  The reasoning for this is it will hopefully make bound detection easier.
+  `%{{x, y} -> val}`
   """
   def list_grid_to_map_grid(grid) do
-    Enum.into(Enum.with_index(grid), %{}, fn ({v, k}) ->
-      {k, Enum.into(Enum.with_index(v), %{}, fn({a, b}) ->
-        {b, a}
-      end)}
-    end)
+    for {row, y} <- Enum.with_index(grid),
+        {val, x} <- Enum.with_index(row) do
+          {{x, y}, val}
+    end
+    |> Enum.into(%{})
   end
 
   @doc """
-      iex> adjacent([2, 2])
-      [[3, 2], [1, 2], [2, 3], [2, 1]]
+      iex> adjacent({2, 2})
+      [{3, 2}, {1, 2}, {2, 3}, {2, 1}]
   """
-  def adjacent([x, y]) do
-    [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]
+  def adjacent({x, y}) do
+    [{x + 1, y}, {x - 1, y}, {x, y + 1}, {x, y - 1}]
   end
 
-  def get(grid, [x, y]) do
-    get_in(grid, [y, x])
+  def get(grid, {x, y}) do
+    Map.get(grid, {x, y})
   end
 
   def contiguous(grid, coord), do: contiguous(grid, [coord], MapSet.new)
@@ -96,12 +96,9 @@ defmodule Advent2017.Day14 do
   Returns a coordinate in grid that has a 1 value, but isn't in visited.
   """
   def find_ungrouped(grid, visited) do
-    results =
-      for y <- Map.keys(grid), x <- Map.keys(grid[y]), do: [[x, y], get(grid, [x, y])]
-
-    results
-    |> Enum.filter(fn [_, value] -> value == 1 end)
-    |> Enum.reject(fn [[x, y], _] -> MapSet.member?(visited, [x, y]) end)
+    grid
+    |> Enum.filter(fn {_, value} -> value == 1 end)
+    |> Enum.reject(fn {{x, y}, _} -> MapSet.member?(visited, {x, y}) end)
   end
 
   @doc """
@@ -121,7 +118,7 @@ defmodule Advent2017.Day14 do
     if Enum.empty?(unvisited_nodes) do
       groups
     else
-      [start_node, _] = hd(unvisited_nodes)
+      {start_node, _} = hd(unvisited_nodes)
 
       group = contiguous(grid, start_node)
       find_groups(grid, MapSet.union(visited, group), [group | groups])
