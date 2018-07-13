@@ -45,8 +45,8 @@ defmodule Advent2017.Day14 do
       "#{input}-#{row}"
       |> Knot.dense_hash
       |> hex_to_bin
-      |> String.split("", [trim: true])
-      |> Enum.map(&String.to_integer &1)
+      |> String.split("", trim: true)
+      |> Enum.map(&String.to_integer/1)
     end)
   end
 
