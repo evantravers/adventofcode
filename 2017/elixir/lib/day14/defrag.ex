@@ -51,58 +51,44 @@ defmodule Advent2017.Day14 do
   end
 
   @doc """
-  Transforms a "grid" of nested lists into a map of the form:
-
-  `%{{x, y} -> val}`
+  Transforms a "grid" of nested lists into a mapset of tuple coords.
   """
   def list_grid_to_map_grid(grid) do
     for {row, y} <- Enum.with_index(grid),
-        {val, x} <- Enum.with_index(row) do
-          {{x, y}, val}
+      {val, x} <- Enum.with_index(row),
+      val == 1
+    do
+      {x, y}
     end
-    |> Enum.into(%{})
+    |> Enum.into(MapSet.new())
   end
 
   @doc """
-      iex> adjacent({2, 2})
-      [{3, 2}, {1, 2}, {2, 3}, {2, 1}]
+  iex> adjacent({2, 2})
+  [{3, 2}, {1, 2}, {2, 3}, {2, 1}]
   """
   def adjacent({x, y}) do
     [{x + 1, y}, {x - 1, y}, {x, y + 1}, {x, y - 1}]
   end
 
-  def get(grid, {x, y}) do
-    Map.get(grid, {x, y})
-  end
-
+  @doc """
+  `contiguous` taking a grid and a coordinate, finds all the coords in the grid
+  that are attached to that original coord
+  """
   def contiguous(grid, coord), do: contiguous(grid, [coord], MapSet.new)
 
-  def contiguous(_, [], group), do: group
-
-  def contiguous(grid, [square|todo], group) do
-    skip = fn -> contiguous(grid, todo, group) end
-
-    cond do
-      Enum.member?(group, square) ->
-        skip.()
-      get(grid, square) == 1 ->
-        contiguous(grid, adjacent(square) ++ todo, MapSet.put(group, square))
-      true -> # nil or 0
-        skip.()
+  def contiguous(_, [], results), do: results
+  def contiguous(grid, [square|todo], results) do
+    if Enum.member?(grid, square) and !Enum.member?(results, square) do
+      contiguous(grid, adjacent(square) ++ todo, MapSet.put(results, square))
+    else
+      contiguous(grid, todo, results)
     end
   end
 
   @doc """
-  Returns a coordinate in grid that has a 1 value, but isn't in visited.
-  """
-  def find_ungrouped(grid, visited) do
-    grid
-    |> Enum.filter(fn {_, value} -> value == 1 end)
-    |> Enum.reject(fn {{x, y}, _} -> MapSet.member?(visited, {x, y}) end)
-  end
+  This assumes that todo is a MapSet of coord tuples.
 
-  @doc """
-  Expects the map of maps
   Algorithm:
 
   find a 1 block that isn't a member of any group in groups
@@ -112,16 +98,17 @@ defmodule Advent2017.Day14 do
 
   return groups
   """
-  def find_groups(grid, visited \\ MapSet.new, groups \\ []) do
-    unvisited_nodes = find_ungrouped(grid, visited)
-
-    if Enum.empty?(unvisited_nodes) do
+  @spec find_groups(MapSet, MapSet, List) :: List
+  def find_groups(todo, visited \\ MapSet.new, groups \\ []) do
+    if Enum.empty?(todo) do
       groups
     else
-      {start_node, _} = hd(unvisited_nodes)
+      [start_node] = Enum.take(todo, 1)
+      group        = contiguous(todo, start_node)
+      visited      = MapSet.union(visited, group)
+      todo         = MapSet.difference(todo, visited)
 
-      group = contiguous(grid, start_node)
-      find_groups(grid, MapSet.union(visited, group), [group | groups])
+      find_groups(todo, visited, [group | groups])
     end
   end
 
