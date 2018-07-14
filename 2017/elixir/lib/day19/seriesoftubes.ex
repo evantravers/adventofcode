@@ -1,5 +1,3 @@
-require IEx
-
 defmodule Advent2017.Day19 do
   @moduledoc """
   The map file structure is indexed like
@@ -83,27 +81,41 @@ defmodule Advent2017.Day19 do
       file
       |> String.split("\n", trim: true)
       |> Enum.map(&String.split(&1, "", trim: true))
-      |> Advent2017.Day14.list_grid_to_map_grid
+      |> list_grid_to_map_grid
 
     {[start, 0], maze}
   end
 
+  def list_grid_to_map_grid(grid) do
+    Enum.into(Enum.with_index(grid), %{}, fn ({v, k}) ->
+      {k, Enum.into(Enum.with_index(v), %{}, fn({a, b}) ->
+        {b, a}
+      end)}
+    end)
+  end
+
   def test do
     {start, maze} = load_maze("test.txt")
-    mazerunner(maze, start)
+
+    maze
+    |> mazerunner(start)
     |> Enum.filter(&Regex.match?(~r/[A-Z]/, &1))
     |> Enum.join
   end
 
   def p1 do
     {start, maze} = load_maze("input.txt")
-    mazerunner(maze, start)
+
+    maze
+    |> mazerunner(start)
     |> Enum.filter(&Regex.match?(~r/[A-Z]/, &1))
     |> Enum.join
   end
   def p2 do
     {start, maze} = load_maze("input.txt")
-    mazerunner(maze, start)
+
+    maze
+    |> mazerunner(start)
     |> Enum.count
   end
 end
