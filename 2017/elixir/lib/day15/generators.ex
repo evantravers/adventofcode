@@ -33,11 +33,7 @@ defmodule Advent2017.Day15 do
       true
    """
   def judge(genA, genB) do
-    '0000000000000000' ==
-      genA
-      |> Bitwise.^^^(genB)
-      |> Integer.to_charlist(2)
-      |> Enum.slice(-16..-1)
+    (genA &&& 0xffff) == (genB &&& 0xffff)
   end
 
 
