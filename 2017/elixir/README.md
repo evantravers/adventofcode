@@ -7,8 +7,4 @@ can also run a specific day's solution w/ `mix day <num>`.
 
 ## TODO
 
-- Refactor for speed:
-  - [X] Day 5
-  - [X] Day 13
-  - [ ] Day 15
 - Move Day18 + Day23 shared code into a shared class w/ composition

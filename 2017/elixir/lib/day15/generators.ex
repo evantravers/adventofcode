@@ -25,17 +25,15 @@ defmodule Advent2017.Day15 do
 
   def first_sixteen(string), do: Enum.slice(string, -16..-1)
 
-
   @doc ~S"""
       iex> judge(1181022009, 1233683848)
       false
       iex> judge(245556042, 1431495498)
       true
-   """
+  """
   def judge(genA, genB) do
     (genA &&& 0xffff) == (genB &&& 0xffff)
   end
-
 
   @doc ~S"""
       iex> generate(65, 16807)
