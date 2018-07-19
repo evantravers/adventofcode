@@ -13,10 +13,13 @@ defmodule Mix.Tasks.Day do
   @shortdoc "Run a specific day from the problem set"
   def run(day) do
     if day == ["all"] do
-      Enum.each(1..25, fn d ->
-        run d
-        IO.puts "\n"
+      {total_time, _} = :timer.tc(fn ->
+        Enum.each(1..25, fn d ->
+          run d
+          IO.puts "\n"
+        end)
       end)
+      IO.puts("Total Time: #{total_time/1_000_000} seconds")
     else
         {p1_time, p1_answer} = :timer.tc(fn ->
           apply(String.to_existing_atom("Elixir.Advent2017.Day#{day}"), :p1, [])
