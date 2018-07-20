@@ -23,8 +23,6 @@ defmodule Advent2017.Day15 do
   @generator_a 16_807
   @generator_b 48_271
 
-  def first_sixteen(string), do: Enum.slice(string, -16..-1)
-
   @doc ~S"""
       iex> judge(1181022009, 1233683848)
       false
