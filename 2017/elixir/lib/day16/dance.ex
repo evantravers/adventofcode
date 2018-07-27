@@ -80,22 +80,19 @@ defmodule Advent2017.Day16 do
     end
   end
 
-  def p1 do
-    {:ok, file} = File.read(__DIR__ <> "/input.txt")
+  def load_instructions(filename \\ "input.txt") do
+    with {:ok, file} <- File.read("#{__DIR__}/#{filename}") do
+      file
+      |> String.split(",")
+    end
+  end
 
-    file
-    |> String.split(",")
-    |> dance("abcdefghijklmnop")
+  def p1 do
+    load_instructions() |> dance("abcdefghijklmnop")
   end
 
   def p2 do
-    {:ok, file} = File.read(__DIR__ <> "/input.txt")
-
-    loop =
-      file
-      |> String.split(",")
-      |> find_period("abcdefghijklmnop", [])
-
+    loop   = load_instructions() |> find_period("abcdefghijklmnop", [])
     period = length(loop)
 
     Enum.at(loop, rem(1_000_000_000, period))
