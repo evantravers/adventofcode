@@ -7,7 +7,7 @@ defmodule Advent2017Test do
   doctest Advent2017.Day13
   doctest Advent2017.Day14, import: true
   doctest Advent2017.Day15, import: true
-  doctest Advent2017.Day16
+  doctest Advent2017.Day16, import: true
   doctest Advent2017.Day18, import: true
   doctest Advent2017.Day18.Machine, import: true
   doctest Advent2017.Day20

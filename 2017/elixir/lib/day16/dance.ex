@@ -7,7 +7,7 @@ defmodule Advent2017.Day16 do
   Spin, written sX, makes X programs move from the end to the front, but
   maintain their order otherwise. (For example, s3 on abcde produces cdeab).
 
-      iex> Advent2017.Day16.s("abcde", 3)
+      iex> s("abcde", 3)
       "cdeab"
   """
   def s(string, 0), do: string
@@ -28,7 +28,7 @@ defmodule Advent2017.Day16 do
   @doc """
   Exchange, written xA/B, makes the programs at positions A and B swap places.
 
-      iex> Advent2017.Day16.x("abcde", 0, 2)
+      iex> x("abcde", 0, 2)
       "cbade"
   """
   def x(string, pos1, pos2) do
@@ -42,7 +42,7 @@ defmodule Advent2017.Day16 do
   @doc """
   Partner, written pA/B, makes the programs named A and B swap places.
 
-      iex> Advent2017.Day16.p("abcde", "b", "d")
+      iex> p("abcde", "b", "d")
       "adcbe"
   """
   def p(string, a, b) do
@@ -59,10 +59,10 @@ defmodule Advent2017.Day16 do
   end
 
   @doc """
-      iex> Advent2017.Day16.dance(["s1", "x3/4", "pe/b"], "abcde")
+      iex> dance(["s1", "x3/4", "pe/b"], "abcde")
       "baedc"
 
-      iex> Advent2017.Day16.dance(["s1", "x3/4", "pe/b"], "baedc")
+      iex> dance(["s1", "x3/4", "pe/b"], "baedc")
       "ceadb"
   """
   def dance([], dancers), do: dancers
