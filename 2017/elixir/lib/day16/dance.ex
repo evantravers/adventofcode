@@ -92,13 +92,16 @@ defmodule Advent2017.Day16 do
   end
 
   def p2 do
-    loop   = load_instructions() |> find_period("abcdefghijklmnop", [])
+    loop   = load_instructions() |> find_period("abcdefghijklmnop")
     period = length(loop)
 
     Enum.at(loop, rem(1_000_000_000, period))
   end
 
-  def find_period(instructions, dancers, visited) do
+  @doc """
+  Go until you find a position you've already reached...
+  """
+  def find_period(instructions, dancers, visited \\ []) do
     if Enum.member? visited, dancers do
       Enum.reverse(visited)
     else
