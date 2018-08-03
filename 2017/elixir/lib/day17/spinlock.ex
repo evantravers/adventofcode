@@ -1,4 +1,8 @@
 defmodule Advent2017.Day17 do
+  @moduledoc """
+  adventofcode.com/2017/day/17
+  """
+
   def spinlock(stop), do: spinlock({0}, 0, stop)
   def spinlock(buffer, position, stop) do
     value = tuple_size(buffer)
@@ -18,13 +22,13 @@ defmodule Advent2017.Day17 do
   end
 
   def p2 do
-    elem(
-      Enum.reduce(1..50_000_000, {0, 0}, fn i, {second_element, index} ->
-        counted_to     = rem((index + 394), i)
-        second_element = if counted_to == 0, do: i, else: second_element
+    1..50_000_000
+    |> Enum.reduce({0, 0}, fn(i, {second_element, index}) ->
+      counted_to     = rem((index + 394), i)
+      second_element = if counted_to == 0, do: i, else: second_element
 
-        {second_element, counted_to + 1}
-      end),
-      0)
+      {second_element, counted_to + 1}
+    end)
+    |> elem(0)
   end
 end
