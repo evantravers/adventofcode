@@ -1,5 +1,3 @@
-require IEx
-
 defmodule Advent2017.Day18 do
   @moduledoc """
   You discover a tablet containing some strange assembly code labeled simply
