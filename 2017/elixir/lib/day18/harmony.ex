@@ -55,7 +55,10 @@ defmodule Advent2017.Day18 do
               id: nil
 
     def put(machine, x, y) do
-      Map.update!(machine, :reg, fn(reg) -> Map.put(reg, String.to_atom(x), y) end)
+      machine
+      |> Map.update!(:reg, fn(reg) ->
+        Map.put(reg, String.to_atom(x), y)
+      end)
     end
 
     defimpl Inspect do
@@ -143,6 +146,7 @@ defmodule Advent2017.Day18 do
   """
   def snd(machine, x) do
     send(machine.target, e(machine, x))
+
     machine
     |> Map.update!(:snd, fn history -> [e(machine, x)|history] end)
     |> next
@@ -158,7 +162,6 @@ defmodule Advent2017.Day18 do
   def rcv(machine, x) do
     receive do
       val ->
-
         machine
         |> set(x, val)
         |> limit_check
@@ -166,6 +169,7 @@ defmodule Advent2017.Day18 do
     after
       50 ->
         send(machine.parent, {:deadlock, self(), machine})
+
         machine
         |> stop
     end
