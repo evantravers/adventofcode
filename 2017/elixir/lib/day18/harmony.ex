@@ -55,7 +55,7 @@ defmodule Advent2017.Day18 do
               id: nil
 
     def put(machine, x, y) do
-      Map.update!(machine, :reg, fn reg -> Map.put(reg, String.to_atom(x), y) end)
+      Map.update!(machine, :reg, fn(reg) -> Map.put(reg, String.to_atom(x), y) end)
     end
 
     defimpl Inspect do
