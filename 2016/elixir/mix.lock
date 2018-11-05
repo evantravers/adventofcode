@@ -1,7 +1,7 @@
 %{
-  "bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [], [], "hexpm"},
+  "bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], [], "hexpm"},
   "combination": {:hex, :combination, "0.0.3", "746aedca63d833293ec6e835aa1f34974868829b1486b1e1cb0685f0b2ae1f41", [:mix], [], "hexpm"},
-  "credo": {:hex, :credo, "0.8.10", "261862bb7363247762e1063713bb85df2bbd84af8d8610d1272cd9c1943bba63", [], [{:bunt, "~> 0.2.0", [hex: :bunt, repo: "hexpm", optional: false]}], "hexpm"},
-  "deque": {:hex, :deque, "1.1.0", "84ea51277d0e7a8b0fab503e60ad625f2a57ef20c5526c36a4cdacd887c57740", [], [], "hexpm"},
+  "credo": {:hex, :credo, "0.8.10", "261862bb7363247762e1063713bb85df2bbd84af8d8610d1272cd9c1943bba63", [:mix], [{:bunt, "~> 0.2.0", [hex: :bunt, repo: "hexpm", optional: false]}], "hexpm"},
+  "deque": {:hex, :deque, "1.1.0", "84ea51277d0e7a8b0fab503e60ad625f2a57ef20c5526c36a4cdacd887c57740", [:mix], [], "hexpm"},
   "libgraph": {:hex, :libgraph, "0.11.1", "c8e7517db426c8b8dd0feb4f0ae8cc4d21d7d26c0f5d88c3bb5dedffd07a8b34", [:mix], [], "hexpm"},
 }
