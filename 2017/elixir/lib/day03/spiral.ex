@@ -1,129 +1,117 @@
 defmodule Advent2017.Day3 do
-  @doc """
-  Notes:
-  - I think interval increases by 1 every two iterations: 1, 2, 2, 3, 3...
-  - The structure should look like:
-    [[x: 0, y: 0, value: 1], [x: 1, y: 0, value: 2], [x: 1, y: 1, value: 3] ... ]
+  @input 265149
 
-  Interval = length of arm
+  @moduledoc """
+  I wrote a crazy solution at one point that simulated adding layers to the
+  onion of the spiral, than calculated it's position given a known starting
+  point on the onion. (You can probably `git log -- spiral_sim.exs` to see that
+  silliness.)
+
+  I think that for p2, I can use a Map of {Int, Int} -> Int and create a stream
+  until it is in the right spot?
   """
 
-  def next_space(map, direction) do
-    last = List.first(map)
-    {adjust_x, adjust_y} =
-      case direction do
-        :right -> {1, 0}
-        :up    -> {0, 1}
-        :left  -> {-1, 0}
-        :down  -> {0, -1}
-      end
-    [x:     last[:x]+adjust_x,
-     y:     last[:y]+adjust_y,
-     value: last[:value]+1]
-  end
+  defmodule Spiral do
+    @moduledoc """
+    Represents a spiral map... to make a spiral on a coordinate grid you loop
+    through the cardinal directions, (R, U, L, D). Each leg you do twice, and
+    then you increment the length of the leg.
+    """
+    defstruct(
+      direction: {1, 0},
+      leg_length: 1,
+      steps_remaining: 1,
+      legs_remaining: 2,
+      coords: %{{0, 0} => 1},
+      last: {0, 0}
+    )
 
-  def next_space_fib(map, direction) do
-    last = List.first(map)
-
-    {adjust_x, adjust_y} =
-      case direction do
-        :right -> {1, 0}
-        :up    -> {0, 1}
-        :left  -> {-1, 0}
-        :down  -> {0, -1}
-      end
-
-    new_x = last[:x]+adjust_x
-    new_y = last[:y]+adjust_y
-
-    surrounding_value =
-      [{1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}]
-      |> Enum.map(fn ({x, y}) -> {x+new_x, y+new_y} end) # adjust
-      |> Enum.map(fn ({x, y}) -> get(map, {x, y})[:value] end)
-      |> Enum.filter(&(is_integer(&1)))
-      |> Enum.sum
-
-
-    [x:     new_x,
-     y:     new_y,
-     value: surrounding_value]
-  end
-
-  @spec next_direction(atom) :: atom
-  def next_direction(direction) do
-    case direction do
-      :right -> :up
-      :up    -> :left
-      :left  -> :down
-      :down  -> :right
+    def last_value(spiral) do
+      Map.get(spiral.coords, spiral.last)
     end
-  end
 
-  def get(map, coord) do
-    Enum.find(map, fn (position) -> {position[:x], position[:y]} == coord end)
+    # defimpl Inspect do
+    #   def inspect(spiral, _) do
+    #     grid = ""
+    #     for y <- -10..10 do
+    #       for x <- -10..10 do
+    #         grid <> Map.get(spiral.coords, {x, y}
+    #       end
+    #       grid <> "\n"
+    #     end
+    #   end
+    # end
   end
 
   @doc """
-  This visualization is turned 90 because I'm too lazy to write a transpose
+  When a length of a leg reaches 0, we need a new direction.
   """
-  def view_spiral(map) do
-    map
-    Enum.each((-10..10), fn (x) ->
-      Enum.each((-10..10), fn(y) ->
-        position = get(map, {x, y})
-        val = if is_nil(position), do: " ", else: position[:value]
-        IO.binwrite "[#{val}]"
-      end)
-      IO.puts "\n"
+  def next_direction({1, 0}), do: {0, 1}
+  def next_direction({0, 1}), do: {-1, 0}
+  def next_direction({-1, 0}), do: {0, -1}
+  def next_direction({0, -1}), do: {1, 0}
+
+  def add({x1, y1}, {x2, y2}), do: {x1 + x2, y1 + y2}
+  def distance({x, y}), do: abs(x) + abs(y)
+
+  @doc """
+  Takes a spiral and returns another with the next position calculated and
+  added.
+  """
+  def step(%{steps_remaining: 0} = spiral) do
+    spiral
+    |> Map.update!(:legs_remaining, & &1 -1)
+    |> turn
+  end
+  def step(spiral) do
+    next = add(spiral.last, spiral.direction)
+
+    spiral
+    |> Map.update!(:coords, fn(c) ->
+      Map.put(c, next, Enum.count(Map.keys(spiral.coords)) + 1)
     end)
-    IO.puts "\n"
+    |> Map.put(:last, next)
+    |> Map.update!(:steps_remaining, & &1 - 1)
   end
 
-  def p1(target), do: spiral(target, &p1_wincondition/2, &next_space/2)
-  def p2(target), do: spiral(target, &p2_wincondition/2, &next_space_fib/2)
+  def turn(%{legs_remaining: 0} = spiral) do
+    spiral
+    |> Map.put(:legs_remaining, 2)
+    |> Map.update!(:leg_length, & &1 + 1)
+    |> turn
+  end
+  def turn(spiral) do
+    spiral
+    |> Map.update!(:direction, &next_direction/1)
+    |> Map.put(:steps_remaining, spiral.leg_length)
+  end
 
-  def p1_wincondition(target, value), do: target == value
-  def p2_wincondition(target, value), do: value > target
-
-  def spiral(map        \\ [[x: 0, y: 0, value: 1]],
-             target,
-             wincond,
-             compute_position,
-             direction  \\ :right,
-             interval   \\ 1,
-             traveled   \\ 0,
-             timetogrow \\ false) do
-    last = List.first(map)
-    # view_spiral(map)
-
-    if wincond.(target, last[:value]) do
-      "Value: #{last[:value]}\n" <>
-      "Distance: #{abs(last[:x]) + abs(last[:y])}"
+  def run(comparison), do: run(%Spiral{}, comparison)
+  def run(spiral, comparison) do
+    if comparison.(spiral) do
+      spiral
     else
-      if traveled == interval do # time to turn
-        direction = next_direction(direction)
-        traveled  = 0
-
-        {timetogrow, interval} =
-          if timetogrow do
-            {false, interval+1}
-          else
-            {true, interval}
-          end
-      end
-
-      map = [compute_position.(map, direction)] ++ map
-      spiral(map,
-             target,
-             wincond,
-             compute_position,
-             direction,
-             interval,
-             traveled+1,
-             timetogrow)
+      spiral
+      |> step
+      |> run(comparison)
     end
   end
 
-  def p1, do: p1(265149)
-  def p2, do: p2(265149)
+  @doc """
+  How many steps are required to carry the data from the square identified in
+  your puzzle input all the way to the access port? (origin)
+  """
+  def p1 do
+    run(fn(spiral) -> Spiral.last_value(spiral) == @input end)
+    |> Map.get(:last)
+    |> distance
+  end
+
+  @doc """
+  What is the first value written that is larger than your puzzle input?
+  """
+  def p2 do
+    # run(fn(spiral) -> Spiral.last_value(spiral) > @input end)
+    nil
+  end
 end
