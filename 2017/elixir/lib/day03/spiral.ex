@@ -111,7 +111,7 @@ defmodule Advent2017.Day3 do
   What is the first value written that is larger than your puzzle input?
   """
   def p2 do
-    # run(fn(spiral) -> Spiral.last_value(spiral) > @input end)
-    nil
+    run(fn(spiral) -> Spiral.last_value(spiral) > @input end)
+    |> Spiral.last_value
   end
 end
