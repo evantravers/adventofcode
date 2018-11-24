@@ -54,6 +54,17 @@ defmodule Advent2017.Day3 do
   def add({x1, y1}, {x2, y2}), do: {x1 + x2, y1 + y2}
   def distance({x, y}), do: abs(x) + abs(y)
 
+  defp add_neighbors(spiral, next) do
+    for x <- -1..1 do
+      for y <- -1..1 do
+        Map.get(spiral.coords, add(next, {x, y}))
+      end
+    end
+    |> List.flatten
+    |> Enum.reject(&is_nil/1)
+    |> Enum.sum
+  end
+
   @doc """
   Takes a spiral and returns another with the next position calculated and
   added.
@@ -68,7 +79,7 @@ defmodule Advent2017.Day3 do
 
     spiral
     |> Map.update!(:coords, fn(c) ->
-      Map.put(c, next, Enum.count(Map.keys(spiral.coords)) + 1)
+      Map.put(c, next, add_neighbors(spiral, next))
     end)
     |> Map.put(:last, next)
     |> Map.update!(:steps_remaining, & &1 - 1)
@@ -102,9 +113,9 @@ defmodule Advent2017.Day3 do
   your puzzle input all the way to the access port? (origin)
   """
   def p1 do
-    run(fn(spiral) -> Spiral.last_value(spiral) == @input end)
-    |> Map.get(:last)
-    |> distance
+    # run(fn(spiral) -> Spiral.last_value(spiral) == @input end)
+    # |> Map.get(:last)
+    # |> distance
   end
 
   @doc """
