@@ -1,4 +1,6 @@
 defmodule Advent2017.Day3 do
+  import Advent2017.Day3.SpiralSim
+
   @input 265149
 
   @moduledoc """
@@ -29,18 +31,6 @@ defmodule Advent2017.Day3 do
     def last_value(spiral) do
       Map.get(spiral.coords, spiral.last)
     end
-
-    # defimpl Inspect do
-    #   def inspect(spiral, _) do
-    #     grid = ""
-    #     for y <- -10..10 do
-    #       for x <- -10..10 do
-    #         grid <> Map.get(spiral.coords, {x, y}
-    #       end
-    #       grid <> "\n"
-    #     end
-    #   end
-    # end
   end
 
   @doc """
@@ -52,7 +42,6 @@ defmodule Advent2017.Day3 do
   def next_direction({0, -1}), do: {1, 0}
 
   def add({x1, y1}, {x2, y2}), do: {x1 + x2, y1 + y2}
-  def distance({x, y}), do: abs(x) + abs(y)
 
   defp add_neighbors(spiral, next) do
     for x <- -1..1 do
@@ -113,9 +102,7 @@ defmodule Advent2017.Day3 do
   your puzzle input all the way to the access port? (origin)
   """
   def p1 do
-    # run(fn(spiral) -> Spiral.last_value(spiral) == @input end)
-    # |> Map.get(:last)
-    # |> distance
+    distance(265149) # this is from SpiralSim
   end
 
   @doc """
