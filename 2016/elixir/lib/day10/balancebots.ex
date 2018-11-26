@@ -68,7 +68,7 @@ defmodule Advent2016.Day10 do
     sim
     |> find_unresolved_bots
     |> Enum.find(fn({id, attr}) ->
-      Map.get(attr, :cargo) == watch
+      Enum.sort(Map.get(attr, :cargo)) == Enum.sort(watch)
     end)
   end
 
@@ -94,7 +94,9 @@ defmodule Advent2016.Day10 do
       sim
     else
       if find_watched_comparison(sim, watch) do
-        find_watched_comparison(sim, watch) |> elem(0)
+        sim
+        |> find_watched_comparison(watch)
+        |> elem(0)
       else
         sim
         |> find_unresolved_bots
