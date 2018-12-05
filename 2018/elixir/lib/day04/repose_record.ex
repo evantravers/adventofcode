@@ -10,7 +10,7 @@ defmodule Advent2018.Day4 do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
       file
       |> String.split("\n", trim: true)
-      |> Enum.sort # TODO: Does this ensure order?
+      |> Enum.sort
       |> read_logs
     end
   end
@@ -64,8 +64,31 @@ defmodule Advent2018.Day4 do
   def record_nap(guards, %{id: id, nap_start: start}, stop) do
     guards
     |> Map.update(id, MapSet.new(), fn(naps) ->
-      MapSet.put(naps, Interval.new(from: start, until: stop))
+      MapSet.put(naps, Interval.new(from: start, until: stop, step: [minutes: 1]))
     end)
+  end
+
+
+  def minutes_spent_asleep({_, naps}) do
+    naps
+    |> Enum.map(&Enum.count/1)
+    |> Enum.sum
+  end
+
+  @doc """
+  Given a {id, naps} tuple, returns the minute that the guard is most likely
+  asleep.
+  """
+  def find_opportune_moment({_, naps}) do
+    for interval <- Enum.to_list(naps), minute <- interval do
+      NaiveDateTime.to_time(minute)
+    end
+    |>Enum.reduce(%{}, fn(min, count) ->
+      Map.update(count, min, 1, & &1 + 1)
+    end)
+    |> Enum.max_by(&elem(&1, 1))
+    |> elem(0)
+    |> Map.get(:minute)
   end
 
   @doc """
@@ -73,6 +96,13 @@ defmodule Advent2018.Day4 do
   the above example, the answer would be 10 * 24 = 240.)
   """
   def p1 do
+    guard = {id, _} =
+      load_input()
+      |> Enum.max_by(&minutes_spent_asleep/1)
+
+    moment_to_strike = find_opportune_moment(guard)
+
+    id * moment_to_strike
   end
 
   def p2, do: nil
