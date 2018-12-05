@@ -36,7 +36,7 @@ defmodule Advent2018.Day4 do
       command =~ "Guard" -> # We are switching shifts
         guard_id = extract_number(command)
         read_logs(remaining,
-          Map.put_new(guards, guard_id, MapSet.new),
+          Map.put_new(guards, guard_id, []),
           %{id: guard_id})
       command =~ "falls asleep" ->
         read_logs(remaining,
@@ -66,9 +66,8 @@ defmodule Advent2018.Day4 do
 
   def record_nap(guards, %{id: id, nap_start: start}, stop) do
     guards
-    |> Map.update(id, MapSet.new(), fn(naps) ->
-      MapSet.put(naps,
-        Interval.new(from: start, until: stop, step: [minutes: 1]))
+    |> Map.update(id, [], fn(naps) ->
+      [Interval.new(from: start, until: stop, step: [minutes: 1])|naps]
     end)
   end
 
@@ -80,7 +79,7 @@ defmodule Advent2018.Day4 do
   end
 
   def find_most_napped_minute(naps) do
-    for interval <- Enum.to_list(naps), minute <- interval do
+    for interval <- naps, minute <- interval do
       NaiveDateTime.to_time(minute)
     end
     |>Enum.reduce(%{}, fn(min, count) ->
@@ -103,14 +102,11 @@ defmodule Advent2018.Day4 do
   @doc """
   Used to sort by most naps on the same minute
   """
+  def most_consistent_napper({_, []}), do: 0
   def most_consistent_napper({_, naps}) do
-    if Enum.empty?(naps) do
-      0
-    else
-      naps
-      |> find_most_napped_minute
-      |> elem(1)
-    end
+    naps
+    |> find_most_napped_minute
+    |> elem(1)
   end
 
   def id_times_minute ({id, naps}) do
