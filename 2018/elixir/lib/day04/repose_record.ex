@@ -64,7 +64,8 @@ defmodule Advent2018.Day4 do
   def record_nap(guards, %{id: id, nap_start: start}, stop) do
     guards
     |> Map.update(id, MapSet.new(), fn(naps) ->
-      MapSet.put(naps, Interval.new(from: start, until: stop, step: [minutes: 1]))
+      MapSet.put(naps,
+        Interval.new(from: start, until: stop, step: [minutes: 1]))
     end)
   end
 
@@ -79,7 +80,7 @@ defmodule Advent2018.Day4 do
   Given a {id, naps} tuple, returns the minute that the guard is most likely
   asleep.
   """
-  def find_opportune_moment({_, naps}) do
+  def find_opportune_moment(naps) do
     for interval <- Enum.to_list(naps), minute <- interval do
       NaiveDateTime.to_time(minute)
     end
@@ -96,13 +97,11 @@ defmodule Advent2018.Day4 do
   the above example, the answer would be 10 * 24 = 240.)
   """
   def p1 do
-    guard = {id, _} =
-      load_input()
-      |> Enum.max_by(&minutes_spent_asleep/1)
-
-    moment_to_strike = find_opportune_moment(guard)
-
-    id * moment_to_strike
+    load_input()
+    |> Enum.max_by(&minutes_spent_asleep/1)
+    |> (fn ({id, naps}) ->
+      id * find_opportune_moment(naps)
+    end).()
   end
 
   def p2, do: nil
