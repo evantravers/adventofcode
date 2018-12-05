@@ -54,7 +54,10 @@ defmodule Advent2018.Day4 do
       25
   """
   def extract_number(string) do
-    Regex.run(~r/\d+/, string) |> hd |> String.to_integer
+    ~r/\d+/
+      |> Regex.run(string)
+      |> hd
+      |> String.to_integer
   end
 
   def extract_timestamp(time_string) do
