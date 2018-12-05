@@ -22,6 +22,7 @@ defmodule Advent2018.Mixfile do
   defp deps do
     [
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:timex, "~> 3.1"},
       {:libgraph, "~> 0.7"}
     ]
   end
