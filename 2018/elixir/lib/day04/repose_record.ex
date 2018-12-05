@@ -1,7 +1,7 @@
 defmodule Advent2018.Day4 do
-  use Timex
-
   @moduledoc "https://adventofcode.com/2018/day/4"
+
+  use Timex
 
   @doc """
   I'm going to store it as a %{guard_id: MapSet([<minutes their asleep])}
@@ -79,11 +79,7 @@ defmodule Advent2018.Day4 do
     |> Enum.sum
   end
 
-  @doc """
-  Given a {id, naps} tuple, returns the minute that the guard is most likely
-  asleep.
-  """
-  def find_opportune_moment(naps) do
+  def find_most_napped_minute(naps) do
     for interval <- Enum.to_list(naps), minute <- interval do
       NaiveDateTime.to_time(minute)
     end
@@ -91,8 +87,34 @@ defmodule Advent2018.Day4 do
       Map.update(count, min, 1, & &1 + 1)
     end)
     |> Enum.max_by(&elem(&1, 1))
+  end
+
+  @doc """
+  Given a {id, naps} tuple, returns the minute that the guard is most likely
+  asleep.
+  """
+  def find_opportune_moment(naps) do
+    naps
+    |> find_most_napped_minute
     |> elem(0)
     |> Map.get(:minute)
+  end
+
+  @doc """
+  Used to sort by most naps on the same minute
+  """
+  def most_consistent_napper({_, naps}) do
+    if Enum.empty?(naps) do
+      0
+    else
+      naps
+      |> find_most_napped_minute
+      |> elem(1)
+    end
+  end
+
+  def id_times_minute ({id, naps}) do
+    id * find_opportune_moment(naps)
   end
 
   @doc """
@@ -102,10 +124,23 @@ defmodule Advent2018.Day4 do
   def p1 do
     load_input()
     |> Enum.max_by(&minutes_spent_asleep/1)
-    |> (fn ({id, naps}) ->
-      id * find_opportune_moment(naps)
-    end).()
+    |> id_times_minute
   end
 
-  def p2, do: nil
+  @doc """
+  Strategy 2: Of all guards, which guard is most frequently asleep on the same
+  minute?
+
+  In the example above, Guard #99 spent minute 45 asleep more than any other
+  guard or minute - three times in total. (In all other cases, any guard spent
+  any minute asleep at most twice.)
+
+  What is the ID of the guard you chose multiplied by the minute you chose? (In
+  the above example, the answer would be 99 * 45 = 4455.)
+  """
+  def p2 do
+    load_input()
+    |> Enum.max_by(&most_consistent_napper/1)
+    |> id_times_minute
+  end
 end
