@@ -47,6 +47,29 @@ defmodule Advent2018.Day5 do
     end
   end
 
+  @doc """
+      iex> strip_polymer("dabAcCaCBAcCcaDA", ?c)
+      "dabAaBAaDA"
+  """
+  def strip_polymer(string, char), do: String.replace(string, ~r/#{[char]}/i, "")
+
+  @doc """
+      iex> find_trouble_polymer("dabAcCaCBAcCcaDA")
+      4
+  """
+  def find_trouble_polymer(input) do
+    ?a..?z
+    |> Enum.map(fn(polymer_to_remove) ->
+      {polymer_to_remove,
+        input
+        |> strip_polymer(polymer_to_remove)
+        |> react
+        |> String.length}
+    end)
+    |> Enum.min_by(fn({_, length}) -> length end)
+    |> elem(1)
+  end
+
   def load_input do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
       file
@@ -60,6 +83,9 @@ defmodule Advent2018.Day5 do
     |> String.length
   end
 
-  def p2, do: nil
+  def p2 do
+    load_input()
+    |> find_trouble_polymer
+  end
 end
 
