@@ -20,6 +20,12 @@ defmodule Advent2018.Day7 do
   def reqs_satisfied(graph, node, visited) do
     graph
     |> Graph.in_neighbors(node)
+    |> Enum.empty?
+
+    or
+
+    graph
+    |> Graph.in_neighbors(node)
     |> Enum.all?(&MapSet.member?(visited, &1))
   end
 
