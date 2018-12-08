@@ -18,50 +18,41 @@ defmodule Advent2018.Day7 do
   end
 
   def reqs_satisfied(graph, node, visited) do
-    graph
-    |> Graph.in_neighbors(node)
-    |> Enum.empty?
+    not Enum.member?(visited, node)
 
-    or
+    and
 
-    graph
-    |> Graph.in_neighbors(node)
-    |> Enum.all?(&MapSet.member?(visited, &1))
+    (
+      graph
+      |> Graph.in_neighbors(node)
+      |> Enum.empty?
+
+      or
+
+      graph
+      |> Graph.in_neighbors(node)
+      |> Enum.all?(&Enum.member?(visited, &1))
+    )
   end
 
-  def search(graph, queue, visited \\ MapSet.new, result \\ "")
-  def search(_, [], _, result), do: result
-  def search(graph, [node|queue], visited, result) do
-    if reqs_satisfied(graph, node, visited) do
-      neighbors =
-        graph
-        |> Graph.out_neighbors(node)
-        |> Enum.sort
-        |> Enum.reject(&MapSet.member?(visited, &1))
-        |> Enum.reject(&Enum.member?(queue, &1))
+  def search(graph, visited \\ []) do
+    to_visit =
+      graph
+      |> Graph.vertices
+      |> Enum.filter(&reqs_satisfied(graph, &1, visited))
+      |> Enum.sort
 
-      search(graph, neighbors ++ queue, MapSet.put(visited, node), result <> node)
+    if Enum.empty?(to_visit) do
+      visited
+      |> Enum.reverse
+      |> Enum.join
     else
-      search(graph, enqueue(queue, node), visited, result)
+      search(graph, [hd(to_visit)|visited])
     end
   end
 
-  def enqueue(queue, node) do
-    [node| Enum.reverse(queue)]
-    |> Enum.reverse
-  end
-
   def alphabetical_path(graph) do
-    start = graph
-            |> Graph.vertices
-            |> Enum.filter(fn(v) ->
-              graph
-              |> Graph.in_neighbors(v)
-              |> Enum.empty?
-            end)
-            |> Enum.sort
-
-    search(graph, start)
+    search(graph)
   end
 
   def p1 do
