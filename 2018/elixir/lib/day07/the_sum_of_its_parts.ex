@@ -9,12 +9,24 @@ defmodule Advent2018.Day7 do
     end
   end
 
+  @doc """
+      iex> weight("A")
+      61
+      iex> weight("Z")
+      86
+  """
+  def weight(label) do
+    ?A..?Z
+    |> Enum.find_index(&hd(String.to_charlist(label)) == &1)
+    |> Kernel.+(61)
+  end
+
   def read_string_into_graph(str, graph) do
     [[_, parent], [_, child]] =
       ~r/step ([A-Z])/i
       |> Regex.scan(str)
 
-    Graph.add_edge(graph, parent, child)
+    Graph.add_edge(graph, parent, child, weight: weight(child))
   end
 
   def reqs_satisfied(graph, node, visited) do
@@ -55,5 +67,8 @@ defmodule Advent2018.Day7 do
     load_input()
     |> search
   end
-  def p2, do: nil
+
+  def p2 do
+    load_input()
+  end
 end
