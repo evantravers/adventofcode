@@ -51,13 +51,9 @@ defmodule Advent2018.Day7 do
     end
   end
 
-  def alphabetical_path(graph) do
-    search(graph)
-  end
-
   def p1 do
     load_input()
-    |> alphabetical_path
+    |> search
   end
   def p2, do: nil
 end
