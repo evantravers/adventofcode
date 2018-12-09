@@ -26,7 +26,8 @@ defmodule Advent2018.Day7 do
       ~r/step ([A-Z])/i
       |> Regex.scan(str)
 
-    Graph.add_edge(graph, parent, child, weight: weight(child))
+    graph
+    |> Graph.add_edge(parent, child)
   end
 
   def reqs_satisfied(graph, node, visited) do
@@ -47,28 +48,67 @@ defmodule Advent2018.Day7 do
     )
   end
 
-  def search(graph, visited \\ []) do
+  def completed?(work_remaining, node) do
+    case Map.get(work_remaining, node) do
+      nil -> true
+      0 -> true
+      _ -> false
+    end
+  end
+
+  def work(map, list_of_nodes) do
+    list_of_nodes
+    |> Enum.reduce(map, fn(node, work_remaining) ->
+      Map.update(work_remaining, node, 0, & &1 - 1)
+    end)
+  end
+
+  def search(graph, visited \\ [], work_remaining \\ %{}, workers \\ 1, count \\ 0) do
     to_visit =
       graph
       |> Graph.vertices
       |> Enum.filter(&reqs_satisfied(graph, &1, visited))
       |> Enum.sort
 
+    # update work_remaining
+    in_progress =
+      to_visit
+      |> Enum.take(workers)
+
+    completed =
+      in_progress
+      |> Enum.filter(&completed?(work_remaining, &1))
+
     if Enum.empty?(to_visit) do
-      visited
-      |> Enum.reverse
-      |> Enum.join
+      %{
+        result: visited
+                |> Enum.reverse
+                |> Enum.join,
+        count: count
+      }
     else
-      search(graph, [hd(to_visit)|visited])
+      search(graph, completed ++ visited, work(work_remaining, in_progress), workers, count + 1)
     end
   end
 
   def p1 do
     load_input()
     |> search
+    |> Map.get(:result)
   end
 
   def p2 do
-    load_input()
+    graph =
+      load_input()
+
+    weights =
+      graph
+      |> Graph.vertices
+      |> Enum.map(&{&1, weight(&1)})
+      |> Enum.into(%{})
+
+    graph
+    |> search([], weights, 5)
+    |> Map.get(:count)
   end
 end
