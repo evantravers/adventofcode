@@ -10,18 +10,24 @@ defmodule Advent2018.Day8 do
     end
   end
 
-  def build_tree(input, tree \\ Graph.new)
-  def build_tree([], tree), do: tree
-  def build_tree(input, tree) do
-    Map.put(tree,
-      input
-      |> header
-      |> children
-      |> metadata
-    )
+  def build_tree([num_children|[num_data|remainder]]) do
+    {remainder, %{}}
+    |> children(num_children)
+    |> metadata(num_data)
   end
 
-  def header([num_children|[num_data|remainder]], tree) do
+  def children(input_tree, 0), do: input_tree
+  def children({input, tree}, num) do
+    {remainder, child} = build_tree(input)
+
+    {remainder, Map.update(tree, :children, [child], & [child|&1])}
+    |> children(num - 1)
+  end
+
+  def metadata(input_tree, 0), do: input_tree
+  def metadata({[data|input], tree}, num) do
+    {input, Map.update(tree, :metadata, [data], & [data|&1])}
+    |> metadata(num - 1)
   end
 
   def p1 do
