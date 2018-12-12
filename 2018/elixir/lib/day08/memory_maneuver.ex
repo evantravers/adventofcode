@@ -11,7 +11,7 @@ defmodule Advent2018.Day8 do
   end
 
   def build_tree([num_children|[num_data|remainder]]) do
-    {remainder, %{}}
+    {remainder, %{children: []}}
     |> children(num_children)
     |> metadata(num_data)
   end
@@ -30,9 +30,16 @@ defmodule Advent2018.Day8 do
     |> metadata(num - 1)
   end
 
+  def summarize_metadata(%{children: [], metadata: data}), do: Enum.sum(data)
+  def summarize_metadata(%{children: children, metadata: data}) do
+    Enum.sum(data) + Enum.sum(Enum.map(children, &summarize_metadata/1))
+  end
+
   def p1 do
     load_input()
     |> build_tree
+    |> elem(1)
+    |> summarize_metadata
   end
 
   def p2, do: nil
