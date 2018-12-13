@@ -23,6 +23,32 @@ defmodule Advent2018.Day10 do
     %{object | position: {x + vx, y + vy}}
   end
 
+  def print(list_of_objects) do
+    positions = list_of_objects |> Enum.map(&Map.get(&1, :position))
+    for y <- 0..500 do
+      for x <- 0..500 do
+        if Enum.member?(positions, {x, y}) do
+          "#"
+        else
+          "."
+        end
+      end
+      |> Enum.join
+      |> Kernel.<>("\n")
+    end
+    |> Enum.join
+    |> IO.puts
+
+    list_of_objects
+  end
+
+  def loop(positions) do
+    positions
+    |> print
+    |> Enum.map(&move/1)
+    |> loop
+  end
+
   def p1 do
     load_input()
   end
