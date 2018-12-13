@@ -1,5 +1,7 @@
 defmodule Advent2018.Day11 do
-  @moduledoc "https://adventofcode.com/2018/day/11"
+  @moduledoc """
+  https://adventofcode.com/2018/day/11
+  """
 
   @input 1309
 
@@ -17,6 +19,8 @@ defmodule Advent2018.Day11 do
 
       iex> powerlevel({3, 5}, 8)
       4
+      iex> powerlevel({101, 153}, 71)
+      4
   """
   def powerlevel({x, y}, input \\ @input) do
     rack_id = x + 10
@@ -30,6 +34,8 @@ defmodule Advent2018.Day11 do
   end
 
   @doc ~S"""
+  There is probably a much faster way to do this... something bitwise
+
       iex> get_digit_in_hundredths(12345)
       3
   """
@@ -42,6 +48,51 @@ defmodule Advent2018.Day11 do
     |> String.to_integer
   end
 
-  def p1, do: nil
+  @doc """
+  Given an {x, y} as a top-left coordinate, computes the value of the scan area.
+  """
+  def scan(coord, map_of_charges) do
+    coord
+    |> scan_area
+    |> Enum.map(&Map.get(map_of_charges, &1))
+    |> Enum.reject(&is_nil(&1))
+    |> Enum.sum
+  end
+
+  def scan_area({origin_x, origin_y}) do
+    for x <- origin_x..(origin_x + 2), y <- origin_y..(origin_y + 2) do
+      {x, y}
+    end
+  end
+
+  @doc """
+  Why is it 1-indexed? So unkind. TODO: could result in an off-by-one!
+
+  {1, 1} → {300, 1}
+
+  ↓
+
+  {1, 300}
+  """
+  def buildmap do
+    for x <- 1..300, y <- 1..300 do
+      {{x, y}, powerlevel({x, y})}
+    end
+    |> Enum.into(%{})
+  end
+
+  def p1 do
+    map_of_charges = buildmap()
+
+    map_of_charges
+    |> Enum.map(fn({coord, _}) ->
+      {coord, scan(coord, map_of_charges)}
+    end)
+    |> Enum.max_by(&elem(&1, 1))
+    |> elem(0)
+    |> Tuple.to_list
+    |> Enum.join(",")
+  end
+
   def p2, do: nil
 end
