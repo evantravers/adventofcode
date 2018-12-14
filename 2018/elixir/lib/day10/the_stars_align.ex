@@ -25,6 +25,7 @@ defmodule Advent2018.Day10 do
 
   def print(list_of_objects) do
     positions = list_of_objects |> Enum.map(&Map.get(&1, :position))
+
     for y <- 0..500 do
       for x <- 0..500 do
         if Enum.member?(positions, {x, y}) do
@@ -38,20 +39,42 @@ defmodule Advent2018.Day10 do
     end
     |> Enum.join
     |> IO.puts
-
-    list_of_objects
   end
 
-  def loop(positions) do
+  def bound_difference({%{position: {_, min}}, %{position: {_, max}}}) do
+    max - min
+  end
+
+  def bounds(positions) do
     positions
-    |> print
-    |> Enum.map(&move/1)
-    |> loop
+    |> Enum.min_max_by(fn(%{position: {_, y}}) -> y end)
+    |> bound_difference
+  end
+
+  def loop(positions, previous_bound \\ 1_000_000_000_000, count \\ 0) do
+    new_positions =
+      positions
+      |> Enum.map(&move/1)
+
+    new_bounds = bounds(new_positions)
+
+    if new_bounds > previous_bound do
+      {positions, count}
+    else
+      loop(new_positions, new_bounds, count + 1)
+    end
   end
 
   def p1 do
     load_input()
+    |> loop
+    |> elem(0)
+    |> print
   end
 
-  def p2, do: nil
+  def p2 do
+    load_input()
+    |> loop
+    |> elem(1)
+  end
 end
