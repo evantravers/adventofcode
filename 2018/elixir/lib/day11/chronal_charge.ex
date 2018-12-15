@@ -51,16 +51,17 @@ defmodule Advent2018.Day11 do
   @doc """
   Given an {x, y} as a top-left coordinate, computes the value of the scan area.
   """
-  def scan(coord, map_of_charges) do
+  def compute_value(coord, map_of_charges, size \\ 3) do
     coord
-    |> scan_area
+    |> scan_area(size)
     |> Enum.map(&Map.get(map_of_charges, &1))
     |> Enum.reject(&is_nil(&1))
     |> Enum.sum
   end
 
-  def scan_area({origin_x, origin_y}) do
-    for x <- origin_x..(origin_x + 2), y <- origin_y..(origin_y + 2) do
+  def scan_area({o_x, o_y}, size) do
+    offset = size - 1
+    for x <- o_x..(o_x + offset), y <- o_y..(o_y + offset) do
       {x, y}
     end
   end
@@ -86,7 +87,7 @@ defmodule Advent2018.Day11 do
 
     map_of_charges
     |> Enum.map(fn({coord, _}) ->
-      {coord, scan(coord, map_of_charges)}
+      {coord, compute_value(coord, map_of_charges)}
     end)
     |> Enum.max_by(&elem(&1, 1))
     |> elem(0)
@@ -94,5 +95,20 @@ defmodule Advent2018.Day11 do
     |> Enum.join(",")
   end
 
-  def p2, do: nil
+  def p2 do
+    map_of_charges = buildmap()
+
+    map_of_charges
+    |> Enum.map(fn({coord, _}) ->
+      {final_size, value} =
+        for size <- 1..20 do
+          {size, compute_value(coord, map_of_charges, size)}
+        end
+        |> Enum.max_by(&elem(&1, 1))
+
+      {coord, final_size, value}
+    end)
+    |> Enum.max_by(&elem(&1, 2))
+    |> (fn({{x, y}, size, _}) -> "#{x},#{y},#{size}" end).()
+  end
 end
