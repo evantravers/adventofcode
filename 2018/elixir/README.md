@@ -5,6 +5,3 @@ solutions, run `mix day all`. I've been developing and testing by running `iex
 -S mix` and running solutions in iex by typing `Day<num>.p1`. You
 can also run a specific day's solution w/ `mix day <num>`.
 
-## TODO
-
-- Move Day18 + Day23 shared code into a shared class w/ composition

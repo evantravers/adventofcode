@@ -4,9 +4,3 @@ This mix application is just for testing and such. If you want to run all the
 solutions, run `mix day all`. I've been developing and testing by running `iex
 -S mix` and running solutions in iex by typing `Day<num>.p1`. You
 can also run a specific day's solution w/ `mix day <num>`.
-
-TODO:
-
-- Why does Day5 never finish when run from mix, whereas it works out of iex:
-- Refactor Day10, it's ugly
-- Refactor Day11, it is too slow to finish
