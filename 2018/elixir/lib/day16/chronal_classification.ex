@@ -19,6 +19,14 @@ defmodule Advent2018.Day16 do
   1, or 2 in the process.
   """
 
+  @ops [:addr, :addi,
+        :mulr, :muli,
+        :banr, :bani,
+        :borr, :bori,
+        :setr, :seti,
+        :gtir, :gtri, :gtrr,
+        :eqir, :eqri, :eqrr]
+
   def get(state, reg), do: Map.get(state, reg, 0)
 
   @doc """
