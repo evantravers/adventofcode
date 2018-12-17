@@ -270,7 +270,7 @@ defmodule Advent2018.Day16 do
     tests
     |> Enum.map(&test_ops/1)
     |> Enum.filter(fn({_, ops}) ->
-      3 >=
+      3 <=
         ops
         |> Enum.filter(fn({_, worked?}) -> worked? end)
         |> Enum.count
