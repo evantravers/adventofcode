@@ -273,7 +273,6 @@ defmodule Advent2018.Day16 do
       3 >=
         ops
         |> Enum.filter(fn({_, worked?}) -> worked? end)
-        |> IO.inspect
         |> Enum.count
     end)
     |> Enum.count
