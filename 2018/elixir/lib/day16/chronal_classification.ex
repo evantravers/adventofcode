@@ -214,7 +214,71 @@ defmodule Advent2018.Day16 do
     )
   end
 
-  def p1, do: nil
+  def format_tests(str) do
+    [before, command, result] =
+      str
+      |> extract_numbers
+      |> Enum.chunk_every(4)
+
+    {to_state(before), command, to_state(result)}
+  end
+
+  def test_ops({before, [command|args], result}) do
+    {
+      command,
+      Enum.map(@ops, fn(op) ->
+        {op, apply(__MODULE__, op, [before, args]) == result}
+      end)
+    }
+  end
+
+  def load_input() do
+    with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
+      [tests, program] =
+        file
+        |> String.split("\n\n\n", trim: true)
+
+      {
+        tests
+        |> String.split("\n\n")
+        |> Enum.map(&format_tests/1),
+        program
+        |> String.split("\n", trim: true)
+        |> Enum.map(fn(ops) ->
+          ops
+          |> String.split(" ")
+          |> Enum.map(&String.to_integer/1)
+        end)
+      }
+    end
+  end
+
+  @doc ~S"""
+      iex> extract_numbers("Before: [0, 3, 2, 3]\n8 2 2 2\nAfter:  [0, 3, 2, 3]")
+      [0, 3, 2, 3, 8, 2, 2, 2, 0, 3, 2, 3]
+  """
+  def extract_numbers(str) do
+    ~r/\d+/
+      |> Regex.scan(str)
+      |> List.flatten
+      |> Enum.map(&String.to_integer/1)
+  end
+
+  def p1 do
+    {tests, _} = load_input()
+
+    tests
+    |> Enum.map(&test_ops/1)
+    |> Enum.filter(fn({_, ops}) ->
+      3 >=
+        ops
+        |> Enum.filter(fn({_, worked?}) -> worked? end)
+        |> IO.inspect
+        |> Enum.count
+    end)
+    |> Enum.count
+  end
+
   def p2, do: nil
 end
 
