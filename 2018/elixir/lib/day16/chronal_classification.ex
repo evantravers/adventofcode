@@ -19,12 +19,14 @@ defmodule Advent2018.Day16 do
   1, or 2 in the process.
   """
 
+  def get(state, reg), do: Map.get(state, reg, 0)
+
   @doc """
   addr (add register)
   stores into register C the result of adding register A and register B.
   """
   def addr(state, [a, b, c]) do
-    Map.put(state, c, Map.get(state, a) + Map.get(state, b))
+    Map.put(state, c, get(state, a) + get(state, b))
   end
 
   @doc """
@@ -32,7 +34,7 @@ defmodule Advent2018.Day16 do
   stores into register C the result of adding register A and value B.
   """
   def addi(state, [a, b, c]) do
-    Map.put(state, c, Map.get(state, a), b)
+    Map.put(state, c, get(state, a), b)
   end
 
   @doc """
@@ -40,7 +42,7 @@ defmodule Advent2018.Day16 do
   stores into register C the result of multiplying register A and register B.
   """
   def mulr(state, [a, b, c]) do
-    Map.put(state, c, Map.get(state, a) * Map.get(state, b))
+    Map.put(state, c, get(state, a) * get(state, b))
   end
 
   @doc """
@@ -48,7 +50,7 @@ defmodule Advent2018.Day16 do
   stores into register C the result of multiplying register A and value B.
   """
   def muli(state, [a, b, c]) do
-    Map.put(state, c, Map.get(state, a) * b)
+    Map.put(state, c, get(state, a) * b)
   end
 
   @doc """
@@ -57,7 +59,7 @@ defmodule Advent2018.Day16 do
   register B.
   """
   def banr(state, [a, b, c]) do
-    Map.put(state, c, Map.get(state, a) &&& Map.get(state, b))
+    Map.put(state, c, get(state, a) &&& get(state, b))
   end
 
   @doc """
@@ -66,7 +68,7 @@ defmodule Advent2018.Day16 do
   B.
   """
   def bani(state, [a, b, c]) do
-    Map.put(state, c, Map.get(state, a) &&& b)
+    Map.put(state, c, get(state, a) &&& b)
   end
 
   @doc """
@@ -75,7 +77,7 @@ defmodule Advent2018.Day16 do
   register B.
   """
   def banr(state, [a, b, c]) do
-    Map.put(state, c, Map.get(state, a) ^^^ Map.get(state, b))
+    Map.put(state, c, get(state, a) ^^^ get(state, b))
   end
 
   @doc """
@@ -84,7 +86,7 @@ defmodule Advent2018.Day16 do
   B.
   """
   def bani(state, [a, b, c]) do
-    Map.put(state, c, Map.get(state, a) ^^^ b)
+    Map.put(state, c, get(state, a) ^^^ b)
   end
 
   @doc """
@@ -92,7 +94,7 @@ defmodule Advent2018.Day16 do
   copies the contents of register A into register C. (Input B is ignored.)
   """
   def setr(state, [a, _, c]) do
-    Map.put(state, c, Map.get(state, a))
+    Map.put(state, c, get(state, a))
   end
 
   @doc """
@@ -110,7 +112,7 @@ defmodule Advent2018.Day16 do
   """
   def gtir(state, [a, b, c]) do
     Map.put(state, c,
-      if a > Map.get(state, b) do
+      if a > get(state, b) do
         1
       else
         0
@@ -125,7 +127,7 @@ defmodule Advent2018.Day16 do
   """
   def gtri(state, [a, b, c]) do
     Map.put(state, c,
-      if Map.get(state, a) > b do
+      if get(state, a) > b do
         1
       else
         0
@@ -140,7 +142,7 @@ defmodule Advent2018.Day16 do
   """
   def gtrr(state, [a, b, c]) do
     Map.put(state, c,
-      if Map.get(state, a) > Map.get(state, b) do
+      if get(state, a) > get(state, b) do
         1
       else
         0
@@ -155,7 +157,7 @@ defmodule Advent2018.Day16 do
   """
   def eqir(state, [a, b, c]) do
     Map.put(state, c,
-      if a == Map.get(state, b) do
+      if a == get(state, b) do
         1
       else
         0
@@ -170,7 +172,7 @@ defmodule Advent2018.Day16 do
   """
   def eqri(state, [a, b, c]) do
     Map.put(state, c,
-      if Map.get(state, a) == b do
+      if get(state, a) == b do
         1
       else
         0
@@ -185,7 +187,7 @@ defmodule Advent2018.Day16 do
   """
   def eqrr(state, [a, b, c]) do
     Map.put(state, c,
-      if Map.get(state, a) == Map.get(state, b) do
+      if get(state, a) == get(state, b) do
         1
       else
         0
