@@ -53,7 +53,7 @@ defmodule Advent2018.Day16 do
   stores into register C the result of adding register A and value B.
   """
   def addi(state, [a, b, c]) do
-    Map.put(state, c, get(state, a), b)
+    Map.put(state, c, get(state, a) + b)
   end
 
   @doc """
@@ -95,7 +95,7 @@ defmodule Advent2018.Day16 do
   stores into register C the result of the bitwise OR of register A and
   register B.
   """
-  def banr(state, [a, b, c]) do
+  def borr(state, [a, b, c]) do
     Map.put(state, c, get(state, a) ^^^ get(state, b))
   end
 
@@ -104,7 +104,7 @@ defmodule Advent2018.Day16 do
   stores into register C the result of the bitwise OR of register A and value
   B.
   """
-  def bani(state, [a, b, c]) do
+  def bori(state, [a, b, c]) do
     Map.put(state, c, get(state, a) ^^^ b)
   end
 
