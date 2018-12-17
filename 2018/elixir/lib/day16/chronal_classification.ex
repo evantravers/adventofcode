@@ -29,6 +29,17 @@ defmodule Advent2018.Day16 do
 
   def get(state, reg), do: Map.get(state, reg, 0)
 
+  @doc ~S"""
+      iex> [1, 2, 3, 4] |> to_state()
+      %{0 => 1, 1 => 2, 2 => 3, 3 => 4}
+  """
+  def to_state(list) do
+    list
+    |> Enum.with_index
+    |> Enum.map(fn({val, ind}) -> {ind, val} end)
+    |> Enum.into(%{})
+  end
+
   @doc """
   addr (add register)
   stores into register C the result of adding register A and register B.
