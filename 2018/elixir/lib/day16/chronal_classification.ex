@@ -96,7 +96,7 @@ defmodule Advent2018.Day16 do
   register B.
   """
   def borr(state, [a, b, c]) do
-    Map.put(state, c, get(state, a) ^^^ get(state, b))
+    Map.put(state, c, get(state, a) ||| get(state, b))
   end
 
   @doc """
@@ -105,7 +105,7 @@ defmodule Advent2018.Day16 do
   B.
   """
   def bori(state, [a, b, c]) do
-    Map.put(state, c, get(state, a) ^^^ b)
+    Map.put(state, c, get(state, a) ||| b)
   end
 
   @doc """
