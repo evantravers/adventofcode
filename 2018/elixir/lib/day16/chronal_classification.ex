@@ -214,7 +214,7 @@ defmodule Advent2018.Day16 do
     )
   end
 
-  def format_tests(str) do
+  def format_samples(str) do
     [before, command, result] =
       str
       |> extract_numbers
@@ -234,14 +234,14 @@ defmodule Advent2018.Day16 do
 
   def load_input() do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
-      [tests, program] =
+      [samples, program] =
         file
         |> String.split("\n\n\n", trim: true)
 
       {
-        tests
+        samples
         |> String.split("\n\n")
-        |> Enum.map(&format_tests/1),
+        |> Enum.map(&format_samples/1),
         program
         |> String.split("\n", trim: true)
         |> Enum.map(fn(ops) ->
@@ -264,10 +264,68 @@ defmodule Advent2018.Day16 do
       |> Enum.map(&String.to_integer/1)
   end
 
-  def p1 do
-    {tests, _} = load_input()
+  @doc """
+  I started by looking for most common "yes", now I think I need to disqualify
+  by "no".
 
-    tests
+  For each opcode, cross out every command that is a fail somewhere.
+
+  Then, find the one command that is fully identified, and remove it as an
+  option for all the other opcodes, repeat until each opcode is related to only
+  one command.
+  """
+  def frequency_analysis(samples) do
+    test_results =
+      for {opcode, results} <- samples, {command, result} <- results do
+        {opcode, command, result}
+      end
+
+    for opcode <- 0..15 do
+      {
+        opcode,
+        @ops
+        |> Enum.reject(fn(option) ->
+          Enum.any?(test_results, & &1 == {opcode, option, false})
+        end)
+        |> Enum.filter(fn(option) ->
+          Enum.any?(test_results, & &1 == {opcode, option, true})
+        end)
+      }
+    end
+    |> elimination_round
+  end
+
+  @doc """
+  Take the item that's one item, delete from all the others, add it to final
+  map, repeat.
+  """
+  def elimination_round(list, result \\ %{})
+  def elimination_round([], result), do: result
+  def elimination_round(list, result) do
+    {opcode, [command]} = Enum.find(list, & Enum.count(elem(&1, 1)) == 1)
+
+    elimination_round(
+      list
+      |> Enum.map(&delete_command(&1, command))
+      |> Enum.reject(&Enum.empty?(elem(&1, 1))),
+      Map.put(result, opcode, command)
+    )
+  end
+
+  def delete_command({num, commands}, command) do
+    {num, List.delete(commands, command)}
+  end
+
+  def execute([], state, _), do: state
+  def execute([[opcode|args]|remainder], state, opcodes) do
+    newstate = apply(__MODULE__, Map.get(opcodes, opcode), [state, args])
+    execute(remainder, newstate, opcodes)
+  end
+
+  def p1 do
+    {samples, _} = load_input()
+
+    samples
     |> Enum.map(&test_ops/1)
     |> Enum.filter(fn({_, ops}) ->
       3 <=
@@ -278,6 +336,17 @@ defmodule Advent2018.Day16 do
     |> Enum.count
   end
 
-  def p2, do: nil
+  def p2 do
+    {samples, program} = load_input()
+
+    opcodes =
+      samples
+      |> Enum.map(&test_ops/1)
+      |> frequency_analysis
+
+    program
+    |> execute(%{}, opcodes)
+    |> Map.get(0)
+  end
 end
 
