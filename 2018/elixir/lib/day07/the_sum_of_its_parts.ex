@@ -9,6 +9,13 @@ defmodule Advent2018.Day7 do
     end
   end
 
+  def load_weights(graph) do
+    graph
+    |> Graph.vertices
+    |> Enum.map(&{&1, weight(&1)})
+    |> Enum.into(%{})
+  end
+
   @doc """
       iex> weight("A")
       61
@@ -63,7 +70,7 @@ defmodule Advent2018.Day7 do
     end)
   end
 
-  def search(graph, visited \\ [], work_remaining \\ %{}, workers \\ 1, count \\ 0) do
+  def search(graph, work_remaining \\ %{}, workers \\ 1, visited \\ [], count \\ 0) do
     to_visit =
       graph
       |> Graph.vertices
@@ -87,7 +94,7 @@ defmodule Advent2018.Day7 do
         count: count
       }
     else
-      search(graph, completed ++ visited, work(work_remaining, in_progress), workers, count + 1)
+      search(graph, work(work_remaining, in_progress), workers, completed ++ visited, count + 1)
     end
   end
 
@@ -98,17 +105,11 @@ defmodule Advent2018.Day7 do
   end
 
   def p2 do
-    graph =
-      load_input()
-
-    weights =
-      graph
-      |> Graph.vertices
-      |> Enum.map(&{&1, weight(&1)})
-      |> Enum.into(%{})
+    graph   = load_input()
+    weights = load_weights(graph)
 
     graph
-    |> search([], weights, 5)
+    |> search(weights, 5)
     |> Map.get(:count)
   end
 end
