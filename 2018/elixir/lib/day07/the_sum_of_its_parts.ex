@@ -9,10 +9,10 @@ defmodule Advent2018.Day7 do
     end
   end
 
-  def load_weights(graph) do
+  def load_weights(graph, offset \\ 60) do
     graph
     |> Graph.vertices
-    |> Enum.map(&{&1, weight(&1)})
+    |> Enum.map(&{&1, weight(&1, offset)})
     |> Enum.into(%{})
   end
 
@@ -22,10 +22,10 @@ defmodule Advent2018.Day7 do
       iex> weight("Z")
       86
   """
-  def weight(label) do
+  def weight(label, offset \\ 60) do
     ?A..?Z
     |> Enum.find_index(&hd(String.to_charlist(label)) == &1)
-    |> Kernel.+(61)
+    |> Kernel.+(offset + 1)
   end
 
   def read_string_into_graph(str, graph) do
