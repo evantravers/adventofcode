@@ -70,7 +70,7 @@ defmodule Advent2018.Day7 do
     end)
   end
 
-  def search(graph, work_remaining \\ %{}, workers \\ 1, visited \\ [], count \\ 0) do
+  def search(graph, work_remaining \\ %{}, workers \\ 1, visited \\ [], seconds \\ 0) do
     to_visit =
       graph
       |> Graph.vertices
@@ -91,10 +91,10 @@ defmodule Advent2018.Day7 do
         result: visited
                 |> Enum.reverse
                 |> Enum.join,
-        count: count
+        seconds: seconds
       }
     else
-      search(graph, work(work_remaining, in_progress), workers, completed ++ visited, count + 1)
+      search(graph, work(work_remaining, in_progress), workers, completed ++ visited, seconds + 1)
     end
   end
 
@@ -110,6 +110,6 @@ defmodule Advent2018.Day7 do
 
     graph
     |> search(weights, 5)
-    |> Map.get(:count)
+    |> Map.get(:seconds)
   end
 end
