@@ -63,7 +63,6 @@ defmodule Advent2018.Day7 do
     end)
   end
 
-  # TODO: Track what I'm already working on, workers don't switch
   def search(graph, work_required \\ %{}, workers \\ 1, working \\ [], visited \\ [], seconds \\ 0) do
     if Enum.count(Graph.vertices(graph)) == Enum.count(visited) do
       %{
@@ -81,8 +80,8 @@ defmodule Advent2018.Day7 do
         |> Enum.uniq
 
       completed = Enum.filter(todo, &completed?(work_required, &1))
+      # IO.puts("#{seconds}s\t-\t#{show_workers(workers, todo, work_required)}\t-\t#{Enum.join(visited, ",")}")
 
-    IO.puts("#{seconds}\t#{Enum.join(todo, ",")}\t#{Enum.join(visited, ",")}")
       search(
         graph,
         work(work_required, todo),
@@ -91,6 +90,18 @@ defmodule Advent2018.Day7 do
         visited ++ completed,
         seconds + 1)
     end
+  end
+
+  def show_workers(workers, todo, work_required) do
+    for worker <- 1..workers do
+      node = Enum.at(todo, worker - 1)
+      if !is_nil(node) do
+        "#{node}:#{Map.get(work_required, node)}"
+      else
+        "."
+      end
+    end
+    |> Enum.join("\t")
   end
 
   def p1 do
@@ -105,6 +116,15 @@ defmodule Advent2018.Day7 do
 
     graph
     |> search(weights, 5)
+    |> Map.get(:seconds)
+  end
+
+  def test do
+    graph   = load_input("test.txt")
+    weights = load_weights(graph, 0)
+
+    graph
+    |> search(weights, 2)
     |> Map.get(:seconds)
   end
 end
