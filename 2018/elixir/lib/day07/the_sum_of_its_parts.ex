@@ -37,7 +37,7 @@ defmodule Advent2018.Day7 do
     |> Graph.add_edge(parent, child)
   end
 
-  def reqs_satisfied(graph, node, visited) do
+  def possible?(graph, node, visited) do
     not Enum.member?(visited, node)
 
     and
@@ -55,46 +55,39 @@ defmodule Advent2018.Day7 do
     )
   end
 
-  def completed?(work_remaining, node) do
-    case Map.get(work_remaining, node) do
-      nil -> true
-      0 -> true
-      _ -> false
-    end
-  end
+  def completed?(work_required, node), do: Map.get(work_required, node, 1) == 1
 
-  def work(map, list_of_nodes) do
-    list_of_nodes
-    |> Enum.reduce(map, fn(node, work_remaining) ->
-      Map.update(work_remaining, node, 0, & &1 - 1)
+  def work(work_required, list_of_nodes) do
+    Enum.reduce(list_of_nodes, work_required, fn(node, remaining_work) ->
+      Map.update(remaining_work, node, 0, & &1 - 1)
     end)
   end
 
-  def search(graph, work_remaining \\ %{}, workers \\ 1, visited \\ [], seconds \\ 0) do
-    to_visit =
-      graph
-      |> Graph.vertices
-      |> Enum.filter(&reqs_satisfied(graph, &1, visited))
-      |> Enum.sort
-
-    # update work_remaining
-    in_progress =
-      to_visit
-      |> Enum.take(workers)
-
-    completed =
-      in_progress
-      |> Enum.filter(&completed?(work_remaining, &1))
-
-    if Enum.empty?(to_visit) do
+  # TODO: Track what I'm already working on, workers don't switch
+  def search(graph, work_required \\ %{}, workers \\ 1, working \\ [], visited \\ [], seconds \\ 0) do
+    if Enum.count(Graph.vertices(graph)) == Enum.count(visited) do
       %{
-        result: visited
-                |> Enum.reverse
-                |> Enum.join,
+        result: Enum.join(visited),
         seconds: seconds
       }
     else
-      search(graph, work(work_remaining, in_progress), workers, completed ++ visited, seconds + 1)
+      todo =
+        graph
+        |> Graph.vertices
+        |> Enum.filter(&possible?(graph, &1, visited))
+        |> Enum.sort
+        |> Enum.take(workers - Enum.count(working))
+
+      completed = Enum.filter(todo, &completed?(work_required, &1))
+
+    IO.puts("#{seconds}\t#{Enum.join(todo, ",")}\t#{Enum.join(visited, ",")}")
+      search(
+        graph,
+        work(work_required, todo),
+        workers,
+        working,
+        visited ++ completed,
+        seconds + 1)
     end
   end
 
