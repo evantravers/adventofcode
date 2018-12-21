@@ -77,6 +77,8 @@ defmodule Advent2018.Day7 do
         |> Enum.filter(&possible?(graph, &1, visited))
         |> Enum.sort
         |> Enum.take(workers - Enum.count(working))
+        |> Enum.concat(working)
+        |> Enum.uniq
 
       completed = Enum.filter(todo, &completed?(work_required, &1))
 
@@ -85,7 +87,7 @@ defmodule Advent2018.Day7 do
         graph,
         work(work_required, todo),
         workers,
-        working,
+        todo -- completed,
         visited ++ completed,
         seconds + 1)
     end
