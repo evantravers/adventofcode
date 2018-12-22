@@ -35,14 +35,13 @@ defmodule Advent2018.Day9 do
     @doc """
     Turns the circle clockwise.
     """
-    def clockwise({l, []}), do: {[], Enum.reverse(l)}
+    def clockwise({l, [r_head|[]]}), do: {[], Enum.reverse([r_head|l])}
     def clockwise({l, [r_head|r]}), do: {[r_head|l], r}
 
     @doc """
-    Turns the circle counterclockwise
+    inversion of clockwise...
     """
-    def counterclockwise({[], r}), do: {Enum.reverse(r), []}
-    def counterclockwise({[l_head|l], r}), do: {l, [l_head|r]}
+    def counterclockwise({l, r}), do: clockwise({r, l})
 
     def current({_, [current|_]}), do: current
 
