@@ -95,7 +95,9 @@ defmodule Advent2018.Day13 do
 
   def tick({cars, track}) do
     {
-      Enum.map(cars, &next_position(&1, track)),
+      cars
+      |> Enum.sort_by(fn(%{pos: {x, y}}) -> {y, x} end)
+      |> Enum.map(&next_position(&1, track)),
       track
     }
   end
