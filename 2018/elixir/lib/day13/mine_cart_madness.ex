@@ -54,6 +54,29 @@ defmodule Advent2018.Day13 do
   def replace_cars_with_track({coord, "<"}), do: {coord, "-"}
   def replace_cars_with_track(anything), do: anything
 
+  def move(c = %{pos: {x, y}, direction: :north}), do: %{c | pos: {x, y - 1}}
+  def move(c = %{pos: {x, y}, direction: :south}), do: %{c | pos: {x, y + 1}}
+  def move(c = %{pos: {x, y}, direction: :east}),  do: %{c | pos: {x + 1, y}}
+  def move(c = %{pos: {x, y}, direction: :west}),  do: %{c | pos: {x - 1, y}}
+
+  def next_position(car, track) do
+    case Map.get(track, car.pos) do
+      "|"  -> move(car)
+      "-"  -> move(car)
+      "\\" -> car
+      "/"  -> car
+      "+"  -> car
+    end
+  end
+
+  def next_second({cars, track}) do
+    {
+      cars
+      |> Enum.map(&next_position(&1, track)),
+      track
+    }
+  end
+
   def print_track({cars, track}) do
     max_x =
       track
