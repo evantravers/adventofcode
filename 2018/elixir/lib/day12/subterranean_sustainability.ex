@@ -11,11 +11,26 @@ defmodule Advent2018.Day12 do
     end
   end
 
+  def pot_or_not(str) do
+    str
+    |> String.graphemes
+    |> Enum.map(& &1 == "#")
+  end
+
   def extract_initial(str) do
     ~r/(#|\.)+/
       |> Regex.run(str)
       |> hd
-      |> String.graphemes
+      |> pot_or_not
+      |> list_to_set
+  end
+
+  def list_to_set(list) do
+    list
+    |> Enum.with_index
+    |> Enum.filter(&elem(&1, 0))
+    |> Enum.map(&elem(&1, 1))
+    |> Enum.into(MapSet.new)
   end
 
   def extract_rules(list_of_strings) do
@@ -23,14 +38,56 @@ defmodule Advent2018.Day12 do
     |> Enum.map(fn(str) ->
       str
       |> String.split(" => ")
-      |> (fn([pattern, result]) -> {String.graphemes(pattern), result} end).()
+      |> (fn([pattern, result]) -> {pot_or_not(pattern), result == "#"} end).()
     end)
-    |> Enum.into(%{})
+    |> Enum.filter(fn({_, result}) -> result end) # TODO: unsure whether filtering out fails is a good idea...
+    |> Enum.map(&elem(&1, 0))
+    |> Enum.into(MapSet.new)
+  end
+
+  def scanpots(generation, index) do
+    for i <- (index - 2)..(index + 2) do
+      if MapSet.member?(generation, i) do
+        true
+      else
+        false
+      end
+    end
+  end
+
+  def next_generation(current_generation, rules) do
+    {min, max} = Enum.min_max(current_generation)
+    for pot_location <- (min-2)..(max+2),
+      MapSet.member?(rules, scanpots(current_generation, pot_location)),
+      into: MapSet.new do
+      pot_location
+    end
+  end
+
+  def print_pots(generation) do
+    {min, max} = Enum.min_max(generation)
+    for x <- min..max do
+      if MapSet.member?(generation, x) do
+        "#"
+      else
+        "."
+      end
+    end
+    |> Enum.join
+  end
+
+  def run_sim(generation, _, 0), do: generation
+  def run_sim(generation, rules, num) do
+    run_sim(next_generation(generation, rules), rules, num - 1)
   end
 
   def p1 do
-    load_input()
+    {starting_generation, rules} = load_input()
+
+    run_sim(starting_generation, rules, 20)
+    |> Enum.sum
   end
 
-  def p2, do: nil
+  def p2 do
+  end
 end
