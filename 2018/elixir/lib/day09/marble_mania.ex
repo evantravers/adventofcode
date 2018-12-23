@@ -70,6 +70,9 @@ defmodule Advent2018.Day9 do
       |> (fn ({l, r}) -> {l, [marble|r]} end).()
     end
 
+    @doc """
+    For debug purposes
+    """
     def print_circle(circle) do
       circle
       |> Circle.to_list
@@ -135,9 +138,7 @@ defmodule Advent2018.Day9 do
   def play(_, players, last_marble, last_marble), do: players
   def play(board, players, last_marble, current_marble) do
     current_player = Integer.mod(current_marble - 1, Enum.count(players))
-    # IO.puts("[#{current_player}] #{Circle.print_circle(board)}")
     if Integer.mod(current_marble, 23) == 0 do
-      # current_player = Integer.mod(current_marble - 1, Enum.count(players))
       score          = board
                        |> Circle.counterclockwise(7)
                        |> Circle.current
