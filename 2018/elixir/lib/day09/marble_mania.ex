@@ -41,7 +41,7 @@ defmodule Advent2018.Day9 do
     @doc """
     Turns the circle clockwise.
     """
-    def clockwise({l, [r_head|[]]}), do: {[], Enum.reverse([r_head|l])}
+    def clockwise({l, []}), do: {[], Enum.reverse(l)} |> clockwise
     def clockwise({l, [r_head|r]}), do: {[r_head|l], r}
 
     @doc """
@@ -51,12 +51,12 @@ defmodule Advent2018.Day9 do
     def counterclockwise(circle, num) do
       counterclockwise(counterclockwise(circle, num - 1))
     end
-    def counterclockwise({[], r}), do: {Enum.reverse(r), []}
-    def counterclockwise({[l_head|[]], r}), do: {Enum.reverse([l_head|r]), []}
+    def counterclockwise({[], r}), do: {Enum.reverse(r), []} |> counterclockwise
     def counterclockwise({[l_head|l], r}), do: {l, [l_head|r]}
 
 
     def current({_, [current|_]}), do: current
+    def remove_current({l, [_|r]}), do: {l, r}
 
     @doc """
     Then, each Elf takes a turn placing the lowest-numbered remaining marble
@@ -135,7 +135,7 @@ defmodule Advent2018.Day9 do
   def play(_, players, last_marble, last_marble), do: players
   def play(board, players, last_marble, current_marble) do
     current_player = Integer.mod(current_marble - 1, Enum.count(players))
-    IO.puts("[#{current_player}] #{Circle.print_circle(board)}")
+    # IO.puts("[#{current_player}] #{Circle.print_circle(board)}")
     if Integer.mod(current_marble, 23) == 0 do
       # current_player = Integer.mod(current_marble - 1, Enum.count(players))
       score          = board
@@ -145,7 +145,7 @@ defmodule Advent2018.Day9 do
 
 
       play(
-        Circle.counterclockwise(board, 6),
+        Circle.counterclockwise(board, 7) |> Circle.remove_current,
         Map.update!(players, current_player, & &1 + score),
         last_marble,
         current_marble + 1
