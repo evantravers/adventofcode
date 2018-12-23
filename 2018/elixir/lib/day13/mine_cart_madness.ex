@@ -100,6 +100,28 @@ defmodule Advent2018.Day13 do
     }
   end
 
+  def collision?(cars) do
+    Enum.filter(cars, fn(car) ->
+      other_cars_pos = cars
+                       |> List.delete(car)
+                       |> Enum.map(&Map.get(&1, :pos))
+
+      Enum.member?(other_cars_pos, car.pos)
+    end)
+    |> Enum.empty?
+    |> Kernel.!
+  end
+
+  def find_collision({cars, track}) do
+    if collision?(cars) do
+      cars
+    else
+      {cars, track}
+      |> tick
+      |> find_collision
+    end
+  end
+
   def print_track({cars, track}) do
     max_x =
       track
@@ -125,11 +147,15 @@ defmodule Advent2018.Day13 do
       |> Kernel.<>("\n")
     end
     |> Enum.join
-    |> IO.puts
   end
 
   def p1 do
     load_input()
+    |> find_collision
+    |> hd
+    |> Map.get(:pos)
+    |> Tuple.to_list
+    |> Enum.join(",")
   end
 
   def p2, do: nil
