@@ -25,8 +25,14 @@ defmodule Advent2018.Day9 do
     7         3
       6     4
          5
+    ```
 
+    can become...
+
+    ```
+    {[], [1, 2, 3, 4, 5, 6, 7, 8]}
     {[8, 7, 6, 5], [1, 2, 3, 4]}
+    {[8, 7, 6, 5, 4, 3, 2, 1], []}
     ```
     """
     def to_list({l, r}), do: Enum.concat(r, Enum.reverse(l))
@@ -41,7 +47,14 @@ defmodule Advent2018.Day9 do
     @doc """
     inversion of clockwise...
     """
-    def counterclockwise({l, r}), do: clockwise({r, l})
+    def counterclockwise(circle, 0), do: circle
+    def counterclockwise(circle, num) do
+      counterclockwise(counterclockwise(circle, num - 1))
+    end
+    def counterclockwise({[], r}), do: {Enum.reverse(r), []}
+    def counterclockwise({[l_head|[]], r}), do: {Enum.reverse([l_head|r]), []}
+    def counterclockwise({[l_head|l], r}), do: {l, [l_head|r]}
+
 
     def current({_, [current|_]}), do: current
 
@@ -53,7 +66,15 @@ defmodule Advent2018.Day9 do
     def insert(circle, marble) do
       circle
       |> clockwise
-      # |> (fn ({l, [r]}) -> {l, [marble|r]} end).()
+      |> clockwise
+      |> (fn ({l, r}) -> {l, [marble|r]} end).()
+    end
+
+    def print_circle(circle) do
+      circle
+      |> Circle.to_list
+      |> (fn ([head|tail]) -> ["(#{head})"|tail] end).()
+      |> Enum.join(" ")
     end
   end
 
@@ -87,25 +108,69 @@ defmodule Advent2018.Day9 do
   marble located immediately clockwise of the marble that was removed becomes
   the new current marble.
 
-      iex> play(9, 25)
+      iex> play_game(9, 25) |> Map.values |> Enum.max
       32
-      iex> play(10, 1618)
+      iex> play_game(10, 1618) |> Map.values |> Enum.max
       8317
-      iex> play(13, 7999)
+      iex> play_game(13, 7999) |> Map.values |> Enum.max
       146373
-      iex> play(17, 1104)
+      iex> play_game(17, 1104) |> Map.values |> Enum.max
       2764
-      iex> play(21, 6111)
+      iex> play_game(21, 6111) |> Map.values |> Enum.max
       54718
-      iex> play(30, 5807)
+      iex> play_game(30, 5807) |> Map.values |> Enum.max
       37305
+
+  I add +2 to last_marble because the current_marble stops when it ==
+  last_marble, so it needs to be at least one more, and because current_marble
+  starts at 1
   """
-  def play(players, last_marble) do
-    {[0], []}
+  def play_game(players, last_marble) do
+    [0]
+    |> Circle.to_circle
+    |> play(setup_scoreboard(players), last_marble + 2)
+  end
+
+  def play(board, players, last_marble, current_marble \\ 1)
+  def play(_, players, last_marble, last_marble), do: players
+  def play(board, players, last_marble, current_marble) do
+    current_player = Integer.mod(current_marble - 1, Enum.count(players))
+    IO.puts("[#{current_player}] #{Circle.print_circle(board)}")
+    if Integer.mod(current_marble, 23) == 0 do
+      # current_player = Integer.mod(current_marble - 1, Enum.count(players))
+      score          = board
+                       |> Circle.counterclockwise(7)
+                       |> Circle.current
+                       |> Kernel.+(current_marble)
+
+
+      play(
+        Circle.counterclockwise(board, 6),
+        Map.update!(players, current_player, & &1 + score),
+        last_marble,
+        current_marble + 1
+      )
+    else
+      play(
+        Circle.insert(board, current_marble),
+        players,
+        last_marble,
+        current_marble + 1
+      )
+    end
+  end
+
+  def setup_scoreboard(players) do
+    for player <- 0..players-1, into: %{}, do: {player, 0}
   end
 
   def p1 do
     {players, last_marble} = load_input()
+
+    players
+    |> play_game(last_marble)
+    |> Map.values
+    |> Enum.max
   end
 
   def p2, do: nil
