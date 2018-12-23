@@ -111,17 +111,17 @@ defmodule Advent2018.Day9 do
   marble located immediately clockwise of the marble that was removed becomes
   the new current marble.
 
-      iex> play_game(9, 25) |> Map.values |> Enum.max
+      iex> play_game(9, 25)
       32
-      iex> play_game(10, 1618) |> Map.values |> Enum.max
+      iex> play_game(10, 1618)
       8317
-      iex> play_game(13, 7999) |> Map.values |> Enum.max
+      iex> play_game(13, 7999)
       146373
-      iex> play_game(17, 1104) |> Map.values |> Enum.max
+      iex> play_game(17, 1104)
       2764
-      iex> play_game(21, 6111) |> Map.values |> Enum.max
+      iex> play_game(21, 6111)
       54718
-      iex> play_game(30, 5807) |> Map.values |> Enum.max
+      iex> play_game(30, 5807)
       37305
 
   I add +2 to last_marble because the current_marble stops when it ==
@@ -132,6 +132,8 @@ defmodule Advent2018.Day9 do
     [0]
     |> Circle.to_circle
     |> play(setup_scoreboard(players), last_marble + 2)
+    |> Map.values
+    |> Enum.max
   end
 
   def play(board, players, last_marble, current_marble \\ 1)
@@ -170,8 +172,6 @@ defmodule Advent2018.Day9 do
 
     players
     |> play_game(last_marble)
-    |> Map.values
-    |> Enum.max
   end
 
   def p2 do
@@ -179,7 +179,5 @@ defmodule Advent2018.Day9 do
 
     players
     |> play_game(last_marble * 100)
-    |> Map.values
-    |> Enum.max
   end
 end
