@@ -76,18 +76,23 @@ defmodule Advent2018.Day12 do
     |> Enum.join
   end
 
-  def run_sim(generation, _, 0), do: generation
-  def run_sim(generation, rules, num) do
-    run_sim(next_generation(generation, rules), rules, num - 1)
+  def run_sim(generation, _, 0, _), do: generation
+  def run_sim(generation, rules, num, count) do
+    # IO.puts("[#{count}] = #{Enum.sum(generation)}\t#{print_pots(generation)}")
+    run_sim(next_generation(generation, rules), rules, num - 1, count + 1)
   end
 
   def p1 do
     {starting_generation, rules} = load_input()
 
-    run_sim(starting_generation, rules, 20)
+    run_sim(starting_generation, rules, 20, 0)
     |> Enum.sum
   end
 
   def p2 do
+    # so after examining the shape of the function... it seems to generate a
+    # "glider" that then goes up 21 per turn
+    # On turn 89, it's at 2349, then increases by 21 until the end of the period.
+    ((50_000_000_000 - 89) * 21) + 2_349
   end
 end
