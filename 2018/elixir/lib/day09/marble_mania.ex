@@ -173,5 +173,12 @@ defmodule Advent2018.Day9 do
     |> Enum.max
   end
 
-  def p2, do: nil
+  def p2 do
+    {players, last_marble} = load_input()
+
+    players
+    |> play_game(last_marble * 100)
+    |> Map.values
+    |> Enum.max
+  end
 end
