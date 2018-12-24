@@ -113,19 +113,40 @@ defmodule Advent2018.Day13 do
     end)
   end
 
+  def remove_collisions({cars, track}), do: {cars -- collision?(cars), track}
+
+  def print_pos(car) do
+    car
+    |> Map.get(:pos)
+    |> Tuple.to_list
+    |> Enum.join(",")
+  end
+
   def find_collision({cars, track}) do
     # IO.puts(print_track({cars, track}))
 
-    if !Enum.empty?(collision?(cars)) do
-      collision?(cars)
-      |> hd
-      |> Map.get(:pos)
-      |> Tuple.to_list
-      |> Enum.join(",")
-    else
+    if Enum.empty?(collision?(cars)) do
       {cars, track}
       |> tick
       |> find_collision
+    else
+      cars
+      |> collision?
+      |> hd
+      |> print_pos
+    end
+  end
+
+  def run_sim({cars, track}) do
+    if Enum.count(cars) == 1 do
+      cars
+      |> hd
+      |> print_pos
+    else
+      {cars, track}
+      |> tick
+      |> remove_collisions
+      |> run_sim
     end
   end
 
@@ -161,5 +182,8 @@ defmodule Advent2018.Day13 do
     |> find_collision
   end
 
-  def p2, do: nil
+  def p2 do
+    load_input()
+    |> run_sim
+  end
 end
