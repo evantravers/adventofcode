@@ -64,11 +64,12 @@ defmodule Advent2018.Day14 do
       "5941429882"
   """
   def next_ten(num) do
-    (num + 10)
+    num
+    |> Kernel.+(10)
     |> play
     |> print
     |> String.graphemes
-    |> Enum.slice(-10..-1)
+    |> Enum.slice(num..num+9)
     |> Enum.join
   end
 
