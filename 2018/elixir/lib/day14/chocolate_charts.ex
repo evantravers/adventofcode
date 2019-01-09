@@ -91,10 +91,19 @@ defmodule Advent2018.Day14 do
     |> Enum.into(map)
   end
 
-  def print({map, first, second}) do
+  def display({map, first, second}) do
+    {
+      map
+      |> Map.update!(at(map, first), & "(#{&1})")
+      |> Map.update!(at(map, second), & "[#{&1}]"),
+      first,
+      second
+    }
+    |> print
+  end
+
+  def print({map, _, _}) do
     map
-    # |> Map.update!(at(map, first), & "(#{&1})")
-    # |> Map.update!(at(map, second), & "[#{&1}]")
     |> Enum.to_list
     |> List.keysort(0)
     |> Enum.map(&elem(&1, 1))
