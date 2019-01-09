@@ -80,26 +80,6 @@ defmodule Advent2018.Day14 do
     |> Enum.join
   end
 
-  @doc """
-  iex> find_occurrence_of("51589")
-  9
-  iex> find_occurrence_of("01245")
-  5
-  """
-  def find_occurrence_of(input) when is_integer(input) do
-    input
-    |> Integer.to_string
-    |> find_occurrence_of
-  end
-  def find_occurrence_of(input, state \\ @start, num \\ -1)
-  def find_occurrence_of(input, state, num) do
-    if print(state) =~ input do
-      num
-    else
-      find_occurrence_of(input, play(state), num + 1)
-    end
-  end
-
   def get(map, index) do
     Map.get(map, at(map, index))
   end
@@ -143,7 +123,10 @@ defmodule Advent2018.Day14 do
   end
 
   def p2 do
-    find_occurrence_of(@input)
+    play_til(30_000_000)
+    |> print
+    |> :binary.match(Integer.to_string(@input))
+    |> elem(0)
   end
 end
 
