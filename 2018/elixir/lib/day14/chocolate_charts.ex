@@ -22,7 +22,34 @@ defmodule Advent2018.Day14 do
     |> Enum.map(&String.to_integer/1)
   end
 
-  def at(list, position), do: Enum.at(list, Enum.count(list) - 1 - position)
+  def get(map, index) do
+    Map.get(map, at(map, index))
+  end
+
+  def at(map, index), do: Integer.mod(index, Enum.count(map))
+
+  def add(map, num) do
+    number =
+      num
+      |> Integer.to_string
+      |> String.graphemes
+      |> Enum.map(&String.to_integer/1)
+      |> Enum.with_index(Enum.count(map))
+
+    number
+    |> Enum.map(fn({val, ind}) -> {ind, val} end)
+    |> Enum.into(map)
+  end
+
+  def print({map, first, second}) do
+    map
+    |> Map.update!(at(map, first), & "(#{&1})")
+    |> Map.update!(at(map, second), & "[#{&1}]")
+    |> Enum.to_list
+    |> List.keysort(0)
+    |> Enum.map(&elem(&1, 1))
+    |> Enum.join
+  end
 
   def p1 do
     [7, 3] |> at(0)
