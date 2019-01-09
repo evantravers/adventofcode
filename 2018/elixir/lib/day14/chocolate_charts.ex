@@ -25,10 +25,9 @@ defmodule Advent2018.Day14 do
   """
 
   @input 793031
+  @start {%{0 => 3, 1 => 7}, 0, 1}
 
-  def play(num), do: play({%{0 => 3, 1 => 7}, 0, 1}, num)
-  def play(state, 0), do: state
-  def play({recipes, first_index, second_index}, num) do
+  def play({recipes, first_index, second_index}) do
     # To create new recipes, the two Elves combine their current recipes. This
     # creates new recipes from the digits of the sum of the current recipes'
     # scores.
@@ -45,7 +44,15 @@ defmodule Advent2018.Day14 do
     new_first_index  = Integer.mod(first_index + 1 + first_value, Enum.count(new_recipes))
     new_second_index = Integer.mod(second_index + 1 + second_value, Enum.count(new_recipes))
 
-    play({add(recipes, combined_recipe), new_first_index, new_second_index}, num - 1)
+    {add(recipes, combined_recipe), new_first_index, new_second_index}
+  end
+
+  def play_til(num) when is_integer(num), do: play_til(@start, num)
+  def play_til(state, 0), do: state
+  def play_til(state, num) do
+    state
+    |> play
+    |> play_til(num - 1)
   end
 
   @doc """
@@ -66,11 +73,31 @@ defmodule Advent2018.Day14 do
   def next_ten(num) do
     num
     |> Kernel.+(10)
-    |> play
+    |> play_til
     |> print
     |> String.graphemes
     |> Enum.slice(num..num+9)
     |> Enum.join
+  end
+
+  @doc """
+  iex> find_occurrence_of("51589")
+  9
+  iex> find_occurrence_of("01245")
+  5
+  """
+  def find_occurrence_of(input) when is_integer(input) do
+    input
+    |> Integer.to_string
+    |> find_occurrence_of
+  end
+  def find_occurrence_of(input, state \\ @start, num \\ -1)
+  def find_occurrence_of(input, state, num) do
+    if print(state) =~ input do
+      num
+    else
+      find_occurrence_of(input, play(state), num + 1)
+    end
   end
 
   def get(map, index) do
@@ -115,6 +142,8 @@ defmodule Advent2018.Day14 do
     next_ten(@input)
   end
 
-  def p2, do: nil
+  def p2 do
+    find_occurrence_of(@input)
+  end
 end
 
