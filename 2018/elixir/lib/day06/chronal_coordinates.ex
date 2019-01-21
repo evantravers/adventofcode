@@ -32,6 +32,12 @@ defmodule Advent2018.Day6 do
     abs(x1 - x2) + abs(y1 - y2)
   end
 
+  def total_distance(point, list_of_points) do
+    list_of_points
+    |> Enum.map(&manhattan_distance(&1, point))
+    |> Enum.sum
+  end
+
   @doc """
   This is an ugly attempt to come up with a set of coords that represent the
   bounds of the map.
@@ -72,13 +78,13 @@ defmodule Advent2018.Day6 do
     end
   end
 
-  def grid(coordinates) do
+  def grid(coordinates, func \\ &find_group/2) do
     {x_range, y_range} = bounding_box(coordinates)
 
     for x <- x_range,
         y <- y_range,
         point = {x, y},
-        do: {point, find_group(point, coordinates)}
+        do: {point, func.(point, coordinates)}
   end
 
   def grid_to_groups(list_of_grouped_coords) do
@@ -91,7 +97,7 @@ defmodule Advent2018.Day6 do
   end
 
   def remove_infinite(map_of_groups, coordinates) do
-    Enum.filter(map_of_groups, fn({group, coords}) ->
+    Enum.filter(map_of_groups, fn({_, coords}) ->
       MapSet.disjoint?(bounds(coordinates), coords)
     end)
   end
@@ -113,6 +119,12 @@ defmodule Advent2018.Day6 do
   end
 
   def p2 do
+    coordinates = load_input()
+
+    coordinates
+    |> grid(&total_distance/2)
+    |> Enum.reject(fn({_, total_distance}) -> total_distance > 10_000 end)
+    |> Enum.count
   end
 end
 
