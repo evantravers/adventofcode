@@ -67,7 +67,7 @@ defmodule Advent2018.Day11 do
   end
 
   @doc """
-  Why is it 1-indexed? So unkind. TODO: could result in an off-by-one!
+  Why is it 1-indexed? So unkind.
 
   {1, 1} → {300, 1}
 
