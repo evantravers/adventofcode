@@ -4,7 +4,7 @@ defmodule Advent2018.Day4 do
   use Timex
 
   @doc """
-  I'm going to store it as a %{guard_id: MapSet([<minutes their asleep])}
+  I'm going to store it as a %{guard_id: MapSet([<minutes they are asleep])}
   """
   def load_input do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
