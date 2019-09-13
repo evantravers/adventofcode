@@ -124,6 +124,8 @@ defmodule Advent2018.Day13 do
 
   def find_collision({cars, track}) do
     # IO.puts(print_track({cars, track}))
+    # IO.puts("")
+    # :timer.sleep(50)
 
     if Enum.empty?(collision?(cars)) do
       {cars, track}
