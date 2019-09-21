@@ -37,7 +37,7 @@ defmodule Advent2018.Day5 do
     String.downcase(char) == String.downcase(prev_char) && char != prev_char
   end
 
-  def react([], visited), do: Enum.reverse(visited) |> Enum.join
+  def react([], visited), do: Enum.join(Enum.reverse(visited))
   def react([char|string], []), do: react(string, [char])
   def react([current_char|string], visited = [prev_char|prev_string]) do
     if reactable?(current_char, prev_char) do
