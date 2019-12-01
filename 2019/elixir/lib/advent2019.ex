@@ -1,6 +1,6 @@
-defmodule Advent2018 do
+defmodule Advent2019 do
   @moduledoc """
-  My work for Advent of Code 2018 in elixir this year!
+  My work for Advent of Code 2019 in elixir this year!
 
   I started out writing it in random .exs scripts, but now I'm putting it into
   mix so I can use tests.
@@ -22,10 +22,10 @@ defmodule Mix.Tasks.Day do
       IO.puts("Total Time: #{total_time/1_000_000} seconds")
     else
         {p1_time, p1_answer} = :timer.tc(fn ->
-          apply(String.to_existing_atom("Elixir.Advent2018.Day#{day}"), :p1, [])
+          apply(String.to_existing_atom("Elixir.Advent2019.Day#{day}"), :p1, [])
         end)
         {p2_time, p2_answer} = :timer.tc(fn ->
-          apply(String.to_existing_atom("Elixir.Advent2018.Day#{day}"), :p2, [])
+          apply(String.to_existing_atom("Elixir.Advent2019.Day#{day}"), :p2, [])
         end)
       IO.puts "Day #{day}: \n" <>
               "Part 1:\n#{p1_answer}\n(#{p1_time/1_000_000} seconds)\n" <>
