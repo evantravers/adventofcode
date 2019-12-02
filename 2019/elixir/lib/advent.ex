@@ -36,7 +36,10 @@ defmodule Mix.Tasks.Day do
           end
         end)
       end)
-      IO.puts("Total Time: #{timestring(total_time)}")
+        IO.puts("""
+          ============================
+          Total Time: #{timestring(total_time)}
+          """)
     else
       {total_time, _} = :timer.tc(fn ->
         input =
@@ -45,14 +48,28 @@ defmodule Mix.Tasks.Day do
         {p1_time, p1_answer} = :timer.tc(fn ->
           apply(String.to_existing_atom("Elixir.Advent2019.Day#{day}"), :p1, [input])
         end)
+
         {p2_time, p2_answer} = :timer.tc(fn ->
           apply(String.to_existing_atom("Elixir.Advent2019.Day#{day}"), :p2, [input])
         end)
-        IO.puts "Day #{day}: \n" <>
-              "Part 1:\n#{p1_answer}\n(#{timestring(p1_time)})\n" <>
-              "Part 2:\n#{p2_answer}\n(#{timestring(p2_time)})"
+
+        IO.puts(
+          """
+          Day #{day}:
+          ----------------------------
+          Part 1:
+          #{p1_answer}
+          (#{timestring(p1_time)})
+
+          Part 2:
+          #{p2_answer}
+          (#{timestring(p2_time)})
+          ----------------------------
+          """
+        )
+
       end)
-      IO.puts "Total time: #{timestring(total_time)}"
+      IO.puts timestring(total_time)
     end
   end
 end
