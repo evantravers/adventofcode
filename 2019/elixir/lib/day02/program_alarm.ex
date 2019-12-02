@@ -3,7 +3,7 @@ defmodule Advent2019.Day2 do
   @behaviour Advent
 
   def setup do
-    Inccode.load_input("#{__DIR__}/input.txt")
+    Intcode.load_input("#{__DIR__}/input.txt")
   end
 
   @doc """
@@ -14,7 +14,7 @@ defmodule Advent2019.Day2 do
     input
     |> Map.put(1, 12)
     |> Map.put(2, 2)
-    |> Inccode.run
+    |> Intcode.run
   end
 
   @doc """
@@ -29,7 +29,7 @@ defmodule Advent2019.Day2 do
           input
           |> Map.put(1, noun)
           |> Map.put(2, verb)
-          |> Inccode.run
+          |> Intcode.run
 
         if result == 19690720 do
           throw({:break, (100 * noun + verb)})

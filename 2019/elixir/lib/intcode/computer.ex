@@ -1,4 +1,4 @@
-defmodule Inccode do
+defmodule Intcode do
   @moduledoc """
   Intcode programs are given as a list of integers; these values are used as
   the initial state for the computer's memory. When you run an Intcode program,
