@@ -28,8 +28,12 @@ defmodule Mix.Tasks.Day do
     if day == ["all"] do
       {total_time, _} = :timer.tc(fn ->
         Enum.each(1..25, fn d ->
-          run d
-          IO.puts "\n"
+          try do
+            run d
+            IO.puts "\n"
+          rescue
+            ArgumentError -> "That's all folks!"
+          end
         end)
       end)
       IO.puts("Total Time: #{timestring(total_time)}")
