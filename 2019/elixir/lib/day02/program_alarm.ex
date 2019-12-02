@@ -29,15 +29,15 @@ defmodule Advent2019.Day2 do
     operation(tape, position, &Kernel.*(&1, &2))
   end
 
-  def read_input(tape, position) do
+  def read_tape(tape, position) do
     case Map.get(tape, position) do
-      1  -> read_input(add(tape, position), position + 4)
-      2  -> read_input(mul(tape, position), position + 4)
+      1  -> read_tape(add(tape, position), position + 4)
+      2  -> read_tape(mul(tape, position), position + 4)
       99 -> Map.get(tape, 0)
       _  -> throw("Unrecognized opcode: #{Map.get(tape, position)}")
     end
   end
-  def read_input(tape), do: read_input(tape, 0)
+  def read_tape(tape), do: read_tape(tape, 0)
 
   def p1(input) do
     read_input(input)
