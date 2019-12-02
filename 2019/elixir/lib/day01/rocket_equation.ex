@@ -1,5 +1,6 @@
 defmodule Advent2019.Day1 do
   @moduledoc "https://adventofcode.com/2019/day/1"
+  @behaviour Advent
 
   def setup do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
@@ -60,14 +61,14 @@ defmodule Advent2019.Day1 do
     end
   end
 
-  def p1 do
-    setup()
+  def p1(input) do
+    input
     |> Enum.map(&fuel_required/1)
     |> Enum.sum
   end
 
-  def p2 do
-    setup()
+  def p2(input) do
+    input
     |> Enum.map(&total_fuel_required/1)
     |> Enum.sum
   end
