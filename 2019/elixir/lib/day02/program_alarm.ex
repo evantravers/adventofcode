@@ -29,15 +29,15 @@ defmodule Advent2019.Day2 do
     operation(tape, position, &Kernel.*(&1, &2))
   end
 
-  def read_tape(tape, position) do
+  def run(tape, position) do
     case Map.get(tape, position) do
-      1  -> read_tape(add(tape, position), position + 4)
-      2  -> read_tape(mul(tape, position), position + 4)
+      1  -> run(add(tape, position), position + 4)
+      2  -> run(mul(tape, position), position + 4)
       99 -> Map.get(tape, 0)
       _  -> throw("Unrecognized opcode: #{Map.get(tape, position)}")
     end
   end
-  def read_tape(tape), do: read_tape(tape, 0)
+  def run(tape), do: run(tape, 0)
 
   @doc """
   To do this, before running the program, replace position 1 with the value 12
@@ -47,10 +47,9 @@ defmodule Advent2019.Day2 do
     input
     |> Map.put(1, 12)
     |> Map.put(2, 2)
-    |> read_tape
+    |> run
   end
 
   def p2(input) do
-    input
   end
 end
