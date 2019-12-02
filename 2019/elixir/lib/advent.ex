@@ -21,6 +21,8 @@ end
 defmodule Mix.Tasks.Day do
   use Mix.Task
 
+  defp timestring(t), do: "#{t/1_000_000} seconds"
+
   @shortdoc "Run a specific day from the problem set"
   def run(day) do
     if day == ["all"] do
@@ -30,8 +32,9 @@ defmodule Mix.Tasks.Day do
           IO.puts "\n"
         end)
       end)
-      IO.puts("Total Time: #{total_time/1_000_000} seconds")
+      IO.puts("Total Time: #{timestring(total_time)}")
     else
+      {total_time, _} = :timer.tc(fn ->
         input =
           apply(String.to_existing_atom("Elixir.Advent2019.Day#{day}"), :setup, [])
 
@@ -41,9 +44,11 @@ defmodule Mix.Tasks.Day do
         {p2_time, p2_answer} = :timer.tc(fn ->
           apply(String.to_existing_atom("Elixir.Advent2019.Day#{day}"), :p2, [input])
         end)
-      IO.puts "Day #{day}: \n" <>
-              "Part 1:\n#{p1_answer}\n(#{p1_time/1_000_000} seconds)\n" <>
-              "Part 2:\n#{p2_answer}\n(#{p2_time/1_000_000} seconds)"
+        IO.puts "Day #{day}: \n" <>
+              "Part 1:\n#{p1_answer}\n(#{timestring(p1_time)})\n" <>
+              "Part 2:\n#{p2_answer}\n(#{timestring(p2_time)})"
+      end)
+      IO.puts "Total time: #{timestring(total_time)}"
     end
   end
 end
