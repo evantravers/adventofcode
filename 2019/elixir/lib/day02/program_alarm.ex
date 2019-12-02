@@ -39,8 +39,15 @@ defmodule Advent2019.Day2 do
   end
   def read_tape(tape), do: read_tape(tape, 0)
 
+  @doc """
+  To do this, before running the program, replace position 1 with the value 12
+  and replace position 2 with the value 2.
+  """
   def p1(input) do
-    read_input(input)
+    input
+    |> Map.put(1, 12)
+    |> Map.put(2, 2)
+    |> read_tape
   end
 
   def p2(input) do
