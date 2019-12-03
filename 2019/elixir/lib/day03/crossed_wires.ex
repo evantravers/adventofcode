@@ -74,13 +74,9 @@ defmodule Advent2019.Day3 do
   def p2(%{wires: {wire1, wire2}, intersections: intersections}) do
     intersections
     |> Enum.map(fn(coord) ->
-      {
-        Enum.find_index(Enum.reverse(wire1), & coord == &1) +
-        Enum.find_index(Enum.reverse(wire2), & coord == &1),
-        coord
-      }
+      Enum.find_index(Enum.reverse(wire1), & coord == &1) +
+      Enum.find_index(Enum.reverse(wire2), & coord == &1)
     end)
-    |> Enum.map(fn({combined_distance, _}) -> combined_distance end)
     |> Enum.min
   end
 end
