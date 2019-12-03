@@ -2,7 +2,6 @@ defmodule Advent2019.Day3 do
   @moduledoc "https://adventofcode.com/2019/day/3"
   @behaviour Advent
 
-  @spec setup() :: {list(), list()}
   def setup do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
       [wire1, wire2] =
@@ -10,7 +9,13 @@ defmodule Advent2019.Day3 do
         |> read_wires
         |> Enum.map(&follow_wire/1)
 
-      {wire1, wire2}
+      intersections =
+        wire1
+        |> MapSet.new
+        |> MapSet.intersection(MapSet.new(wire2))
+        |> MapSet.delete({0, 0})
+
+      %{wires: {wire1, wire2}, intersections: intersections}
     end
   end
 
@@ -53,15 +58,29 @@ defmodule Advent2019.Day3 do
     follow_wire([{dir, distance - 1}|tail], [next_coord(history, dir)|history])
   end
 
-  def p1({wire1, wire2}) do
-    wire1
-    |> MapSet.new
-    |> MapSet.intersection(MapSet.new(wire2))
-    |> MapSet.delete({0, 0})
+  def p1(%{intersections: intersections}) do
+    intersections
     |> Enum.min_by(fn({x, y}) -> abs(x) + abs(y) end)
     |> (fn({x, y}) -> abs(x) + abs(y) end).()
   end
 
-  def p2({wire1, wire2}) do
+  @doc """
+  calculate the number of steps each wire takes to reach each intersection;
+  choose the intersection where the sum of both wires' steps is lowest. If a
+  wire visits a position on the grid multiple times, use the steps value from
+  the first time it visits that position when calculating the total value of a
+  specific intersection.
+  """
+  def p2(%{wires: {wire1, wire2}, intersections: intersections}) do
+    intersections
+    |> Enum.map(fn(coord) ->
+      {
+        Enum.find_index(Enum.reverse(wire1), & coord == &1) +
+        Enum.find_index(Enum.reverse(wire2), & coord == &1),
+        coord
+      }
+    end)
+    |> Enum.map(fn({combined_distance, _}) -> combined_distance end)
+    |> Enum.min
   end
 end
