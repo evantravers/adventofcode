@@ -4,8 +4,12 @@ defmodule Advent2019.Day3 do
 
   def setup do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
-      file
-      |> read_wires
+      [wire1, wire2] =
+        file
+        |> read_wires
+        |> Enum.map(&follow_wire/1)
+
+      {wire1, wire2}
     end
   end
 
@@ -54,11 +58,7 @@ defmodule Advent2019.Day3 do
       iex> |> p1
       135
   """
-  def p1(wires) do
-    [wire1, wire2] =
-      wires
-      |> Enum.map(&follow_wire/1)
-
+  def p1({wire1, wire2}) do
     wire1
     |> MapSet.new
     |> MapSet.intersection(MapSet.new(wire2))
@@ -67,7 +67,6 @@ defmodule Advent2019.Day3 do
     |> (fn({x, y}) -> abs(x) + abs(y) end).()
   end
 
-  def p2(input) do
-
+  def p2({wire1, wire2}) do
   end
 end
