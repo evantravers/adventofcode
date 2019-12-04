@@ -27,16 +27,16 @@ defmodule Advent2019.Day4 do
   - Going from left to right, the digits never decrease; they only ever
     increase or stay the same (like 111123 or 135679).
 
-      iex> validate_password(111111)
+      iex> valid_password?(111111)
       true
 
-      iex> validate_password(223450)
+      iex> valid_password?(223450)
       false
 
-      iex> validate_password(123789)
+      iex> valid_password?(123789)
       false
   """
-  def validate_password(number) do
+  def valid_password?(number) do
     [a, b, c, d, e, f] = list_of_integers =
       for div <- [1, 10, 100, 1_000, 10_000, 100_000] do
         number
@@ -62,11 +62,13 @@ defmodule Advent2019.Day4 do
   How many different passwords within the range given in your puzzle input meet
   these criteria?
   """
-  def p1(input) do
-
+  def p1(range) do
+    range
+    |> Stream.filter(&valid_password?/1)
+    |> Enum.count
   end
 
-  def p2(input) do
-
+  def p2(range) do
+    nil
   end
 end
