@@ -14,8 +14,8 @@ defmodule Advent do
   """
 
   @callback setup() :: {:ok, term}
-  @callback p1(Map.t) :: {:ok, term}
-  @callback p2(Map.t) :: {:ok, term}
+  @callback p1(term) :: {:ok, term}
+  @callback p2(term) :: {:ok, term}
 end
 
 defmodule Mix.Tasks.Day do
