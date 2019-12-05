@@ -15,6 +15,7 @@ defmodule Advent2019.Day2 do
     |> Map.put(1, 12)
     |> Map.put(2, 2)
     |> Intcode.run
+    |> Map.get(0)
   end
 
   @doc """
@@ -30,6 +31,7 @@ defmodule Advent2019.Day2 do
           |> Map.put(1, noun)
           |> Map.put(2, verb)
           |> Intcode.run
+          |> Map.get(0)
 
         if result == 19690720 do
           throw({:break, (100 * noun + verb)})

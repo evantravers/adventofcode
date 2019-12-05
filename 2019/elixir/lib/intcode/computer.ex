@@ -110,17 +110,23 @@ defmodule Intcode do
     arg3 = Map.get(tape, position + 3)
 
     case opcode do
-      1 ->
+      1 -> # addition
         tape
         |> add({arg1_mode, arg1}, {arg2_mode, arg2}, arg3)
         |> run(position + 4)
-      2 ->
+      2 -> # multiply
         tape
         |> mul({arg1_mode, arg1}, {arg2_mode, arg2}, arg3)
         |> run(position + 4)
-      3 -> run(inp(tape, arg1), position + 2)
-      4 -> run(out(tape, {arg1_mode, arg1}), position + 2)
-      99 -> Map.get(tape, 0)
+      3 -> # get input (currently hardcoded to 1)
+        tape
+        |> inp(arg1)
+        |> run(position + 2)
+      4 ->
+        tape
+        |> out({arg1_mode, arg1})
+        |> run(position + 2)
+      99 -> tape # finished
       _  -> throw("Unrecognized opcode: #{Map.get(tape, position)}")
     end
   end
