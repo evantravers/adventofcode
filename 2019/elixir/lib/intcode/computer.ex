@@ -7,20 +7,40 @@ defmodule Intcode do
   "address 0").
   """
 
-  defp operation(tape, position, function) do
-    p1     = Map.get(tape, position + 1)
-    p2     = Map.get(tape, position + 2)
+  defp operation(tape, position, function, :immediate) do
+    arg1   = Map.get(tape, position + 1)
+    arg2   = Map.get(tape, position + 2)
     target = Map.get(tape, position + 3)
 
-    Map.put(tape, target, function.(Map.get(tape, p1), Map.get(tape, p2)))
+    Map.put(tape, target, function.(arg1, arg2))
+  end
+
+  defp operation(tape, position, function, :position) do
+    arg1   = Map.get(tape, position + 1)
+    arg2   = Map.get(tape, position + 2)
+    target = Map.get(tape, position + 3)
+
+    Map.put(tape, target, function.(Map.get(tape, arg1), Map.get(tape, arg2)))
   end
 
   defp add(tape, position) do
-    operation(tape, position, &Kernel.+(&1, &2))
+    operation(tape, position, &Kernel.+(&1, &2), :position)
   end
 
   defp mul(tape, position) do
-    operation(tape, position, &Kernel.*(&1, &2))
+    operation(tape, position, &Kernel.*(&1, &2), :position)
+  end
+
+  defp inp(tape, position) do
+  end
+
+  defp out(tape, position) do
+  end
+
+  defp imm() do
+  end
+
+  defp pos() do
   end
 
   def load_input(file_path) do
@@ -35,9 +55,22 @@ defmodule Intcode do
   end
 
   def run(tape, position) do
-    case Map.get(tape, position) do
+    args =
+      tape
+      |> Map.get(position)
+      |> Integer.digits
+
+    opcode    = args
+                |> Enum.reverse_slice(0, 2)
+                |> Integer.undigits
+    arg1_mode = Enum.at(args, -3)
+    arg2_mode = Enum.at(args, -4)
+
+    case opcode do
       1  -> run(add(tape, position), position + 4)
       2  -> run(mul(tape, position), position + 4)
+      3  -> run(inp(tape, position), position + 2)
+      4  -> run(out(tape, position), position + 2)
       99 -> Map.get(tape, 0)
       _  -> throw("Unrecognized opcode: #{Map.get(tape, position)}")
     end
