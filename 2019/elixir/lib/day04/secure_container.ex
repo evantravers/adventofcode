@@ -55,13 +55,7 @@ defmodule Advent2019.Day4 do
       false
   """
   def valid_password?(number, func) do
-    [a, b, c, d, e, f] = list_of_integers =
-      for div <- [1, 10, 100, 1_000, 10_000, 100_000] do
-        number
-        |> Integer.floor_div(div)
-        |> Integer.mod(10)
-      end
-      |> Enum.reverse
+    [a, b, c, d, e, f] = list_of_integers = Integer.digits(number)
 
     with true <- a <= b,
          true <- b <= c,
