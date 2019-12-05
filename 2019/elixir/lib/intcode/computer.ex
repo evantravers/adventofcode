@@ -81,6 +81,12 @@ defmodule Intcode do
     |> Enum.into(%{})
   end
 
+  defp get_mode(instruction, position) do
+    instruction
+    |> Enum.at(position, 0)
+    |> convert_to_mode
+  end
+
   defp convert_to_mode(0), do: :pos
   defp convert_to_mode(1), do: :imm
 
@@ -96,12 +102,8 @@ defmodule Intcode do
              |> Integer.undigits
 
     # set parameter mode, default to 0 (position)
-    arg1_mode = instruction
-                |> Enum.at(-3, 0)
-                |> convert_to_mode
-    arg2_mode = instruction
-                |> Enum.at(-4, 0)
-                |> convert_to_mode
+    arg1_mode = get_mode(instruction, -3)
+    arg2_mode = get_mode(instruction, -4)
 
     arg1 = Map.get(tape, position + 1)
     arg2 = Map.get(tape, position + 2)
