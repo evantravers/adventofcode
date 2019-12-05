@@ -62,6 +62,8 @@ defmodule Intcode do
     tape
     |> Map.get(parameter_mode(tape, arg1))
     |> IO.puts
+
+    tape
   end
 
   def load_input(file_path) do
@@ -89,7 +91,8 @@ defmodule Intcode do
       |> Integer.digits
 
     opcode = instruction
-             |> Enum.reverse_slice(0, 2)
+             |> Enum.split(-2)
+             |> elem(1)
              |> Integer.undigits
 
     # set parameter mode, default to 0 (position)
@@ -107,11 +110,11 @@ defmodule Intcode do
     case opcode do
       1 ->
         tape
-        |> add({:pos, arg1}, {:pos, arg2}, arg3)
+        |> add({arg1_mode, arg1}, {arg2_mode, arg2}, arg3)
         |> run(position + 4)
       2 ->
         tape
-        |> mul({:pos, arg1}, {:pos, arg2}, arg3)
+        |> mul({arg1_mode, arg1}, {arg2_mode, arg2}, arg3)
         |> run(position + 4)
       3 -> run(inp(tape, arg1), position + 2)
       4 -> run(out(tape, {arg1_mode, arg1}), position + 2)
