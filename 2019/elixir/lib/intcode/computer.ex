@@ -63,20 +63,46 @@ defmodule Intcode do
     |> Map.update!(:pointer, & &1 + 2)
   end
 
-  def jump_if_true(env = %{pointer: _}) do
-    env
+  def jump_if_true(env) do
+    if eval_param(env, 0) != 0 do
+      %{env | pointer: eval_param(env, 1)}
+    else
+      env
+      |> Map.update!(:pointer, & &1 + 3)
+    end
   end
 
-  def jump_if_false(env = %{pointer: _}) do
-    env
+  def jump_if_false(env) do
+    if eval_param(env, 0) == 0 do
+      %{env | pointer: eval_param(env, 1)}
+    else
+      env
+      |> Map.update!(:pointer, & &1 + 3)
+    end
   end
 
-  def less_than(env = %{pointer: _}) do
+  def less_than(env = %{params: {_, _, target}}) do
     env
+    |> put_in([:tape, target],
+      if eval_param(env, 0) < eval_param(env, 1) do
+        1
+      else
+        0
+      end
+    )
+    |> Map.update!(:pointer, & &1 + 4)
   end
 
-  def equals(env = %{pointer: _}) do
+  def equals(env = %{params: {_, _, target}}) do
     env
+    |> put_in([:tape, target],
+      if eval_param(env, 0) == eval_param(env, 1) do
+        1
+      else
+        0
+      end
+    )
+    |> Map.update!(:pointer, & &1 + 4)
   end
 
   def get_value(tape, pointer, 0), do: Map.get(tape, pointer)
@@ -160,6 +186,17 @@ defmodule Intcode do
   ...> |> Map.get(:output)
   ...> |> hd
   1337
+
+  Using position mode, consider whether the input is equal to 8; output 1 (if
+  it is) or 0 (if it is not).
+  iex> %{tape: string_to_tape("3,9,8,9,10,9,4,9,99,-1,8"),
+  ...> pointer: 0,
+  ...> input: [1337]}
+  ...> |> update_instruction
+  ...> |> run
+  ...> |> Map.get(:output)
+  ...> |> hd
+  0
   """
   def run(env = %{opcode: opcode}) do
     case opcode do
