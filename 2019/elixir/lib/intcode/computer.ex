@@ -27,18 +27,18 @@ defmodule Intcode do
   Opcode 1 adds together numbers read from two positions and stores the result
   in a third position.
   """
-  def add(env = %{args: {arg1, arg2, target}}) do
+  def add(env = %{params: {_, _, target}}) do
     env
-    |> put_in([:tape, target], (arg1 + arg2))
+    |> put_in([:tape, target], eval_param(env, 0) + eval_param(env, 1))
     |> Map.update!(:pointer, & &1 + 4)
   end
 
   @doc """
   Opcode 2 works exactly like opcode 1, except it multiplies the two inputs
   """
-  def mul(env = %{args: {arg1, arg2, target}}) do
+  def mul(env = %{params: {_, _, target}}) do
     env
-    |> put_in([:tape, target], (arg1 * arg2))
+    |> put_in([:tape, target], eval_param(env, 0) * eval_param(env, 1))
     |> Map.update!(:pointer, & &1 + 4)
   end
 
@@ -47,7 +47,7 @@ defmodule Intcode do
   by its only parameter. For example, the instruction 3,50 would take an input
   value and store it at address 50.
   """
-  def inp(env = %{tape: tape, input: [input|_], args: {input_pointer, _, _}}) do
+  def inp(env = %{tape: tape, input: [input|_], params: {input_pointer, _, _}}) do
     %{env | tape: Map.put(tape, input_pointer, input)}
   end
 
@@ -55,8 +55,8 @@ defmodule Intcode do
   Opcode 4 outputs the value of its only parameter. For example, the
   instruction 4,50 would output the value at address 50.
   """
-  def out(env = %{args: {a1, _, _}, output: output}) do
-    %{env | output: [a1|output]}
+  def out(env = %{params: {p1, _, _}, output: output}) do
+    %{env | output: [p1|output]}
   end
 
   def jump_if_true(env = %{pointer: _}) do
@@ -78,6 +78,10 @@ defmodule Intcode do
   def get_value(tape, pointer, 0), do: Map.get(tape, pointer)
   def get_value(_, value, 1), do: value
 
+  def eval_param(%{tape: tape, params: params, modes: modes}, p_number) do
+    get_value(tape, elem(params, p_number), elem(modes, p_number))
+  end
+
   def update_instruction(%{tape: tape, pointer: pointer} = env) do
     instruction = tape
                   |> Map.get(pointer)
@@ -89,19 +93,22 @@ defmodule Intcode do
              |> Integer.undigits
 
     # set parameter mode, default to 0 (position)
-    arg1_mode = Enum.at(instruction, -3, 0)
-    arg2_mode = Enum.at(instruction, -4, 0)
-    # arg3_mode = Enum.at(instruction, -5, 0)
+    modes = {
+      Enum.at(instruction, -3, 0),
+      Enum.at(instruction, -4, 0),
+      Enum.at(instruction, -5, 0)
+    }
 
-    args = {
-      get_value(tape, Map.get(tape, pointer + 1), arg1_mode),
-      get_value(tape, Map.get(tape, pointer + 2), arg2_mode),
-      get_value(tape, Map.get(tape, pointer + 3), 1)
+    params = {
+      Map.get(tape, pointer + 1),
+      Map.get(tape, pointer + 2),
+      Map.get(tape, pointer + 3)
     }
 
     env
     |> Map.put(:opcode, opcode)
-    |> Map.put(:args, args)
+    |> Map.put(:params, params)
+    |> Map.put(:modes, modes)
   end
 
   @doc """
