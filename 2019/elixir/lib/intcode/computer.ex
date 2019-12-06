@@ -7,68 +7,10 @@ defmodule Intcode do
   "address 0").
   """
 
-  @doc """
-  0:
-  position mode, which causes the parameter to be interpreted as a position
-
-  - if the parameter is 50, its value is the value stored at address 50 in
-    memory.
-
-  1:
-  immediate mode. In immediate mode, a parameter is interpreted as a value
-
-  - if the parameter is 50, its value is simply 50.
-
-      iex> parameter_mode(%{0 => 10, 1 => 20}, {:pos, 0})
-      10
-
-      iex> parameter_mode(%{0 => 10, 1 => 20}, {:imm, 0})
-      0
-  """
-  def parameter_mode(tape, {:pos, target}), do: Map.get(tape, target)
-  def parameter_mode(_, {:imm, value}), do: value
-
-  @doc """
-  Opcode 1 adds together numbers read from two positions and stores the result
-  in a third position.
-  """
-  def add(tape, arg1, arg2, target) do
-    tape
-    |> Map.put(target, parameter_mode(tape, arg1) + parameter_mode(tape, arg2))
-  end
-
-  @doc """
-  Opcode 2 works exactly like opcode 1, except it multiplies the two inputs
-  """
-  def mul(tape, arg1, arg2, target) do
-    tape
-    |> Map.put(target, parameter_mode(tape, arg1) * parameter_mode(tape, arg2))
-  end
-
-  @doc """
-  Opcode 3 takes a single integer as input and saves it to the position given
-  by its only parameter. For example, the instruction 3,50 would take an input
-  value and store it at address 50.
-  """
-  def inp(tape, target) do
-    Map.put(tape, target, 1) # Part 1 only takes a 1!
-  end
-
-  @doc """
-  Opcode 4 outputs the value of its only parameter. For example, the
-  instruction 4,50 would output the value at address 50.
-  """
-  def out(tape, arg1) do
-    tape
-    |> parameter_mode(arg1)
-    |> IO.puts
-
-    tape
-  end
-
-  def load_input(file_path) do
-    with {:ok, file} <- File.read(file_path) do
-      string_to_tape(file)
+  def load_file(file_path) do
+    with {:ok, string} <- File.read(file_path) do
+      %{tape: string_to_tape(string), pointer: 0}
+      |> update_instruction
     end
   end
 
@@ -81,20 +23,65 @@ defmodule Intcode do
     |> Enum.into(%{})
   end
 
-  defp get_mode(instruction, position) do
-    instruction
-    |> Enum.at(position, 0)
-    |> convert_to_mode
+  @doc """
+  Opcode 1 adds together numbers read from two positions and stores the result
+  in a third position.
+  """
+  def add(env = %{args: {arg1, arg2, target}}) do
+    env
+    |> put_in([:tape, target], (arg1 + arg2))
+    |> Map.update!(:pointer, & &1 + 4)
   end
 
-  defp convert_to_mode(0), do: :pos
-  defp convert_to_mode(1), do: :imm
+  @doc """
+  Opcode 2 works exactly like opcode 1, except it multiplies the two inputs
+  """
+  def mul(env = %{args: {arg1, arg2, target}}) do
+    env
+    |> put_in([:tape, target], (arg1 * arg2))
+    |> Map.update!(:pointer, & &1 + 4)
+  end
 
-  def run(tape, position) do
-    instruction =
-      tape
-      |> Map.get(position)
-      |> Integer.digits
+  @doc """
+  Opcode 3 takes a single integer as input and saves it to the position given
+  by its only parameter. For example, the instruction 3,50 would take an input
+  value and store it at address 50.
+  """
+  def inp(env = %{tape: tape, input: [input|_], args: {input_pointer, _, _}}) do
+    %{env | tape: Map.put(tape, input_pointer, input)}
+  end
+
+  @doc """
+  Opcode 4 outputs the value of its only parameter. For example, the
+  instruction 4,50 would output the value at address 50.
+  """
+  def out(env = %{args: {a1, _, _}, output: output}) do
+    %{env | output: [a1|output]}
+  end
+
+  def jump_if_true(env = %{pointer: _}) do
+    env
+  end
+
+  def jump_if_false(env = %{pointer: _}) do
+    env
+  end
+
+  def less_than(env = %{pointer: _}) do
+    env
+  end
+
+  def equals(env = %{pointer: _}) do
+    env
+  end
+
+  def get_value(tape, pointer, 0), do: Map.get(tape, pointer)
+  def get_value(_, value, 1), do: value
+
+  def update_instruction(%{tape: tape, pointer: pointer} = env) do
+    instruction = tape
+                  |> Map.get(pointer)
+                  |> Integer.digits
 
     opcode = instruction
              |> Enum.split(-2)
@@ -102,33 +89,94 @@ defmodule Intcode do
              |> Integer.undigits
 
     # set parameter mode, default to 0 (position)
-    arg1_mode = get_mode(instruction, -3)
-    arg2_mode = get_mode(instruction, -4)
+    arg1_mode = Enum.at(instruction, -3, 0)
+    arg2_mode = Enum.at(instruction, -4, 0)
+    # arg3_mode = Enum.at(instruction, -5, 0)
 
-    arg1 = Map.get(tape, position + 1)
-    arg2 = Map.get(tape, position + 2)
-    arg3 = Map.get(tape, position + 3)
+    args = {
+      get_value(tape, Map.get(tape, pointer + 1), arg1_mode),
+      get_value(tape, Map.get(tape, pointer + 2), arg2_mode),
+      get_value(tape, Map.get(tape, pointer + 3), 1)
+    }
 
+    env
+    |> Map.put(:opcode, opcode)
+    |> Map.put(:args, args)
+  end
+
+  @doc """
+  iex> %{tape: string_to_tape("1,0,0,0,99"), pointer: 0}
+  ...> |> update_instruction
+  ...> |> run
+  ...> |> Map.get(:tape)
+  ...> |> Map.values
+  [2,0,0,0,99]
+
+  iex> %{tape: string_to_tape("2,3,0,3,99"), pointer: 0}
+  ...> |> update_instruction
+  ...> |> run
+  ...> |> Map.get(:tape)
+  ...> |> Map.values
+  [2,3,0,6,99]
+
+  iex> %{tape: string_to_tape("2,4,4,5,99,0"), pointer: 0}
+  ...> |> update_instruction
+  ...> |> run
+  ...> |> Map.get(:tape)
+  ...> |> Map.values
+  [2,4,4,5,99,9801]
+
+  iex> %{tape: string_to_tape("1,1,1,4,99,5,6,0,99"), pointer: 0}
+  ...> |> update_instruction
+  ...> |> run
+  ...> |> Map.get(:tape)
+  ...> |> Map.values
+  [30,1,1,4,2,5,6,0,99]
+  """
+  def run(env = %{opcode: opcode}) do
     case opcode do
-      1 -> # addition
-        tape
-        |> add({arg1_mode, arg1}, {arg2_mode, arg2}, arg3)
-        |> run(position + 4)
-      2 -> # multiply
-        tape
-        |> mul({arg1_mode, arg1}, {arg2_mode, arg2}, arg3)
-        |> run(position + 4)
-      3 -> # get input (currently hardcoded to 1)
-        tape
-        |> inp(arg1)
-        |> run(position + 2)
+      1 ->
+        env
+        |> add
+        |> update_instruction
+        |> run
+      2 ->
+        env
+        |> mul
+        |> update_instruction
+        |> run
+      3 ->
+        env
+        |> inp
+        |> update_instruction
+        |> run
       4 ->
-        tape
-        |> out({arg1_mode, arg1})
-        |> run(position + 2)
-      99 -> tape # finished
-      _  -> throw("Unrecognized opcode: #{Map.get(tape, position)}")
+        env
+        |> out
+        |> update_instruction
+        |> run
+      5 ->
+        env
+        |> jump_if_true
+        |> update_instruction
+        |> run
+      6 ->
+        env
+        |> jump_if_false
+        |> update_instruction
+        |> run
+      7 ->
+        env
+        |> less_than
+        |> update_instruction
+        |> run
+      8 ->
+        env
+        |> equals
+        |> update_instruction
+        |> run
+      99 -> env
+      _  -> throw("Unrecognized opcode: #{opcode}")
     end
   end
-  def run(tape), do: run(tape, 0)
 end

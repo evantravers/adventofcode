@@ -3,19 +3,19 @@ defmodule Advent2019.Day2 do
   @behaviour Advent
 
   def setup do
-    Intcode.load_input("#{__DIR__}/input.txt")
+    Intcode.load_file("#{__DIR__}/input.txt")
   end
 
   @doc """
   To do this, before running the program, replace position 1 with the value 12
   and replace position 2 with the value 2.
   """
-  def p1(input) do
-    input
-    |> Map.put(1, 12)
-    |> Map.put(2, 2)
+  def p1(env) do
+    env
+    |> put_in([:tape, 1], 12)
+    |> put_in([:tape, 2], 2)
     |> Intcode.run
-    |> Map.get(0)
+    |> get_in([:tape, 0])
   end
 
   @doc """
@@ -28,10 +28,10 @@ defmodule Advent2019.Day2 do
       for noun <- 0..99, verb <- 0..99 do
         result =
           input
-          |> Map.put(1, noun)
-          |> Map.put(2, verb)
+          |> put_in([:tape, 1], noun)
+          |> put_in([:tape, 2], verb)
           |> Intcode.run
-          |> Map.get(0)
+          |> get_in([:tape, 0])
 
         if result == 19690720 do
           throw({:break, (100 * noun + verb)})
