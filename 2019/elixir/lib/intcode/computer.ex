@@ -47,16 +47,20 @@ defmodule Intcode do
   by its only parameter. For example, the instruction 3,50 would take an input
   value and store it at address 50.
   """
-  def inp(env = %{tape: tape, input: [input|_], params: {input_pointer, _, _}}) do
-    %{env | tape: Map.put(tape, input_pointer, input)}
+  def inp(env = %{input: [input|_], params: {input_pointer, _, _}}) do
+    env
+    |> put_in([:tape, input_pointer], input)
+    |> Map.update!(:pointer, & &1 + 2)
   end
 
   @doc """
   Opcode 4 outputs the value of its only parameter. For example, the
   instruction 4,50 would output the value at address 50.
   """
-  def out(env = %{params: {p1, _, _}, output: output}) do
-    %{env | output: [p1|output]}
+  def out(env) do
+    env
+    |> Map.update(:output, [eval_param(env, 0)], &List.insert_at(&1, 0, eval_param(env, 0)))
+    |> Map.update!(:pointer, & &1 + 2)
   end
 
   def jump_if_true(env = %{pointer: _}) do
@@ -112,6 +116,7 @@ defmodule Intcode do
   end
 
   @doc """
+  Day 2 Tests
   iex> %{tape: string_to_tape("1,0,0,0,99"), pointer: 0}
   ...> |> update_instruction
   ...> |> run
@@ -139,6 +144,22 @@ defmodule Intcode do
   ...> |> Map.get(:tape)
   ...> |> Map.values
   [30,1,1,4,2,5,6,0,99]
+
+
+  Day 5
+  iex> %{tape: string_to_tape("1002,4,3,4,33"), pointer: 0}
+  ...> |> update_instruction
+  ...> |> run
+  ...> |> Map.get(:tape)
+  ...> |> Map.values
+  [1002,4,3,4,99]
+
+  iex> %{tape: string_to_tape("3,0,4,0,99"), pointer: 0, input: [1337]}
+  ...> |> update_instruction
+  ...> |> run
+  ...> |> Map.get(:output)
+  ...> |> hd
+  1337
   """
   def run(env = %{opcode: opcode}) do
     case opcode do

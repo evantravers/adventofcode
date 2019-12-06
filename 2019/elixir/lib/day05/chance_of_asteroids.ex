@@ -16,9 +16,6 @@ defmodule Advent2019.Day5 do
   end
 
   def p2(tape) do
-    tape
-    |> Intcode.run
-    |> Map.get(:output)
-    |> hd
+    nil
   end
 end
