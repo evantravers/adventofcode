@@ -60,7 +60,7 @@ defmodule Intcode do
   """
   def out(tape, arg1) do
     tape
-    |> Map.get(parameter_mode(tape, arg1))
+    |> parameter_mode(arg1)
     |> IO.puts
 
     tape
