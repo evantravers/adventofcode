@@ -9,9 +9,13 @@ defmodule Intcode do
 
   def load_file(file_path) do
     with {:ok, string} <- File.read(file_path) do
-      %{tape: string_to_tape(string), pointer: 0, output: [], input: []}
-      |> update_instruction
+      load(string)
     end
+  end
+
+  def load(string) do
+    %{tape: string_to_tape(string), pointer: 0, output: [], input: []}
+    |> update_instruction
   end
 
   def string_to_tape(string) do
