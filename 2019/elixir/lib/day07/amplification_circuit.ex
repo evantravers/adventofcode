@@ -25,7 +25,7 @@ defmodule Advent2019.Day7 do
   end
 
   def provide_input(computer = %{input: input}, new_input) do
-    %{computer | input: new_input ++ input}
+    %{computer | input: [new_input|input]}
   end
 
   # https://elixirforum.com/t/most-elegant-way-to-generate-all-permutations/2706
@@ -54,7 +54,8 @@ defmodule Advent2019.Day7 do
         |> Enum.zip(phase_settings)
         |> Enum.reduce(0, fn({amp, phase_setting}, previous_output) ->
           amp
-          |> provide_input([phase_setting, previous_output])
+          |> provide_input(phase_setting) # LIFO
+          |> provide_input(previous_output)
           |> Intcode.run
           |> Map.get(:output)
           |> hd
