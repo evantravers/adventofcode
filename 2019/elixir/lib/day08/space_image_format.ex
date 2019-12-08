@@ -46,7 +46,7 @@ defmodule Advent2019.Day8 do
     |> Enum.map(fn(pixel_stack) ->
       pixel_stack
       |> Tuple.to_list
-      |> Enum.reject(fn(pixel) -> pixel == 2 end)
+      |> Enum.reject(& &1 == 2)
       |> hd
       |> pixel
     end)
