@@ -112,14 +112,14 @@ defmodule Intcode do
 
   def set_offset(env) do
     env
-    |> Map.update(:relative_pointer, eval_param(env, 0), & &1 + eval_param(env, 0))
+    |> Map.update(:relative_base, eval_param(env, 0), & &1 + eval_param(env, 0))
     |> Map.update!(:pointer, & &1 + 2)
   end
 
   def get_value(%{tape: tape}, pointer, 0), do: Map.get(tape, pointer)
   def get_value(_, value, 1), do: value
-  def get_value(%{tape: tape, relative_offset: offset}, pointer, 2) do
-    Map.get(tape, pointer + offset)
+  def get_value(%{tape: tape, relative_base: base}, pointer, 2) do
+    Map.get(tape, base + pointer)
   end
 
   @doc "Gets the immediate or position value of a parameter by number"
