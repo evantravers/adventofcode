@@ -212,6 +212,11 @@ defmodule Intcode do
   ...> |> Map.get(:output)
   ...> |> hd
   0
+
+  iex> load("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99")
+  ...> |> run
+  ...> Map.get(:output)
+  [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
   """
   def run(env = %{opcode: opcode}) do
     case opcode do
