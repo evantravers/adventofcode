@@ -276,6 +276,7 @@ defmodule Intcode do
       9 ->
         env
         |> set_offset
+        |> update_instruction
         |> run
       99 -> env
       _  -> throw("Unrecognized opcode: #{opcode}")
