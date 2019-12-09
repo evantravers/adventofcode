@@ -112,7 +112,7 @@ defmodule Intcode do
 
   def set_offset(env) do
     env
-    |> Map.put_new(:relative_offset, eval_param(env, 0))
+    |> Map.update(:relative_pointer, eval_param(env, 0), & &1 + eval_param(env, 0))
     |> Map.update!(:pointer, & &1 + 2)
   end
 
