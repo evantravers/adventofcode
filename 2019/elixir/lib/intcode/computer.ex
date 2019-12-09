@@ -110,12 +110,21 @@ defmodule Intcode do
     |> Map.update!(:pointer, & &1 + 4)
   end
 
-  def get_value(tape, pointer, 0), do: Map.get(tape, pointer)
+  def set_offset(env) do
+    env
+    |> Map.put_new(:relative_offset, eval_param(env, 0))
+    |> Map.update!(:pointer, & &1 + 2)
+  end
+
+  def get_value(%{tape: tape}, pointer, 0), do: Map.get(tape, pointer)
   def get_value(_, value, 1), do: value
+  def get_value(%{tape: tape, relative_offset: offset}, pointer, 2) do
+    Map.get(tape, pointer + offset)
+  end
 
   @doc "Gets the immediate or position value of a parameter by number"
-  def eval_param(%{tape: tape, params: params, modes: modes}, p_number) do
-    get_value(tape, elem(params, p_number), elem(modes, p_number))
+  def eval_param(env = %{params: params, modes: modes}, p_number) do
+    get_value(env, elem(params, p_number), elem(modes, p_number))
   end
 
   def update_instruction(%{tape: tape, pointer: pointer} = env) do
@@ -245,6 +254,10 @@ defmodule Intcode do
         env
         |> equals
         |> update_instruction
+        |> run
+      9 ->
+        env
+        |> set_offset
         |> run
       99 -> env
       _  -> throw("Unrecognized opcode: #{opcode}")
