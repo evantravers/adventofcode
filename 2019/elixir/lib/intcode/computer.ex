@@ -158,65 +158,70 @@ defmodule Intcode do
 
   @doc """
   Day 2 Tests
-  iex> %{tape: string_to_tape("1,0,0,0,99"), pointer: 0}
-  ...> |> update_instruction
-  ...> |> run
-  ...> |> Map.get(:tape)
-  ...> |> Map.values
-  [2,0,0,0,99]
+      iex> %{tape: string_to_tape("1,0,0,0,99"), pointer: 0}
+      ...> |> update_instruction
+      ...> |> run
+      ...> |> Map.get(:tape)
+      ...> |> Map.values
+      [2,0,0,0,99]
 
-  iex> %{tape: string_to_tape("2,3,0,3,99"), pointer: 0}
-  ...> |> update_instruction
-  ...> |> run
-  ...> |> Map.get(:tape)
-  ...> |> Map.values
-  [2,3,0,6,99]
+      iex> %{tape: string_to_tape("2,3,0,3,99"), pointer: 0}
+      ...> |> update_instruction
+      ...> |> run
+      ...> |> Map.get(:tape)
+      ...> |> Map.values
+      [2,3,0,6,99]
 
-  iex> %{tape: string_to_tape("2,4,4,5,99,0"), pointer: 0}
-  ...> |> update_instruction
-  ...> |> run
-  ...> |> Map.get(:tape)
-  ...> |> Map.values
-  [2,4,4,5,99,9801]
+      iex> %{tape: string_to_tape("2,4,4,5,99,0"), pointer: 0}
+      ...> |> update_instruction
+      ...> |> run
+      ...> |> Map.get(:tape)
+      ...> |> Map.values
+      [2,4,4,5,99,9801]
 
-  iex> %{tape: string_to_tape("1,1,1,4,99,5,6,0,99"), pointer: 0}
-  ...> |> update_instruction
-  ...> |> run
-  ...> |> Map.get(:tape)
-  ...> |> Map.values
-  [30,1,1,4,2,5,6,0,99]
-
+      iex> %{tape: string_to_tape("1,1,1,4,99,5,6,0,99"), pointer: 0}
+      ...> |> update_instruction
+      ...> |> run
+      ...> |> Map.get(:tape)
+      ...> |> Map.values
+      [30,1,1,4,2,5,6,0,99]
 
   Day 5
-  iex> %{tape: string_to_tape("1002,4,3,4,33"), pointer: 0}
-  ...> |> update_instruction
-  ...> |> run
-  ...> |> Map.get(:tape)
-  ...> |> Map.values
-  [1002,4,3,4,99]
+      iex> %{tape: string_to_tape("1002,4,3,4,33"), pointer: 0}
+      ...> |> update_instruction
+      ...> |> run
+      ...> |> Map.get(:tape)
+      ...> |> Map.values
+      [1002,4,3,4,99]
 
-  iex> %{tape: string_to_tape("3,0,4,0,99"), pointer: 0, input: [1337]}
-  ...> |> update_instruction
-  ...> |> run
-  ...> |> Map.get(:output)
-  ...> |> hd
-  1337
+      iex> %{tape: string_to_tape("3,0,4,0,99"), pointer: 0, input: [1337]}
+      ...> |> update_instruction
+      ...> |> run
+      ...> |> Map.get(:output)
+      ...> |> hd
+      1337
 
   Using position mode, consider whether the input is equal to 8; output 1 (if
   it is) or 0 (if it is not).
-  iex> %{tape: string_to_tape("3,9,8,9,10,9,4,9,99,-1,8"),
-  ...> pointer: 0,
-  ...> input: [1337]}
-  ...> |> update_instruction
-  ...> |> run
-  ...> |> Map.get(:output)
-  ...> |> hd
-  0
+      iex> %{tape: string_to_tape("3,9,8,9,10,9,4,9,99,-1,8"),
+      ...> pointer: 0,
+      ...> input: [1337]}
+      ...> |> update_instruction
+      ...> |> run
+      ...> |> Map.get(:output)
+      ...> |> hd
+      0
 
-  iex> load("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99")
-  ...> |> run
-  ...> Map.get(:output)
-  [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
+  Day 9
+      # iex> load("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99")
+      # ...> |> run
+      # ...> |> Map.get(:output)
+      # [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
+
+      iex> load("104,1125899906842624,99")
+      ...> |> run
+      ...> |> Map.get(:output)
+      [1125899906842624]
   """
   def run(env = %{opcode: opcode}) do
     case opcode do

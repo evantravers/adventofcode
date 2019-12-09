@@ -74,5 +74,6 @@ defmodule Advent2019.Day7 do
   end
 
   def p2(_) do
+    "incomplete"
   end
 end
