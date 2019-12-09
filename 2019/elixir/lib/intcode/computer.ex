@@ -51,10 +51,10 @@ defmodule Intcode do
   by its only parameter. For example, the instruction 3,50 would take an input
   value and store it at address 50.
   """
-  def inp(env = %{input: [input|rem], params: {input_pointer, _, _}}) do
+  def inp(env) do
     env
-    |> put_in([:tape, input_pointer], input)
-    |> Map.put(:input, rem)
+    |> put_in([:tape, elem(Map.get(env, :params), 0)], hd(Map.get(env, :input)))
+    |> Map.update!(:input, &tl/1)
     |> Map.update!(:pointer, & &1 + 2)
   end
 
@@ -158,44 +158,39 @@ defmodule Intcode do
 
   @doc """
   Day 2 Tests
-      iex> %{tape: string_to_tape("1,0,0,0,99"), pointer: 0}
-      ...> |> update_instruction
+      iex> load("1,0,0,0,99")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [2,0,0,0,99]
 
-      iex> %{tape: string_to_tape("2,3,0,3,99"), pointer: 0}
-      ...> |> update_instruction
+      iex> load("2,3,0,3,99")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [2,3,0,6,99]
 
-      iex> %{tape: string_to_tape("2,4,4,5,99,0"), pointer: 0}
-      ...> |> update_instruction
+      iex> load("2,4,4,5,99,0")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [2,4,4,5,99,9801]
 
-      iex> %{tape: string_to_tape("1,1,1,4,99,5,6,0,99"), pointer: 0}
-      ...> |> update_instruction
+      iex> load("1,1,1,4,99,5,6,0,99")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [30,1,1,4,2,5,6,0,99]
 
   Day 5
-      iex> %{tape: string_to_tape("1002,4,3,4,33"), pointer: 0}
-      ...> |> update_instruction
+      iex> load("1002,4,3,4,33")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [1002,4,3,4,99]
 
-      iex> %{tape: string_to_tape("3,0,4,0,99"), pointer: 0, input: [1337]}
-      ...> |> update_instruction
+      iex> load("3,0,4,0,99")
+      ...> |> Map.put(:input, [1337])
       ...> |> run
       ...> |> Map.get(:output)
       ...> |> hd
@@ -203,10 +198,8 @@ defmodule Intcode do
 
   Using position mode, consider whether the input is equal to 8; output 1 (if
   it is) or 0 (if it is not).
-      iex> %{tape: string_to_tape("3,9,8,9,10,9,4,9,99,-1,8"),
-      ...> pointer: 0,
-      ...> input: [1337]}
-      ...> |> update_instruction
+      iex> load("3,9,8,9,10,9,4,9,99,-1,8")
+      ...> |> Map.put(:input, [1337])
       ...> |> run
       ...> |> Map.get(:output)
       ...> |> hd
