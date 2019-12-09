@@ -51,9 +51,10 @@ defmodule Intcode do
   by its only parameter. For example, the instruction 3,50 would take an input
   value and store it at address 50.
   """
-  def inp(env = %{input: [input|_], params: {input_pointer, _, _}}) do
+  def inp(env = %{input: [input|rem], params: {input_pointer, _, _}}) do
     env
     |> put_in([:tape, input_pointer], input)
+    |> Map.put(:input, rem)
     |> Map.update!(:pointer, & &1 + 2)
   end
 
