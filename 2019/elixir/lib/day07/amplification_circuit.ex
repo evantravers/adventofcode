@@ -24,9 +24,10 @@ defmodule Advent2019.Day7 do
     ]
   end
 
-  def provide_input(computer = %{input: input}, new_input) do
+  def put_input(computer = %{input: input}, new_input) do
     %{computer | input: [new_input|input]}
   end
+  def get_output(%{output: [o|_]}), do: o
 
   # https://elixirforum.com/t/most-elegant-way-to-generate-all-permutations/2706
   def permutations([]), do: [[]]
@@ -53,12 +54,12 @@ defmodule Advent2019.Day7 do
         list_of_amps
         |> Enum.zip(phase_settings)
         |> Enum.reduce(0, fn({amp, phase_setting}, previous_output) ->
+
           amp
-          |> provide_input(previous_output)
-          |> provide_input(phase_setting) # FIFO
+          |> put_input(previous_output)
+          |> put_input(phase_setting) # FIFO
           |> Intcode.run
-          |> Map.get(:output)
-          |> hd
+          |> get_output
         end),
         phase_settings
       }
@@ -69,8 +70,7 @@ defmodule Advent2019.Day7 do
   def p1(list_of_amps) do
     list_of_amps
     |> find_phase_settings
-    |> elem(1)
-    |> Enum.join
+    |> elem(0)
   end
 
   def p2(_) do

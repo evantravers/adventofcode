@@ -63,7 +63,7 @@ defmodule Intcode do
   """
   def out(env) do
     env
-    |> Map.update(:output, [eval_param(env, 0)], &List.insert_at(&1, 0, eval_param(env, 0)))
+    |> Map.update(:output, [eval_param(env, 0)], &[eval_param(env, 0)|&1])
     |> Map.update!(:pointer, & &1 + 2)
   end
 
@@ -112,6 +112,7 @@ defmodule Intcode do
   def get_value(tape, pointer, 0), do: Map.get(tape, pointer)
   def get_value(_, value, 1), do: value
 
+  @doc "Gets the immediate or position value of a parameter by number"
   def eval_param(%{tape: tape, params: params, modes: modes}, p_number) do
     get_value(tape, elem(params, p_number), elem(modes, p_number))
   end
