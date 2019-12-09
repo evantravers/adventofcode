@@ -116,10 +116,10 @@ defmodule Intcode do
     |> Map.update!(:pointer, & &1 + 2)
   end
 
-  def get_value(%{tape: tape}, pointer, 0), do: Map.get(tape, pointer)
+  def get_value(%{tape: tape}, pointer, 0), do: Map.get(tape, pointer, 0)
   def get_value(_, value, 1), do: value
   def get_value(%{tape: tape, relative_base: base}, pointer, 2) do
-    Map.get(tape, base + pointer)
+    Map.get(tape, base + pointer, 0)
   end
 
   @doc "Gets the immediate or position value of a parameter by number"
