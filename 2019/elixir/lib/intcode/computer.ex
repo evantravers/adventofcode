@@ -145,9 +145,9 @@ defmodule Intcode do
     }
 
     params = {
-      Map.get(tape, pointer + 1),
-      Map.get(tape, pointer + 2),
-      Map.get(tape, pointer + 3)
+      Map.get(tape, pointer + 1, 0),
+      Map.get(tape, pointer + 2, 0),
+      Map.get(tape, pointer + 3, 0)
     }
 
     env
