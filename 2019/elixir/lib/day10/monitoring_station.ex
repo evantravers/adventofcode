@@ -97,13 +97,24 @@ defmodule Advent2019.Day10 do
   I should note, this is a two-way relationship... probably could speed up the
   search by memoizing "searched" positions in a two way fashion.
   """
-  def blocked?(map, {x1, y1} = a1, {x2, y2} = a2) do
+  def blocked?(map, a1, a2) do
     map
     |> MapSet.delete(a1)
     |> MapSet.delete(a2)
-    |> Enum.any?(fn({x3, y3}) ->
-      (y3 - y2)*(x2 - x1) == (y2 - y1)*(x3 - x2)
+    |> Enum.any?(fn(a3) ->
+      collinear?(a1, a2, a3) && between?(a1, a2, a3)
     end)
+  end
+
+  @doc """
+  is a3 between a1 and a2?
+  """
+  def between?({x1, y1}, {x2, y2}, {x3, y3}) do
+    Enum.member?(x1..x2, x3) && Enum.member?(y1..y2, y3)
+  end
+
+  def collinear?({x1, y1}, {x2, y2}, {x3, y3}) do
+    (y3 - y2)*(x2 - x1) == (y2 - y1)*(x3 - x2)
   end
 
   def p1(asteroid_map) do
