@@ -41,6 +41,16 @@ defmodule Advent2019.Day10 do
       {{5, 8}, 33}
   """
   def find_station(map) do
+    map
+    |> Enum.map(fn(asteroid) ->
+      {
+        asteroid,
+        map
+        |> MapSet.delete(asteroid)
+        |> Enum.count(fn(target) -> !blocked?(map, asteroid, target) end)
+      }
+    end)
+    |> Enum.max_by(&elem(&1, 1))
   end
 
   @doc """
@@ -124,6 +134,5 @@ defmodule Advent2019.Day10 do
   end
 
   def p2(i) do
-    i
   end
 end
