@@ -47,6 +47,12 @@ defmodule Advent2019.Day10 do
   An asteroid is blocked by another asteroid if there's another asteroid
   directly in between them.
 
+  The classic definition of a line is y = <slope>x + <offset>.
+  Another definition is: y1 - y2 = <slope>(x1 - x2)
+
+  The slope is the change in height divided by the change in horizontal
+  distance.
+
   The classic is on the same x/y access.
 
       iex> [{0,0}, {0, 2}, {0, 4}]
@@ -65,8 +71,7 @@ defmodule Advent2019.Day10 do
     |> MapSet.delete(a1)
     |> MapSet.delete(a2)
     |> Enum.any?(fn({x3, y3}) ->
-      # FIXME There must be a math function... I think it's something to do
-      # with the x1-x2 / y1-y2 ratio.
+      (y3 - y2)*(x2 - x1) == (y2 - y1)*(x3 - x2)
     end)
   end
 
