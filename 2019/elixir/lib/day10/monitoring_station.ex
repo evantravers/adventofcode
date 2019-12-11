@@ -23,6 +23,26 @@ defmodule Advent2019.Day10 do
     |> MapSet.new
   end
 
+  @doc """
+  Find the best location for a new monitoring station. How many other asteroids
+  can be detected from that location?
+
+      iex> process_map("......#.#.
+      ...>#..#.#....
+      ...>..#######.
+      ...>.#.#.###..
+      ...>.#..#.....
+      ...>..#....#.#
+      ...>#..#....#.
+      ...>.##.#..###
+      ...>##...#..#.
+      ...>.#....####")
+      ...> |> find_station
+      {{5, 8}, 33}
+  """
+  def find_station(map) do
+  end
+
   def p1(i) do
     i
   end
