@@ -60,6 +60,35 @@ defmodule Advent2019.Day10 do
       ...> |> blocked?({0, 0}, {0, 4})
       true
 
+      iex> [{0,0}, {2, 0}, {4, 0}]
+      ...> |> MapSet.new
+      ...> |> blocked?({0, 0}, {4, 0})
+      true
+
+      iex> [{0,0}, {2, 1}, {4, 0}]
+      ...> |> MapSet.new
+      ...> |> blocked?({0, 0}, {4, 0})
+      false
+
+  Diagonal
+
+      iex> [{0,0}, {2, 2}, {4, 4}]
+      ...> |> MapSet.new
+      ...> |> blocked?({0, 0}, {4, 4})
+      true
+
+      iex> [{0,0}, {1, 2}, {4, 4}]
+      ...> |> MapSet.new
+      ...> |> blocked?({0, 0}, {4, 4})
+      false
+
+  More complex...
+
+      iex> [{0,0}, {7, 6}, {14, 12}]
+      ...> |> MapSet.new
+      ...> |> blocked?({0, 0}, {14, 12})
+      true
+
   I should note, this is a two-way relationship... probably could speed up the
   search by memoizing "searched" positions in a two way fashion.
   """
