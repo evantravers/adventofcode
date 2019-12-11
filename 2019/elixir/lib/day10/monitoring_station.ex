@@ -82,6 +82,11 @@ defmodule Advent2019.Day10 do
       ...> |> blocked?({0, 0}, {4, 4})
       false
 
+      iex> [{0,0}, {-2, -2}, {4, 4}]
+      ...> |> MapSet.new
+      ...> |> blocked?({0, 0}, {4, 4})
+      false
+
   More complex...
 
       iex> [{0,0}, {7, 6}, {14, 12}]
