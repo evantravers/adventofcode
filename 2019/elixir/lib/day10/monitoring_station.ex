@@ -57,16 +57,13 @@ defmodule Advent2019.Day10 do
 
       iex> [{0,0}, {0, 2}, {0, 4}]
       ...> |> MapSet.new
-      ...> |> blocked({0, 0}, {0, 4})
+      ...> |> blocked?({0, 0}, {0, 4})
       true
 
   I should note, this is a two-way relationship... probably could speed up the
   search by memoizing "searched" positions in a two way fashion.
   """
-  def blocked(map, {x1, y1} = a1, {x2, y2} = a2) do
-    x_distance = x1 - x2
-    y_distance = y1 - y2
-
+  def blocked?(map, {x1, y1} = a1, {x2, y2} = a2) do
     map
     |> MapSet.delete(a1)
     |> MapSet.delete(a2)
