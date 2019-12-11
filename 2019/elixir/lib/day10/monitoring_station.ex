@@ -4,18 +4,23 @@ defmodule Advent2019.Day10 do
 
   def setup do
     with {:ok, string} <- File.read("#{__DIR__}/input.txt") do
-      rows =
-        string
-        |> String.split("\n", trim: true)
-        |> Enum.with_index
-
-      for {row, y} <- rows,
-          {char, x} <- Enum.with_index(String.graphemes(row)),
-          char == "#" do
-        {x, y}
-      end
-      |> MapSet.new
+      process_map(string)
     end
+  end
+
+  @spec process_map(String.t) :: MapSet.t
+  def process_map(string) do
+    rows =
+      string
+      |> String.split("\n", trim: true)
+      |> Enum.with_index
+
+    for {row, y} <- rows,
+        {char, x} <- Enum.with_index(String.graphemes(row)),
+        char == "#" do
+      {x, y}
+    end
+    |> MapSet.new
   end
 
   def p1(i) do
