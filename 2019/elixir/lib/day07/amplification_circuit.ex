@@ -67,13 +67,27 @@ defmodule Advent2019.Day7 do
     |> Enum.max_by(&elem(&1, 0))
   end
 
+  @doc """
+      iex> setup_from_string("3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5")
+      ...> |> find_feedback_settings
+      {139629729, [9,8,7,6,5]}
+
+      iex> setup_from_string("3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10")
+      ...> |> find_feedback_settings
+      {18216, [9,7,8,5,6]}
+  """
+  def find_feedback_settings(list_of_amps) do
+  end
+
   def p1(list_of_amps) do
     list_of_amps
     |> find_phase_settings
     |> elem(0)
   end
 
-  def p2(_) do
-    "incomplete"
+  def p2(list_of_amps) do
+    list_of_amps
+    |> find_feedback_settings
+    |> elem(0)
   end
 end
