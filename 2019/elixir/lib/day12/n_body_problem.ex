@@ -10,6 +10,11 @@ defmodule Advent2019.Day12 do
     end
   end
 
+  @doc """
+      iex> "<x=-1, y=0, z=2>"
+      ...> |> new_moon
+      %{pos: {-1, 0, 2}, vel: {0, 0, 0}}
+  """
   def new_moon(str) do
     [x, y, z] =
       ~r/-*\d+/
