@@ -16,11 +16,11 @@ defmodule Advent2019.Day7 do
 
   def setup_from_string(string) do
     [
-      Intcode.load(string),
-      Intcode.load(string),
-      Intcode.load(string),
-      Intcode.load(string),
-      Intcode.load(string)
+      Intcode.load!(string),
+      Intcode.load!(string),
+      Intcode.load!(string),
+      Intcode.load!(string),
+      Intcode.load!(string)
     ]
   end
 

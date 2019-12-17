@@ -7,6 +7,30 @@ defmodule Intcode do
   "address 0").
   """
 
+  use GenServer
+
+  def init(intcode_string, input_pid \\ self(), output_pid \\ self()) do
+    with {:ok, env} <- load(intcode_string) do
+      {
+        :ok,
+        env
+        |> Map.put(:input_pid, input_pid)
+        |> Map.put(:output_pid, output_pid)
+      }
+    end
+  end
+
+  @doc """
+  Connect the output of the from to the input of to
+  """
+  def handle_call(:hookup, from, to) do
+    # FIXME
+  end
+
+  def handle_cast(:run, env) do
+    run(env)
+  end
+
   def load_file(file_path) do
     with {:ok, string} <- File.read(file_path) do
       load(string)
@@ -14,6 +38,14 @@ defmodule Intcode do
   end
 
   def load(string) do
+    {
+      :ok,
+      %{tape: string_to_tape(string), pointer: 0, output: [], input: []}
+      |> update_instruction
+    }
+  end
+
+  def load!(string) do
     %{tape: string_to_tape(string), pointer: 0, output: [], input: []}
     |> update_instruction
   end
@@ -163,38 +195,38 @@ defmodule Intcode do
 
   @doc """
   Day 2 Tests
-      iex> load("1,0,0,0,99")
+      iex> load!("1,0,0,0,99")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [2,0,0,0,99]
 
-      iex> load("2,3,0,3,99")
+      iex> load!("2,3,0,3,99")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [2,3,0,6,99]
 
-      iex> load("2,4,4,5,99,0")
+      iex> load!("2,4,4,5,99,0")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [2,4,4,5,99,9801]
 
-      iex> load("1,1,1,4,99,5,6,0,99")
+      iex> load!("1,1,1,4,99,5,6,0,99")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [30,1,1,4,2,5,6,0,99]
 
   Day 5
-      iex> load("1002,4,3,4,33")
+      iex> load!("1002,4,3,4,33")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [1002,4,3,4,99]
 
-      iex> load("3,0,4,0,99")
+      iex> load!("3,0,4,0,99")
       ...> |> Map.put(:input, [1337])
       ...> |> run
       ...> |> Map.get(:output)
@@ -203,7 +235,7 @@ defmodule Intcode do
 
   Using position mode, consider whether the input is equal to 8; output 1 (if
   it is) or 0 (if it is not).
-      iex> load("3,9,8,9,10,9,4,9,99,-1,8")
+      iex> load!("3,9,8,9,10,9,4,9,99,-1,8")
       ...> |> Map.put(:input, [1337])
       ...> |> run
       ...> |> Map.get(:output)
@@ -211,13 +243,13 @@ defmodule Intcode do
       0
 
   Day 9
-      iex> load("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99")
+      iex> load!("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99")
       ...> |> run
       ...> |> Map.get(:output)
       ...> |> Enum.reverse
       [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
 
-      iex> load("1102,34915192,34915192,7,4,7,99,0")
+      iex> load!("1102,34915192,34915192,7,4,7,99,0")
       ...> |> run
       ...> |> Map.get(:output)
       ...> |> hd
@@ -225,7 +257,7 @@ defmodule Intcode do
       ...> |> Enum.count
       16
 
-      iex> load("104,1125899906842624,99")
+      iex> load!("104,1125899906842624,99")
       ...> |> run
       ...> |> Map.get(:output)
       [1125899906842624]
