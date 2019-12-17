@@ -156,6 +156,11 @@ defmodule Intcode do
     |> Map.put(:modes, modes)
   end
 
+  def put_input(computer = %{input: input}, new_input) do
+    %{computer | input: List.insert_at(input, -1, new_input)}
+  end
+  def get_output(%{output: [o|_]}), do: o
+
   @doc """
   Day 2 Tests
       iex> load("1,0,0,0,99")

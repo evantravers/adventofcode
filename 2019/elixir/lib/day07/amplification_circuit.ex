@@ -24,11 +24,6 @@ defmodule Advent2019.Day7 do
     ]
   end
 
-  def put_input(computer = %{input: input}, new_input) do
-    %{computer | input: List.insert_at(input, -1, new_input)}
-  end
-  def get_output(%{output: [o|_]}), do: o
-
   # https://elixirforum.com/t/most-elegant-way-to-generate-all-permutations/2706
   def permutations([]), do: [[]]
   def permutations(list) do
@@ -41,10 +36,10 @@ defmodule Advent2019.Day7 do
     |> Enum.reduce(0, fn({amp, phase_setting}, previous_output) ->
 
       amp
-      |> put_input(phase_setting) # FILO
-      |> put_input(previous_output)
+      |> Intcode.put_input(phase_setting)
+      |> Intcode.put_input(previous_output)
       |> Intcode.run
-      |> get_output
+      |> Intcode.get_output
     end)
   end
 
