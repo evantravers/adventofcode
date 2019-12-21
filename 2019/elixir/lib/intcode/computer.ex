@@ -25,20 +25,16 @@ defmodule Intcode do
   def handle_cast({:set_input, from}, amp) do
     {:noreply, Map.put(amp, :input_pid, from)}
   end
-
-  @impl true
   def handle_cast({:set_output, from}, amp) do
     {:noreply, Map.put(amp, :output_pid, from)}
+  end
+  def handle_cast(:run, env) do
+    {:noreply, run(env)}
   end
 
   @impl true
   def handle_call(:info, _from, amp) do
-    {:reply, amp}
-  end
-
-  @impl true
-  def handle_cast(:run, env) do
-    {:noreply, run(env)}
+    {:reply, amp, amp}
   end
 
   def load_file(file_path) do
