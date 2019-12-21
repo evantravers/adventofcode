@@ -3,15 +3,7 @@ defmodule Advent2019.Day7 do
   @behaviour Advent
 
   def setup do
-    string = "#{__DIR__}/input.txt"
-
-    [
-      Intcode.load_file(string),
-      Intcode.load_file(string),
-      Intcode.load_file(string),
-      Intcode.load_file(string),
-      Intcode.load_file(string)
-    ]
+    with {:ok, string} <- File.read("#{__DIR__}/input.txt"), do: string
   end
 
   def setup_from_string(string) do
@@ -80,15 +72,16 @@ defmodule Advent2019.Day7 do
     |> Enum.max_by(&elem(&1, 0))
   end
 
-  def p1(list_of_amps) do
-    list_of_amps
+  def p1(intcode_string) do
+    intcode_string
+    |> setup_from_string
     |> find_phase_settings([0, 1, 2, 3, 4], &simple_amp/2)
     |> elem(0)
   end
 
-  def p2(list_of_amps) do
-    list_of_amps
-    |> find_phase_settings([5, 6, 7, 8, 9], &feedback_loop/2)
-    |> elem(0)
+  def p2(intcode_string) do
+    intcode_string
+    # |> find_phase_settings([5, 6, 7, 8, 9], &feedback_loop/2)
+    # |> elem(0)
   end
 end
