@@ -9,6 +9,7 @@ defmodule Intcode do
 
   use GenServer
 
+  @impl true
   def init(intcode_string, input_pid \\ self(), output_pid \\ self()) do
     with {:ok, env} <- load(intcode_string) do
       {
@@ -20,15 +21,24 @@ defmodule Intcode do
     end
   end
 
-  @doc """
-  Connect the output of the from to the input of to
-  """
-  def handle_call(:hookup, from, to) do
-    # FIXME
+  @impl true
+  def handle_cast({:set_input, from}, amp) do
+    {:noreply, Map.put(amp, :input_pid, from)}
   end
 
+  @impl true
+  def handle_cast({:set_output, from}, amp) do
+    {:noreply, Map.put(amp, :output_pid, from)}
+  end
+
+  @impl true
+  def handle_call(:info, _from, amp) do
+    {:reply, amp}
+  end
+
+  @impl true
   def handle_cast(:run, env) do
-    run(env)
+    {:noreply, run(env)}
   end
 
   def load_file(file_path) do
