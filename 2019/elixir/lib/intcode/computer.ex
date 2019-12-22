@@ -29,7 +29,11 @@ defmodule Intcode do
     {:noreply, Map.put(amp, :output_pid, from)}
   end
   def handle_cast(:run, env) do
-    {:noreply, run(env)}
+    env = run(env)
+    {:noreply, env, env}
+  end
+  def handle_cast({:send_output, output}, amp) do
+    {:noreply, put_input(amp, output)}
   end
 
   @impl true
