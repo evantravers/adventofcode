@@ -11,14 +11,13 @@ defmodule Intcode do
 
   @impl true
   def init(intcode_string, input_pid \\ self(), output_pid \\ self()) do
-    with {:ok, env} <- load(intcode_string) do
-      {
-        :ok,
-        env
-        |> Map.put(:input_pid, input_pid)
-        |> Map.put(:output_pid, output_pid)
-      }
-    end
+    {
+      :ok,
+      intcode_string
+      |> load
+      |> Map.put(:input_pid, input_pid)
+      |> Map.put(:output_pid, output_pid)
+    }
   end
 
   @impl true
