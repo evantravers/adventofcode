@@ -30,10 +30,13 @@ defmodule Intcode do
   end
   def handle_cast(:run, env) do
     env = run(env)
-    {:noreply, env, env}
+    {:noreply, env}
   end
-  def handle_cast({:send_output, output}, amp) do
-    {:noreply, put_input(amp, output)}
+  def handle_cast({:put_input, input}, amp) do
+    {:noreply, put_input(amp, input)}
+  end
+  def handle_cast({:put_output, output}, amp) do
+    {:noreply, put_output(amp, output)}
   end
 
   @impl true
@@ -48,14 +51,6 @@ defmodule Intcode do
   end
 
   def load(string) do
-    {
-      :ok,
-      %{tape: string_to_tape(string), pointer: 0, output: [], input: []}
-      |> update_instruction
-    }
-  end
-
-  def load!(string) do
     %{tape: string_to_tape(string), pointer: 0, output: [], input: []}
     |> update_instruction
   end
@@ -92,6 +87,9 @@ defmodule Intcode do
   Opcode 3 takes a single integer as input and saves it to the position given
   by its only parameter. For example, the instruction 3,50 would take an input
   value and store it at address 50.
+
+  I'm currently using a list as a "buffer" to store input... it's stored as
+  Map.get(:input) in the main "env" map.
   """
   def inp(env) do
     env
@@ -106,7 +104,7 @@ defmodule Intcode do
   """
   def out(env) do
     env
-    |> Map.update(:output, [eval_param(env, 0)], &[eval_param(env, 0)|&1])
+    |> put_output(eval_param(env, 0))
     |> Map.update!(:pointer, & &1 + 2)
   end
 
@@ -201,42 +199,47 @@ defmodule Intcode do
   def put_input(computer = %{input: input}, new_input) do
     %{computer | input: List.insert_at(input, -1, new_input)}
   end
+
+  def put_output(computer = %{output: output}, o) do
+    Map.update(computer, :output, [o], &[o|&1])
+  end
+
   def get_output(%{output: [o|_]}), do: o
 
   @doc """
   Day 2 Tests
-      iex> load!("1,0,0,0,99")
+      iex> load("1,0,0,0,99")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [2,0,0,0,99]
 
-      iex> load!("2,3,0,3,99")
+      iex> load("2,3,0,3,99")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [2,3,0,6,99]
 
-      iex> load!("2,4,4,5,99,0")
+      iex> load("2,4,4,5,99,0")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [2,4,4,5,99,9801]
 
-      iex> load!("1,1,1,4,99,5,6,0,99")
+      iex> load("1,1,1,4,99,5,6,0,99")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [30,1,1,4,2,5,6,0,99]
 
   Day 5
-      iex> load!("1002,4,3,4,33")
+      iex> load("1002,4,3,4,33")
       ...> |> run
       ...> |> Map.get(:tape)
       ...> |> Map.values
       [1002,4,3,4,99]
 
-      iex> load!("3,0,4,0,99")
+      iex> load("3,0,4,0,99")
       ...> |> Map.put(:input, [1337])
       ...> |> run
       ...> |> Map.get(:output)
@@ -245,7 +248,7 @@ defmodule Intcode do
 
   Using position mode, consider whether the input is equal to 8; output 1 (if
   it is) or 0 (if it is not).
-      iex> load!("3,9,8,9,10,9,4,9,99,-1,8")
+      iex> load("3,9,8,9,10,9,4,9,99,-1,8")
       ...> |> Map.put(:input, [1337])
       ...> |> run
       ...> |> Map.get(:output)
@@ -253,13 +256,13 @@ defmodule Intcode do
       0
 
   Day 9
-      iex> load!("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99")
+      iex> load("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99")
       ...> |> run
       ...> |> Map.get(:output)
       ...> |> Enum.reverse
       [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
 
-      iex> load!("1102,34915192,34915192,7,4,7,99,0")
+      iex> load("1102,34915192,34915192,7,4,7,99,0")
       ...> |> run
       ...> |> Map.get(:output)
       ...> |> hd
@@ -267,7 +270,7 @@ defmodule Intcode do
       ...> |> Enum.count
       16
 
-      iex> load!("104,1125899906842624,99")
+      iex> load("104,1125899906842624,99")
       ...> |> run
       ...> |> Map.get(:output)
       [1125899906842624]
