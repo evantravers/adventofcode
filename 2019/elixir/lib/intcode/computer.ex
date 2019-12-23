@@ -25,7 +25,7 @@ defmodule Intcode do
       pointer: 0,
       output: [],
       input: [],
-      output_pid: self()}
+      piped_to: self()}
     |> update_instruction
   end
 
@@ -250,54 +250,23 @@ defmodule Intcode do
       [1125899906842624]
   """
   def run(env = %{opcode: opcode}) do
-    case opcode do
-      1 ->
-        env
-        |> add
-        |> update_instruction
-        |> run
-      2 ->
-        env
-        |> mul
-        |> update_instruction
-        |> run
-      3 ->
-        env
-        |> inp
-        |> update_instruction
-        |> run
-      4 ->
-        env
-        |> out
-        |> update_instruction
-        |> run
-      5 ->
-        env
-        |> jump_if_true
-        |> update_instruction
-        |> run
-      6 ->
-        env
-        |> jump_if_false
-        |> update_instruction
-        |> run
-      7 ->
-        env
-        |> less_than
-        |> update_instruction
-        |> run
-      8 ->
-        env
-        |> equals
-        |> update_instruction
-        |> run
-      9 ->
-        env
-        |> set_offset
-        |> update_instruction
-        |> run
-      99 -> env
-      _  -> throw("Unrecognized opcode: #{opcode}")
+    if opcode == 99 do
+      env
+    else
+      case opcode do
+        1 -> add(env)
+        2 -> mul(env)
+        3 -> inp(env)
+        4 -> out(env)
+        5 -> jump_if_true(env)
+        6 -> jump_if_false(env)
+        7 -> less_than(env)
+        8 -> equals(env)
+        9 -> set_offset(env)
+        _ -> throw("Unrecognized opcode: #{opcode}")
+      end
+      |> update_instruction
+      |> run
     end
   end
 end

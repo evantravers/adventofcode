@@ -68,7 +68,5 @@ defmodule Advent2019.Day7 do
     for phase_settings <- permutations([5, 6, 7, 8, 9]) do
       # FIXME WHAT NOW
     end
-
-    nil
   end
 end
