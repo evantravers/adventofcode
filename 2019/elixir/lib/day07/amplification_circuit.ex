@@ -64,13 +64,11 @@ defmodule Advent2019.Day7 do
       iex> p2("3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10", debug: true)
       {18216, [9,7,8,5,6]}
   """
-  def p2(intcode_string) do
-    {:ok, a} = GenServer.start_link(Intcode, intcode_string)
-    {:ok, b} = GenServer.start_link(Intcode, intcode_string)
-    {:ok, c} = GenServer.start_link(Intcode, intcode_string)
-    {:ok, d} = GenServer.start_link(Intcode, intcode_string)
-    {:ok, e} = GenServer.start_link(Intcode, intcode_string)
+  def p2(intcode_string, opts \\ []) do
+    for phase_settings <- permutations([5, 6, 7, 8, 9]) do
+      # FIXME WHAT NOW
+    end
 
-    [a, b, c, d, e]
+    nil
   end
 end

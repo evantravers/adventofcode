@@ -10,37 +10,8 @@ defmodule Intcode do
   use GenServer
 
   @impl true
-  def init(intcode_string, input_pid \\ self(), output_pid \\ self()) do
-    {
-      :ok,
-      intcode_string
-      |> load
-      |> Map.put(:input_pid, input_pid)
-      |> Map.put(:output_pid, output_pid)
-    }
-  end
-
-  @impl true
-  def handle_cast({:set_input, from}, amp) do
-    {:noreply, Map.put(amp, :input_pid, from)}
-  end
-  def handle_cast({:set_output, from}, amp) do
-    {:noreply, Map.put(amp, :output_pid, from)}
-  end
-  def handle_cast(:run, env) do
-    env = run(env)
-    {:noreply, env}
-  end
-  def handle_cast({:put_input, input}, amp) do
-    {:noreply, put_input(amp, input)}
-  end
-  def handle_cast({:put_output, output}, amp) do
-    {:noreply, put_output(amp, output)}
-  end
-
-  @impl true
-  def handle_call(:info, _from, amp) do
-    {:reply, amp, amp}
+  def init(intcode_string) do
+    {:ok, load(intcode_string)}
   end
 
   def load_file(file_path) do
@@ -50,7 +21,11 @@ defmodule Intcode do
   end
 
   def load(string) do
-    %{tape: string_to_tape(string), pointer: 0, output: [], input: []}
+    %{tape: string_to_tape(string),
+      pointer: 0,
+      output: [],
+      input: [],
+      output_pid: self()}
     |> update_instruction
   end
 
