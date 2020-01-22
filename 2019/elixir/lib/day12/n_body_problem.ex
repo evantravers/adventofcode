@@ -59,6 +59,9 @@ defmodule Advent2019.Day12 do
   @doc """
       iex> add_tuples({1, 2, 3}, {2, 3, 4})
       {3, 5, 7}
+
+      iex> add_tuples({0, 0, 0}, {1, -1, 10})
+      {1, -1, 10}
   """
   def add_tuples(a, b) do
     a_list = Tuple.to_list(a)
