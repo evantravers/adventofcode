@@ -27,10 +27,15 @@ defmodule Advent2019.Day12 do
   end
 
   @doc """
-  For each moon compare against all other moons, except the pairs that have
-  already been considered.
+  To apply gravity, consider every pair of moons. On each axis (x, y, and z),
+  the velocity of each moon changes by exactly +1 or -1 to pull the moons
+  together. For example, if Ganymede has an x position of 3, and Callisto has a
+  x position of 5, then Ganymede's x velocity changes by +1 (because 5 > 3) and
+  Callisto's x velocity changes by -1 (because 3 < 5). However, if the
+  positions on a given axis are the same, the velocity on that axis does not
+  change for that pair of moons.
   """
-  def update_velocities(system) do
+  def update_velocities(system) do # apply_gravity
     system
     |> Enum.reduce({[], []}, fn(moon, {system, visited}) ->
       system
@@ -40,9 +45,29 @@ defmodule Advent2019.Day12 do
   end
 
   @doc """
+  Once all gravity has been applied, apply velocity: simply add the velocity of
+  each moon to its own position. For example, if Europa has a position of x=1,
+  y=2, z=3 and a velocity of x=-2, y=0,z=3, then its new position would be
+  x=-1, y=2, z=6. This process does not modify the velocity of any moon.
   """
-  def update_positions(system) do
-    system
+  def update_positions(system), do: Enum.map(system, &apply_velocity/1)
+
+  def apply_velocity(%{pos: pos, vel: vel} = moon) do
+    %{moon | pos: add_tuples(pos, vel)}
+  end
+
+  @doc """
+      iex> add_tuples({1, 2, 3}, {2, 3, 4})
+      {3, 5, 7}
+  """
+  def add_tuples(a, b) do
+    a_list = Tuple.to_list(a)
+    b_list = Tuple.to_list(b)
+
+    a_list
+    |> Enum.zip(b_list)
+    |> Enum.map(fn({x, y}) -> x + y end)
+    |> List.to_tuple
   end
 
   @doc """
