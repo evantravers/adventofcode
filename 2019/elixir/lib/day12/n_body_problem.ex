@@ -129,6 +129,10 @@ defmodule Advent2019.Day12 do
 
   This could take a while... I guess you'd want to figure out when it's
   approaching a local minimum?
+
+  Realization while driving today... after reading the hint that x, y, z are
+  entirely independent, I think I can find independent cycles in x y z, then
+  find the least common multiple.
   """
   def p2(system, history \\ MapSet.new)
   def p2(system, history) do
