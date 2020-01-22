@@ -4,11 +4,14 @@ defmodule Advent2019.Day12 do
 
   def setup do
     with {:ok, string} <- File.read("#{__DIR__}/input.txt") do
-      string
-      |> String.split("\n", trim: true)
-      |> Enum.with_index
-      |> Enum.map(&new_moon/1)
+      load_string(string)
     end
+  end
+
+  def load_string(string) do
+    string
+    |> String.split("\n", trim: true)
+    |> Enum.map(&new_moon/1)
   end
 
   @doc """
@@ -16,14 +19,14 @@ defmodule Advent2019.Day12 do
       ...> |> new_moon
       %{pos: {-1, 0, 2}, vel: {0, 0, 0}, id: 1}
   """
-  def new_moon({str, id}) do
+  def new_moon(str) do
     [x, y, z] =
       ~r/-*\d+/
       |> Regex.scan(str)
       |> List.flatten
       |> Enum.map(&String.to_integer/1)
 
-    %{id: id, pos: {x, y, z}, vel: {0, 0, 0}}
+    %{pos: {x, y, z}, vel: {0, 0, 0}}
   end
 
   @doc """
@@ -35,14 +38,33 @@ defmodule Advent2019.Day12 do
   positions on a given axis are the same, the velocity on that axis does not
   change for that pair of moons.
   """
-  def update_velocities(system) do # apply_gravity
+  def update_velocities(system) do
     system
-    |> Enum.reduce({[], []}, fn(moon, {system, visited}) ->
+    |> Enum.map(fn(moon) ->
       system
-      |> Enum.reject(&Enum.member?(visited, &1))
-      # FIXME: Finish this
+      |> List.delete(moon)
+      |> Enum.reduce(moon, fn(other_moon, moon) ->
+        apply_gravity(moon, other_moon)
+      end)
     end)
   end
+
+  def apply_gravity(a, b) do
+    {a_x, a_y, a_z} = Map.get(a, :pos)
+    {b_x, b_y, b_z} = Map.get(b, :pos)
+
+    {x, y, z} = Map.get(a, :vel)
+
+    %{a | vel: {
+      x + compute_velocity(a_x, b_x),
+      y + compute_velocity(a_y, b_y),
+      z + compute_velocity(a_z, b_z),
+    }}
+  end
+
+  def compute_velocity(p1, p2) when p1 > p2, do: -1
+  def compute_velocity(p1, p2) when p1 < p2, do: 1
+  def compute_velocity(p1, p2) when p1 == p2, do: 0
 
   @doc """
   Once all gravity has been applied, apply velocity: simply add the velocity of
@@ -73,6 +95,10 @@ defmodule Advent2019.Day12 do
     |> List.to_tuple
   end
 
+  def potential_energy(%{pos: {x, y, z}}), do: abs(x) + abs(y) + abs(z)
+  def kinetic_energy(%{vel: {x, y, z}}), do: abs(x) + abs(y) + abs(z)
+  def total_energy(moon), do: potential_energy(moon) * kinetic_energy(moon)
+
   @doc """
   Simulate the motion of the moons in time steps. Within each time step, first
   update the velocity of every moon by applying gravity. Then, once all moons'
@@ -85,11 +111,18 @@ defmodule Advent2019.Day12 do
     |> update_positions
   end
 
-  def p1(i) do
-   i
+  def p1(system, count \\ 1_000)
+  def p1(system, 0) do
+    system
+    |> Enum.map(&total_energy/1)
+    |> Enum.sum
+  end
+  def p1(system, count) do
+    system
+    |> sim
+    |> p1(count - 1)
   end
 
   def p2(i) do
-    i
   end
 end
