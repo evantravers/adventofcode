@@ -123,6 +123,21 @@ defmodule Advent2019.Day12 do
     |> p1(count - 1)
   end
 
-  def p2(i) do
+  @doc """
+  How many steps does it take to reach the first state that exactly matches a
+  previous state?
+
+  This could take a while... I guess you'd want to figure out when it's
+  approaching a local minimum?
+  """
+  def p2(system, history \\ MapSet.new)
+  def p2(system, history) do
+    if MapSet.member?(history, system) do
+      Enum.count(history)
+    else
+      system
+      |> sim
+      |> p2(MapSet.put(history, system))
+    end
   end
 end
