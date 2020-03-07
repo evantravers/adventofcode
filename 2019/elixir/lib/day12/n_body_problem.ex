@@ -3,29 +3,23 @@ defmodule Advent2019.Day12 do
   @behaviour Advent
 
   def setup do
-    with {:ok, string} <- File.read("#{__DIR__}/input.txt") do
-      load_string(string)
-    end
+    with {:ok, string} <- File.read("#{__DIR__}/input.txt"), do: string
   end
 
-  def load_string(string) do
+  def process_string(string) do
     string
     |> String.split("\n", trim: true)
-    |> Enum.map(&new_moon/1)
+    |> Enum.map(&extract_numbers/1)
   end
 
-  @doc """
-      iex> {"<x=-1, y=0, z=2>", 1}
-      ...> |> new_moon
-      %{pos: {-1, 0, 2}, vel: {0, 0, 0}, id: 1}
-  """
-  def new_moon(str) do
-    [x, y, z] =
-      ~r/-*\d+/
+  def extract_numbers(str) do
+    ~r/-*\d+/
       |> Regex.scan(str)
       |> List.flatten
       |> Enum.map(&String.to_integer/1)
+  end
 
+  def new_moon([x, y, z]) do
     %{pos: {x, y, z}, vel: {0, 0, 0}}
   end
 
@@ -111,7 +105,12 @@ defmodule Advent2019.Day12 do
     |> update_positions
   end
 
-  def p1(system, count \\ 1_000)
+  def p1(input) do
+    input
+    |> process_string
+    |> Enum.map(&new_moon/1)
+    |> p1(1000)
+  end
   def p1(system, 0) do
     system
     |> Enum.map(&total_energy/1)
@@ -134,14 +133,6 @@ defmodule Advent2019.Day12 do
   entirely independent, I think I can find independent cycles in x y z, then
   find the least common multiple.
   """
-  def p2(system, history \\ MapSet.new)
-  def p2(system, history) do
-    if MapSet.member?(history, system) do
-      Enum.count(history)
-    else
-      system
-      |> sim
-      |> p2(MapSet.put(history, system))
-    end
+  def p2(input) do
   end
 end
