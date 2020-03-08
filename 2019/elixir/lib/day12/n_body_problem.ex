@@ -117,6 +117,12 @@ defmodule Advent2019.Day12 do
   def kinetic_energy(%{vel: {x, y, z}}), do: abs(x) + abs(y) + abs(z)
   def total_energy(moon), do: potential_energy(moon) * kinetic_energy(moon)
 
+  # stolen from: https://rosettacode.org/wiki/Least_common_multiple#Elixir
+  def gcd(a, 0), do: abs(a)
+  def gcd(a, b), do: gcd(b, rem(a, b))
+
+  def lcm(a, b), do: div(abs(a * b), gcd(a, b))
+
   @doc """
   Simulate the motion of the moons in time steps. Within each time step, first
   update the velocity of every moon by applying gravity. Then, once all moons'
@@ -186,8 +192,10 @@ defmodule Advent2019.Day12 do
         |> Enum.map(&new_moon(List.wrap(&1))) # store each's position and current velocity
       end)
 
-    [find_period(x_s), find_period(y_s), find_period(z_s)]
-    |> Enum.map(&Integer.to_string/1)
-    # I cheated and used wolframalpha to get lcd()... :P
+    [x, y, z] = [find_period(x_s), find_period(y_s), find_period(z_s)]
+
+    x
+    |> lcm(y)
+    |> lcm(z)
   end
 end
