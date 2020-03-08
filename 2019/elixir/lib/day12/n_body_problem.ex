@@ -21,20 +21,16 @@ defmodule Advent2019.Day12 do
 
   @doc """
       iex> new_moon([1, 2, 3])
-      %{pos: {1, 2, 3}, vel: {0, 0, 0}}
+      %{pos: [1, 2, 3], vel: [0, 0, 0]}
 
       iex> new_moon([1])
-      %{pos: {1}, vel: {0}}
+      %{pos: [1], vel: [0]}
   """
   def new_moon(coords) do
-    %{pos: List.to_tuple(coords), vel: zeroed_vel(coords)}
+    %{pos: coords, vel: zeroed_vel(coords)}
   end
 
-  def zeroed_vel(list) do
-    list
-    |> Enum.map(fn _ -> 0 end)
-    |> List.to_tuple
-  end
+  def zeroed_vel(list), do: Enum.map(list, fn _ -> 0 end)
 
   @doc """
   To apply gravity, consider every pair of moons. On each axis (x, y, and z),
@@ -65,16 +61,16 @@ defmodule Advent2019.Day12 do
     adjust_vel(a, a_vel, a_pos, b_pos)
   end
 
-  def adjust_vel(a, {x, y, z}, {a_x, a_y, a_z}, {b_x, b_y, b_z}) do
-    %{a | vel: {
+  def adjust_vel(a, [x, y, z], [a_x, a_y, a_z], [b_x, b_y, b_z]) do
+    %{a | vel: [
       x + compute_velocity(a_x, b_x),
       y + compute_velocity(a_y, b_y),
       z + compute_velocity(a_z, b_z),
-    }}
+    ]}
   end
 
-  def adjust_vel(a, {x}, {a_x}, {b_x}) do
-    %{a | vel: { x + compute_velocity(a_x, b_x) }}
+  def adjust_vel(a, [x], [a_x], [b_x]) do
+    %{a | vel: [ x + compute_velocity(a_x, b_x) ]}
   end
 
   def compute_velocity(p1, p2) when p1 > p2, do: -1
@@ -90,31 +86,27 @@ defmodule Advent2019.Day12 do
   def update_positions(system), do: Enum.map(system, &apply_velocity/1)
 
   def apply_velocity(%{pos: pos, vel: vel} = moon) do
-    %{moon | pos: add_tuples(pos, vel)}
+    %{moon | pos: add_lists(pos, vel)}
   end
 
   @doc """
-      iex> add_tuples({1, 2, 3}, {2, 3, 4})
-      {3, 5, 7}
+      iex> add_lists([1, 2, 3], [2, 3, 4])
+      [3, 5, 7]
 
-      iex> add_tuples({0, 0, 0}, {1, -1, 10})
-      {1, -1, 10}
+      iex> add_lists([0, 0, 0], [1, -1, 10])
+      [1, -1, 10]
 
-      iex> add_tuples({1}, {2})
-      {3}
+      iex> add_lists([1], [2])
+      [3]
   """
-  def add_tuples(a, b) do
-    a_list = Tuple.to_list(a)
-    b_list = Tuple.to_list(b)
-
-    a_list
-    |> Enum.zip(b_list)
+  def add_lists(a, b) do
+    a
+    |> Enum.zip(b)
     |> Enum.map(fn({x, y}) -> x + y end)
-    |> List.to_tuple
   end
 
-  def potential_energy(%{pos: {x, y, z}}), do: abs(x) + abs(y) + abs(z)
-  def kinetic_energy(%{vel: {x, y, z}}), do: abs(x) + abs(y) + abs(z)
+  def potential_energy(%{pos: [x, y, z]}), do: abs(x) + abs(y) + abs(z)
+  def kinetic_energy(%{vel: [x, y, z]}), do: abs(x) + abs(y) + abs(z)
   def total_energy(moon), do: potential_energy(moon) * kinetic_energy(moon)
 
   # stolen from: https://rosettacode.org/wiki/Least_common_multiple#Elixir
