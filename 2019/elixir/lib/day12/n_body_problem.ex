@@ -19,8 +19,21 @@ defmodule Advent2019.Day12 do
       |> Enum.map(&String.to_integer/1)
   end
 
-  def new_moon([x, y, z]) do
-    %{pos: {x, y, z}, vel: {0, 0, 0}}
+  @doc """
+      iex> new_moon([1, 2, 3])
+      %{pos: {1, 2, 3}, vel: {0, 0, 0}}
+
+      iex> new_moon([1])
+      %{pos: {1}, vel: {0}}
+  """
+  def new_moon(coords) do
+    %{pos: List.to_tuple(coords), vel: zeroed_vel(coords)}
+  end
+
+  def zeroed_vel(list) do
+    list
+    |> Enum.map(fn _ -> 0 end)
+    |> List.to_tuple
   end
 
   @doc """
@@ -44,16 +57,24 @@ defmodule Advent2019.Day12 do
   end
 
   def apply_gravity(a, b) do
-    {a_x, a_y, a_z} = Map.get(a, :pos)
-    {b_x, b_y, b_z} = Map.get(b, :pos)
+    a_pos = Map.get(a, :pos)
+    b_pos = Map.get(b, :pos)
 
-    {x, y, z} = Map.get(a, :vel)
+    a_vel = Map.get(a, :vel)
 
+    adjust_vel(a, a_vel, a_pos, b_pos)
+  end
+
+  def adjust_vel(a, {x, y, z}, {a_x, a_y, a_z}, {b_x, b_y, b_z}) do
     %{a | vel: {
       x + compute_velocity(a_x, b_x),
       y + compute_velocity(a_y, b_y),
       z + compute_velocity(a_z, b_z),
     }}
+  end
+
+  def adjust_vel(a, {x}, {a_x}, {b_x}) do
+    %{a | vel: { x + compute_velocity(a_x, b_x) }}
   end
 
   def compute_velocity(p1, p2) when p1 > p2, do: -1
@@ -78,6 +99,9 @@ defmodule Advent2019.Day12 do
 
       iex> add_tuples({0, 0, 0}, {1, -1, 10})
       {1, -1, 10}
+
+      iex> add_tuples({1}, {2})
+      {3}
   """
   def add_tuples(a, b) do
     a_list = Tuple.to_list(a)
@@ -123,6 +147,21 @@ defmodule Advent2019.Day12 do
   end
 
   @doc """
+  Given a list of tuples, where {position, velocity}, determine the first time
+  the system repeats.
+  """
+  def find_period(system, history \\ MapSet.new)
+  def find_period(system, history) do
+    if MapSet.member?(history, system) do
+      Enum.count(history)
+    else
+      system
+      |> sim
+      |> find_period(MapSet.put(history, system))
+    end
+  end
+
+  @doc """
   How many steps does it take to reach the first state that exactly matches a
   previous state?
 
@@ -132,7 +171,23 @@ defmodule Advent2019.Day12 do
   Realization while driving today... after reading the hint that x, y, z are
   entirely independent, I think I can find independent cycles in x y z, then
   find the least common multiple.
+
+  Could I represent each object as a map of one?
+  i.e.: %{pos: {<one var>}, vel: {<one var>}}
   """
   def p2(input) do
+    [x_s, y_s, z_s] =
+      input
+      |> process_string
+      |> Enum.zip
+      |> Enum.map(fn(tup) ->
+        tup
+        |> Tuple.to_list
+        |> Enum.map(&new_moon(List.wrap(&1))) # store each's position and current velocity
+      end)
+
+    [find_period(x_s), find_period(y_s), find_period(z_s)]
+    |> Enum.map(&Integer.to_string/1)
+    # I cheated and used wolframalpha to get lcd()... :P
   end
 end
