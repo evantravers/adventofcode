@@ -5,6 +5,25 @@ defmodule Intcode do
   make sure to start by initializing memory to the program's values. A position
   in memory is called an address (for example, the first value in memory is at
   "address 0").
+
+  on OUTPUT msg: echo msg
+
+
+  SPAWN an Intcode module with its source code, set output pid to parent by default.
+    on INPUT:
+      add to Input queue
+      IF halted
+        RUN
+    on RUN:
+      work through opcodes:
+        <..>
+        Input:
+          IF Input queue > 0
+           use hd(Input queue)
+          ELSE
+           halt
+        Output:
+          send msg to Output pid
   """
 
   use GenServer
