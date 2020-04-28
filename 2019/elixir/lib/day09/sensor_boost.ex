@@ -27,8 +27,7 @@ defmodule Advent2019.Day9 do
     machine
     |> Intcode.put_input(1)
     |> Intcode.run
-    |> Map.get(:output)
-    |> Enum.reverse
+    |> Intcode.get_output
     |> Enum.join(",")
   end
 

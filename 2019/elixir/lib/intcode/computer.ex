@@ -232,6 +232,8 @@ defmodule Intcode do
 
   def get_last_output(%{output: [o|_]}), do: o
 
+  def get_output(%{output: output}), do: Enum.reverse(output)
+
   def stop(env) do
     if Map.has_key?(env, :output_pid) do
       Process.exit(self(), {:finished, env})
