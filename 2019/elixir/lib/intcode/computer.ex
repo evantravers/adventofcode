@@ -29,10 +29,20 @@ defmodule Intcode do
   use GenServer
 
   @impl true
-  def init(intcode_string) do
-    {:ok, load(intcode_string)}
+  def init({intcode_string, name}) do
+    {:ok,
+      intcode_string
+      |>load
+      |>Map.put(:name, name)}
   end
 
+  @impl true
+  def terminate(reason, state) do
+    IO.puts("#{Map.get(state, :name)} finished!")
+    {reason, state}
+  end
+
+  @impl true
   @doc """
   The server is receiving an input from somewhere
   """
@@ -43,9 +53,13 @@ defmodule Intcode do
       |> run
     }
   end
-
   def handle_cast({:set_output, pid}, state) do
     {:noreply, Map.put(state, :output_pid, pid)}
+  end
+
+  @impl true
+  def handle_call(:state, state, 5000) do
+    {:reply, state, state}
   end
 
   def load_file(file_path) do
@@ -121,20 +135,16 @@ defmodule Intcode do
   instruction 4,50 would output the value at address 50.
   """
   def out(env) do
+    # If I've "wired" two amps together, I need to send the output as input.
     if Map.has_key?(env, :output_pid) do
-      GenServer.cast(Map.get(env, :output_pid), eval_param(env, 0))
-
-      env
-      |> Map.update!(:pointer, & &1 + 2)
-      |> update_instruction
-      |> run
-    else
-      env
-      |> put_output(eval_param(env, 0))
-      |> Map.update!(:pointer, & &1 + 2)
-      |> update_instruction
-      |> run
+      GenServer.cast(Map.get(env, :output_pid), {:input, eval_param(env, 0)})
     end
+
+    env
+    |> put_output(eval_param(env, 0))
+    |> Map.update!(:pointer, & &1 + 2)
+    |> update_instruction
+    |> run
   end
 
   def jump_if_true(env) do
@@ -239,11 +249,19 @@ defmodule Intcode do
     %{computer | input: List.insert_at(input, -1, new_input)}
   end
 
-  def put_output(computer = %{output: output}, o) do
+  def put_output(computer, o) do
     Map.update(computer, :output, [o], &[o|&1])
   end
 
   def get_output(%{output: [o|_]}), do: o
+
+  def stop(env) do
+    if Map.has_key?(env, :output_pid) do
+      terminate(:stop, env)
+    end
+
+    env
+  end
 
   @doc """
   Day 2 Tests
@@ -316,7 +334,7 @@ defmodule Intcode do
   """
   def run(env = %{opcode: opcode}) do
     if opcode == 99 do
-      env
+      stop(env)
     else
       case opcode do
         1 -> add(env)
