@@ -91,7 +91,7 @@ defmodule Advent2019.Day7 do
         # At the end, e should have sent A the last message and it should have
         # put it in its input.
         receive do
-          {:EXIT, _a_pid, {:finished, env}} -> {Intcode.get_output(env), phase_setting}
+          {:EXIT, target, {:finished, env}} when target == e_pid-> {Intcode.get_output(env), phase_setting}
         end
       end
     end
