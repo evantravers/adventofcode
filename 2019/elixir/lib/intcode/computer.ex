@@ -230,7 +230,7 @@ defmodule Intcode do
     Map.update(computer, :output, [o], &[o|&1])
   end
 
-  def get_output(%{output: [o|_]}), do: o
+  def get_last_output(%{output: [o|_]}), do: o
 
   def stop(env) do
     if Map.has_key?(env, :output_pid) do
