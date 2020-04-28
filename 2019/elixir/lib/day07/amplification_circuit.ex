@@ -65,8 +65,43 @@ defmodule Advent2019.Day7 do
       {18216, [9,7,8,5,6]}
   """
   def p2(intcode_string, opts \\ []) do
-    for phase_settings <- permutations([5, 6, 7, 8, 9]) do
-      # FIXME WHAT NOW
+    for [a, b, c, d, e] = phase_setting <- permutations([5, 6, 7, 8, 9]) do
+      with {:ok, a_pid} <- GenServer.start_link(Intcode, {intcode_string, "A"}),
+           {:ok, b_pid} <- GenServer.start_link(Intcode, {intcode_string, "B"}),
+           {:ok, c_pid} <- GenServer.start_link(Intcode, {intcode_string, "C"}),
+           {:ok, d_pid} <- GenServer.start_link(Intcode, {intcode_string, "D"}),
+           {:ok, e_pid} <- GenServer.start_link(Intcode, {intcode_string, "E"}) do
+
+        GenServer.cast(a_pid, {:set_output, b_pid})
+        GenServer.cast(b_pid, {:set_output, c_pid})
+        GenServer.cast(c_pid, {:set_output, d_pid})
+        GenServer.cast(d_pid, {:set_output, e_pid})
+        GenServer.cast(e_pid, {:set_output, a_pid})
+
+        GenServer.cast(a_pid, {:input, a})
+        GenServer.cast(b_pid, {:input, b})
+        GenServer.cast(c_pid, {:input, c})
+        GenServer.cast(d_pid, {:input, d})
+        GenServer.cast(e_pid, {:input, e})
+
+        GenServer.cast(a_pid, {:input, 0})
+
+        Process.flag(:trap_exit, true)
+
+        # At the end, e should have sent A the last message and it should have
+        # put it in its input.
+        receive do
+          {:EXIT, _a_pid, {:finished, env}} -> {Intcode.get_output(env), phase_setting}
+        end
+      end
     end
+    |> Enum.max_by(&elem(&1, 0))
+    |> (fn({answer, phase_setting}) ->
+      if opts[:debug] do
+        {answer, phase_setting}
+      else
+        answer
+      end
+    end).()
   end
 end

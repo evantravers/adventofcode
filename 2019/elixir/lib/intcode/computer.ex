@@ -37,12 +37,6 @@ defmodule Intcode do
   end
 
   @impl true
-  def terminate(reason, state) do
-    IO.puts("#{Map.get(state, :name)} finished!")
-    {reason, state}
-  end
-
-  @impl true
   @doc """
   The server is receiving an input from somewhere
   """
@@ -72,8 +66,7 @@ defmodule Intcode do
     %{tape: string_to_tape(string),
       pointer: 0,
       output: [],
-      input: [],
-      piped_to: self()}
+      input: []}
     |> update_instruction
   end
 
@@ -257,7 +250,7 @@ defmodule Intcode do
 
   def stop(env) do
     if Map.has_key?(env, :output_pid) do
-      terminate(:stop, env)
+      Process.exit(self(), {:finished, env})
     end
 
     env
