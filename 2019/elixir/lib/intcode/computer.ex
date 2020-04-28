@@ -33,6 +33,21 @@ defmodule Intcode do
     {:ok, load(intcode_string)}
   end
 
+  @doc """
+  The server is receiving an input from somewhere
+  """
+  def handle_cast({:input, input}, state) do
+    {:noreply,
+      state
+      |> put_input(input)
+      |> run
+    }
+  end
+
+  def handle_cast({:set_output, pid}, state) do
+    {:noreply, Map.put(state, :output_pid, pid)}
+  end
+
   def load_file(file_path) do
     with {:ok, string} <- File.read(file_path) do
       load(string)
@@ -65,6 +80,8 @@ defmodule Intcode do
     env
     |> put_in([:tape, target], eval_param(env, 0) + eval_param(env, 1))
     |> Map.update!(:pointer, & &1 + 4)
+    |> update_instruction
+    |> run
   end
 
   @doc """
@@ -74,6 +91,8 @@ defmodule Intcode do
     env
     |> put_in([:tape, target], eval_param(env, 0) * eval_param(env, 1))
     |> Map.update!(:pointer, & &1 + 4)
+    |> update_instruction
+    |> run
   end
 
   @doc """
@@ -84,11 +103,17 @@ defmodule Intcode do
   I'm currently using a list as a "buffer" to store input... it's stored as
   Map.get(:input) in the main "env" map.
   """
-  def inp(env) do
-    env
-    |> put_in([:tape, elem(Map.get(env, :params), 0)], hd(Map.get(env, :input)))
-    |> Map.update!(:input, &tl/1)
-    |> Map.update!(:pointer, & &1 + 2)
+  def inp(%{input: input} = env) do
+    if Enum.empty?(input) do
+      env
+    else
+      env
+      |> put_in([:tape, elem(Map.get(env, :params), 0)], hd(Map.get(env, :input)))
+      |> Map.update!(:input, &tl/1)
+      |> Map.update!(:pointer, & &1 + 2)
+      |> update_instruction
+      |> run
+    end
   end
 
   @doc """
@@ -96,9 +121,20 @@ defmodule Intcode do
   instruction 4,50 would output the value at address 50.
   """
   def out(env) do
-    env
-    |> put_output(eval_param(env, 0))
-    |> Map.update!(:pointer, & &1 + 2)
+    if Map.has_key?(env, :output_pid) do
+      GenServer.cast(Map.get(env, :output_pid), eval_param(env, 0))
+
+      env
+      |> Map.update!(:pointer, & &1 + 2)
+      |> update_instruction
+      |> run
+    else
+      env
+      |> put_output(eval_param(env, 0))
+      |> Map.update!(:pointer, & &1 + 2)
+      |> update_instruction
+      |> run
+    end
   end
 
   def jump_if_true(env) do
@@ -108,6 +144,8 @@ defmodule Intcode do
       env
       |> Map.update!(:pointer, & &1 + 3)
     end
+    |> update_instruction
+    |> run
   end
 
   def jump_if_false(env) do
@@ -117,6 +155,8 @@ defmodule Intcode do
       env
       |> Map.update!(:pointer, & &1 + 3)
     end
+    |> update_instruction
+    |> run
   end
 
   def less_than(env = %{params: {_, _, target}}) do
@@ -129,6 +169,8 @@ defmodule Intcode do
       end
     )
     |> Map.update!(:pointer, & &1 + 4)
+    |> update_instruction
+    |> run
   end
 
   def equals(env = %{params: {_, _, target}}) do
@@ -141,12 +183,16 @@ defmodule Intcode do
       end
     )
     |> Map.update!(:pointer, & &1 + 4)
+    |> update_instruction
+    |> run
   end
 
   def set_offset(env) do
     env
     |> Map.update(:relative_base, eval_param(env, 0), & &1 + eval_param(env, 0))
     |> Map.update!(:pointer, & &1 + 2)
+    |> update_instruction
+    |> run
   end
 
   def get_value(%{tape: tape}, pointer, 0), do: Map.get(tape, pointer, 0)
@@ -284,8 +330,6 @@ defmodule Intcode do
         9 -> set_offset(env)
         _ -> throw("Unrecognized opcode: #{opcode}")
       end
-      |> update_instruction
-      |> run
     end
   end
 end
