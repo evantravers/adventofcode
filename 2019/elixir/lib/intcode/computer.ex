@@ -40,14 +40,14 @@ defmodule Intcode do
   @doc """
   The server is receiving an input from somewhere
   """
-  def handle_cast({:input, input}, state) do
+  def handle_cast({:rcv_input, input}, state) do
     {:noreply,
       state
       |> put_input(input)
       |> run
     }
   end
-  def handle_cast({:set_output, pid}, state) do
+  def handle_cast({:set_output_pid, pid}, state) do
     {:noreply, Map.put(state, :output_pid, pid)}
   end
 
@@ -87,8 +87,6 @@ defmodule Intcode do
     env
     |> put_in([:tape, target], eval_param(env, 0) + eval_param(env, 1))
     |> Map.update!(:pointer, & &1 + 4)
-    |> update_instruction
-    |> run
   end
 
   @doc """
@@ -98,8 +96,6 @@ defmodule Intcode do
     env
     |> put_in([:tape, target], eval_param(env, 0) * eval_param(env, 1))
     |> Map.update!(:pointer, & &1 + 4)
-    |> update_instruction
-    |> run
   end
 
   @doc """
@@ -130,14 +126,12 @@ defmodule Intcode do
   def out(env) do
     # If I've "wired" two amps together, I need to send the output as input.
     if Map.has_key?(env, :output_pid) do
-      GenServer.cast(Map.get(env, :output_pid), {:input, eval_param(env, 0)})
+      GenServer.cast(Map.get(env, :output_pid), {:rcv_input, eval_param(env, 0)})
     end
 
     env
     |> put_output(eval_param(env, 0))
     |> Map.update!(:pointer, & &1 + 2)
-    |> update_instruction
-    |> run
   end
 
   def jump_if_true(env) do
@@ -147,8 +141,6 @@ defmodule Intcode do
       env
       |> Map.update!(:pointer, & &1 + 3)
     end
-    |> update_instruction
-    |> run
   end
 
   def jump_if_false(env) do
@@ -158,8 +150,6 @@ defmodule Intcode do
       env
       |> Map.update!(:pointer, & &1 + 3)
     end
-    |> update_instruction
-    |> run
   end
 
   def less_than(env = %{params: {_, _, target}}) do
@@ -172,8 +162,6 @@ defmodule Intcode do
       end
     )
     |> Map.update!(:pointer, & &1 + 4)
-    |> update_instruction
-    |> run
   end
 
   def equals(env = %{params: {_, _, target}}) do
@@ -186,16 +174,12 @@ defmodule Intcode do
       end
     )
     |> Map.update!(:pointer, & &1 + 4)
-    |> update_instruction
-    |> run
   end
 
   def set_offset(env) do
     env
     |> Map.update(:relative_base, eval_param(env, 0), & &1 + eval_param(env, 0))
     |> Map.update!(:pointer, & &1 + 2)
-    |> update_instruction
-    |> run
   end
 
   def get_value(%{tape: tape}, pointer, 0), do: Map.get(tape, pointer, 0)
@@ -326,21 +310,23 @@ defmodule Intcode do
       [1125899906842624]
   """
   def run(env = %{opcode: opcode}) do
-    if opcode == 99 do
-      stop(env)
-    else
-      case opcode do
-        1 -> add(env)
-        2 -> mul(env)
-        3 -> inp(env)
-        4 -> out(env)
-        5 -> jump_if_true(env)
-        6 -> jump_if_false(env)
-        7 -> less_than(env)
-        8 -> equals(env)
-        9 -> set_offset(env)
-        _ -> throw("Unrecognized opcode: #{opcode}")
-      end
+    case opcode do # opcodes that can halt/pause execution
+      99 -> stop(env)
+      3 -> inp(env)
+      _ ->
+        case opcode do # normal opcodes
+          1 -> add(env)
+          2 -> mul(env)
+          4 -> out(env)
+          5 -> jump_if_true(env)
+          6 -> jump_if_false(env)
+          7 -> less_than(env)
+          8 -> equals(env)
+          9 -> set_offset(env)
+          _ -> throw("Unrecognized opcode: #{opcode}")
+        end
+        |> update_instruction
+        |> run
     end
   end
 end

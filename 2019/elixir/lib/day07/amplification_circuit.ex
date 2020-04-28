@@ -72,19 +72,19 @@ defmodule Advent2019.Day7 do
            {:ok, d_pid} <- GenServer.start_link(Intcode, {intcode_string, "D"}),
            {:ok, e_pid} <- GenServer.start_link(Intcode, {intcode_string, "E"}) do
 
-        GenServer.cast(a_pid, {:set_output, b_pid})
-        GenServer.cast(b_pid, {:set_output, c_pid})
-        GenServer.cast(c_pid, {:set_output, d_pid})
-        GenServer.cast(d_pid, {:set_output, e_pid})
-        GenServer.cast(e_pid, {:set_output, a_pid})
+        GenServer.cast(a_pid, {:set_output_pid, b_pid})
+        GenServer.cast(b_pid, {:set_output_pid, c_pid})
+        GenServer.cast(c_pid, {:set_output_pid, d_pid})
+        GenServer.cast(d_pid, {:set_output_pid, e_pid})
+        GenServer.cast(e_pid, {:set_output_pid, a_pid})
 
-        GenServer.cast(a_pid, {:input, a})
-        GenServer.cast(b_pid, {:input, b})
-        GenServer.cast(c_pid, {:input, c})
-        GenServer.cast(d_pid, {:input, d})
-        GenServer.cast(e_pid, {:input, e})
+        GenServer.cast(a_pid, {:rcv_input, a})
+        GenServer.cast(b_pid, {:rcv_input, b})
+        GenServer.cast(c_pid, {:rcv_input, c})
+        GenServer.cast(d_pid, {:rcv_input, d})
+        GenServer.cast(e_pid, {:rcv_input, e})
 
-        GenServer.cast(a_pid, {:input, 0})
+        GenServer.cast(a_pid, {:rcv_input, 0})
 
         Process.flag(:trap_exit, true)
 
