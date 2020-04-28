@@ -31,7 +31,7 @@ defmodule Advent2019.Day9 do
     |> Enum.join(",")
   end
 
-  def p2(i) do
+  def p2(_machine) do
     "not complete"
   end
 end

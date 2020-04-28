@@ -106,7 +106,7 @@ defmodule Intcode do
   I'm currently using a list as a "buffer" to store input... it's stored as
   Map.get(:input) in the main "env" map.
   """
-  def inp(%{input: input} = env) do
+  def inp(env = %{input: input}) do
     if Enum.empty?(input) do
       env
     else
@@ -193,7 +193,7 @@ defmodule Intcode do
     get_value(env, elem(params, p_number), elem(modes, p_number))
   end
 
-  def update_instruction(%{tape: tape, pointer: pointer} = env) do
+  def update_instruction(env = %{tape: tape, pointer: pointer}) do
     instruction = tape
                   |> Map.get(pointer)
                   |> Integer.digits
