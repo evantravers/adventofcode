@@ -83,18 +83,18 @@ defmodule Intcode do
   Opcode 1 adds together numbers read from two positions and stores the result
   in a third position.
   """
-  def add(env = %{params: {_, _, target}}) do
+  def add(env) do
     env
-    |> put_in([:tape, target], eval_param(env, 0) + eval_param(env, 1))
+    |> put(2, get(env, 0) + get(env, 1))
     |> Map.update!(:pointer, & &1 + 4)
   end
 
   @doc """
   Opcode 2 works exactly like opcode 1, except it multiplies the two inputs
   """
-  def mul(env = %{params: {_, _, target}}) do
+  def mul(env) do
     env
-    |> put_in([:tape, target], eval_param(env, 0) * eval_param(env, 1))
+    |> put(2, get(env, 0) * get(env, 1))
     |> Map.update!(:pointer, & &1 + 4)
   end
 
@@ -126,17 +126,17 @@ defmodule Intcode do
   def out(env) do
     # If I've "wired" two amps together, I need to send the output as input.
     if Map.has_key?(env, :output_pid) do
-      GenServer.cast(Map.get(env, :output_pid), {:rcv_input, eval_param(env, 0)})
+      GenServer.cast(Map.get(env, :output_pid), {:rcv_input, get(env, 0)})
     end
 
     env
-    |> put_output(eval_param(env, 0))
+    |> put_output(get(env, 0))
     |> Map.update!(:pointer, & &1 + 2)
   end
 
   def jump_if_true(env) do
-    if eval_param(env, 0) != 0 do
-      %{env | pointer: eval_param(env, 1)}
+    if get(env, 0) != 0 do
+      %{env | pointer: get(env, 1)}
     else
       env
       |> Map.update!(:pointer, & &1 + 3)
@@ -144,8 +144,8 @@ defmodule Intcode do
   end
 
   def jump_if_false(env) do
-    if eval_param(env, 0) == 0 do
-      %{env | pointer: eval_param(env, 1)}
+    if get(env, 0) == 0 do
+      %{env | pointer: get(env, 1)}
     else
       env
       |> Map.update!(:pointer, & &1 + 3)
@@ -155,7 +155,7 @@ defmodule Intcode do
   def less_than(env = %{params: {_, _, target}}) do
     env
     |> put_in([:tape, target],
-      if eval_param(env, 0) < eval_param(env, 1) do
+      if get(env, 0) < get(env, 1) do
         1
       else
         0
@@ -167,7 +167,7 @@ defmodule Intcode do
   def equals(env = %{params: {_, _, target}}) do
     env
     |> put_in([:tape, target],
-      if eval_param(env, 0) == eval_param(env, 1) do
+      if get(env, 0) == get(env, 1) do
         1
       else
         0
@@ -178,19 +178,53 @@ defmodule Intcode do
 
   def set_offset(env) do
     env
-    |> Map.update(:relative_base, eval_param(env, 0), & &1 + eval_param(env, 0))
+    |> Map.update(:relative_base, get(env, 0), & &1 + get(env, 0))
     |> Map.update!(:pointer, & &1 + 2)
   end
 
-  def get_value(%{tape: tape}, pointer, 0), do: Map.get(tape, pointer, 0)
-  def get_value(_, value, 1), do: value
-  def get_value(%{tape: tape, relative_base: base}, pointer, 2) do
-    Map.get(tape, base + pointer, 0)
+  def param_mode(env, param_number) do
+    env
+    |> Map.get(:modes)
+    |> elem(param_number)
   end
 
-  @doc "Gets the immediate or position value of a parameter by number"
-  def eval_param(env = %{params: params, modes: modes}, p_number) do
-    get_value(env, elem(params, p_number), elem(modes, p_number))
+  def param(env, param_number) do
+    env
+    |> Map.get(:params)
+    |> elem(param_number)
+  end
+
+  def get_tape(env, address) do
+    env
+    |> Map.get(:tape)
+    |> Map.get(address, 0)
+  end
+
+  def get(env, param_number) do
+    mode  = param_mode(env, param_number)
+    param = param(env, param_number)
+
+    case mode do
+      0 -> get_tape(env, param)
+      1 -> param
+      2 -> get_tape(env, param + Map.get(env, :relative_base))
+    end
+  end
+
+  def put(env, param_number, value) do
+    mode  = param_mode(env, param_number)
+    param = param(env, param_number)
+
+    address =
+      case mode do
+        0 -> param
+        1 -> exit({:error, "Never write in immediate mode!"})
+        2 -> param + Map.get(env, :relative_base)
+      end
+
+    Map.update!(env, :tape, fn(tape) ->
+      Map.put(tape, address, value)
+    end)
   end
 
   def update_instruction(env = %{tape: tape, pointer: pointer}) do
@@ -312,6 +346,7 @@ defmodule Intcode do
       [1125899906842624]
   """
   def run(env = %{opcode: opcode}) do
+    # IO.puts("p#{Map.get(env, :pointer)}: #{get_in(env, [:tape, Map.get(env, :pointer)])} opcode: #{opcode}")
     case opcode do # opcodes that can halt/pause execution
       99 -> stop(env)
       3 -> inp(env)
