@@ -25,7 +25,7 @@ defmodule Advent2019.Day9 do
   """
   def p1(machine) do
     machine
-    |> Map.put(:input, [1])
+    |> Intcode.put_input(1)
     |> Intcode.run
     |> Map.get(:output)
     |> Enum.reverse
