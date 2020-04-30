@@ -227,22 +227,33 @@ defmodule Intcode do
     end)
   end
 
+  @doc """
+  set parameter mode, default to 0 (position)
+  """
+  def pad_to_three(list) do
+    if Enum.count(list) == 3 do
+      list
+    else
+      list
+      |>Enum.reverse
+      |>(&[0|&1]).()
+      |>Enum.reverse
+      |>pad_to_three
+    end
+  end
+
   def update_instruction(env = %{tape: tape, pointer: pointer}) do
     instruction = tape
                   |> Map.get(pointer)
                   |> Integer.digits
 
-    opcode = instruction
-             |> Enum.split(-2)
-             |> elem(1)
-             |> Integer.undigits
+    {modes, opcode} = Enum.split(instruction, -2)
 
-    # set parameter mode, default to 0 (position)
-    modes = {
-      Enum.at(instruction, -3, 0),
-      Enum.at(instruction, -4, 0),
-      Enum.at(instruction, -5, 0)
-    }
+    opcode = Integer.undigits(opcode)
+    modes = modes
+            |>Enum.reverse
+            |>pad_to_three
+            |>List.to_tuple
 
     params = {
       Map.get(tape, pointer + 1, 0),
