@@ -111,7 +111,7 @@ defmodule Intcode do
       env
     else
       env
-      |> put_in([:tape, elem(Map.get(env, :params), 0)], hd(Map.get(env, :input)))
+      |> put(0, hd(Map.get(env, :input)))
       |> Map.update!(:input, &tl/1)
       |> Map.update!(:pointer, & &1 + 2)
       |> update_instruction
@@ -152,9 +152,9 @@ defmodule Intcode do
     end
   end
 
-  def less_than(env = %{params: {_, _, target}}) do
+  def less_than(env) do
     env
-    |> put_in([:tape, target],
+    |> put(2,
       if get(env, 0) < get(env, 1) do
         1
       else
@@ -164,9 +164,9 @@ defmodule Intcode do
     |> Map.update!(:pointer, & &1 + 4)
   end
 
-  def equals(env = %{params: {_, _, target}}) do
+  def equals(env) do
     env
-    |> put_in([:tape, target],
+    |> put(2,
       if get(env, 0) == get(env, 1) do
         1
       else
