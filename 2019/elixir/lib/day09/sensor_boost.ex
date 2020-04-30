@@ -31,7 +31,11 @@ defmodule Advent2019.Day9 do
     |> Enum.join(",")
   end
 
-  def p2(_machine) do
-    "not complete"
+  def p2(machine) do
+    machine
+    |> Intcode.put_input(2)
+    |> Intcode.run
+    |> Intcode.get_output
+    |> Enum.join(",")
   end
 end
