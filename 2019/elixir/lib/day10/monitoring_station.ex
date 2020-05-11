@@ -6,10 +6,13 @@ defmodule Advent2019.Day10 do
 
   def setup do
     with {:ok, string} <- File.read("#{__DIR__}/input.txt") do
-      map = process_map(string)
-      {coords, asteroids_detected} = find_station(map)
-      %{station: coords, asteroids: asteroids_detected, map: map}
+      setup_string(string)
     end
+  end
+  def setup_string(string) do
+    map = process_map(string)
+    {coords, asteroids_detected} = find_station(map)
+    %{station: coords, asteroids: asteroids_detected, map: map}
   end
 
   @spec process_map(String.t) :: MapSet.t
@@ -161,6 +164,34 @@ defmodule Advent2019.Day10 do
     {hypotenuse, radians_to_degrees(angle)}
   end
 
+  @doc """
+  The proper algorithm:
+  - start the laser at 0
+  - kill the closest target.
+  - adopt the angle from the target
+  - repeat until 200
+  """
+  def destroy_asteroid(map, _laser_angle, 0), do: map
+  def destroy_asteroid(map, laser_angle, num) do
+    # find the next angle in the map that's greater than laser_angle
+    target =
+      map
+      |> Enum.reject(fn({angle, _, _}) -> angle < laser_angle end)
+      |> List.first
+
+    if target do
+      # destroy the closest asteroid at that angle
+      # set laser_angle to the angle of the destroyed asteroid
+      # continue
+      new_angle = elem(target, 0)
+      destroy_asteroid(List.delete(map, target), new_angle, num - 1)
+    else
+      # if none, set laser_angle to 0 (laser angle is close to 359 or
+      # something)
+      destroy_asteroid(map, 0, num)
+    end
+  end
+
   def p1(station_and_map), do: Map.get(station_and_map, :asteroids)
 
   @doc """
@@ -184,10 +215,11 @@ defmodule Advent2019.Day10 do
       ...>.#.#.###########.###
       ...>#.#.#.#####.####.###
       ...>###.##.####.##.#..##"
+      ...> |> setup_string
       ...> |> p2(200, debug: true)
       {8, 2}
   """
-  def p2(station_and_map, _num \\ 200, opts \\ []) do
+  def p2(station_and_map, num \\ 200, opts \\ []) do
     # convert the map to an array of polar coordinates
     # order by angle, distance, get 200th entry
     # Seems simple enough?
@@ -203,15 +235,10 @@ defmodule Advent2019.Day10 do
       end)
       |> Enum.sort
 
-    # this approach is close, but a little naive.
-    # it doesn't take into account the progress of the laser.
-    # The proper algorithm:
-    # start the laser at 0, kill the closest target. Choose the next highest
-    # degree, kill the closest target. Repeat.
-
-    {_, _, {x, y}} = sorted
-                     |> Enum.at(200)
-                     |> elem(1)
+    {_, _, {x, y}} =
+      sorted
+      |> destroy_asteroid(0, num)
+      |> Enum.at(0)
 
     if opts[:debug] do
       {x, y}
