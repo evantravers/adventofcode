@@ -2,6 +2,8 @@ defmodule Advent2019.Day10 do
   @moduledoc "https://adventofcode.com/2019/day/10"
   @behaviour Advent
 
+  alias :math, as: Math
+
   def setup do
     with {:ok, string} <- File.read("#{__DIR__}/input.txt") do
       map = process_map(string)
@@ -129,10 +131,34 @@ defmodule Advent2019.Day10 do
     (y3 - y2)*(x2 - x1) == (y2 - y1)*(x3 - x2)
   end
 
-  def p1(asteroid_map) do
-    asteroid_map
-    |> find_station
-    |> elem(1)
+  @doc """
+  https://www.dummies.com/programming/c/trigonometry-for-c-programming/
+
+  I think that this _should_ be close enough for military purposes.
+  """
+  def radians_to_degrees(radians) do
+    degrees = radians * 57.2957795
+    if degrees < 0 do
+      abs(degrees) + 180
+    else
+      degrees
+    end
+  end
+
+  def convert_polar({x_origin, y_origin}, {x_target, y_target}) do
+    x_length = x_origin - x_target
+    y_length = y_origin - y_target
+
+    hypotenuse = Math.sqrt(Math.pow(abs(x_length), 2) + Math.pow(abs(y_length), 2))
+
+    angle =
+      if x_length == 0 do
+        0.0
+      else
+        Math.atan((y_length / x_length))
+      end
+
+    {hypotenuse, radians_to_degrees(angle)}
   end
 
   def p1(station_and_map), do: Map.get(station_and_map, :asteroids)
@@ -158,13 +184,34 @@ defmodule Advent2019.Day10 do
       ...>.#.#.###########.###
       ...>#.#.#.#####.####.###
       ...>###.##.####.##.#..##"
-      ...> |> process_map
       ...> |> p2(200, debug: true)
       {8, 2}
   """
-  def p2(_asteroid_map, _num \\ 200, opts \\ []) do
-    x = 0
-    y = 0
+  def p2(station_and_map, _num \\ 200, opts \\ []) do
+    # convert the map to an array of polar coordinates
+    # order by angle, distance, get 200th entry
+    # Seems simple enough?
+    station = Map.get(station_and_map, :station)
+
+    sorted =
+      station_and_map
+      |> Map.get(:map)
+      |> Enum.reject(& &1 == station)
+      |> Enum.map(fn(coords) ->
+        {dist, angle} = convert_polar(station, coords)
+        {angle, dist, coords}
+      end)
+      |> Enum.sort
+
+    # this approach is close, but a little naive.
+    # it doesn't take into account the progress of the laser.
+    # The proper algorithm:
+    # start the laser at 0, kill the closest target. Choose the next highest
+    # degree, kill the closest target. Repeat.
+
+    {_, _, {x, y}} = sorted
+                     |> Enum.at(200)
+                     |> elem(1)
 
     if opts[:debug] do
       {x, y}
