@@ -171,24 +171,28 @@ defmodule Advent2019.Day10 do
   - adopt the angle from the target
   - repeat until 200
   """
-  def destroy_asteroid(map, _laser_angle, 0), do: map
-  def destroy_asteroid(map, laser_angle, num) do
+  def destroy_asteroids(map, laser_angle, destroyed \\ [], num) do
     # find the next angle in the map that's greater than laser_angle
-    target =
-      map
-      |> Enum.reject(fn({angle, _, _}) -> angle < laser_angle end)
-      |> List.first
-
-    if target do
-      # destroy the closest asteroid at that angle
-      # set laser_angle to the angle of the destroyed asteroid
-      # continue
-      new_angle = elem(target, 0)
-      destroy_asteroid(List.delete(map, target), new_angle, num - 1)
+    if Enum.count(destroyed) == num do
+      hd(destroyed)
     else
-      # if none, set laser_angle to 0 (laser angle is close to 359 or
-      # something)
-      destroy_asteroid(map, 0, num)
+      target =
+        map
+        |> Enum.reject(fn({angle, _, _}) -> angle <=laser_angle end)
+        |> List.first
+
+      if target do
+        # destroy the closest asteroid at that angle
+        # set laser_angle to the angle of the destroyed asteroid
+        # continue
+        IO.inspect(target)
+        new_angle = elem(target, 0)
+        destroy_asteroids(List.delete(map, target), new_angle, [target|destroyed], num)
+      else
+        # if none, set laser_angle to 0 (laser angle is close to 359 or
+        # something)
+        destroy_asteroids(map, 0, destroyed, num)
+      end
     end
   end
 
@@ -216,8 +220,8 @@ defmodule Advent2019.Day10 do
       ...>#.#.#.#####.####.###
       ...>###.##.####.##.#..##"
       ...> |> setup_string
-      ...> |> p2(200, debug: true)
-      {8, 2}
+      ...> |> p2(1, debug: true)
+      {11, 12}
   """
   def p2(station_and_map, num \\ 200, opts \\ []) do
     # convert the map to an array of polar coordinates
@@ -237,8 +241,7 @@ defmodule Advent2019.Day10 do
 
     {_, _, {x, y}} =
       sorted
-      |> destroy_asteroid(0, num)
-      |> Enum.at(0)
+      |> destroy_asteroids(0, num)
 
     if opts[:debug] do
       {x, y}
