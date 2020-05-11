@@ -4,7 +4,9 @@ defmodule Advent2019.Day10 do
 
   def setup do
     with {:ok, string} <- File.read("#{__DIR__}/input.txt") do
-      process_map(string)
+      map = process_map(string)
+      {coords, asteroids_detected} = find_station(map)
+      %{station: coords, asteroids: asteroids_detected, map: map}
     end
   end
 
@@ -132,6 +134,8 @@ defmodule Advent2019.Day10 do
     |> find_station
     |> elem(1)
   end
+
+  def p1(station_and_map), do: Map.get(station_and_map, :asteroids)
 
   @doc """
       iex> ".#..##.###...#######
