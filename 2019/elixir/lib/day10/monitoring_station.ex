@@ -199,14 +199,14 @@ defmodule Advent2019.Day10 do
   - adopt the angle from the target
   - repeat until 200
   """
-  def destroy_asteroids(map, num, laser_angle \\ ~a(0°)d, destroyed \\ []) do
+  def destroy_asteroids(map, num, laser_angle \\ ~a(-0.001°)d, destroyed \\ []) do
     if Enum.count(destroyed) == num do
       hd(destroyed)
     else
       # find the next angle in the map that's greater than laser_angle
       target =
         map
-        |> Enum.filter(fn({angle, _, _, _}) -> angle >= laser_angle end)
+        |> Enum.filter(fn({angle, _, _, _}) -> angle > laser_angle end)
         |> List.first
 
       if target do
