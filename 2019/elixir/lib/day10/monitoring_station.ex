@@ -3,6 +3,7 @@ defmodule Advent2019.Day10 do
   @behaviour Advent
 
   alias :math, as: Math
+  use Angle
 
   def setup do
     with {:ok, string} <- File.read("#{__DIR__}/input.txt") do
@@ -135,33 +136,43 @@ defmodule Advent2019.Day10 do
   end
 
   @doc """
-  https://www.dummies.com/programming/c/trigonometry-for-c-programming/
+  This is hard, because the x, y system is always positive because positive `y`
+  is "down."
 
-  I think that this _should_ be close enough for military purposes.
+      iex> convert_polar({0, 0}, {0, 2})
+      {2.0, 180}
+
+      iex> convert_polar({2, 2}, {2, 0})
+      {2.0, 0}
+
+      iex> convert_polar({2, 2}, {2, 4})
+      {2.0, 180}
+
+      iex> convert_polar({2, 2}, {4, 2})
+      {2.0, 90}
+
+      iex> convert_polar({2, 2}, {0, 2})
+      {2.0, 270}
   """
-  def radians_to_degrees(radians) do
-    degrees = radians * 57.2957795
-    if degrees < 0 do
-      abs(degrees) + 180
-    else
-      degrees
-    end
-  end
-
   def convert_polar({x_origin, y_origin}, {x_target, y_target}) do
     x_length = x_origin - x_target
     y_length = y_origin - y_target
 
-    hypotenuse = Math.sqrt(Math.pow(abs(x_length), 2) + Math.pow(abs(y_length), 2))
+    dist = Math.sqrt(Math.pow(abs(x_length), 2) + Math.pow(abs(y_length), 2))
 
-    angle =
+    {_, angle} =
       if x_length == 0 do
-        0.0
+        if y_length > 0 do
+          Angle.zero()
+        else
+          ~a(180)d
+        end
       else
-        Math.atan((y_length / x_length))
+        with {:ok, angle} <- Angle.Trig.atan((y_length / x_length)), do: angle
       end
+      |> Angle.to_degrees
 
-    {hypotenuse, radians_to_degrees(angle)}
+    {dist, angle}
   end
 
   @doc """
@@ -171,11 +182,11 @@ defmodule Advent2019.Day10 do
   - adopt the angle from the target
   - repeat until 200
   """
-  def destroy_asteroids(map, laser_angle, destroyed \\ [], num) do
-    # find the next angle in the map that's greater than laser_angle
+  def destroy_asteroids(map, num, laser_angle \\ 0, destroyed \\ []) do
     if Enum.count(destroyed) == num do
       hd(destroyed)
     else
+      # find the next angle in the map that's greater than laser_angle
       target =
         map
         |> Enum.reject(fn({angle, _, _}) -> angle <=laser_angle end)
@@ -185,13 +196,12 @@ defmodule Advent2019.Day10 do
         # destroy the closest asteroid at that angle
         # set laser_angle to the angle of the destroyed asteroid
         # continue
-        IO.inspect(target)
-        new_angle = elem(target, 0)
-        destroy_asteroids(List.delete(map, target), new_angle, [target|destroyed], num)
+        {new_angle, _dist, _coords} = target
+        destroy_asteroids(List.delete(map, target), num, new_angle, [target|destroyed])
       else
-        # if none, set laser_angle to 0 (laser angle is close to 359 or
+        # if none, set laser_angle to original (laser angle is close to 359 or
         # something)
-        destroy_asteroids(map, 0, destroyed, num)
+        destroy_asteroids(map, num, @laser_reset, destroyed)
       end
     end
   end
@@ -199,7 +209,7 @@ defmodule Advent2019.Day10 do
   def p1(station_and_map), do: Map.get(station_and_map, :asteroids)
 
   @doc """
-      iex> ".#..##.###...#######
+      ...> ".#..##.###...#######
       ...>##.############..##.
       ...>.#.######.########.#
       ...>.###.#######.####.#.
@@ -235,13 +245,13 @@ defmodule Advent2019.Day10 do
       |> Enum.reject(& &1 == station)
       |> Enum.map(fn(coords) ->
         {dist, angle} = convert_polar(station, coords)
-        {angle, dist, coords}
+        {angle, dist, coords} # ordered to take advantage of Enum.sort
       end)
       |> Enum.sort
 
     {_, _, {x, y}} =
       sorted
-      |> destroy_asteroids(0, num)
+      |> destroy_asteroids(num)
 
     if opts[:debug] do
       {x, y}
