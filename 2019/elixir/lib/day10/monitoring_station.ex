@@ -140,6 +140,7 @@ defmodule Advent2019.Day10 do
   is "down."
 
   Returns {angle, distance, new coord relative to station, old coords}
+  (ordered to take advantage of Enum.sort)
 
       iex> convert_polar({0, 0}, {0, 2})
       {Angle.degrees(180), 2.0, {0, -2}, {0, 2}}
@@ -155,6 +156,9 @@ defmodule Advent2019.Day10 do
 
       iex> convert_polar({2, 2}, {0, 2})
       {Angle.degrees(270), 2.0, {-2, 0}, {0, 2}}
+
+      iex> convert_polar({2, 2}, {4, 4})
+      {Angle.degrees(135.0), 2.8284271247461903, {2, -2}, {4, 4}}
   """
   def convert_polar({x_origin, y_origin} = _station, {x_target, y_target} = target) do
     x_length = x_target - x_origin
@@ -162,18 +166,25 @@ defmodule Advent2019.Day10 do
 
     dist = Math.sqrt(Math.pow(abs(x_length), 2) + Math.pow(abs(y_length), 2))
 
-    angle =
-      if x_length == 0 do
-        if y_length > 0 do
-          Angle.zero()
-        else
-          ~a(180)d
-        end
-      else
-        with {:ok, angle} <- Angle.Trig.atan((y_length / x_length)), do: angle
+    {quadrant, rise, run} =
+      cond do
+        x_length >= 0 && y_length > 0 -> {0, x_length, y_length}
+        x_length > 0 && y_length <= 0 -> {90, y_length, x_length}
+        x_length <= 0 && y_length < 0 -> {180, x_length, y_length}
+        x_length < 0 && y_length >= 0 -> {270, y_length, x_length}
       end
 
-    # ordered to take advantage of Enum.sort
+    angle =
+      if run == 0 do
+        Angle.degrees(quadrant)
+      else
+        with {:ok, rads} <- Angle.Trig.atan((rise / run)),
+             {_, degrees} <- Angle.to_degrees(rads)
+        do
+          Angle.degrees(abs(degrees) + quadrant)
+        end
+      end
+
     {angle, dist, {x_length, y_length}, target}
   end
 
