@@ -21,6 +21,7 @@ defmodule Advent2019.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:angle, "~> 0.3.0"},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:timex, "~> 3.1"},
       {:libgraph, "~> 0.7"}
