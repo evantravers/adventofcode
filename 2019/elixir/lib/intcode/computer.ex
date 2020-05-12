@@ -50,6 +50,12 @@ defmodule Intcode do
     with {:ok, state} <- GenServer.call(pid, :state), do: state
   end
 
+  def halted?(pid) do
+    with state <- Intcode.state(pid) do
+      99 == Map.get(state, :opcode)
+    end
+  end
+
   @impl true
   @doc """
   The server is receiving an input from somewhere

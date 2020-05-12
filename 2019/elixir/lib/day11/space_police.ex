@@ -28,33 +28,38 @@ defmodule Advent2019.Day11 do
 
     defstruct position: {0, 0}, orientation: :U, map: %{}, computer: nil
 
-    def paint_and_turn(%{map: map, position: coord, computer: pid} = robot) do
+    def run(%{map: map, position: coord, computer: pid} = robot) do
       # read the current square. Default is black.
-      camera_image = map
-                     |> Map.get(coord, :black)
-                     |> camera_signal
-
-      # provide the signal to the computer
-      # get paint color and turn direction, using hd in disgusting ways
-      with _ <- Intcode.send_input(pid, camera_image),
-           {:ok, state} <- Intcode.state(pid),
-           output <- Map.get(state, :output),
-           [direction | [color | _]] <- output do
-
+      if Intcode.halted?(pid) do
         robot
-        |> paint(color)
-        |> turn(direction)
-        |> advance
-        |> paint_and_turn
       else
-        :error ->
-          IO.puts("done?")
-          map
+        camera_image = map
+                       |> Map.get(coord, :black)
+                       |> camera_signal
+
+        # provide the signal to the computer
+        # get paint color and turn direction, using hd in disgusting ways
+        Intcode.send_input(pid, camera_image)
+        with state <- Intcode.state(pid),
+             output <- Map.get(state, :output),
+             [dir_num | [color_num | _]] <- output do
+          robot
+          |> paint(color_num)
+          |> turn(direction(dir_num))
+          |> advance
+          |> run
+        else
+          :error ->
+            IO.puts("ERROR!")
+        end
       end
     end
 
     def camera_signal(:black), do: 0
     def camera_signal(:white), do: 1
+
+    def direction(0), do: :left
+    def direction(1), do: :right
 
     def paint(%{map: map, position: coord} = robot, 1) do
       %{robot | map: Map.put(map, coord, :white)}
@@ -89,7 +94,10 @@ defmodule Advent2019.Day11 do
 
   def p1(source_code) do
     %Robot{computer: Intcode.spawn(source_code)}
-    |> Robot.paint_and_turn
+    |> Robot.run
+    |> Map.get(:map)
+    |> Map.keys
+    |> Enum.count
   end
 
   def p2(_source_code) do
