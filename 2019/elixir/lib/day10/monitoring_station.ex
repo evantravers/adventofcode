@@ -142,13 +142,13 @@ defmodule Advent2019.Day10 do
   Returns {angle, distance, new coord relative to station, old coords}
 
       iex> convert_polar({0, 0}, {0, 2})
-      {Angle.degrees(180), 2.0, {0, 2}, {0, 2}}
+      {Angle.degrees(180), 2.0, {0, -2}, {0, 2}}
 
       iex> convert_polar({2, 2}, {2, 0})
-      {Angle.degrees(0), 2.0, {0, -2}, {2, 0}}
+      {Angle.degrees(0), 2.0, {0, 2}, {2, 0}}
 
       iex> convert_polar({2, 2}, {2, 4})
-      {Angle.degrees(180), 2.0, {0, 2}, {2, 4}}
+      {Angle.degrees(180), 2.0, {0, -2}, {2, 4}}
 
       iex> convert_polar({2, 2}, {4, 2})
       {Angle.degrees(90), 2.0, {2, 0}, {4, 2}}
