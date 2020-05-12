@@ -139,28 +139,30 @@ defmodule Advent2019.Day10 do
   This is hard, because the x, y system is always positive because positive `y`
   is "down."
 
+  Returns {angle, distance, new coord relative to station, old coords}
+
       iex> convert_polar({0, 0}, {0, 2})
-      {2.0, 180}
+      {Angle.degrees(180), 2.0, {0, 2}, {0, 2}}
 
       iex> convert_polar({2, 2}, {2, 0})
-      {2.0, 0}
+      {Angle.degrees(0), 2.0, {0, -2}, {2, 0}}
 
       iex> convert_polar({2, 2}, {2, 4})
-      {2.0, 180}
+      {Angle.degrees(180), 2.0, {0, 2}, {2, 4}}
 
       iex> convert_polar({2, 2}, {4, 2})
-      {2.0, 90}
+      {Angle.degrees(90), 2.0, {2, 0}, {4, 2}}
 
       iex> convert_polar({2, 2}, {0, 2})
-      {2.0, 270}
+      {Angle.degrees(270), 2.0, {-2, 0}, {0, 2}}
   """
-  def convert_polar({x_origin, y_origin}, {x_target, y_target}) do
-    x_length = x_origin - x_target
-    y_length = y_origin - y_target
+  def convert_polar({x_origin, y_origin} = _station, {x_target, y_target} = target) do
+    x_length = x_target - x_origin
+    y_length = y_target - y_origin
 
     dist = Math.sqrt(Math.pow(abs(x_length), 2) + Math.pow(abs(y_length), 2))
 
-    {_, angle} =
+    angle =
       if x_length == 0 do
         if y_length > 0 do
           Angle.zero()
@@ -170,9 +172,9 @@ defmodule Advent2019.Day10 do
       else
         with {:ok, angle} <- Angle.Trig.atan((y_length / x_length)), do: angle
       end
-      |> Angle.to_degrees
 
-    {dist, angle}
+    # ordered to take advantage of Enum.sort
+    {angle, dist, {x_length, y_length}, target}
   end
 
   @doc """
@@ -182,7 +184,7 @@ defmodule Advent2019.Day10 do
   - adopt the angle from the target
   - repeat until 200
   """
-  def destroy_asteroids(map, num, laser_angle \\ 0, destroyed \\ []) do
+  def destroy_asteroids(map, num, laser_angle \\ Angle.zero(), destroyed \\ []) do
     if Enum.count(destroyed) == num do
       hd(destroyed)
     else
@@ -201,7 +203,7 @@ defmodule Advent2019.Day10 do
       else
         # if none, set laser_angle to original (laser angle is close to 359 or
         # something)
-        destroy_asteroids(map, num, @laser_reset, destroyed)
+        destroy_asteroids(map, num, 0, destroyed)
       end
     end
   end
@@ -243,13 +245,10 @@ defmodule Advent2019.Day10 do
       station_and_map
       |> Map.get(:map)
       |> Enum.reject(& &1 == station)
-      |> Enum.map(fn(coords) ->
-        {dist, angle} = convert_polar(station, coords)
-        {angle, dist, coords} # ordered to take advantage of Enum.sort
-      end)
+      |> Enum.map(fn(coords) -> convert_polar(station, coords) end)
       |> Enum.sort
 
-    {_, _, {x, y}} =
+    {_, _, _, {x, y}} =
       sorted
       |> destroy_asteroids(num)
 
