@@ -96,7 +96,6 @@ defmodule Advent2019.Day11 do
     %Robot{computer: Intcode.spawn(source_code)}
     |> Robot.run
     |> Map.get(:map)
-    |> Map.keys
     |> Enum.count
   end
 
