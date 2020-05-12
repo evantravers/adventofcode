@@ -202,14 +202,14 @@ defmodule Advent2019.Day10 do
       # find the next angle in the map that's greater than laser_angle
       target =
         map
-        |> Enum.reject(fn({angle, _, _}) -> angle <=laser_angle end)
+        |> Enum.reject(fn({angle, _, _, _}) -> angle <=laser_angle end)
         |> List.first
 
       if target do
         # destroy the closest asteroid at that angle
         # set laser_angle to the angle of the destroyed asteroid
         # continue
-        {new_angle, _dist, _coords} = target
+        {new_angle, _dist, _coords, _original_coords} = target
         destroy_asteroids(List.delete(map, target), num, new_angle, [target|destroyed])
       else
         # if none, set laser_angle to original (laser angle is close to 359 or
@@ -259,7 +259,7 @@ defmodule Advent2019.Day10 do
       |> Enum.map(fn(coords) -> convert_polar(station, coords) end)
       |> Enum.sort
 
-    {_, _, _, {x, y}} =
+    {_angle, _dist, _new_coords, {x, y}} =
       sorted
       |> destroy_asteroids(num)
 
