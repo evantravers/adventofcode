@@ -24,9 +24,7 @@ defmodule Advent2019.Day11 do
     After the robot turns, it should always move forward exactly one panel.
     """
 
-    defstruct position: {0, 0}, orientation: :U, map: %{}, computer: nil # need to load the computer somehow
-
-    def load_source(robot, computer), do: %{robot | computer: computer}
+    defstruct position: {0, 0}, orientation: :U, map: %{}, computer: nil
 
     def move_and_turn(%{map: map, position: coord, computer: computer} = robot) do
       # read the current square. Default is black.
@@ -80,7 +78,8 @@ defmodule Advent2019.Day11 do
     def turn(%{orientation: :R} = robot, :right), do: %{robot | orientation: :U}
   end
 
-  def p1(_machine) do
+  def p1(machine) do
+    %Robot{computer: machine}
   end
 
   def p2(_machine) do
