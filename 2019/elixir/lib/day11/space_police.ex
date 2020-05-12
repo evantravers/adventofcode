@@ -3,7 +3,9 @@ defmodule Advent2019.Day11 do
   @behaviour Advent
 
   def setup do
-    Intcode.load_file("#{__DIR__}/input.txt")
+    with {:ok, intcode_string} <- File.read("#{__DIR__}/input.txt") do
+      intcode_string
+    end
   end
 
   defmodule Robot do
@@ -78,11 +80,12 @@ defmodule Advent2019.Day11 do
     def turn(%{orientation: :R} = robot, :right), do: %{robot | orientation: :U}
   end
 
-  def p1(machine) do
-    %Robot{computer: machine}
+  def p1(source_code) do
+    %Robot{computer: Intcode.spawn(source_code)}
+    |> Robot.paint_and_turn
   end
 
-  def p2(_machine) do
+  def p2(_source_code) do
   end
 end
 
