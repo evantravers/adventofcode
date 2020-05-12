@@ -28,22 +28,29 @@ defmodule Advent2019.Day11 do
 
     defstruct position: {0, 0}, orientation: :U, map: %{}, computer: nil
 
-    def move_and_turn(%{map: map, position: coord, computer: computer} = robot) do
+    def paint_and_turn(%{map: map, position: coord, computer: pid} = robot) do
       # read the current square. Default is black.
       camera_image = map
                      |> Map.get(coord, :black)
-                     |>camera_signal
+                     |> camera_signal
 
       # provide the signal to the computer
-      Intcode.put_input(computer, camera_image)
-
       # get paint color and turn direction, using hd in disgusting ways
-      [direction | [color | _]] = Map.get(computer, :output)
+      with _ <- Intcode.send_input(pid, camera_image),
+           {:ok, state} <- Intcode.state(pid),
+           output <- Map.get(state, :output),
+           [direction | [color | _]] <- output do
 
-      robot
-      |> paint(color)
-      |> turn(direction)
-      |> move
+        robot
+        |> paint(color)
+        |> turn(direction)
+        |> advance
+        |> paint_and_turn
+      else
+        :error ->
+          IO.puts("done?")
+          map
+      end
     end
 
     def camera_signal(:black), do: 0
@@ -56,16 +63,16 @@ defmodule Advent2019.Day11 do
       %{robot | map: Map.put(map, coord, :black)}
     end
 
-    def move(%{position: {x, y}, orientation: :U} = robot) do
+    def advance(%{position: {x, y}, orientation: :U} = robot) do
       %{robot | position: {x, y+1}}
     end
-    def move(%{position: {x, y}, orientation: :D} = robot) do
+    def advance(%{position: {x, y}, orientation: :D} = robot) do
       %{robot | position: {x, y-1}}
     end
-    def move(%{position: {x, y}, orientation: :L} = robot) do
+    def advance(%{position: {x, y}, orientation: :L} = robot) do
       %{robot | position: {x-1, y}}
     end
-    def move(%{position: {x, y}, orientation: :R} = robot) do
+    def advance(%{position: {x, y}, orientation: :R} = robot) do
       %{robot | position: {x+1, y}}
     end
 
