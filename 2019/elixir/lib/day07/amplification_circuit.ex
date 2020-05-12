@@ -78,18 +78,17 @@ defmodule Advent2019.Day7 do
         GenServer.cast(d_pid, {:set_output_pid, e_pid})
         GenServer.cast(e_pid, {:set_output_pid, a_pid})
 
-        GenServer.cast(a_pid, {:rcv_input, a})
-        GenServer.cast(b_pid, {:rcv_input, b})
-        GenServer.cast(c_pid, {:rcv_input, c})
-        GenServer.cast(d_pid, {:rcv_input, d})
-        GenServer.cast(e_pid, {:rcv_input, e})
+        Intcode.send_input(a_pid, a)
+        Intcode.send_input(b_pid, b)
+        Intcode.send_input(c_pid, c)
+        Intcode.send_input(d_pid, d)
+        Intcode.send_input(e_pid, e)
 
-        GenServer.cast(a_pid, {:rcv_input, 0})
-
-        Process.flag(:trap_exit, true)
+        Intcode.send_input(a_pid, 0)
 
         # At the end, e should have sent A the last message and it should have
         # put it in its input.
+        Process.flag(:trap_exit, true)
         receive do
           {:EXIT, target, {:finished, env}} when target == e_pid-> {Intcode.get_last_output(env), phase_setting}
         end

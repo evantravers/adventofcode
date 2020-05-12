@@ -36,6 +36,20 @@ defmodule Intcode do
       |>Map.put(:name, name)}
   end
 
+  def spawn(intcode_string, name \\ nil) do
+    with {:ok, pid} <- GenServer.start_link(Intcode, {intcode_string, name}) do
+      pid
+    end
+  end
+
+  def send_input(pid, msg) do
+    GenServer.cast(pid, {:rcv_input, msg})
+  end
+
+  def state(pid) do
+    with {:ok, state} <- GenServer.call(pid, :state), do: state
+  end
+
   @impl true
   @doc """
   The server is receiving an input from somewhere
@@ -52,7 +66,7 @@ defmodule Intcode do
   end
 
   @impl true
-  def handle_call(:state, state, 5000) do
+  def handle_call(:state, _, state) do
     {:reply, state, state}
   end
 
