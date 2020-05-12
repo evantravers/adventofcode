@@ -159,6 +159,9 @@ defmodule Advent2019.Day10 do
 
       iex> convert_polar({2, 2}, {4, 4})
       {Angle.degrees(135.0), 2.8284271247461903, {2, -2}, {4, 4}}
+
+      iex> convert_polar({2, 2}, {0, 6})
+      {Angle.degrees(206.56505117707798), 4.47213595499958, {-2, -4}, {0, 6}}
   """
   def convert_polar({x_origin, y_origin} = _station, {x_target, y_target} = target) do
     x_length = x_target - x_origin
