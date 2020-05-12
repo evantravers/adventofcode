@@ -158,7 +158,7 @@ defmodule Advent2019.Day10 do
   """
   def convert_polar({x_origin, y_origin} = _station, {x_target, y_target} = target) do
     x_length = x_target - x_origin
-    y_length = y_target - y_origin
+    y_length = y_origin - y_target
 
     dist = Math.sqrt(Math.pow(abs(x_length), 2) + Math.pow(abs(y_length), 2))
 
