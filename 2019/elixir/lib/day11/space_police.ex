@@ -90,6 +90,33 @@ defmodule Advent2019.Day11 do
     def turn(%{orientation: :L} = robot, :right), do: %{robot | orientation: :U}
   end
 
+  def display_image(map) do
+    {x_0, x_n} =
+      map
+      |> Map.keys
+      |> Enum.map(&elem(&1, 0))
+      |> Enum.min_max
+
+    {y_0, y_n} =
+      map
+      |> Map.keys
+      |> Enum.map(&elem(&1, 1))
+      |> Enum.min_max
+
+    for y <- y_0..y_n do
+      for x <- x_0..x_n do
+        if Map.get(map, {x, y}) == :white do
+          "█"
+        else
+          " "
+        end
+      end
+      |> Enum.join("")
+    end
+    |> Enum.reverse
+    |> Enum.join("\n")
+  end
+
   def p1(source_code) do
     %Robot{computer: Intcode.spawn(source_code)}
     |> Robot.run
@@ -97,7 +124,11 @@ defmodule Advent2019.Day11 do
     |> Enum.count
   end
 
-  def p2(_source_code) do
+  def p2(source_code) do
+    %Robot{computer: Intcode.spawn(source_code), map: %{{0, 0} => :white}}
+    |> Robot.run
+    |> Map.get(:map)
+    |> display_image
   end
 end
 
