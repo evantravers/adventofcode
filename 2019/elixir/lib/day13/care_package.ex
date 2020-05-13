@@ -12,28 +12,37 @@ defmodule Advent2019.Day13 do
 
     defstruct tiles: %{}
 
-    @spec read_input(map(), list(integer)) :: map()
+    @spec read_input(list(integer)) :: map()
     @doc """
         iex> read_input(%{}, [1,2,3,6,5,4])
         %{{1, 2} => :paddle, {6, 5} => :ball}
     """
-    def read_input(_game, list_of_int) do
+    def read_input(list_of_int) do
       list_of_int
       |> Enum.chunk_every(3)
-      |> Enum.reduce(%{}, fn([x, y, id], tiles) ->
-        if id != 0 do
-          Map.put(tiles, {x, y}, id_to_object(id))
-        end
+      |> Enum.reduce([], fn([x, y, id], tiles) ->
+        [{{x, y}, id_to_object(id)}|tiles]
       end)
+      |> Enum.reject(&is_nil(elem(&1, 1)))
+      |> Map.new
     end
 
+    defp id_to_object(0), do: nil
     defp id_to_object(1), do: :wall
     defp id_to_object(2), do: :block
     defp id_to_object(3), do: :paddle
     defp id_to_object(4), do: :ball
   end
 
-  def p1(_i) do
+  def p1(source_code) do
+    source_code
+    |> Intcode.load
+    |> Intcode.run
+    |> Map.get(:output)
+    |> Enum.reverse
+    |> Game.read_input
+    |> Enum.filter(fn({_coord, type}) -> type == :block end)
+    |> Enum.count
   end
 
   def p2(_i) do
