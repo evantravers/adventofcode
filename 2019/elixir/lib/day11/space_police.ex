@@ -85,9 +85,9 @@ defmodule Advent2019.Day11 do
     def turn(%{orientation: :R} = robot, :left), do: %{robot | orientation: :U}
 
     def turn(%{orientation: :U} = robot, :right), do: %{robot | orientation: :R}
-    def turn(%{orientation: :L} = robot, :right), do: %{robot | orientation: :D}
+    def turn(%{orientation: :R} = robot, :right), do: %{robot | orientation: :D}
     def turn(%{orientation: :D} = robot, :right), do: %{robot | orientation: :L}
-    def turn(%{orientation: :R} = robot, :right), do: %{robot | orientation: :U}
+    def turn(%{orientation: :L} = robot, :right), do: %{robot | orientation: :U}
   end
 
   def p1(source_code) do
