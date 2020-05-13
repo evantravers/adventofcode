@@ -14,4 +14,5 @@ defmodule Advent2019Test do
   doctest Advent2019.Day11.Robot, import: true
   doctest Advent2019.Day12, import: true
   doctest Advent2019.Day13, import: true
+  doctest Advent2019.Day13.Game, import: true
 end
