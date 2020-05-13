@@ -29,17 +29,16 @@ defmodule Advent2019.Day11 do
     defstruct position: {0, 0}, orientation: :U, map: %{}, computer: nil
 
     def run(%{map: map, position: coord, computer: pid} = robot) do
-      # read the current square. Default is black.
       if Intcode.halted?(pid) do
         robot
       else
-        camera_image = map
-                       |> Map.get(coord, :black)
-                       |> camera_signal
+        # read the current square. Default is black.
+        camera_image = read_camera(map, coord)
 
         # provide the signal to the computer
-        # get paint color and turn direction, using hd in disgusting ways
         Intcode.send_input(pid, camera_image)
+
+        # get paint color and turn direction, using hd in disgusting ways
         with state <- Intcode.state(pid),
              output <- Map.get(state, :output),
              [dir_num | [color_num | _]] <- output do
@@ -48,12 +47,11 @@ defmodule Advent2019.Day11 do
           |> turn(direction(dir_num))
           |> advance
           |> run
-        else
-          :error ->
-            IO.puts("ERROR!")
         end
       end
     end
+
+    def read_camera(map, coord), do: camera_signal(Map.get(map, coord, :black))
 
     def camera_signal(:black), do: 0
     def camera_signal(:white), do: 1
