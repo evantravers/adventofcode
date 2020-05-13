@@ -8,8 +8,8 @@ defmodule Intcode do
 
   on OUTPUT msg: echo msg
 
-
-  SPAWN an Intcode module with its source code, set output pid to parent by default.
+  SPAWN an Intcode module with its source code, set output pid to parent by
+        default.
     on INPUT:
       add to Input queue
       IF halted
@@ -26,6 +26,9 @@ defmodule Intcode do
           send msg to Output pid
   """
 
+  # ===========================================================================
+  # GENSERVER Implementation
+  # ===========================================================================
   use GenServer
 
   @impl true
@@ -33,30 +36,8 @@ defmodule Intcode do
     {:ok, load(intcode_string)}
   end
 
-  def spawn(intcode_string) do
-    with {:ok, pid} <- GenServer.start_link(Intcode, {intcode_string}) do
-      pid
-    end
-  end
-
-  def send_input(pid, msg) do
-    GenServer.cast(pid, {:rcv_input, msg})
-  end
-
-  def state(pid) do
-    with {:ok, state} <- GenServer.call(pid, :state), do: state
-  end
-
-  def halted?(pid) do
-    with state <- Intcode.state(pid) do
-      99 == Map.get(state, :opcode)
-    end
-  end
-
   @impl true
-  @doc """
-  The server is receiving an input from somewhere
-  """
+  @doc "The server is receiving an input from somewhere"
   def handle_cast({:rcv_input, input}, state) do
     {:noreply,
       state
@@ -64,6 +45,12 @@ defmodule Intcode do
       |> run
     }
   end
+  @doc """
+  point the output at someone else...
+
+  FIXME: This is unfortunately used to detect whether this is running as a
+  GenServer.
+  """
   def handle_cast({:set_output_pid, pid}, state) do
     {:noreply, Map.put(state, :output_pid, pid)}
   end
@@ -73,6 +60,38 @@ defmodule Intcode do
     {:reply, state, state}
   end
 
+
+  # ===========================================================================
+  # INTCODE Interface
+  # ===========================================================================
+  def spawn(intcode_string) do
+    with {:ok, pid} <- GenServer.start_link(Intcode, {intcode_string}) do
+      pid
+    end
+  end
+
+  def send_input(computer, msg) when is_map(computer) do
+    Intcode.put_input(computer)
+  end
+  def send_input(pid, msg) when is_pid(pid) do
+    GenServer.cast(pid, {:rcv_input, msg})
+  end
+
+  def state(computer) when is_map(computer), do: computer
+  def state(pid) when is_pid(pid) do
+    with {:ok, state} <- GenServer.call(pid, :state), do: state
+  end
+
+  def halted?(computer) when is_map(computer), do: Map.get(:opcode) == 99
+  def halted?(pid) when is_pid(pid) do
+    with state <- Intcode.state(pid) do
+      99 == Map.get(state, :opcode)
+    end
+  end
+
+  # ===========================================================================
+  # INTCODE Startup + Convenience
+  # ===========================================================================
   def load_file(file_path) do
     with {:ok, string} <- File.read(file_path) do
       load(string)
@@ -96,6 +115,11 @@ defmodule Intcode do
     |> Enum.into(%{})
   end
 
+  def printout(%{output: output}), do: output |> Enum.reverse |> Enum.join(",")
+
+  # ===========================================================================
+  # INTCODE Opcodes
+  # ===========================================================================
   @doc """
   Opcode 1 adds together numbers read from two positions and stores the result
   in a third position.
@@ -142,6 +166,7 @@ defmodule Intcode do
   """
   def out(env) do
     # If I've "wired" two amps together, I need to send the output as input.
+    # FIXME: use something other than output_pid
     if Map.has_key?(env, :output_pid) do
       GenServer.cast(Map.get(env, :output_pid), {:rcv_input, get(env, 0)})
     end
@@ -292,11 +317,8 @@ defmodule Intcode do
     Map.update(computer, :output, [o], &[o|&1])
   end
 
-  def get_last_output(%{output: [o|_]}), do: o
-
-  def get_output(%{output: output}), do: Enum.reverse(output)
-
   def stop(env) do
+    # FIXME: Use something other than output PID
     if Map.has_key?(env, :output_pid) do
       Process.exit(self(), {:finished, env})
     end
@@ -374,7 +396,6 @@ defmodule Intcode do
       [1125899906842624]
   """
   def run(env = %{opcode: opcode}) do
-    # IO.puts("p#{Map.get(env, :pointer)}: #{get_in(env, [:tape, Map.get(env, :pointer)])} opcode: #{opcode}")
     case opcode do # opcodes that can halt/pause execution
       99 -> stop(env)
       3 -> inp(env)

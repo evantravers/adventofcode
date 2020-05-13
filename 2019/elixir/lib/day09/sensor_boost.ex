@@ -27,15 +27,13 @@ defmodule Advent2019.Day9 do
     machine
     |> Intcode.put_input(1)
     |> Intcode.run
-    |> Intcode.get_output
-    |> Enum.join(",")
+    |> Intcode.printout
   end
 
   def p2(machine) do
     machine
     |> Intcode.put_input(2)
     |> Intcode.run
-    |> Intcode.get_output
-    |> Enum.join(",")
+    |> Intcode.printout
   end
 end

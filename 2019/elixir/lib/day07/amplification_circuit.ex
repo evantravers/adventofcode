@@ -41,7 +41,8 @@ defmodule Advent2019.Day7 do
           |> Intcode.put_input(phase_setting)
           |> Intcode.put_input(previous_output)
           |> Intcode.run
-          |> Intcode.get_last_output
+          |> Map.get(:output)
+          |> hd
         end),
         phase_settings
       }
@@ -90,7 +91,13 @@ defmodule Advent2019.Day7 do
         # put it in its input.
         Process.flag(:trap_exit, true)
         receive do
-          {:EXIT, target, {:finished, env}} when target == e_pid-> {Intcode.get_last_output(env), phase_setting}
+          {:EXIT, target, {:finished, env}} when target == e_pid->
+            last_output =
+              env
+              |> Map.get(:output)
+              |> hd
+
+            {last_output, phase_setting}
         end
       end
     end
