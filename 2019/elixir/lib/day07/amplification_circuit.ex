@@ -66,11 +66,11 @@ defmodule Advent2019.Day7 do
   """
   def p2(intcode_string, opts \\ []) do
     for [a, b, c, d, e] = phase_setting <- permutations([5, 6, 7, 8, 9]) do
-      with {:ok, a_pid} <- GenServer.start_link(Intcode, {intcode_string, "A"}),
-           {:ok, b_pid} <- GenServer.start_link(Intcode, {intcode_string, "B"}),
-           {:ok, c_pid} <- GenServer.start_link(Intcode, {intcode_string, "C"}),
-           {:ok, d_pid} <- GenServer.start_link(Intcode, {intcode_string, "D"}),
-           {:ok, e_pid} <- GenServer.start_link(Intcode, {intcode_string, "E"}) do
+      with {:ok, a_pid} <- GenServer.start_link(Intcode, {intcode_string}),
+           {:ok, b_pid} <- GenServer.start_link(Intcode, {intcode_string}),
+           {:ok, c_pid} <- GenServer.start_link(Intcode, {intcode_string}),
+           {:ok, d_pid} <- GenServer.start_link(Intcode, {intcode_string}),
+           {:ok, e_pid} <- GenServer.start_link(Intcode, {intcode_string}) do
 
         GenServer.cast(a_pid, {:set_output_pid, b_pid})
         GenServer.cast(b_pid, {:set_output_pid, c_pid})

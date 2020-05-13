@@ -29,15 +29,12 @@ defmodule Intcode do
   use GenServer
 
   @impl true
-  def init({intcode_string, name}) do
-    {:ok,
-      intcode_string
-      |>load
-      |>Map.put(:name, name)}
+  def init({intcode_string}) do
+    {:ok, load(intcode_string)}
   end
 
-  def spawn(intcode_string, name \\ nil) do
-    with {:ok, pid} <- GenServer.start_link(Intcode, {intcode_string, name}) do
+  def spawn(intcode_string) do
+    with {:ok, pid} <- GenServer.start_link(Intcode, {intcode_string}) do
       pid
     end
   end
