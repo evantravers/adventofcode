@@ -40,7 +40,7 @@ defmodule Intcode do
 
   @impl true
   @doc "The server is receiving an input from somewhere"
-  def handle_cast({:rcv_input, input}, state) do
+  def handle_cast({:input, input}, state) do
     {:noreply,
       state
       |> CPU.put_input(input)
@@ -51,10 +51,7 @@ defmodule Intcode do
     {:noreply, Intcode.set_memory(state, address, value)}
   end
   @doc """
-  point the output at someone else...
-
-  FIXME: This is unfortunately used to detect whether the CPU is running as a
-  GenServer.
+  Point the output at another process.
   """
   def handle_cast({:set_output_pid, pid}, state) do
     {:noreply, Map.put(state, :output_pid, pid)}
@@ -89,7 +86,7 @@ defmodule Intcode do
     CPU.put_input(computer, msg)
   end
   def send_input(pid, msg) when is_pid(pid) do
-    GenServer.cast(pid, {:rcv_input, msg})
+    GenServer.cast(pid, {:input, msg})
   end
 
   @doc "Start the CPU."
