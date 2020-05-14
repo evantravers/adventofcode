@@ -14,7 +14,7 @@ defmodule Advent2019.Day2 do
     env
     |> put_in([:tape, 1], 12)
     |> put_in([:tape, 2], 2)
-    |> Intcode.run
+    |> Intcode.start
     |> get_in([:tape, 0])
   end
 
@@ -30,7 +30,7 @@ defmodule Advent2019.Day2 do
           input
           |> put_in([:tape, 1], noun)
           |> put_in([:tape, 2], verb)
-          |> Intcode.run
+          |> Intcode.start
           |> get_in([:tape, 0])
 
         if result == 19690720 do

@@ -29,18 +29,18 @@ defmodule Advent2019.Day7 do
     for phase_settings <- permutations([0, 1, 2, 3, 4]) do
       {
         [
-          Intcode.load(intcode_string),
-          Intcode.load(intcode_string),
-          Intcode.load(intcode_string),
-          Intcode.load(intcode_string),
-          Intcode.load(intcode_string)
+          Intcode.load_string(intcode_string),
+          Intcode.load_string(intcode_string),
+          Intcode.load_string(intcode_string),
+          Intcode.load_string(intcode_string),
+          Intcode.load_string(intcode_string)
         ]
         |> Enum.zip(phase_settings)
         |> Enum.reduce(0, fn({amp, phase_setting}, previous_output) ->
           amp
-          |> Intcode.put_input(phase_setting)
-          |> Intcode.put_input(previous_output)
-          |> Intcode.run
+          |> Intcode.send_input(phase_setting)
+          |> Intcode.send_input(previous_output)
+          |> Intcode.start
           |> Map.get(:output)
           |> hd
         end),

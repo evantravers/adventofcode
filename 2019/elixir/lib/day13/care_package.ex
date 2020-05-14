@@ -14,7 +14,7 @@ defmodule Advent2019.Day13 do
 
     @spec read_input(list(integer)) :: map()
     @doc """
-        iex> read_input(%{}, [1,2,3,6,5,4])
+        iex> read_input([1,2,3,6,5,4])
         %{{1, 2} => :paddle, {6, 5} => :ball}
     """
     def read_input(list_of_int) do
@@ -36,8 +36,8 @@ defmodule Advent2019.Day13 do
 
   def p1(source_code) do
     source_code
-    |> Intcode.load
-    |> Intcode.run
+    |> Intcode.load_string
+    |> Intcode.start
     |> Map.get(:output)
     |> Enum.reverse
     |> Game.read_input
@@ -45,6 +45,6 @@ defmodule Advent2019.Day13 do
     |> Enum.count
   end
 
-  def p2(_i) do
+  def p2(_source_code) do
   end
 end

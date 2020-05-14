@@ -10,7 +10,7 @@ defmodule Advent2019.Day5 do
   def p1(tape) do
     tape
     |> Map.put(:input, [1])
-    |> Intcode.run
+    |> Intcode.start
     |> Map.get(:output)
     |> hd
   end
@@ -18,7 +18,7 @@ defmodule Advent2019.Day5 do
   def p2(tape) do
     tape
     |> Map.put(:input, [5])
-    |> Intcode.run
+    |> Intcode.start
     |> Map.get(:output)
     |> hd
   end
