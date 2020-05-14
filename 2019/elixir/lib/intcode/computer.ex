@@ -97,7 +97,7 @@ defmodule Intcode do
       # If I've "wired" two amps together, I need to send the output as input.
       # FIXME: use something other than output_pid
       if Map.has_key?(env, :output_pid) do
-        GenServer.cast(Map.get(env, :output_pid), {:rcv_input, get(env, 0)})
+        Intcode.send_input(Map.get(env, :output_pid), get(env, 0))
       end
 
       env
@@ -404,7 +404,7 @@ defmodule Intcode do
     with {:ok, state} <- GenServer.call(pid, :state), do: state
   end
 
-  def halted?(computer) when is_map(computer), do: Map.get(:opcode) == 99
+  def halted?(comp) when is_map(comp), do: Map.get(comp, :opcode) == 99
   def halted?(pid) when is_pid(pid) do
     with state <- Intcode.state(pid) do
       99 == Map.get(state, :opcode)
