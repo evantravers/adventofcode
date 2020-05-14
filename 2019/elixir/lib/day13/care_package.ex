@@ -10,7 +10,7 @@ defmodule Advent2019.Day13 do
   defmodule Game do
     @moduledoc nil
 
-    defstruct tiles: %{}
+    defstruct tiles: %{}, score: 0
 
     @spec read_input(list(integer)) :: map()
     @doc """
@@ -20,11 +20,15 @@ defmodule Advent2019.Day13 do
     def read_input(list_of_int) do
       list_of_int
       |> Enum.chunk_every(3)
-      |> Enum.reduce([], fn([x, y, id], tiles) ->
-        [{{x, y}, id_to_object(id)}|tiles]
+      |> Enum.reduce(%Game{}, fn([x, y, id], game) ->
+        if {x, y} == {-1, 0} do
+          Map.put(game, :score, id)
+        else
+          Map.update!(game, :tiles, fn(tiles) ->
+            Map.put(tiles, {x, y}, id_to_object(id))
+          end)
+        end
       end)
-      |> Enum.reject(&is_nil(elem(&1, 1)))
-      |> Map.new
     end
 
     defp id_to_object(0), do: nil
@@ -41,10 +45,19 @@ defmodule Advent2019.Day13 do
     |> Map.get(:output)
     |> Enum.reverse
     |> Game.read_input
+    |> Map.get(:tiles)
     |> Enum.filter(fn({_coord, type}) -> type == :block end)
     |> Enum.count
   end
 
-  def p2(_source_code) do
+  def p2(source_code) do
+    source_code
+    |> Intcode.load_string
+    |> Intcode.set_memory(0, 2) # put in your quarters
+    |> Intcode.start
+    |> Map.get(:output)
+    |> Enum.reverse
+    |> Game.read_input
+    |> Map.get(:score)
   end
 end
