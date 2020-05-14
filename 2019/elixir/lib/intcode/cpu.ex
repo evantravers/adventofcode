@@ -296,24 +296,26 @@ defmodule Intcode.CPU do
     ...> |> Map.get(:output)
     [1125899906842624]
     """
+    # IO/blocking opcodes
+    def run(env = %{opcode: 99}), do: stop(env)
+    def run(env = %{opcode: 3}), do: inp(env)
+    # normal opcodes
     def run(env = %{opcode: opcode}) do
-      case opcode do # opcodes that can halt/pause execution
-        99 -> stop(env)
-        3 -> inp(env)
-        _ ->
-          case opcode do # normal opcodes
-            1 -> add(env)
-            2 -> mul(env)
-            4 -> out(env)
-            5 -> jump_if_true(env)
-            6 -> jump_if_false(env)
-            7 -> less_than(env)
-            8 -> equals(env)
-            9 -> set_offset(env)
-            _ -> throw("Unrecognized opcode: #{opcode}")
-          end
-          |> update_instruction
-          |> run
-      end
+      state =
+        case opcode do
+          1 -> add(env)
+          2 -> mul(env)
+          4 -> out(env)
+          5 -> jump_if_true(env)
+          6 -> jump_if_false(env)
+          7 -> less_than(env)
+          8 -> equals(env)
+          9 -> set_offset(env)
+          _ -> throw("Unrecognized opcode: #{opcode}")
+        end
+
+      state
+      |> update_instruction
+      |> run
     end
 end
