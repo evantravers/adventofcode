@@ -21,6 +21,13 @@ defmodule Advent2019.Day13 do
       list_of_int
       |> Enum.chunk_every(3)
       |> Enum.reduce(%Game{}, fn([x, y, id], game) ->
+        tiles = Map.get(game, :tiles)
+
+        # only run the display when there's an update so setup is "free"
+        if Map.has_key?(tiles, {x, y}) do
+          display(game)
+        end
+
         if {x, y} == {-1, 0} do
           Map.put(game, :score, id)
         else
@@ -29,6 +36,48 @@ defmodule Advent2019.Day13 do
           end)
         end
       end)
+    end
+
+    defp by_coord_value({x, _y}, :x), do: x
+    defp by_coord_value({_x, y}, :y), do: y
+    def display(game) do
+      tiles = Map.get(game, :tiles)
+      score = Map.get(game, :score, 0)
+
+      unless Enum.empty?(tiles) do
+        coords = Map.keys(tiles)
+        {x_0, x_n} =
+          coords
+          |> Enum.map(&by_coord_value(&1, :x))
+          |> Enum.min_max
+        {y_0, y_n} = 
+          coords
+          |> Enum.map(&by_coord_value(&1, :y))
+          |> Enum.min_max
+
+        game_display =
+          for y <- y_0..y_n do
+            for x <- x_0..x_n do
+              case Map.get(tiles, {x, y}) do
+                :paddle -> "╤"
+                :ball   -> "○"
+                :block  -> "♡"
+                :wall   -> "█"
+                _ -> " "
+              end
+            end
+            |> Enum.join("")
+          end
+          |> Enum.join("\n")
+
+        """
+        #{game_display}
+        ==============
+        Score: #{score}
+        """
+        |> IO.puts
+        IO.puts(IO.ANSI.clear())
+      end
     end
 
     defp id_to_object(0), do: nil
