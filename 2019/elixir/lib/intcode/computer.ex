@@ -66,12 +66,19 @@ defmodule Intcode do
   # ===========================================================================
   # INTCODE Interface
   # ===========================================================================
+  @doc "Spawns a Intcode CPU as a genserver"
+  @spec spawn(String.t()) :: pid()
   def spawn(intcode_string) do
     with {:ok, pid} <- GenServer.start_link(Intcode, {intcode_string}) do
       pid
     end
   end
 
+  @doc """
+  Send a msg to the input buffer for an Intcode CPU.
+
+  Supports both local and GenServer options.
+  """
   def send_input(computer, msg) when is_map(computer) do
     CPU.put_input(computer, msg)
   end
@@ -79,13 +86,19 @@ defmodule Intcode do
     GenServer.cast(pid, {:rcv_input, msg})
   end
 
+  @doc "Start the CPU."
   def start(computer) when is_map(computer), do: CPU.run(computer)
 
+  @doc """
+  Returns the state of the computer.
+  """
   def state(computer) when is_map(computer), do: computer
   def state(pid) when is_pid(pid) do
     with {:ok, state} <- GenServer.call(pid, :state), do: state
   end
 
+  @doc "Did the program complete?"
+  @spec halted?(term) :: as_boolean()
   def halted?(comp) when is_map(comp), do: Map.get(comp, :opcode) == 99
   def halted?(pid) when is_pid(pid) do
     with state <- Intcode.state(pid) do
@@ -101,5 +114,6 @@ defmodule Intcode do
 
   def load_string(string), do: CPU.load(string)
 
+  @doc "Returns a human readable output from the computer."
   def printout(%{output: output}), do: output |> Enum.reverse |> Enum.join(",")
 end
