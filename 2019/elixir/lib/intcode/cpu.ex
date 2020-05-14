@@ -2,6 +2,12 @@ defmodule Intcode.CPU do
   @moduledoc """
   Experimenting with modules to separate the computer from its external
   interface.
+
+  I really want the CPU to be totally ignorant of whether it's being run
+  "locally" or in a thread as a GenServer.
+
+  Currently, I don't have a clean way of doing that for the IO operations and
+  for `stop/1`.
   """
 
   def string_to_tape(string) do
@@ -68,6 +74,8 @@ defmodule Intcode.CPU do
   def out(env) do
     # If I've "wired" two amps together, I need to send the output as input.
     # FIXME: use something other than output_pid
+    # FIXME: I don't really want CPU to know about Intcode, this bit here is
+    #        gross.
     if Map.has_key?(env, :output_pid) do
       Intcode.send_input(Map.get(env, :output_pid), get(env, 0))
     end

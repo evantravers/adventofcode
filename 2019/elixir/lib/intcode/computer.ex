@@ -47,6 +47,9 @@ defmodule Intcode do
       |> CPU.run
     }
   end
+  def handle_cast({:set_memory, address, value}, state) do
+    {:noreply, Intcode.set_memory(state, address, value)}
+  end
   @doc """
   point the output at someone else...
 
@@ -58,8 +61,11 @@ defmodule Intcode do
   end
 
   @impl true
-  def handle_call(:state, _, state) do
+  def handle_call(:state, _caller, state) do
     {:reply, state, state}
+  end
+  def handle_call({:get_memory, address}, _caller, state) do
+    {:reply, get_memory(state, address), state}
   end
 
 
@@ -97,8 +103,24 @@ defmodule Intcode do
     with {:ok, state} <- GenServer.call(pid, :state), do: state
   end
 
+  @doc "Change the tape at address with value"
+  def set_memory(computer, address, value) when is_map(computer) do
+    put_in(computer, [:tape, address], value)
+  end
+  def set_memory(pid, address, value) when is_pid(pid) do
+    GenServer.cast(pid, {:set_memory, address, value})
+  end
+
+  @doc "Get the tape at address"
+  def get_memory(computer, address) when is_map(computer) do
+    get_in(computer, [:tape, address])
+  end
+  def get_memory(pid, address) when is_map(pid) do
+    GenServer.call(pid, {:get_memory, address})
+  end
+
   @doc "Did the program complete?"
-  @spec halted?(term) :: as_boolean()
+  @spec halted?(term) :: boolean()
   def halted?(comp) when is_map(comp), do: Map.get(comp, :opcode) == 99
   def halted?(pid) when is_pid(pid) do
     with state <- Intcode.state(pid) do
