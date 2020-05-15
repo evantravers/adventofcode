@@ -70,11 +70,7 @@ defmodule Advent2019.Day13 do
           end
           |> Enum.join("\n")
 
-        """
-        #{game_display}
-        ==============
-        Score: #{score}
-        """
+        "#{game_display}\n==============\nScore: #{score}"
         |> IO.puts
         IO.puts(IO.ANSI.clear())
       end
