@@ -38,6 +38,17 @@ defmodule Advent2019.Day13 do
       end)
     end
 
+    def score_display(score) do
+      length =
+        score
+        |> Integer.digits
+        |> Enum.count
+
+      "᠅᠁#{String.pad_trailing("", length, "᠁")}᠁᠅\n" <>
+      "⁞ #{score} ⁞\n" <>
+      "᠅᠁#{String.pad_trailing("", length, "᠁")}᠁᠅"
+    end
+
     defp by_coord_value({x, _y}, :x), do: x
     defp by_coord_value({_x, y}, :y), do: y
     def display(game) do
@@ -70,7 +81,7 @@ defmodule Advent2019.Day13 do
           end
           |> Enum.join("\n")
 
-        "#{game_display}\n==============\nScore: #{score}"
+        "#{score_display(score)}\n#{game_display}"
         |> IO.puts
         IO.puts(IO.ANSI.clear())
       end
