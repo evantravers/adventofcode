@@ -67,6 +67,10 @@ defmodule Intcode do
   def handle_call({:get_memory, address}, _caller, state) do
     {:reply, get_memory(state, address), state}
   end
+  def handle_call(:dequeue, _caller, state) do
+    {response, new_state} = dequeue(state)
+    {:reply, response, new_state}
+  end
 
 
   # ===========================================================================
@@ -118,6 +122,15 @@ defmodule Intcode do
   end
   def get_memory(pid, address) when is_map(pid) do
     GenServer.call(pid, {:get_memory, address})
+  end
+
+  def dequeue(computer) when is_map(computer) do
+    output = Map.get(computer, :output)
+
+    {hd(output), %{computer | output: tl(output)}}
+  end
+  def dequeue(pid) when is_pid(pid) do
+    GenServer.call(pid, :dequeue)
   end
 
   @doc "Did the program complete?"
