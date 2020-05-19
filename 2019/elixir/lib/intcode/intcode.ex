@@ -124,6 +124,11 @@ defmodule Intcode do
     GenServer.call(pid, {:get_memory, address})
   end
 
+  @doc """
+      iex> %{output: [2, 3, 4]}
+      ...> |> dequeue
+      {2, %{output: [3, 4]}}
+  """
   def dequeue(computer) when is_map(computer) do
     output = Map.get(computer, :output)
 
