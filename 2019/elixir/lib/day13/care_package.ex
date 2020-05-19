@@ -2,9 +2,43 @@ defmodule Advent2019.Day13 do
   @moduledoc "https://adventofcode.com/2019/day/13"
 
   def setup do
-    with {:ok, intcode_string} <- File.read("#{__DIR__}/input.txt") do
-      intcode_string
+    with {:ok, intcode} <- File.read("#{__DIR__}/input.txt"), do: intcode
+  end
+
+  defmodule Joystick do
+    @moduledoc """
+    The arcade cabinet has a joystick that can move left and right. The
+    software reads the position of the joystick with input instructions:
+
+    If the joystick is in the neutral position, provide 0.
+    If the joystick is tilted to the left, provide -1.
+    If the joystick is tilted to the right, provide 1.
+    """
+
+    def user(joystick) do
+      :stdio
+      |> IO.stream(1)
+      |> Enum.map(fn(char) ->
+        case char do
+          "l" -> right(joystick) |> IO.inspect
+          "h" -> left(joystick) |> IO.inspect
+        end
+      end)
     end
+
+    defstruct position: :neutral
+
+    def left(%{position: :neutral} = joy), do: %{joy | position: :left}
+    def left(%{position: :right}   = joy), do: %{joy | position: :neutral}
+    def left(%{position: :left}    = joy), do: %{joy | position: :left}
+
+    def right(%{position: :neutral} = joy), do: %{joy | position: :right}
+    def right(%{position: :left}    = joy), do: %{joy | position: :neutral}
+    def right(%{position: :right}   = joy), do: %{joy | position: :right}
+
+    def signal(%{position: :right}),   do: 1
+    def signal(%{position: :neutral}), do: 0
+    def signal(%{position: :left}),    do: -1
   end
 
   defmodule Game do
