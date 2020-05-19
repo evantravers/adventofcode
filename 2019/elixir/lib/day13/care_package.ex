@@ -81,7 +81,7 @@ defmodule Advent2019.Day13 do
           end
           |> Enum.join("\n")
 
-        "#{score_display(score)}\n#{game_display}"
+        [score_display(score), '\n', game_display]
         |> IO.puts
         IO.puts(IO.ANSI.clear())
       end
