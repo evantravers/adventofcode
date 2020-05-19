@@ -48,7 +48,7 @@ defmodule Intcode do
     }
   end
   def handle_cast({:set_memory, address, value}, state) do
-    {:noreply, Intcode.set_memory(state, address, value)}
+    {:noreply, set_memory(state, address, value)}
   end
   @doc """
   Point the output at another process.
