@@ -56,6 +56,9 @@ defmodule Intcode do
   def handle_cast({:set_output_pid, pid}, state) do
     {:noreply, Map.put(state, :output_pid, pid)}
   end
+  def handle_cast(:start, state) do
+    {:noreply, start(state)}
+  end
 
   @impl true
   def handle_call(:state, _caller, state) do
@@ -91,6 +94,7 @@ defmodule Intcode do
 
   @doc "Start the CPU."
   def start(computer) when is_map(computer), do: CPU.run(computer)
+  def start(pid) when is_pid(pid), do: GenServer.cast(pid, :start)
 
   @doc """
   Returns the state of the computer.
