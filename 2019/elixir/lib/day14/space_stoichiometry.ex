@@ -43,7 +43,7 @@ defmodule Advent2019.Day14 do
 
     {o_count, o} = string_to_ingredient(output_str)
 
-    ingredients = 
+    ingredients =
       input_str
       |> String.split(", ", trim: true)
       |> Enum.map(&string_to_ingredient/1)
