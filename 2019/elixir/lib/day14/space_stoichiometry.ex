@@ -6,36 +6,58 @@ defmodule Advent2019.Day14 do
   weighted graph problem? Yes, it's a dependency graph.
 
   It's basically a factorio problem, hah!
+
+  Current strategy:
+
+  1. Encode each recipe as a structured Map
+  2. Work backwards from FUEL to ORE, following and reducing through the
+     "graph".
+
   """
 
+  @doc """
+  Takes the input string and builds a map of reaction recipes.
+  """
   def setup do
     with {:ok, string} <- File.read("#{__DIR__}/input.txt") do
-      setup_map(string)
+      setup_from_string(string)
     end
   end
 
-  def setup_map(string) do
+  def setup_from_string(string) do
     string
     |> String.split("\n", trim: true)
-    |> Enum.map(&string_to_reaction/1)
+    |> Enum.reduce(%{}, &process_reaction/2)
   end
 
-  def string_to_reaction(str) do
-    str
-    |> String.split(" => ", trim: true)
-    |> Enum.map(&process_ingredients/1)
+
+  @doc """
+      iex> process_reaction("9 ORE => 2 A")
+      %{A: %{result: 2, ingredients: [{9, :ORE}]}}
+
+      iex> process_reaction("9 ORE, 5 C => 2 A")
+      %{A: %{result: 2, ingredients: [{9, :ORE}, {5, :C}]}}
+  """
+  def process_reaction(str, map \\ %{}) do
+    [input_str, output_str] = String.split(str, " => ")
+
+    {o_count, o} = string_to_ingredient(output_str)
+
+    ingredients = 
+      input_str
+      |> String.split(", ", trim: true)
+      |> Enum.map(&string_to_ingredient/1)
+
+    Map.put(map, o, %{result: o_count, ingredients: ingredients})
   end
 
-  def process_ingredients(str) do
-    str
-    |> String.split(", ", trim: true)
-    |> Enum.map(fn(s) ->
-      s
-      |> String.split(" ", trim: true)
-      |> (fn([amount, ingredient]) ->
-        [String.to_integer(amount), String.to_atom(ingredient)]
-      end).()
-    end)
+  @doc """
+      iex> string_to_ingredient("9 ORE")
+      {9, :ORE}
+  """
+  def string_to_ingredient(str) do
+    [count, type] = String.split(str, " ", trim: true)
+    {String.to_integer(count), String.to_atom(type)}
   end
 
   @doc """
@@ -46,7 +68,7 @@ defmodule Advent2019.Day14 do
       ...> 5 B, 7 C => 1 BC
       ...> 4 C, 1 A => 1 CA
       ...> 2 AB, 3 BC, 4 CA => 1 FUEL"
-      ...> |> setup_map
+      ...> |> setup_from_string
       ...> |> p1
       165
   """
