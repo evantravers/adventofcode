@@ -93,6 +93,28 @@ defmodule Advent2019.Day14 do
 
   Starting from FUEL, recursively search backwards to determine the total cost
   in ORE.
+      iex> "1 ORE => 1 FUEL"
+      ...> |> setup_from_string
+      ...> |> p1
+      1
+
+      iex> "2 A => 1 FUEL
+      ...> 2 ORE => 1 A"
+      ...> |> setup_from_string
+      ...> |> p1
+      4
+
+      iex> "2 A => 1 FUEL
+      ...> 2 ORE => 2 A"
+      ...> |> setup_from_string
+      ...> |> p1
+      2
+
+      iex> "2 A => 1 FUEL
+      ...> 2 ORE => 5 A"
+      ...> |> setup_from_string
+      ...> |> p1
+      2
 
       iex> "10 ORE => 10 A
       ...> 1 ORE => 1 B
