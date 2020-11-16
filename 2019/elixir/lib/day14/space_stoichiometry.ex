@@ -80,18 +80,26 @@ defmodule Advent2019.Day14 do
   def compute_cost(recipes) do
     [{1, :FUEL}]
     |> chain_reaction(recipes)
-    |> Map.get(:ORE)
+    |> Map.get(:SCORE)
   end
 
-  def ingredients(elem, recipes), do: get_in(recipes, [elem, :ingredients])
+  def get_ingredients(elem, recipes), do: get_in(recipes, [elem, :ingredients])
 
   @doc """
   Is everything ready for the reaction?
   """
   def all_ingredients?(element, recipes, inventory) do
-    Enum.all?(ingredients(element, recipes), fn({quantity, ingredient}) ->
+    Enum.all?(get_ingredients(element, recipes), fn({quantity, ingredient}) ->
       Map.get(inventory, ingredient, 0) >= quantity
     end)
+  end
+
+  def use_up_ingredient({count, element}, inventory) do
+    Map.update!(inventory, element, & &1 - count)
+  end
+
+  def store_result(inventory, element, quantity) do
+    Map.update(inventory, element, quantity, & &1 + quantity)
   end
 
   @doc """
@@ -101,13 +109,9 @@ defmodule Advent2019.Day14 do
     reaction_result = get_in(recipes, [element, :result])
 
     element
-    |> ingredients(recipes)
-    |> Enum.reduce(inventory, fn(ingredient, inventory) ->
-      {ingredient_count, ingredient_element} = ingredient
-      inventory
-      |> Map.update!(ingredient_element, & &1 - ingredient_count)
-    end)
-    |> Map.update(element, reaction_result, & &1 + reaction_result)
+    |> get_ingredients(recipes)
+    |> Enum.reduce(inventory, &use_up_ingredient/2)
+    |> store_result(element, reaction_result)
   end
 
   def chain_reaction(orders, recipes, inventory \\ %{})
@@ -117,10 +121,12 @@ defmodule Advent2019.Day14 do
     chain_reaction(
       orders,
       recipes,
-      Map.update(inventory, :ORE, quantity, & &1 + quantity)
+      inventory
+      |> Map.update(:ORE, quantity, & &1 + quantity)
+      |> Map.update(:SCORE, quantity, & &1 + quantity)
     )
   end
-  def chain_reaction([{quantity, element}|orders] = queue, recipes, inventory) do
+  def chain_reaction([{_quantity, element}|orders] = queue, recipes, inventory) do
     if all_ingredients?(element, recipes, inventory) do
       # run the reaction
       chain_reaction(
@@ -132,7 +138,7 @@ defmodule Advent2019.Day14 do
     else
         # go fish
         chain_reaction(
-          ingredients(element, recipes) ++ queue,
+          get_ingredients(element, recipes) ++ queue,
           recipes,
           inventory
         )
@@ -166,6 +172,12 @@ defmodule Advent2019.Day14 do
       ...> |> setup_from_string
       ...> |> p1
       2
+
+      iex> "7 A => 1 FUEL
+      ...> 3 ORE => 4 A"
+      ...> |> setup_from_string
+      ...> |> p1
+      6
 
       iex> "10 ORE => 10 A
       ...> 1 ORE => 1 B
