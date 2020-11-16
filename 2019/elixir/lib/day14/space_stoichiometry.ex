@@ -83,10 +83,32 @@ defmodule Advent2019.Day14 do
     |> Map.get(:SCORE)
   end
 
+  @doc """
+      iex> recipes =
+      ...> "7 A, 1 E => 1 FUEL"
+      ...> |> setup_from_string
+      ...> get_ingredients(:FUEL, recipes)
+      [{7, :A}, {1, :E}]
+  """
   def get_ingredients(elem, recipes), do: get_in(recipes, [elem, :ingredients])
 
   @doc """
   Is everything ready for the reaction?
+      iex> recipes =
+      ...> "10 ORE => 10 A
+      ...> 7 A, 1 E => 1 FUEL"
+      ...> |> setup_from_string
+      ...> inventory = %{ORE: 10}
+      ...> all_ingredients?(:A, recipes, inventory)
+      true
+
+      iex> recipes =
+      ...> "10 ORE => 10 A
+      ...> 7 A, 1 E => 1 FUEL"
+      ...> |> setup_from_string
+      ...> inventory = %{ORE: 9}
+      ...> all_ingredients?(:A, recipes, inventory)
+      false
   """
   def all_ingredients?(element, recipes, inventory) do
     Enum.all?(get_ingredients(element, recipes), fn({quantity, ingredient}) ->
@@ -94,10 +116,21 @@ defmodule Advent2019.Day14 do
     end)
   end
 
+  @doc """
+      iex> inventory = %{A: 3, B: 3}
+      ...> [{1, :A}, {2, :B}]
+      ...> |> Enum.reduce(inventory, &use_up_ingredient/2)
+      %{A: 2, B: 1}
+  """
   def use_up_ingredient({count, element}, inventory) do
     Map.update!(inventory, element, & &1 - count)
   end
 
+  @doc """
+      iex> inventory = %{A: 2}
+      ...> |> store_result(:A, 1)
+      %{A: 3}
+  """
   def store_result(inventory, element, quantity) do
     Map.update(inventory, element, quantity, & &1 + quantity)
   end
