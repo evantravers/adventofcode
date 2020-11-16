@@ -68,24 +68,18 @@ defmodule Advent2019.Day14 do
   @doc """
   Compute cost of a system from FUEL -> ORE.
 
-  FIXME: do the math. This solution doesn't take into account the fact that
-  each recipe makes multiples of an element.
+  Totally read this solution idea on reddit...
+  https://www.reddit.com/r/adventofcode/comments/eafj32/2019_day_14_solutions/fbdpa3j/
+
+  It's transaction nature feels really suited to Elixir, so let's give it a
+  whirl!
   """
-  def compute_cost(graph) do
-    :FUEL
-    |> compute_cost(graph, 1)
-    |> List.flatten
-    |> Enum.sum
+  def compute_cost(recipes) do
+    chain_reaction([{1, :FUEL}], recipes)
   end
 
-  def compute_cost(:ORE, _graph, mul), do: mul
-  def compute_cost(element, graph, mul) do
-    %{ingredients: ingredients, result: result} = Map.get(graph, element)
-
-    Enum.map(ingredients, fn({required_num, required_element}) ->
-      x = Integer.floor_div(required_num, result)
-      compute_cost(required_element, graph, mul * x)
-    end)
+  def chain_reaction(orders, recipes, inventory \\ %{})
+  def chain_reaction([order|_orders], recipes, inventory) do
   end
 
   @doc """
@@ -137,7 +131,7 @@ defmodule Advent2019.Day14 do
       ...> |> p1
       165
   """
-  def p1(graph), do: compute_cost(graph)
+  def p1(recipes), do: compute_cost(recipes)
 
   def p2(_input), do: nil
 end
