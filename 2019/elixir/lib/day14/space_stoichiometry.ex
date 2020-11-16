@@ -74,7 +74,13 @@ defmodule Advent2019.Day14 do
   - At each level, compute the cost of the ingredients, passing on the
     multiplier down to the next level.
   """
-  def compute_cost(element, graph, score \\ %{mul: 1})
+  def compute_cost(graph) do
+    :FUEL
+    |> compute_cost(graph, %{mul: 1})
+    |> List.flatten
+    |> Enum.sum
+  end
+
   def compute_cost(:ORE, _graph, _score = %{mul: mul}), do: mul
   def compute_cost(element, graph, score = %{mul: mul}) do
     graph
@@ -83,8 +89,6 @@ defmodule Advent2019.Day14 do
     |> Enum.map(fn({required_num, required_element}) ->
       compute_cost(required_element, graph, %{score | mul: mul * required_num})
     end)
-    |> List.flatten
-    |> Enum.sum
   end
 
   @doc """
@@ -114,9 +118,7 @@ defmodule Advent2019.Day14 do
       ...> |> p1
       165
   """
-  def p1(graph) do
-    compute_cost(:FUEL, graph)
-  end
+  def p1(graph), do: compute_cost(graph)
 
   def p2(_input), do: nil
 end
