@@ -73,13 +73,70 @@ defmodule Advent2019.Day14 do
 
   It's transaction nature feels really suited to Elixir, so let's give it a
   whirl!
+
+  I could add a flag for unlimited vs. limited ORE, because I'm pretty sure
+  that's where p2 is going to go.
   """
   def compute_cost(recipes) do
-    chain_reaction([{1, :FUEL}], recipes)
+    [{1, :FUEL}]
+    |> chain_reaction(recipes)
+    |> Map.get(:ORE)
+  end
+
+  def ingredients(elem, recipes), do: get_in(recipes, [elem, :ingredients])
+
+  @doc """
+  Is everything ready for the reaction?
+  """
+  def all_ingredients?(element, recipes, inventory) do
+    Enum.all?(ingredients(element, recipes), fn({quantity, ingredient}) ->
+      Map.get(inventory, ingredient, 0) >= quantity
+    end)
+  end
+
+  @doc """
+  Should decrement all the ingredients, increment the result.
+  """
+  def run_reaction(inventory, element, recipes) do
+    reaction_result = get_in(recipes, [element, :result])
+
+    element
+    |> ingredients(recipes)
+    |> Enum.reduce(inventory, fn(ingredient, inventory) ->
+      {ingredient_count, ingredient_element} = ingredient
+      inventory
+      |> Map.update!(ingredient_element, & &1 - ingredient_count)
+    end)
+    |> Map.update(element, reaction_result, & &1 + reaction_result)
   end
 
   def chain_reaction(orders, recipes, inventory \\ %{})
-  def chain_reaction([order|_orders], recipes, inventory) do
+  def chain_reaction([], _recipes, inventory), do: inventory
+  def chain_reaction([{quantity, :ORE}|orders], recipes, inventory) do
+    # There's always ORE in the banana stand.
+    chain_reaction(
+      orders,
+      recipes,
+      Map.update(inventory, :ORE, quantity, & &1 + quantity)
+    )
+  end
+  def chain_reaction([{quantity, element}|orders] = queue, recipes, inventory) do
+    if all_ingredients?(element, recipes, inventory) do
+      # run the reaction
+      chain_reaction(
+        orders,
+        recipes,
+        inventory
+        |> run_reaction(element, recipes)
+      )
+    else
+        # go fish
+        chain_reaction(
+          ingredients(element, recipes) ++ queue,
+          recipes,
+          inventory
+        )
+    end
   end
 
   @doc """
