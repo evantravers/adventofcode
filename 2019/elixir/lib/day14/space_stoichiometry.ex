@@ -13,6 +13,11 @@ defmodule Advent2019.Day14 do
   2. Work backwards from FUEL to ORE, following and reducing through the
      "graph".
 
+  Psuedo:
+
+  > In order to get FUEL, I need 2x X and 3x Y.
+  >   In orer to get 2x X, I need...
+  >   In orer to get 3x Y, I need...
   """
 
   @doc """
@@ -62,16 +67,22 @@ defmodule Advent2019.Day14 do
 
   @doc """
   Compute cost of a system from FUEL -> ORE.
+
+  FIXME: do the math. This solution doesn't take into account the fact that
+  each recipe makes multiples of an element.
+
+  - At each level, compute the cost of the ingredients, passing on the
+    multiplier down to the next level.
   """
-  def compute_cost(graph, node, score \\ %{total: 1, mul: 1}) do
-    reaction = Map.get(graph, node)
-
-    next_paths =
-      reaction
-      |> Map.get(:ingredients)
-      |> Enum.map(&elem(&, 1))
-
-    total
+  def compute_cost(element, graph, score \\ %{mul: 1})
+  def compute_cost(:ORE, _graph, _score = %{mul: mul}), do: mul
+  def compute_cost(element, graph, score = %{mul: mul}) do
+    graph
+    |> Map.get(element)
+    |> Map.get(:ingredients)
+    |> Enum.map(fn({required_num, required_element}) ->
+      compute_cost(required_element, graph, %{score | mul: mul * required_num})
+    end)
   end
 
   @doc """
@@ -92,7 +103,10 @@ defmodule Advent2019.Day14 do
       165
   """
   def p1(graph) do
-    compute_cost(graph, :FUEL)
+    :FUEL
+    |> compute_cost(graph)
+    |> List.flatten
+    |> Enum.sum
   end
 
   def p2(_input), do: nil
