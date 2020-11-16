@@ -83,6 +83,8 @@ defmodule Advent2019.Day14 do
     |> Enum.map(fn({required_num, required_element}) ->
       compute_cost(required_element, graph, %{score | mul: mul * required_num})
     end)
+    |> List.flatten
+    |> Enum.sum
   end
 
   @doc """
@@ -113,10 +115,7 @@ defmodule Advent2019.Day14 do
       165
   """
   def p1(graph) do
-    :FUEL
-    |> compute_cost(graph)
-    |> List.flatten
-    |> Enum.sum
+    compute_cost(:FUEL, graph)
   end
 
   def p2(_input), do: nil
