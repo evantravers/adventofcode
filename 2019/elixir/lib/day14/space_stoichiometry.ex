@@ -70,24 +70,21 @@ defmodule Advent2019.Day14 do
 
   FIXME: do the math. This solution doesn't take into account the fact that
   each recipe makes multiples of an element.
-
-  - At each level, compute the cost of the ingredients, passing on the
-    multiplier down to the next level.
   """
   def compute_cost(graph) do
     :FUEL
-    |> compute_cost(graph, %{mul: 1})
+    |> compute_cost(graph, 1)
     |> List.flatten
     |> Enum.sum
   end
 
-  def compute_cost(:ORE, _graph, _score = %{mul: mul}), do: mul
-  def compute_cost(element, graph, score = %{mul: mul}) do
-    graph
-    |> Map.get(element)
-    |> Map.get(:ingredients)
-    |> Enum.map(fn({required_num, required_element}) ->
-      compute_cost(required_element, graph, %{score | mul: mul * required_num})
+  def compute_cost(:ORE, _graph, mul), do: mul
+  def compute_cost(element, graph, mul) do
+    %{ingredients: ingredients, result: result} = Map.get(graph, element)
+
+    Enum.map(ingredients, fn({required_num, required_element}) ->
+      x = Integer.floor_div(required_num, result)
+      compute_cost(required_element, graph, mul * x)
     end)
   end
 
