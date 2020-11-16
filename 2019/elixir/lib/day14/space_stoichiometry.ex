@@ -32,18 +32,18 @@ defmodule Advent2019.Day14 do
   def setup_from_string(string) do
     string
     |> String.split("\n", trim: true)
-    |> Enum.reduce(%{}, &process_reaction/2)
+    |> Enum.reduce(%{}, &store_recipe/2)
   end
 
 
   @doc """
-      iex> process_reaction("9 ORE => 2 A")
+      iex> store_recipe("9 ORE => 2 A")
       %{A: %{result: 2, ingredients: [{9, :ORE}]}}
 
-      iex> process_reaction("9 ORE, 5 C => 2 A")
+      iex> store_recipe("9 ORE, 5 C => 2 A")
       %{A: %{result: 2, ingredients: [{9, :ORE}, {5, :C}]}}
   """
-  def process_reaction(str, map \\ %{}) do
+  def store_recipe(str, map \\ %{}) do
     [input_str, output_str] = String.split(str, " => ")
 
     {o_count, o} = string_to_ingredient(output_str)
