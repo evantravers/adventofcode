@@ -15,15 +15,12 @@ defmodule Advent2020.Day1 do
       514579
   """
   def p1(list_of_ints) do
-    [x, y] =
-      for int1 <- list_of_ints,
-          int2 <- Enum.reject(list_of_ints, & &1 == int1) do
-        Enum.sort([int1, int2])
-      end
-      |> Stream.uniq # remove duplicates the cheapo way
-      |> Enum.find(fn([int1, int2]) -> int1 + int2 == 2020 end)
-
-    x * y
+    for int1 <- list_of_ints,
+        int2 <- list_of_ints do
+      [int1, int2]
+    end
+    |> Enum.find(fn([int1, int2]) -> int1 + int2 == 2020 end)
+    |> Enum.reduce(1, & &1 * &2)
   end
 
   @doc """
@@ -31,15 +28,12 @@ defmodule Advent2020.Day1 do
       241861950
   """
   def p2(list_of_ints) do
-    [x, y, z] =
-      for int1 <- list_of_ints,
-          int2 <- Enum.reject(list_of_ints, & &1 == int1),
-          int3 <- Enum.reject(list_of_ints, & &1 == int1 || &1 == int2) do
-        Enum.sort([int1, int2, int3])
-      end
-      |> Stream.uniq # remove duplicates the cheapo way
-      |> Enum.find(fn([int1, int2, int3]) -> int1 + int2 + int3 == 2020 end)
-
-    x * y * z
+    for int1 <- list_of_ints,
+        int2 <- list_of_ints,
+        int3 <- list_of_ints do
+      [int1, int2, int3]
+    end
+    |> Enum.find(fn([int1, int2, int3]) -> int1 + int2 + int3 == 2020 end)
+    |> Enum.reduce(1, & &1 * &2)
   end
 end
