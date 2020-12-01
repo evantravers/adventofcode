@@ -20,7 +20,7 @@ defmodule Advent2020.Day1 do
           int2 <- Enum.reject(list_of_ints, & &1 == int1) do
         Enum.sort([int1, int2])
       end
-      |> Enum.uniq # remove duplicates the cheapo way
+      |> Stream.uniq # remove duplicates the cheapo way
       |> Enum.find(fn([int1, int2]) -> int1 + int2 == 2020 end)
 
     x * y
@@ -37,7 +37,7 @@ defmodule Advent2020.Day1 do
           int3 <- Enum.reject(list_of_ints, & &1 == int1 || &1 == int2) do
         Enum.sort([int1, int2, int3])
       end
-      |> Enum.uniq # remove duplicates the cheapo way
+      |> Stream.uniq # remove duplicates the cheapo way
       |> Enum.find(fn([int1, int2, int3]) -> int1 + int2 + int3 == 2020 end)
 
     x * y * z
