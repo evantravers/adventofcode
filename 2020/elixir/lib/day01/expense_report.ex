@@ -17,9 +17,10 @@ defmodule Advent2020.Day1 do
   def p1(list_of_ints) do
     for int1 <- list_of_ints,
         int2 <- list_of_ints do
-      [int1, int2]
+      {int1, int2}
     end
-    |> Enum.find(fn([int1, int2]) -> int1 + int2 == 2020 end)
+    |> Enum.find(fn({int1, int2}) -> int1 + int2 == 2020 end)
+    |> Tuple.to_list
     |> Enum.reduce(1, & &1 * &2)
   end
 
@@ -31,9 +32,10 @@ defmodule Advent2020.Day1 do
     for int1 <- list_of_ints,
         int2 <- list_of_ints,
         int3 <- list_of_ints do
-      [int1, int2, int3]
+      {int1, int2, int3}
     end
-    |> Enum.find(fn([int1, int2, int3]) -> int1 + int2 + int3 == 2020 end)
+    |> Enum.find(fn({int1, int2, int3}) -> int1 + int2 + int3 == 2020 end)
+    |> Tuple.to_list
     |> Enum.reduce(1, & &1 * &2)
   end
 end
