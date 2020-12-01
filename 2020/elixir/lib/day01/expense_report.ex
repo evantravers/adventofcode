@@ -21,7 +21,7 @@ defmodule Advent2020.Day1 do
     end
     |> Enum.find(fn({int1, int2}) -> int1 + int2 == 2020 end)
     |> Tuple.to_list
-    |> Enum.reduce(1, & &1 * &2)
+    |> Enum.reduce(& &1 * &2)
   end
 
   @doc """
@@ -36,6 +36,6 @@ defmodule Advent2020.Day1 do
     end
     |> Enum.find(fn({int1, int2, int3}) -> int1 + int2 + int3 == 2020 end)
     |> Tuple.to_list
-    |> Enum.reduce(1, & &1 * &2)
+    |> Enum.reduce(& &1 * &2)
   end
 end
