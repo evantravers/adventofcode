@@ -35,8 +35,8 @@ defmodule Advent2020.Day3 do
       |> Enum.max
 
     map
-    |> Map.put(:width, width)
-    |> Map.put(:height, height)
+    |> Map.put(:width, width+1)
+    |> Map.put(:height, height+1)
   end
 
   def tree?("#"), do: true
