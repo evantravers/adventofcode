@@ -3,8 +3,14 @@ defmodule Advent2020.Day3 do
   @behaviour Advent
 
   def setup do
-    with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
-      file
+    with {:ok, str} <- File.read("#{__DIR__}/input.txt") do
+      setup_string(str)
+    end
+  end
+
+  def setup_string(str) do
+    map =
+      str
       |> String.split("\n", trim: true)
       |> Enum.with_index
       |> Enum.reduce(%{}, fn({line, y}, map) ->
@@ -15,12 +21,55 @@ defmodule Advent2020.Day3 do
           Map.put(map, {x, y}, tree?(char))
         end)
       end)
-    end
+
+    height =
+      map
+      |> Map.keys
+      |> Enum.map(&elem(&1, 1))
+      |> Enum.max
+
+    width =
+      map
+      |> Map.keys
+      |> Enum.map(&elem(&1, 0))
+      |> Enum.max
+
+    map
+    |> Map.put(:width, width)
+    |> Map.put(:height, height)
   end
 
   def tree?("#"), do: true
   def tree?("."), do: false
 
-  def p1(i), do: i
+  @doc """
+      iex> "..##.......
+      ...>#...#...#..
+      ...>.#....#..#.
+      ...>..#.#...#.#
+      ...>.#...##..#.
+      ...>..#.##.....
+      ...>.#.#.#....#
+      ...>.#........#
+      ...>#.##...#...
+      ...>#...##....#
+      ...>.#..#...#.#"
+      ...> |> setup_string
+      ...> |> p1
+      7
+  """
+  def p1(map, coords \\ {0, 0}, trees \\ 0)
+  def p1(map, {x, y}, trees) do
+    if y >= Map.get(map, :height) do
+      trees
+    else
+      x_position = Integer.mod(x, Map.get(map, :width))
+      if Map.get(map, {x_position, y}) do
+        p1(map, {x+3, y+1}, trees+1)
+      else
+        p1(map, {x+3, y+1}, trees)
+      end
+    end
+  end
   def p2(_i), do: nil
 end
