@@ -6,6 +6,10 @@ defmodule Advent2020.Day4 do
       file
       |> String.split("\n\n", trim: true)
       |> Enum.map(&parse_passport/1)
+      |> Enum.filter(fn(passport) ->
+        [:byr, :iyr, :eyr, :hgt, :hcl, :ecl, :pid]
+        |> Enum.all?(&Map.has_key?(passport, &1))
+      end)
     end
   end
 
@@ -18,15 +22,51 @@ defmodule Advent2020.Day4 do
     |> String.split(~r/\W/)
     |> Enum.reject(&String.length(&1) == 0)
     |> Enum.chunk_every(2)
-    |> Enum.reduce(%{}, fn([key, val], passport) -> Map.put(passport, String.to_atom(key), val) end)
+    |> Enum.reduce(%{}, fn([key, val], passport) -> t(passport, key, val) end)
   end
 
-  def p1(passports) do
+  def t(passport, "byr" = k, v), do: Map.put(passport, String.to_atom(k), String.to_integer(v))
+  def t(passport, "iyr" = k, v), do: Map.put(passport, String.to_atom(k), String.to_integer(v))
+  def t(passport, "eyr" = k, v), do: Map.put(passport, String.to_atom(k), String.to_integer(v))
+  def t(passport, k, v), do: Map.put(passport, String.to_atom(k), v)
+
+  def p1(passports), do: Enum.count(passports)
+
+  # byr (Birth Year) - four digits; at least 1920 and at most 2002.
+  def valid?({:byr, year}), do: Enum.member?(1920..2002, year)
+  # iyr (Issue Year) - four digits; at least 2010 and at most 2020.
+  def valid?({:iyr, year}), do: Enum.member?(2010..2020, year)
+  # eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
+  def valid?({:eyr, year}), do: Enum.member?(2020..2030, year)
+  # hgt (Height) - a number followed by either cm or in:
+  def valid?({:hgt, str}) do
+    if Regex.match?(~r/(\d+)(in|cm)/, str) do
+      [[_, num, unit]] = Regex.scan(~r/(\d+)(in|cm)/, str)
+      valid_height?(unit, num)
+    else
+      false
+    end
+  end
+  # hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
+  def valid?({:hcl, color}), do: Regex.match?(~r/#[0-9a-f]{6}/, color)
+  # ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
+  def valid?({:ecl, color}), do: Enum.member?(["amb", "blu", "brn", "gry", "grn", "hzl", "oth"], color)
+  # pid (Passport ID) - a nine-digit number, including leading zeroes.
+  def valid?({:pid, id}), do: String.match?(id, ~r/\d+/) && String.length(id) == 9
+  # cid (Country ID) - ignored, missing or not.
+  def valid?(_other), do: true
+
+  # If cm, the number must be at least 150 and at most 193.
+  def valid_height?("cm", num), do: Enum.member?(150..193, String.to_integer(num))
+  # If in, the number must be at least 59 and at most 76.
+  def valid_height?("in", num), do: Enum.member?(59..76, String.to_integer(num))
+
+  def p2(passports) do
     passports
     |> Enum.count(fn(passport) ->
-      [:byr, :iyr, :eyr, :hgt, :hcl, :ecl, :pid]
-      |> Enum.all?(&Map.has_key?(passport, &1))
+      passport
+      |> Enum.to_list
+      |> Enum.all?(&valid?/1)
     end)
   end
-  def p2(_i), do: nil
 end
