@@ -42,6 +42,20 @@ defmodule Advent2020.Day3 do
   def tree?("#"), do: true
   def tree?("."), do: false
 
+  def slide(map, slope \\ {3, 1}, coords \\ {0, 0}, trees \\ 0)
+  def slide(map, {x_slope, y_slope} = slope, {x, y}, trees) do
+    if y >= Map.get(map, :height) do
+      trees
+    else
+      x_position = Integer.mod(x, Map.get(map, :width))
+      if Map.get(map, {x_position, y}) do
+        slide(map, slope, {x+x_slope, y+y_slope}, trees+1)
+      else
+        slide(map, slope, {x+x_slope, y+y_slope}, trees)
+      end
+    end
+  end
+
   @doc """
       iex> "..##.......
       ...>#...#...#..
@@ -58,18 +72,34 @@ defmodule Advent2020.Day3 do
       ...> |> p1
       7
   """
-  def p1(map, coords \\ {0, 0}, trees \\ 0)
-  def p1(map, {x, y}, trees) do
-    if y >= Map.get(map, :height) do
-      trees
-    else
-      x_position = Integer.mod(x, Map.get(map, :width))
-      if Map.get(map, {x_position, y}) do
-        p1(map, {x+3, y+1}, trees+1)
-      else
-        p1(map, {x+3, y+1}, trees)
-      end
-    end
+  def p1(input), do: slide(input)
+
+  @doc """
+      iex> "..##.......
+      ...>#...#...#..
+      ...>.#....#..#.
+      ...>..#.#...#.#
+      ...>.#...##..#.
+      ...>..#.##.....
+      ...>.#.#.#....#
+      ...>.#........#
+      ...>#.##...#...
+      ...>#...##....#
+      ...>.#..#...#.#"
+      ...> |> setup_string
+      ...> |> p2
+      336
+  """
+  def p2(input) do
+    # Right 1, down 1.
+    slide(input, {1, 1}) *
+    # Right 3, down 1. (This is the slope you already checked.)
+    slide(input, {3, 1}) *
+    # Right 5, down 1.
+    slide(input, {5, 1}) *
+    # Right 7, down 1.
+    slide(input, {7, 1}) *
+    # Right 1, down 2.
+    slide(input, {1, 2})
   end
-  def p2(_i), do: nil
 end
