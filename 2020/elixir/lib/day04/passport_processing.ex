@@ -19,7 +19,7 @@ defmodule Advent2020.Day4 do
   """
   def parse_passport(str) do
     str
-    |> String.split(~r/\W/)
+    |> String.split(~r/\s|:/)
     |> Enum.reject(&String.length(&1) == 0)
     |> Enum.chunk_every(2)
     |> Enum.reduce(%{}, fn([key, val], passport) -> t(passport, key, val) end)
@@ -61,12 +61,22 @@ defmodule Advent2020.Day4 do
   # If in, the number must be at least 59 and at most 76.
   def valid_height?("in", num), do: Enum.member?(59..76, String.to_integer(num))
 
-  def p2(passports) do
-    passports
-    |> Enum.count(fn(passport) ->
-      passport
-      |> Enum.to_list
-      |> Enum.all?(&valid?/1)
-    end)
+  @doc """
+      iex> "pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980 hcl:#623a2f"
+      ...> |> parse_passport
+      ...> |> valid_passport?
+      true
+
+      # iex> "hgt:59cm ecl:zzz eyr:2038 hcl:74454a iyr:2023 pid:3556412378 byr:2007"
+      # ...> |> parse_passport
+      # ...> |> valid_passport?
+      # false
+  """
+  def valid_passport?(passport) do
+    passport
+    |> Enum.to_list
+    |> Enum.all?(&valid?/1)
   end
+
+  def p2(passports), do: Enum.count(passports, &valid_passport?/1)
 end
