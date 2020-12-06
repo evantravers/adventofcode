@@ -61,7 +61,7 @@ defmodule Advent2020.Day5 do
     end)
   end
 
-  def seat_id(%{row: r, column: c}), do: r * c
+  def seat_id(%{row: r, column: c}), do: r * 8 + c
 
   def p1(boarding_passes) do
     boarding_passes
