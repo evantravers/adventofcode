@@ -68,5 +68,16 @@ defmodule Advent2020.Day5 do
     |> Enum.map(&seat_id/1)
     |> Enum.max
   end
-  def p2(_i), do: nil
+  def p2(boarding_passes) do
+    for x <- 0..@rows,
+        y <- 0..@columns,
+        !Enum.member?(boarding_passes, %{row: x, column: y}) do
+      %{row: x, column: y}
+    end
+    |> Enum.find(fn(%{row: row, column: column}) ->
+      Enum.member?(boarding_passes, %{row: row+1, column: column}) &&
+      Enum.member?(boarding_passes, %{row: row-1, column: column})
+    end)
+    |> seat_id
+  end
 end
