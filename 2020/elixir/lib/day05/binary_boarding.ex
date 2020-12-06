@@ -36,30 +36,23 @@ defmodule Advent2020.Day5 do
     |> Map.update!(:column, &elem(&1, 0))
   end
 
-  def eval("F", map) do
-    Map.update!(map, :row, fn({low, high}) ->
-      midpoint = high - Integer.floor_div((high - low), 2)
-      {low, midpoint-1}
+  def midpoint(low, high), do: high - Integer.floor_div((high - low), 2)
+
+  def binary(map, dimension, :high) do
+    Map.update!(map, dimension, fn({low, high}) ->
+      {midpoint(low, high), high}
     end)
   end
-  def eval("B", map) do
-    Map.update!(map, :row, fn({low, high}) ->
-      midpoint = high - Integer.floor_div((high - low), 2)
-      {midpoint, high}
+  def binary(map, dimension, :low) do
+    Map.update!(map, dimension, fn({low, high}) ->
+      {low, midpoint(low, high)-1}
     end)
   end
-  def eval("L", map) do
-    Map.update!(map, :column, fn({low, high}) ->
-      midpoint = high - Integer.floor_div((high - low), 2)
-      {low, midpoint-1}
-    end)
-  end
-  def eval("R", map) do
-    Map.update!(map, :column, fn({low, high}) ->
-      midpoint = high - Integer.floor_div((high - low), 2)
-      {midpoint, high}
-    end)
-  end
+
+  def eval("F", map), do: binary(map, :row, :low)
+  def eval("B", map), do: binary(map, :row, :high)
+  def eval("L", map), do: binary(map, :column, :low)
+  def eval("R", map), do: binary(map, :column, :high)
 
   def seat_id(%{row: r, column: c}), do: r * 8 + c
 
