@@ -5,7 +5,7 @@ defmodule Advent2020.Day7 do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
       file
       |> String.split("\n", trim: true)
-      |> Enum.reduce(%{}, &parse_sentence/2)
+      |> Enum.reduce(Graph.new, &parse_sentence/2)
     end
   end
 
@@ -14,27 +14,30 @@ defmodule Advent2020.Day7 do
       %{"number" => 2, "adjective" => "shiny", "color" => "purple"}
   """
   def parse_bag(str) do
-    ~r/(?<number>\d+ )?(?<adjective>\w+) (?<color>\w+) bags/
+    ~r/(\d+ )?(?<adjective>\w+) (?<color>\w+) bags/
     |> Regex.named_captures(str)
   end
 
-  def parse_sentence(sentence, map) do
-    [parent, children] = String.split(sentence, " contain ")
+  def parse_sentence(sentence, graph) do
+    [parent, children_str] = String.split(sentence, " contain ")
 
-    map
-    |> Map.put(
-      parse_bag(parent),
-      children
+    children =
+      children_str
+      |> String.replace(".", "")
       |> String.split(", ", trim: true)
       |> Enum.map(&parse_bag/1)
+
+    graph
+    |> Graph.add_edges(
+      for child <- children, do: {parse_bag(parent), child}
     )
   end
 
   def p1(inventory) do
     inventory
-    |> Enum.find(fn({parent, children}) ->
-      # find the bags
-    end)
+    require IEx; IEx.pry
+    # |> Enum.find(fn({parent, children}) ->
+    # end)
   end
 
   def p2(_i), do: nil
