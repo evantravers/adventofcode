@@ -31,7 +31,6 @@ defmodule Advent2020.Day7 do
         |> String.replace(".", "")
         |> String.split(", ", trim: true)
         |> Enum.map(&parse_bag/1)
-        |> Enum.reject(&is_nil/1)
 
       graph
       |> Graph.add_edges(
@@ -60,9 +59,7 @@ defmodule Advent2020.Day7 do
     inventory
     |> Graph.reachable([target])
     |> List.delete(target)
-    |> IO.inspect
     |> Enum.map(&Map.get(&1, "color"))
-    |> Enum.uniq
     |> Enum.count
   end
 
