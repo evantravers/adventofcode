@@ -13,11 +13,22 @@ defmodule Advent2020.Day7 do
 
   @doc """
       iex> parse_bag("2 shiny purple bags")
-      %{"adjective" => "shiny", "color" => "purple"}
+      %{num: 2, color: "shiny purple"}
   """
   def parse_bag(str) do
-    ~r/(\d+ )?(?<adjective>\w+) (?<color>\w+) bags?/
+    ~r/(?:(?<num>\d+) )?(?<color>\w+ \w+) bags?/
     |> Regex.named_captures(str)
+    |> Enum.reduce(%{}, fn({k, v}, map) ->
+      if String.length(v) == 0 do
+        map
+      else
+        if k == "num" do
+          Map.put(map, String.to_atom(k), String.to_integer(v))
+        else
+          Map.put(map, String.to_atom(k), v)
+        end
+      end
+    end)
   end
 
   def parse_sentence(sentence, graph) do
@@ -34,7 +45,13 @@ defmodule Advent2020.Day7 do
 
       graph
       |> Graph.add_edges(
-        for child <- children, do: {child, parse_bag(parent)}
+        for child <- children do
+          {
+            Map.get(child, :color),
+            Map.get(parse_bag(parent), :color),
+            [weight: Map.get(child, :num)]
+          }
+        end
       )
     end
   end
@@ -54,12 +71,13 @@ defmodule Advent2020.Day7 do
       4
   """
   def p1(inventory) do
-    target = %{"adjective" => "shiny", "color" => "gold"}
+    with {:ok, file} <- Graph.Serializers.DOT.serialize(inventory), do: File.write("#{__DIR__}/graph.dot", file)
+
+    target = "shiny gold"
 
     inventory
     |> Graph.reachable([target])
     |> List.delete(target)
-    |> Enum.map(&Map.get(&1, "color"))
     |> Enum.count
   end
 
