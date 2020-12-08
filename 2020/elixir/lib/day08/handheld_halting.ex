@@ -8,14 +8,14 @@ defmodule Advent2020.Day8 do
   def build_state(str) do
     str
     |> String.split("\n", trim: true)
-    |> Enum.with_index
+    |> Enum.with_index()
     |> Enum.reduce(%{}, &parse_instruction/2)
     |> Map.put(:pointer, 0)
     |> Map.put(:accumulator, 0)
-    |> Map.put(:visited, MapSet.new)
+    |> Map.put(:visited, MapSet.new())
   end
 
-  @spec parse_instruction(String.t, Map) :: Map
+  @spec parse_instruction(String.t(), Map) :: Map
   def parse_instruction({string, index}, state) do
     [code, arg] = String.split(string, " ")
 
@@ -26,14 +26,20 @@ defmodule Advent2020.Day8 do
     |> put_in([:instructions, index], instruction)
   end
 
-  def execute(state = %{
-                        pointer: pointer,
-                        instructions: instructions,
-                        visited: visited
-                      }) do
+  def execute(
+        state = %{
+          pointer: pointer,
+          instructions: instructions,
+          visited: visited
+        }
+      ) do
     cond do
-      pointer == Enum.count(instructions) -> {:ok, state}
-      Enum.member?(visited, pointer)  -> {:infinite, state}
+      pointer == Enum.count(instructions) ->
+        {:ok, state}
+
+      Enum.member?(visited, pointer) ->
+        {:infinite, state}
+
       true ->
         instructions
         |> Map.get(pointer)
@@ -45,16 +51,18 @@ defmodule Advent2020.Day8 do
 
   def evaluate({:jmp, arg}, state) do
     state
-    |> Map.update!(:pointer, & &1 + arg)
+    |> Map.update!(:pointer, &(&1 + arg))
   end
+
   def evaluate({:acc, arg}, state) do
     state
-    |> Map.update!(:accumulator, & &1 + arg)
-    |> Map.update!(:pointer, & &1 + 1)
+    |> Map.update!(:accumulator, &(&1 + arg))
+    |> Map.update!(:pointer, &(&1 + 1))
   end
+
   def evaluate({:nop, _arg}, state) do
     state
-    |> Map.update!(:pointer, & &1 + 1)
+    |> Map.update!(:pointer, &(&1 + 1))
   end
 
   def flip(:nop), do: :jmp
@@ -83,8 +91,8 @@ defmodule Advent2020.Day8 do
   def p2(starting_state) do
     starting_state
     |> Map.get(:instructions)
-    |> Enum.filter(fn({_index, {code, _arg}}) -> code == :jmp || code == :nop end)
-    |> Enum.find_value(fn({index, {op, arg}}) ->
+    |> Enum.filter(fn {_index, {code, _arg}} -> code == :jmp || code == :nop end)
+    |> Enum.find_value(fn {index, {op, arg}} ->
       flipped = put_in(starting_state, [:instructions, index], {flip(op), arg})
 
       with {:ok, final} <- execute(flipped) do
