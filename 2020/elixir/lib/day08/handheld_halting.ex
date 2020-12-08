@@ -36,7 +36,7 @@ defmodule Advent2020.Day8 do
                         visited: visited
                       }) do
     cond do
-      pointer == Enum.count(instructions) + 1 -> {:ok, state}
+      pointer == Enum.count(instructions) -> {:ok, state}
       Enum.member?(visited, pointer)  -> {:infinite, state}
       true ->
         instructions
