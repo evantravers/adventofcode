@@ -8,26 +8,22 @@ defmodule Advent2020.Day8 do
   def build_state(str) do
     str
     |> String.split("\n", trim: true)
+    |> Enum.with_index
     |> Enum.reduce(%{}, &parse_instruction/2)
-    |> Map.update!(:instructions, fn(instructions) ->
-      instructions
-      |> Enum.reverse
-      |> Enum.with_index
-      |> Enum.map(fn({v, k}) -> {k, v} end)
-      |> Map.new
-    end)
     |> Map.put(:pointer, 0)
     |> Map.put(:accumulator, 0)
     |> Map.put(:visited, MapSet.new)
   end
 
   @spec parse_instruction(String.t, Map) :: Map
-  def parse_instruction(string, state) do
+  def parse_instruction({string, index}, state) do
     [code, arg] = String.split(string, " ")
 
     instruction = {String.to_atom(code), String.to_integer(arg)}
 
-    Map.update(state, :instructions, [instruction], & [instruction|&1])
+    state
+    |> Map.put_new(:instructions, %{})
+    |> put_in([:instructions, index], instruction)
   end
 
   def execute(state = %{
@@ -83,6 +79,7 @@ defmodule Advent2020.Day8 do
       Map.get(final, :accumulator)
     end
   end
+
   def p2(starting_state) do
     starting_state
     |> Map.get(:instructions)
