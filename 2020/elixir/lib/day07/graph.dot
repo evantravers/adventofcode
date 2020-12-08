@@ -1,24 +1,2010 @@
 strict digraph {
-    "bright white"
-    "vibrant plum"
-    "dark olive"
-    "dark orange"
-    "faded blue"
+    "clear tan"
+    "clear red"
+    "wavy yellow"
+    "dotted blue"
+    "dim turquoise"
+    "plaid white"
+    "shiny turquoise"
+    "mirrored olive"
+    "striped coral"
+    "clear black"
+    "plaid chartreuse"
+    "posh chartreuse"
+    "pale lime"
+    "posh indigo"
+    "pale salmon"
+    "wavy salmon"
     "muted yellow"
+    "clear beige"
+    "vibrant yellow"
+    "muted beige"
+    "dotted salmon"
+    "light black"
+    "dim indigo"
+    "vibrant beige"
+    "wavy bronze"
+    "clear gold"
+    "muted red"
+    "pale fuchsia"
+    "dull teal"
+    "pale magenta"
+    "clear blue"
+    "faded gold"
+    "dark tan"
+    "pale crimson"
+    "striped olive"
+    "dull magenta"
+    "mirrored tan"
+    "dull white"
+    "plaid gray"
+    "clear teal"
+    "drab tomato"
+    "bright teal"
+    "faded red"
+    "dotted bronze"
+    "plaid tan"
+    "clear lime"
+    "plaid turquoise"
+    "faded fuchsia"
+    "clear tomato"
+    "light white"
+    "light turquoise"
+    "drab crimson"
+    "dim black"
+    "posh blue"
+    "shiny plum"
+    "wavy black"
+    "mirrored gray"
+    "striped black"
+    "light cyan"
+    "striped silver"
+    "dark orange"
     "light red"
-    "dotted black"
+    "plaid beige"
+    "clear white"
+    "wavy red"
+    "pale indigo"
+    "posh turquoise"
+    "dull black"
+    "drab silver"
+    "shiny coral"
+    "striped crimson"
+    "mirrored coral"
+    "plaid gold"
+    "bright lime"
+    "muted aqua"
+    "plaid brown"
+    "bright yellow"
+    "drab indigo"
+    "light brown"
+    "striped purple"
+    "vibrant blue"
+    "pale purple"
+    "dotted red"
+    "pale turquoise"
+    "vibrant crimson"
+    "faded aqua"
+    "dim fuchsia"
+    "light crimson"
+    "dull cyan"
+    "shiny green"
+    "pale plum"
+    "pale gold"
+    "mirrored black"
+    "dull gray"
+    "dotted crimson"
+    "dark gray"
+    "clear purple"
+    "drab maroon"
+    "vibrant lavender"
+    "dark blue"
+    "clear violet"
+    "dim lime"
+    "wavy gray"
+    "mirrored violet"
+    "mirrored chartreuse"
+    "muted bronze"
+    "shiny beige"
+    "muted fuchsia"
+    "dotted coral"
+    "shiny cyan"
+    "shiny chartreuse"
+    "dull tomato"
+    "dim cyan"
     "shiny gold"
-    "bright white" -> "dark orange" [weight=3]
-    "bright white" -> "light red" [weight=1]
-    "vibrant plum" -> "shiny gold" [weight=2]
-    "dark olive" -> "shiny gold" [weight=1]
-    "faded blue" -> "vibrant plum" [weight=5]
-    "faded blue" -> "dark olive" [weight=3]
-    "faded blue" -> "muted yellow" [weight=9]
-    "muted yellow" -> "dark orange" [weight=4]
-    "muted yellow" -> "light red" [weight=2]
-    "dotted black" -> "vibrant plum" [weight=6]
-    "dotted black" -> "dark olive" [weight=4]
-    "shiny gold" -> "bright white" [weight=1]
-    "shiny gold" -> "muted yellow" [weight=2]
+    "dim magenta"
+    "muted gray"
+    "pale gray"
+    "plaid yellow"
+    "dotted lime"
+    "mirrored crimson"
+    "posh gold"
+    "striped gray"
+    "faded lavender"
+    "shiny maroon"
+    "pale aqua"
+    "dotted brown"
+    "dim yellow"
+    "plaid salmon"
+    "plaid silver"
+    "posh bronze"
+    "clear orange"
+    "mirrored red"
+    "mirrored purple"
+    "bright green"
+    "striped tomato"
+    "clear bronze"
+    "pale lavender"
+    "pale blue"
+    "clear salmon"
+    "dark brown"
+    "plaid aqua"
+    "bright salmon"
+    "vibrant magenta"
+    "dotted indigo"
+    "bright bronze"
+    "pale yellow"
+    "pale tomato"
+    "drab purple"
+    "wavy blue"
+    "dotted yellow"
+    "dim brown"
+    "dark coral"
+    "muted chartreuse"
+    "drab chartreuse"
+    "plaid tomato"
+    "vibrant salmon"
+    "muted green"
+    "wavy gold"
+    "dark green"
+    "muted turquoise"
+    "bright indigo"
+    "dim salmon"
+    "striped white"
+    "bright silver"
+    "shiny blue"
+    "light blue"
+    "vibrant orange"
+    "vibrant teal"
+    "mirrored aqua"
+    "wavy cyan"
+    "wavy lime"
+    "striped fuchsia"
+    "drab plum"
+    "plaid olive"
+    "dim gray"
+    "bright aqua"
+    "light violet"
+    "dark white"
+    "dotted lavender"
+    "vibrant tomato"
+    "shiny orange"
+    "wavy plum"
+    "vibrant gray"
+    "shiny silver"
+    "muted salmon"
+    "dim coral"
+    "light aqua"
+    "mirrored bronze"
+    "clear coral"
+    "drab gray"
+    "vibrant tan"
+    "dotted aqua"
+    "dim violet"
+    "wavy silver"
+    "wavy olive"
+    "wavy tan"
+    "clear brown"
+    "dim tomato"
+    "light teal"
+    "dull indigo"
+    "dim red"
+    "drab violet"
+    "light bronze"
+    "posh plum"
+    "clear silver"
+    "faded yellow"
+    "faded plum"
+    "shiny crimson"
+    "dark silver"
+    "dim green"
+    "dark tomato"
+    "mirrored orange"
+    "light gold"
+    "drab fuchsia"
+    "posh maroon"
+    "bright crimson"
+    "dim plum"
+    "dull beige"
+    "clear turquoise"
+    "light beige"
+    "dull maroon"
+    "drab coral"
+    "shiny salmon"
+    "dim maroon"
+    "pale maroon"
+    "posh brown"
+    "shiny fuchsia"
+    "vibrant turquoise"
+    "dotted tan"
+    "muted olive"
+    "dotted olive"
+    "striped bronze"
+    "faded silver"
+    "bright white"
+    "plaid magenta"
+    "posh red"
+    "bright fuchsia"
+    "muted blue"
+    "bright black"
+    "striped lime"
+    "plaid crimson"
+    "muted tomato"
+    "faded teal"
+    "dark aqua"
+    "dull olive"
+    "pale cyan"
+    "dim purple"
+    "dotted purple"
+    "dark teal"
+    "drab green"
+    "vibrant black"
+    "drab salmon"
+    "faded bronze"
+    "dull lavender"
+    "vibrant purple"
+    "mirrored tomato"
+    "bright coral"
+    "bright brown"
+    "drab lavender"
+    "dark beige"
+    "mirrored yellow"
+    "dark crimson"
+    "mirrored indigo"
+    "posh aqua"
+    "dark cyan"
+    "shiny violet"
+    "vibrant olive"
+    "bright plum"
+    "vibrant chartreuse"
+    "dotted cyan"
+    "posh olive"
+    "dark purple"
+    "muted indigo"
+    "vibrant maroon"
+    "dark yellow"
+    "bright blue"
+    "shiny red"
+    "posh magenta"
+    "dotted fuchsia"
+    "light purple"
+    "striped yellow"
+    "dark salmon"
+    "drab cyan"
+    "posh orange"
+    "light chartreuse"
+    "vibrant indigo"
+    "plaid purple"
+    "light olive"
+    "light silver"
+    "shiny lime"
+    "mirrored silver"
+    "wavy beige"
+    "drab red"
+    "shiny purple"
+    "dark black"
+    "posh lime"
+    "drab blue"
+    "dim gold"
+    "faded black"
+    "dark gold"
+    "bright cyan"
+    "striped maroon"
+    "striped brown"
+    "posh purple"
+    "pale red"
+    "shiny white"
+    "dotted black"
+    "faded crimson"
+    "faded lime"
+    "shiny bronze"
+    "bright turquoise"
+    "vibrant violet"
+    "dim orange"
+    "clear cyan"
+    "wavy coral"
+    "posh white"
+    "muted maroon"
+    "plaid plum"
+    "dim teal"
+    "posh violet"
+    "clear magenta"
+    "muted gold"
+    "dotted gold"
+    "faded tan"
+    "muted magenta"
+    "dark chartreuse"
+    "striped teal"
+    "dotted green"
+    "vibrant gold"
+    "mirrored brown"
+    "dotted gray"
+    "bright tomato"
+    "dull orange"
+    "pale brown"
+    "wavy orange"
+    "bright orange"
+    "light gray"
+    "dull green"
+    "pale violet"
+    "mirrored magenta"
+    "dull chartreuse"
+    "shiny aqua"
+    "posh beige"
+    "dim blue"
+    "wavy fuchsia"
+    "dark lime"
+    "shiny yellow"
+    "dark red"
+    "light maroon"
+    "striped violet"
+    "wavy turquoise"
+    "striped plum"
+    "drab tan"
+    "pale orange"
+    "clear aqua"
+    "plaid cyan"
+    "dim bronze"
+    "drab magenta"
+    "drab yellow"
+    "shiny olive"
+    "drab black"
+    "dull coral"
+    "striped lavender"
+    "wavy chartreuse"
+    "pale tan"
+    "posh gray"
+    "light magenta"
+    "vibrant white"
+    "dull bronze"
+    "plaid fuchsia"
+    "faded gray"
+    "pale green"
+    "plaid red"
+    "muted lime"
+    "striped cyan"
+    "drab orange"
+    "plaid blue"
+    "bright tan"
+    "clear indigo"
+    "dull yellow"
+    "muted crimson"
+    "shiny tan"
+    "clear olive"
+    "wavy teal"
+    "muted silver"
+    "faded white"
+    "posh yellow"
+    "dull salmon"
+    "muted orange"
+    "posh tomato"
+    "bright purple"
+    "faded beige"
+    "drab gold"
+    "vibrant bronze"
+    "wavy indigo"
+    "dull aqua"
+    "posh coral"
+    "light orange"
+    "dotted tomato"
+    "plaid green"
+    "dull turquoise"
+    "clear gray"
+    "dull gold"
+    "faded coral"
+    "pale black"
+    "posh lavender"
+    "vibrant coral"
+    "shiny teal"
+    "vibrant red"
+    "striped red"
+    "dull fuchsia"
+    "dotted white"
+    "dim crimson"
+    "bright maroon"
+    "dotted teal"
+    "drab olive"
+    "vibrant green"
+    "faded chartreuse"
+    "posh tan"
+    "faded tomato"
+    "striped chartreuse"
+    "shiny brown"
+    "dark plum"
+    "drab beige"
+    "dotted orange"
+    "striped blue"
+    "light yellow"
+    "light indigo"
+    "striped gold"
+    "dull brown"
+    "wavy violet"
+    "bright chartreuse"
+    "dull silver"
+    "mirrored white"
+    "dull red"
+    "faded indigo"
+    "clear chartreuse"
+    "dark indigo"
+    "dim white"
+    "dark fuchsia"
+    "plaid orange"
+    "posh crimson"
+    "drab turquoise"
+    "bright magenta"
+    "mirrored turquoise"
+    "dim beige"
+    "vibrant cyan"
+    "bright olive"
+    "dotted plum"
+    "faded olive"
+    "pale teal"
+    "dull violet"
+    "striped aqua"
+    "pale coral"
+    "bright red"
+    "dark olive"
+    "dull blue"
+    "light tomato"
+    "clear plum"
+    "striped magenta"
+    "muted plum"
+    "faded green"
+    "dark maroon"
+    "muted teal"
+    "faded salmon"
+    "mirrored teal"
+    "wavy brown"
+    "mirrored plum"
+    "plaid teal"
+    "clear fuchsia"
+    "clear yellow"
+    "muted white"
+    "wavy aqua"
+    "dim olive"
+    "pale bronze"
+    "clear lavender"
+    "plaid maroon"
+    "wavy maroon"
+    "dark turquoise"
+    "pale beige"
+    "bright beige"
+    "mirrored fuchsia"
+    "mirrored lavender"
+    "bright gold"
+    "striped salmon"
+    "posh salmon"
+    "faded purple"
+    "dark magenta"
+    "light lavender"
+    "pale chartreuse"
+    "dotted beige"
+    "shiny black"
+    "faded magenta"
+    "muted coral"
+    "clear maroon"
+    "dull crimson"
+    "shiny gray"
+    "muted violet"
+    "drab aqua"
+    "plaid lime"
+    "wavy tomato"
+    "shiny lavender"
+    "light fuchsia"
+    "faded brown"
+    "dark lavender"
+    "light coral"
+    "mirrored beige"
+    "dotted chartreuse"
+    "dull tan"
+    "dull lime"
+    "dotted silver"
+    "dotted maroon"
+    "bright violet"
+    "plaid lavender"
+    "plaid indigo"
+    "mirrored gold"
+    "dim chartreuse"
+    "mirrored green"
+    "striped indigo"
+    "wavy magenta"
+    "wavy lavender"
+    "drab teal"
+    "wavy white"
+    "dark bronze"
+    "wavy purple"
+    "light salmon"
+    "faded violet"
+    "drab brown"
+    "light tan"
+    "posh teal"
+    "wavy green"
+    "drab lime"
+    "muted black"
+    "bright lavender"
+    "vibrant silver"
+    "shiny magenta"
+    "vibrant lime"
+    "mirrored blue"
+    "dull purple"
+    "shiny indigo"
+    "faded turquoise"
+    "drab bronze"
+    "posh black"
+    "posh silver"
+    "dotted violet"
+    "faded cyan"
+    "striped tan"
+    "mirrored maroon"
+    "plaid bronze"
+    "plaid coral"
+    "plaid black"
+    "dark violet"
+    "dim silver"
+    "vibrant brown"
+    "vibrant aqua"
+    "dotted turquoise"
+    "shiny tomato"
+    "striped beige"
+    "muted lavender"
+    "faded orange"
+    "vibrant plum"
+    "faded maroon"
+    "pale white"
+    "mirrored lime"
+    "striped turquoise"
+    "light lime"
+    "striped orange"
+    "plaid violet"
+    "dim lavender"
+    "muted purple"
+    "light plum"
+    "muted tan"
+    "posh green"
+    "muted cyan"
+    "clear crimson"
+    "dull plum"
+    "dim aqua"
+    "faded blue"
+    "light green"
+    "pale silver"
+    "dotted magenta"
+    "muted brown"
+    "mirrored salmon"
+    "drab white"
+    "mirrored cyan"
+    "bright gray"
+    "posh cyan"
+    "clear green"
+    "dim tan"
+    "pale olive"
+    "striped green"
+    "posh fuchsia"
+    "wavy crimson"
+    "vibrant fuchsia"
+    "clear tan" -> "faded purple" [weight=4]
+    "clear tan" -> "muted magenta" [weight=1]
+    "clear red" -> "striped olive" [weight=2]
+    "wavy yellow" -> "posh maroon" [weight=5]
+    "wavy yellow" -> "dark beige" [weight=3]
+    "wavy yellow" -> "dim beige" [weight=2]
+    "wavy yellow" -> "drab silver" [weight=4]
+    "wavy yellow" -> "shiny teal" [weight=1]
+    "wavy yellow" -> "dull tomato" [weight=5]
+    "wavy yellow" -> "plaid green" [weight=3]
+    "dotted blue" -> "dotted silver" [weight=5]
+    "dotted blue" -> "light tan" [weight=2]
+    "dim turquoise" -> "pale olive" [weight=4]
+    "dim turquoise" -> "vibrant purple" [weight=4]
+    "dim turquoise" -> "clear plum" [weight=5]
+    "dim turquoise" -> "shiny lime" [weight=1]
+    "dim turquoise" -> "dotted lime" [weight=5]
+    "dim turquoise" -> "dim tan" [weight=1]
+    "dim turquoise" -> "drab silver" [weight=2]
+    "dim turquoise" -> "mirrored purple" [weight=3]
+    "dim turquoise" -> "drab bronze" [weight=3]
+    "dim turquoise" -> "pale tomato" [weight=5]
+    "dim turquoise" -> "clear cyan" [weight=4]
+    "dim turquoise" -> "dotted violet" [weight=3]
+    "plaid white" -> "dull olive" [weight=2]
+    "shiny turquoise" -> "posh bronze" [weight=5]
+    "mirrored olive" -> "bright chartreuse" [weight=5]
+    "plaid chartreuse" -> "drab beige" [weight=3]
+    "plaid chartreuse" -> "faded magenta" [weight=3]
+    "posh chartreuse" -> "wavy plum" [weight=3]
+    "pale lime" -> "bright orange" [weight=1]
+    "pale lime" -> "vibrant tan" [weight=5]
+    "pale lime" -> "posh teal" [weight=1]
+    "pale lime" -> "light violet" [weight=1]
+    "posh indigo" -> "faded teal" [weight=1]
+    "posh indigo" -> "dull teal" [weight=1]
+    "pale salmon" -> "dull yellow" [weight=1]
+    "pale salmon" -> "mirrored blue" [weight=4]
+    "pale salmon" -> "striped maroon" [weight=3]
+    "pale salmon" -> "dim aqua" [weight=4]
+    "pale salmon" -> "dotted white" [weight=2]
+    "pale salmon" -> "dull black" [weight=5]
+    "pale salmon" -> "posh orange" [weight=5]
+    "muted yellow" -> "pale black" [weight=2]
+    "muted yellow" -> "posh red" [weight=4]
+    "muted yellow" -> "vibrant orange" [weight=5]
+    "muted yellow" -> "dotted chartreuse" [weight=2]
+    "muted yellow" -> "drab chartreuse" [weight=2]
+    "muted yellow" -> "posh chartreuse" [weight=5]
+    "muted yellow" -> "dull purple" [weight=1]
+    "muted yellow" -> "posh green" [weight=4]
+    "muted yellow" -> "wavy turquoise" [weight=1]
+    "muted yellow" -> "dark orange" [weight=2]
+    "muted yellow" -> "faded blue" [weight=4]
+    "muted yellow" -> "posh magenta" [weight=3]
+    "vibrant yellow" -> "shiny beige" [weight=1]
+    "vibrant yellow" -> "dark lime" [weight=3]
+    "vibrant yellow" -> "muted gold" [weight=4]
+    "muted beige" -> "pale teal" [weight=5]
+    "muted beige" -> "plaid tan" [weight=2]
+    "dotted salmon" -> "dotted silver" [weight=1]
+    "dotted salmon" -> "dull red" [weight=5]
+    "dotted salmon" -> "wavy red" [weight=4]
+    "dotted salmon" -> "plaid crimson" [weight=3]
+    "dim indigo" -> "faded coral" [weight=5]
+    "dim indigo" -> "wavy white" [weight=3]
+    "vibrant beige" -> "vibrant maroon" [weight=4]
+    "vibrant beige" -> "shiny turquoise" [weight=1]
+    "wavy bronze" -> "dull brown" [weight=3]
+    "wavy bronze" -> "dark turquoise" [weight=3]
+    "wavy bronze" -> "posh bronze" [weight=3]
+    "wavy bronze" -> "striped blue" [weight=5]
+    "clear gold" -> "dotted cyan" [weight=3]
+    "clear gold" -> "shiny chartreuse" [weight=4]
+    "muted red" -> "striped yellow" [weight=5]
+    "muted red" -> "shiny magenta" [weight=3]
+    "muted red" -> "striped gray" [weight=5]
+    "pale fuchsia" -> "faded aqua" [weight=3]
+    "pale fuchsia" -> "posh silver" [weight=5]
+    "pale fuchsia" -> "shiny lime" [weight=4]
+    "pale fuchsia" -> "muted chartreuse" [weight=1]
+    "pale fuchsia" -> "clear cyan" [weight=3]
+    "pale fuchsia" -> "clear lavender" [weight=3]
+    "dull teal" -> "light red" [weight=2]
+    "faded gold" -> "dull silver" [weight=2]
+    "faded gold" -> "faded white" [weight=5]
+    "dark tan" -> "dim purple" [weight=5]
+    "pale crimson" -> "dim violet" [weight=1]
+    "dull magenta" -> "clear white" [weight=4]
+    "dull magenta" -> "bright bronze" [weight=3]
+    "dull magenta" -> "muted tomato" [weight=3]
+    "dull magenta" -> "plaid tomato" [weight=3]
+    "dull magenta" -> "shiny yellow" [weight=4]
+    "dull magenta" -> "dim turquoise" [weight=4]
+    "dull magenta" -> "clear purple" [weight=3]
+    "dull magenta" -> "pale tomato" [weight=3]
+    "dull magenta" -> "clear cyan" [weight=1]
+    "dull magenta" -> "clear lavender" [weight=1]
+    "dull white" -> "light gray" [weight=4]
+    "dull white" -> "clear fuchsia" [weight=1]
+    "dull white" -> "dotted white" [weight=5]
+    "plaid gray" -> "pale plum" [weight=5]
+    "plaid gray" -> "dim gold" [weight=3]
+    "plaid gray" -> "wavy silver" [weight=5]
+    "clear teal" -> "mirrored lime" [weight=4]
+    "clear teal" -> "faded aqua" [weight=1]
+    "drab tomato" -> "dim cyan" [weight=4]
+    "faded red" -> "dim white" [weight=1]
+    "faded red" -> "faded purple" [weight=1]
+    "faded red" -> "muted aqua" [weight=5]
+    "dotted bronze" -> "bright silver" [weight=3]
+    "clear lime" -> "clear tan" [weight=1]
+    "clear lime" -> "clear magenta" [weight=3]
+    "clear lime" -> "dotted teal" [weight=5]
+    "clear lime" -> "bright maroon" [weight=2]
+    "plaid turquoise" -> "dotted tomato" [weight=5]
+    "plaid turquoise" -> "pale blue" [weight=5]
+    "plaid turquoise" -> "light olive" [weight=2]
+    "plaid turquoise" -> "bright turquoise" [weight=1]
+    "plaid turquoise" -> "faded red" [weight=3]
+    "plaid turquoise" -> "vibrant turquoise" [weight=5]
+    "plaid turquoise" -> "dotted tan" [weight=5]
+    "faded fuchsia" -> "bright cyan" [weight=5]
+    "faded fuchsia" -> "mirrored silver" [weight=4]
+    "clear tomato" -> "striped beige" [weight=2]
+    "clear tomato" -> "dull crimson" [weight=4]
+    "clear tomato" -> "wavy red" [weight=4]
+    "light white" -> "light bronze" [weight=2]
+    "light white" -> "bright bronze" [weight=3]
+    "light white" -> "faded aqua" [weight=5]
+    "light white" -> "drab maroon" [weight=2]
+    "light white" -> "muted yellow" [weight=3]
+    "light white" -> "bright lime" [weight=3]
+    "light turquoise" -> "shiny salmon" [weight=1]
+    "light turquoise" -> "vibrant indigo" [weight=5]
+    "light turquoise" -> "mirrored indigo" [weight=5]
+    "light turquoise" -> "clear fuchsia" [weight=4]
+    "light turquoise" -> "dull gold" [weight=1]
+    "light turquoise" -> "vibrant blue" [weight=2]
+    "light turquoise" -> "plaid purple" [weight=5]
+    "drab crimson" -> "mirrored maroon" [weight=5]
+    "drab crimson" -> "bright tan" [weight=2]
+    "drab crimson" -> "bright coral" [weight=4]
+    "drab crimson" -> "drab indigo" [weight=2]
+    "drab crimson" -> "muted green" [weight=2]
+    "drab crimson" -> "bright white" [weight=2]
+    "drab crimson" -> "plaid black" [weight=2]
+    "dim black" -> "dark fuchsia" [weight=2]
+    "posh blue" -> "striped plum" [weight=1]
+    "posh blue" -> "muted plum" [weight=3]
+    "posh blue" -> "posh red" [weight=3]
+    "posh blue" -> "faded crimson" [weight=5]
+    "posh blue" -> "light plum" [weight=4]
+    "posh blue" -> "dark orange" [weight=1]
+    "shiny plum" -> "drab purple" [weight=1]
+    "shiny plum" -> "drab yellow" [weight=2]
+    "shiny plum" -> "dim turquoise" [weight=1]
+    "shiny plum" -> "pale coral" [weight=3]
+    "shiny plum" -> "faded orange" [weight=5]
+    "shiny plum" -> "posh tan" [weight=4]
+    "shiny plum" -> "drab tan" [weight=4]
+    "wavy black" -> "light coral" [weight=4]
+    "striped black" -> "plaid bronze" [weight=1]
+    "light cyan" -> "striped aqua" [weight=2]
+    "dark orange" -> "dim magenta" [weight=5]
+    "dark orange" -> "posh beige" [weight=2]
+    "dark orange" -> "muted indigo" [weight=3]
+    "dark orange" -> "clear lavender" [weight=2]
+    "clear white" -> "shiny black" [weight=5]
+    "clear white" -> "dark beige" [weight=3]
+    "clear white" -> "plaid blue" [weight=1]
+    "clear white" -> "plaid turquoise" [weight=5]
+    "posh turquoise" -> "dark beige" [weight=3]
+    "posh turquoise" -> "striped olive" [weight=1]
+    "posh turquoise" -> "dark white" [weight=2]
+    "posh turquoise" -> "dull black" [weight=2]
+    "posh turquoise" -> "dim green" [weight=2]
+    "drab silver" -> "posh aqua" [weight=2]
+    "shiny coral" -> "drab yellow" [weight=3]
+    "shiny coral" -> "bright coral" [weight=1]
+    "shiny coral" -> "dark lavender" [weight=1]
+    "shiny coral" -> "striped maroon" [weight=3]
+    "shiny coral" -> "shiny orange" [weight=2]
+    "shiny coral" -> "wavy chartreuse" [weight=2]
+    "shiny coral" -> "dark red" [weight=5]
+    "shiny coral" -> "muted yellow" [weight=5]
+    "shiny coral" -> "clear cyan" [weight=2]
+    "bright lime" -> "plaid brown" [weight=3]
+    "bright lime" -> "pale aqua" [weight=4]
+    "bright yellow" -> "wavy beige" [weight=2]
+    "bright yellow" -> "clear gray" [weight=3]
+    "bright yellow" -> "clear orange" [weight=3]
+    "bright yellow" -> "striped lime" [weight=1]
+    "bright yellow" -> "dark turquoise" [weight=4]
+    "bright yellow" -> "pale crimson" [weight=1]
+    "bright yellow" -> "posh gold" [weight=3]
+    "bright yellow" -> "dark crimson" [weight=2]
+    "bright yellow" -> "clear aqua" [weight=2]
+    "bright yellow" -> "faded blue" [weight=2]
+    "bright yellow" -> "mirrored white" [weight=4]
+    "drab indigo" -> "mirrored tan" [weight=3]
+    "drab indigo" -> "plaid aqua" [weight=2]
+    "light brown" -> "dull olive" [weight=1]
+    "vibrant blue" -> "drab salmon" [weight=2]
+    "vibrant blue" -> "clear turquoise" [weight=4]
+    "vibrant blue" -> "dotted crimson" [weight=4]
+    "vibrant blue" -> "bright plum" [weight=5]
+    "vibrant blue" -> "shiny red" [weight=4]
+    "vibrant blue" -> "dim aqua" [weight=3]
+    "pale purple" -> "plaid indigo" [weight=3]
+    "pale purple" -> "dark indigo" [weight=3]
+    "pale purple" -> "bright magenta" [weight=2]
+    "pale turquoise" -> "drab orange" [weight=3]
+    "pale turquoise" -> "plaid aqua" [weight=5]
+    "pale turquoise" -> "bright maroon" [weight=4]
+    "vibrant crimson" -> "clear brown" [weight=2]
+    "faded aqua" -> "faded white" [weight=3]
+    "faded aqua" -> "drab tomato" [weight=2]
+    "dim fuchsia" -> "shiny magenta" [weight=3]
+    "dim fuchsia" -> "muted lime" [weight=5]
+    "light crimson" -> "wavy orange" [weight=3]
+    "dull cyan" -> "light aqua" [weight=1]
+    "dull cyan" -> "dim silver" [weight=2]
+    "dull cyan" -> "pale chartreuse" [weight=2]
+    "dull cyan" -> "posh silver" [weight=2]
+    "dull cyan" -> "faded indigo" [weight=5]
+    "dull cyan" -> "clear aqua" [weight=3]
+    "dull cyan" -> "bright brown" [weight=2]
+    "pale gold" -> "dotted plum" [weight=4]
+    "dull gray" -> "shiny lavender" [weight=1]
+    "dull gray" -> "posh olive" [weight=4]
+    "dotted crimson" -> "clear teal" [weight=3]
+    "dotted crimson" -> "drab orange" [weight=4]
+    "dark gray" -> "muted lavender" [weight=1]
+    "dark gray" -> "dull teal" [weight=1]
+    "clear purple" -> "plaid magenta" [weight=2]
+    "clear purple" -> "bright white" [weight=1]
+    "clear purple" -> "bright yellow" [weight=4]
+    "clear purple" -> "posh silver" [weight=2]
+    "clear purple" -> "posh lime" [weight=2]
+    "drab maroon" -> "dotted yellow" [weight=2]
+    "drab maroon" -> "dull lime" [weight=4]
+    "vibrant lavender" -> "light purple" [weight=5]
+    "vibrant lavender" -> "vibrant bronze" [weight=3]
+    "vibrant lavender" -> "dotted plum" [weight=1]
+    "dark blue" -> "bright teal" [weight=1]
+    "dim lime" -> "light indigo" [weight=5]
+    "wavy gray" -> "dark salmon" [weight=5]
+    "wavy gray" -> "mirrored orange" [weight=1]
+    "wavy gray" -> "clear white" [weight=2]
+    "wavy gray" -> "dark yellow" [weight=3]
+    "wavy gray" -> "bright black" [weight=5]
+    "wavy gray" -> "pale fuchsia" [weight=4]
+    "wavy gray" -> "vibrant blue" [weight=4]
+    "wavy gray" -> "muted magenta" [weight=1]
+    "muted bronze" -> "striped coral" [weight=3]
+    "shiny beige" -> "wavy salmon" [weight=5]
+    "shiny beige" -> "dotted orange" [weight=3]
+    "muted fuchsia" -> "wavy beige" [weight=2]
+    "muted fuchsia" -> "light black" [weight=2]
+    "muted fuchsia" -> "muted tomato" [weight=1]
+    "muted fuchsia" -> "shiny gray" [weight=2]
+    "muted fuchsia" -> "faded yellow" [weight=1]
+    "muted fuchsia" -> "pale lime" [weight=2]
+    "muted fuchsia" -> "plaid lime" [weight=2]
+    "muted fuchsia" -> "drab black" [weight=2]
+    "shiny cyan" -> "dull chartreuse" [weight=4]
+    "shiny cyan" -> "drab olive" [weight=1]
+    "shiny chartreuse" -> "mirrored bronze" [weight=1]
+    "shiny chartreuse" -> "drab blue" [weight=1]
+    "shiny chartreuse" -> "striped blue" [weight=3]
+    "dull tomato" -> "vibrant plum" [weight=5]
+    "shiny gold" -> "dim brown" [weight=3]
+    "shiny gold" -> "clear fuchsia" [weight=1]
+    "shiny gold" -> "wavy yellow" [weight=2]
+    "shiny gold" -> "striped lavender" [weight=5]
+    "dim magenta" -> "mirrored teal" [weight=5]
+    "dim magenta" -> "drab lime" [weight=5]
+    "dim magenta" -> "dull indigo" [weight=4]
+    "muted gray" -> "bright brown" [weight=3]
+    "pale gray" -> "pale orange" [weight=3]
+    "plaid yellow" -> "plaid red" [weight=4]
+    "plaid yellow" -> "light tomato" [weight=4]
+    "plaid yellow" -> "vibrant lavender" [weight=3]
+    "plaid yellow" -> "light beige" [weight=3]
+    "plaid yellow" -> "clear maroon" [weight=1]
+    "plaid yellow" -> "pale purple" [weight=5]
+    "dotted lime" -> "wavy violet" [weight=2]
+    "dotted lime" -> "clear orange" [weight=5]
+    "dotted lime" -> "light maroon" [weight=5]
+    "dotted lime" -> "wavy olive" [weight=2]
+    "dotted lime" -> "wavy green" [weight=1]
+    "mirrored crimson" -> "light yellow" [weight=2]
+    "posh gold" -> "dotted coral" [weight=1]
+    "striped gray" -> "dim plum" [weight=4]
+    "faded lavender" -> "light beige" [weight=4]
+    "faded lavender" -> "mirrored blue" [weight=4]
+    "faded lavender" -> "plaid maroon" [weight=4]
+    "faded lavender" -> "plaid black" [weight=4]
+    "shiny maroon" -> "bright crimson" [weight=5]
+    "shiny maroon" -> "wavy indigo" [weight=5]
+    "shiny maroon" -> "shiny brown" [weight=3]
+    "shiny maroon" -> "drab silver" [weight=2]
+    "shiny maroon" -> "dim coral" [weight=1]
+    "shiny maroon" -> "vibrant aqua" [weight=5]
+    "shiny maroon" -> "clear aqua" [weight=2]
+    "shiny maroon" -> "drab tan" [weight=5]
+    "dotted brown" -> "mirrored bronze" [weight=1]
+    "dotted brown" -> "muted violet" [weight=1]
+    "dotted brown" -> "faded beige" [weight=1]
+    "dotted brown" -> "vibrant gray" [weight=1]
+    "dim yellow" -> "mirrored crimson" [weight=5]
+    "plaid salmon" -> "vibrant orange" [weight=1]
+    "posh bronze" -> "plaid gold" [weight=4]
+    "clear orange" -> "mirrored turquoise" [weight=3]
+    "clear orange" -> "clear green" [weight=3]
+    "clear orange" -> "posh lavender" [weight=3]
+    "clear orange" -> "clear red" [weight=2]
+    "clear orange" -> "drab lime" [weight=2]
+    "clear orange" -> "plaid cyan" [weight=4]
+    "mirrored purple" -> "dull tan" [weight=2]
+    "mirrored purple" -> "plaid tan" [weight=2]
+    "mirrored purple" -> "light red" [weight=2]
+    "bright green" -> "clear beige" [weight=2]
+    "striped tomato" -> "mirrored maroon" [weight=4]
+    "striped tomato" -> "dim chartreuse" [weight=5]
+    "striped tomato" -> "mirrored magenta" [weight=5]
+    "striped tomato" -> "pale coral" [weight=4]
+    "clear bronze" -> "wavy beige" [weight=3]
+    "clear bronze" -> "dull cyan" [weight=1]
+    "clear bronze" -> "drab orange" [weight=4]
+    "clear bronze" -> "plaid lavender" [weight=2]
+    "clear bronze" -> "bright black" [weight=3]
+    "clear bronze" -> "dotted lime" [weight=3]
+    "clear bronze" -> "dark black" [weight=4]
+    "clear bronze" -> "dark red" [weight=1]
+    "clear bronze" -> "plaid black" [weight=4]
+    "pale lavender" -> "wavy olive" [weight=1]
+    "pale lavender" -> "dotted magenta" [weight=5]
+    "pale lavender" -> "faded fuchsia" [weight=5]
+    "pale lavender" -> "dull gray" [weight=4]
+    "pale blue" -> "mirrored orange" [weight=5]
+    "pale blue" -> "vibrant teal" [weight=3]
+    "pale blue" -> "posh teal" [weight=4]
+    "pale blue" -> "dotted plum" [weight=2]
+    "pale blue" -> "drab violet" [weight=3]
+    "pale blue" -> "dotted aqua" [weight=3]
+    "pale blue" -> "muted aqua" [weight=5]
+    "pale blue" -> "vibrant tomato" [weight=1]
+    "clear salmon" -> "posh cyan" [weight=4]
+    "clear salmon" -> "posh indigo" [weight=4]
+    "clear salmon" -> "mirrored lavender" [weight=2]
+    "dark brown" -> "dotted gold" [weight=4]
+    "dark brown" -> "dark cyan" [weight=5]
+    "vibrant magenta" -> "dull olive" [weight=4]
+    "bright bronze" -> "clear white" [weight=2]
+    "bright bronze" -> "faded chartreuse" [weight=4]
+    "bright bronze" -> "dark gray" [weight=3]
+    "bright bronze" -> "faded purple" [weight=5]
+    "bright bronze" -> "wavy black" [weight=5]
+    "pale yellow" -> "clear black" [weight=2]
+    "pale yellow" -> "dull indigo" [weight=2]
+    "pale yellow" -> "muted orange" [weight=5]
+    "pale tomato" -> "plaid aqua" [weight=1]
+    "drab purple" -> "striped yellow" [weight=4]
+    "drab purple" -> "striped cyan" [weight=2]
+    "drab purple" -> "vibrant green" [weight=1]
+    "wavy blue" -> "bright aqua" [weight=1]
+    "wavy blue" -> "posh chartreuse" [weight=3]
+    "wavy blue" -> "vibrant gold" [weight=4]
+    "wavy blue" -> "vibrant silver" [weight=5]
+    "wavy blue" -> "pale lavender" [weight=5]
+    "wavy blue" -> "mirrored silver" [weight=3]
+    "wavy blue" -> "faded yellow" [weight=3]
+    "dotted yellow" -> "shiny lavender" [weight=2]
+    "dotted yellow" -> "dotted brown" [weight=1]
+    "dotted yellow" -> "posh turquoise" [weight=2]
+    "dotted yellow" -> "vibrant olive" [weight=1]
+    "dotted yellow" -> "clear coral" [weight=4]
+    "dim brown" -> "vibrant bronze" [weight=4]
+    "dim brown" -> "posh olive" [weight=2]
+    "dark coral" -> "mirrored chartreuse" [weight=3]
+    "muted chartreuse" -> "dull yellow" [weight=1]
+    "muted chartreuse" -> "bright aqua" [weight=1]
+    "muted chartreuse" -> "striped olive" [weight=3]
+    "drab chartreuse" -> "plaid salmon" [weight=2]
+    "drab chartreuse" -> "vibrant bronze" [weight=4]
+    "drab chartreuse" -> "dark tan" [weight=5]
+    "plaid tomato" -> "striped purple" [weight=5]
+    "vibrant salmon" -> "clear gray" [weight=1]
+    "vibrant salmon" -> "clear bronze" [weight=1]
+    "vibrant salmon" -> "posh indigo" [weight=3]
+    "vibrant salmon" -> "bright gold" [weight=1]
+    "vibrant salmon" -> "vibrant yellow" [weight=1]
+    "vibrant salmon" -> "vibrant coral" [weight=5]
+    "vibrant salmon" -> "wavy silver" [weight=2]
+    "wavy gold" -> "light maroon" [weight=3]
+    "wavy gold" -> "dim beige" [weight=1]
+    "wavy gold" -> "wavy yellow" [weight=2]
+    "wavy gold" -> "shiny gold" [weight=3]
+    "bright indigo" -> "drab chartreuse" [weight=2]
+    "bright indigo" -> "shiny aqua" [weight=1]
+    "bright indigo" -> "pale salmon" [weight=2]
+    "bright indigo" -> "bright violet" [weight=4]
+    "bright indigo" -> "dark purple" [weight=3]
+    "dim salmon" -> "mirrored tan" [weight=4]
+    "striped white" -> "wavy maroon" [weight=1]
+    "striped white" -> "dull silver" [weight=3]
+    "bright silver" -> "faded tan" [weight=1]
+    "shiny blue" -> "mirrored brown" [weight=5]
+    "vibrant orange" -> "faded white" [weight=4]
+    "vibrant orange" -> "muted beige" [weight=2]
+    "vibrant orange" -> "faded lime" [weight=2]
+    "mirrored aqua" -> "shiny green" [weight=1]
+    "wavy cyan" -> "mirrored lavender" [weight=3]
+    "wavy cyan" -> "faded red" [weight=2]
+    "wavy cyan" -> "vibrant blue" [weight=4]
+    "wavy lime" -> "posh crimson" [weight=3]
+    "striped fuchsia" -> "dark brown" [weight=5]
+    "striped fuchsia" -> "dull salmon" [weight=1]
+    "striped fuchsia" -> "vibrant olive" [weight=3]
+    "drab plum" -> "light indigo" [weight=1]
+    "drab plum" -> "muted turquoise" [weight=3]
+    "drab plum" -> "pale yellow" [weight=4]
+    "drab plum" -> "mirrored crimson" [weight=2]
+    "drab plum" -> "vibrant crimson" [weight=3]
+    "drab plum" -> "plaid beige" [weight=1]
+    "dim gray" -> "posh tomato" [weight=1]
+    "dim gray" -> "light teal" [weight=3]
+    "dim gray" -> "light white" [weight=3]
+    "dim gray" -> "faded salmon" [weight=1]
+    "dim gray" -> "posh white" [weight=2]
+    "dim gray" -> "pale lime" [weight=1]
+    "dim gray" -> "light fuchsia" [weight=2]
+    "dim gray" -> "clear purple" [weight=5]
+    "dim gray" -> "plaid green" [weight=5]
+    "bright aqua" -> "posh aqua" [weight=5]
+    "bright aqua" -> "faded chartreuse" [weight=1]
+    "bright aqua" -> "pale violet" [weight=1]
+    "light violet" -> "mirrored tomato" [weight=4]
+    "light violet" -> "mirrored plum" [weight=4]
+    "light violet" -> "pale magenta" [weight=1]
+    "light violet" -> "clear silver" [weight=3]
+    "light violet" -> "dark chartreuse" [weight=2]
+    "dark white" -> "dull salmon" [weight=5]
+    "dotted lavender" -> "muted crimson" [weight=1]
+    "dotted lavender" -> "shiny brown" [weight=5]
+    "dotted lavender" -> "faded olive" [weight=3]
+    "dotted lavender" -> "bright violet" [weight=1]
+    "dotted lavender" -> "dark black" [weight=4]
+    "dotted lavender" -> "dark orange" [weight=2]
+    "dotted lavender" -> "dark maroon" [weight=2]
+    "vibrant tomato" -> "mirrored plum" [weight=4]
+    "vibrant tomato" -> "pale brown" [weight=1]
+    "vibrant tomato" -> "vibrant crimson" [weight=1]
+    "vibrant tomato" -> "plaid black" [weight=4]
+    "shiny orange" -> "shiny tomato" [weight=1]
+    "shiny orange" -> "drab indigo" [weight=2]
+    "shiny orange" -> "striped purple" [weight=4]
+    "wavy plum" -> "faded maroon" [weight=5]
+    "wavy plum" -> "plaid tomato" [weight=1]
+    "vibrant gray" -> "light magenta" [weight=2]
+    "shiny silver" -> "pale bronze" [weight=5]
+    "muted salmon" -> "shiny silver" [weight=2]
+    "dim coral" -> "drab orange" [weight=5]
+    "dim coral" -> "wavy lime" [weight=1]
+    "dim coral" -> "muted coral" [weight=3]
+    "dim coral" -> "dotted indigo" [weight=5]
+    "dim coral" -> "dark tan" [weight=3]
+    "light aqua" -> "vibrant white" [weight=4]
+    "light aqua" -> "shiny turquoise" [weight=3]
+    "clear coral" -> "dotted gray" [weight=1]
+    "clear coral" -> "drab gold" [weight=2]
+    "drab gray" -> "dim orange" [weight=5]
+    "vibrant tan" -> "drab aqua" [weight=1]
+    "vibrant tan" -> "plaid silver" [weight=3]
+    "vibrant tan" -> "mirrored coral" [weight=1]
+    "vibrant tan" -> "dark yellow" [weight=2]
+    "vibrant tan" -> "pale yellow" [weight=1]
+    "vibrant tan" -> "mirrored violet" [weight=5]
+    "vibrant tan" -> "plaid blue" [weight=5]
+    "vibrant tan" -> "mirrored silver" [weight=4]
+    "vibrant tan" -> "vibrant cyan" [weight=5]
+    "vibrant tan" -> "dotted green" [weight=2]
+    "vibrant tan" -> "plaid olive" [weight=4]
+    "wavy silver" -> "striped gold" [weight=1]
+    "clear brown" -> "dull blue" [weight=2]
+    "clear brown" -> "plaid tomato" [weight=2]
+    "dim tomato" -> "dark tomato" [weight=2]
+    "dim tomato" -> "mirrored tan" [weight=5]
+    "dim tomato" -> "dim white" [weight=2]
+    "dim tomato" -> "light blue" [weight=3]
+    "dim tomato" -> "muted magenta" [weight=5]
+    "light teal" -> "plaid silver" [weight=5]
+    "light teal" -> "dotted yellow" [weight=1]
+    "light teal" -> "drab red" [weight=3]
+    "light teal" -> "bright magenta" [weight=5]
+    "light teal" -> "muted beige" [weight=4]
+    "dim red" -> "muted green" [weight=2]
+    "dim red" -> "pale maroon" [weight=3]
+    "drab violet" -> "dim beige" [weight=2]
+    "drab violet" -> "vibrant chartreuse" [weight=2]
+    "drab violet" -> "light cyan" [weight=1]
+    "drab violet" -> "bright maroon" [weight=4]
+    "light bronze" -> "posh silver" [weight=5]
+    "light bronze" -> "dim green" [weight=4]
+    "light bronze" -> "vibrant magenta" [weight=5]
+    "light bronze" -> "faded black" [weight=3]
+    "posh plum" -> "posh coral" [weight=4]
+    "posh plum" -> "mirrored turquoise" [weight=3]
+    "posh plum" -> "shiny black" [weight=3]
+    "posh plum" -> "shiny blue" [weight=5]
+    "clear silver" -> "dark chartreuse" [weight=4]
+    "faded yellow" -> "clear crimson" [weight=5]
+    "faded yellow" -> "striped plum" [weight=4]
+    "faded yellow" -> "muted plum" [weight=5]
+    "faded yellow" -> "light black" [weight=1]
+    "faded yellow" -> "striped lime" [weight=5]
+    "faded yellow" -> "dotted maroon" [weight=2]
+    "faded yellow" -> "pale brown" [weight=3]
+    "faded yellow" -> "pale coral" [weight=1]
+    "faded yellow" -> "pale purple" [weight=1]
+    "faded plum" -> "bright teal" [weight=1]
+    "shiny crimson" -> "dull fuchsia" [weight=2]
+    "shiny crimson" -> "mirrored red" [weight=3]
+    "dark silver" -> "vibrant salmon" [weight=2]
+    "dark silver" -> "dull chartreuse" [weight=5]
+    "dark silver" -> "mirrored salmon" [weight=2]
+    "dark silver" -> "posh red" [weight=5]
+    "dark silver" -> "faded chartreuse" [weight=3]
+    "dark silver" -> "wavy gray" [weight=3]
+    "dark silver" -> "shiny brown" [weight=5]
+    "dark silver" -> "shiny plum" [weight=2]
+    "dark silver" -> "posh tan" [weight=4]
+    "dark silver" -> "posh olive" [weight=5]
+    "dim green" -> "dark cyan" [weight=5]
+    "mirrored orange" -> "plaid fuchsia" [weight=4]
+    "mirrored orange" -> "dull plum" [weight=4]
+    "mirrored orange" -> "striped aqua" [weight=2]
+    "mirrored orange" -> "faded lime" [weight=4]
+    "light gold" -> "striped brown" [weight=2]
+    "light gold" -> "dim salmon" [weight=3]
+    "light gold" -> "drab magenta" [weight=3]
+    "light gold" -> "muted white" [weight=1]
+    "light gold" -> "muted indigo" [weight=4]
+    "light gold" -> "shiny cyan" [weight=3]
+    "posh maroon" -> "mirrored bronze" [weight=1]
+    "posh maroon" -> "posh plum" [weight=5]
+    "posh maroon" -> "mirrored indigo" [weight=5]
+    "bright crimson" -> "muted lavender" [weight=2]
+    "dim plum" -> "shiny aqua" [weight=5]
+    "dim plum" -> "dotted black" [weight=4]
+    "dull beige" -> "vibrant gray" [weight=1]
+    "clear turquoise" -> "shiny green" [weight=2]
+    "clear turquoise" -> "pale beige" [weight=2]
+    "clear turquoise" -> "shiny turquoise" [weight=4]
+    "light beige" -> "faded bronze" [weight=5]
+    "light beige" -> "wavy crimson" [weight=2]
+    "dull maroon" -> "wavy violet" [weight=1]
+    "dull maroon" -> "striped black" [weight=5]
+    "dull maroon" -> "posh chartreuse" [weight=5]
+    "dull maroon" -> "clear red" [weight=1]
+    "dull maroon" -> "dull green" [weight=3]
+    "dull maroon" -> "dotted fuchsia" [weight=1]
+    "dull maroon" -> "mirrored yellow" [weight=1]
+    "dull maroon" -> "wavy tomato" [weight=3]
+    "dull maroon" -> "dim lime" [weight=3]
+    "shiny salmon" -> "striped green" [weight=2]
+    "shiny salmon" -> "dim silver" [weight=1]
+    "shiny salmon" -> "plaid teal" [weight=1]
+    "shiny salmon" -> "light lavender" [weight=4]
+    "dim maroon" -> "faded crimson" [weight=4]
+    "dim maroon" -> "pale green" [weight=5]
+    "posh brown" -> "vibrant black" [weight=5]
+    "shiny fuchsia" -> "striped cyan" [weight=1]
+    "vibrant turquoise" -> "dim violet" [weight=4]
+    "vibrant turquoise" -> "posh aqua" [weight=1]
+    "vibrant turquoise" -> "clear salmon" [weight=4]
+    "vibrant turquoise" -> "vibrant gold" [weight=5]
+    "vibrant turquoise" -> "drab maroon" [weight=2]
+    "vibrant turquoise" -> "posh turquoise" [weight=2]
+    "vibrant turquoise" -> "dim black" [weight=4]
+    "dotted tan" -> "light brown" [weight=4]
+    "muted olive" -> "mirrored magenta" [weight=3]
+    "muted olive" -> "dotted coral" [weight=5]
+    "muted olive" -> "faded magenta" [weight=1]
+    "dotted olive" -> "striped silver" [weight=2]
+    "dotted olive" -> "wavy purple" [weight=3]
+    "dotted olive" -> "drab blue" [weight=3]
+    "dotted olive" -> "wavy turquoise" [weight=2]
+    "dotted olive" -> "dark fuchsia" [weight=3]
+    "faded silver" -> "light tomato" [weight=1]
+    "faded silver" -> "bright turquoise" [weight=4]
+    "faded silver" -> "shiny turquoise" [weight=1]
+    "bright white" -> "plaid silver" [weight=1]
+    "bright white" -> "light white" [weight=3]
+    "bright white" -> "clear tan" [weight=4]
+    "bright white" -> "wavy chartreuse" [weight=5]
+    "bright white" -> "vibrant olive" [weight=4]
+    "bright white" -> "dotted black" [weight=2]
+    "plaid magenta" -> "vibrant yellow" [weight=3]
+    "posh red" -> "dark teal" [weight=4]
+    "posh red" -> "dull blue" [weight=1]
+    "posh red" -> "striped green" [weight=3]
+    "posh red" -> "shiny black" [weight=1]
+    "posh red" -> "mirrored beige" [weight=3]
+    "bright fuchsia" -> "drab olive" [weight=3]
+    "bright fuchsia" -> "dull red" [weight=1]
+    "bright fuchsia" -> "shiny fuchsia" [weight=5]
+    "muted blue" -> "plaid turquoise" [weight=2]
+    "muted blue" -> "light turquoise" [weight=5]
+    "muted blue" -> "muted white" [weight=4]
+    "bright black" -> "posh tomato" [weight=5]
+    "bright black" -> "drab salmon" [weight=3]
+    "bright black" -> "dark gold" [weight=4]
+    "bright black" -> "shiny black" [weight=5]
+    "bright black" -> "dotted salmon" [weight=4]
+    "bright black" -> "vibrant coral" [weight=5]
+    "bright black" -> "bright chartreuse" [weight=1]
+    "bright black" -> "dull lime" [weight=3]
+    "bright black" -> "wavy red" [weight=5]
+    "bright black" -> "plaid gray" [weight=5]
+    "striped lime" -> "faded bronze" [weight=3]
+    "striped lime" -> "mirrored yellow" [weight=3]
+    "plaid crimson" -> "drab purple" [weight=4]
+    "plaid crimson" -> "plaid salmon" [weight=4]
+    "plaid crimson" -> "vibrant lavender" [weight=2]
+    "plaid crimson" -> "muted salmon" [weight=4]
+    "plaid crimson" -> "striped black" [weight=2]
+    "plaid crimson" -> "shiny gray" [weight=5]
+    "plaid crimson" -> "light blue" [weight=4]
+    "plaid crimson" -> "dull red" [weight=2]
+    "plaid crimson" -> "mirrored yellow" [weight=4]
+    "plaid crimson" -> "light silver" [weight=5]
+    "plaid crimson" -> "wavy lavender" [weight=1]
+    "muted tomato" -> "bright coral" [weight=2]
+    "muted tomato" -> "shiny yellow" [weight=2]
+    "muted tomato" -> "dim turquoise" [weight=3]
+    "muted tomato" -> "dull maroon" [weight=1]
+    "muted tomato" -> "wavy gold" [weight=2]
+    "muted tomato" -> "dull violet" [weight=5]
+    "muted tomato" -> "dotted bronze" [weight=2]
+    "faded teal" -> "light black" [weight=2]
+    "faded teal" -> "shiny tomato" [weight=4]
+    "faded teal" -> "wavy red" [weight=4]
+    "pale cyan" -> "drab white" [weight=4]
+    "pale cyan" -> "dim orange" [weight=2]
+    "dotted purple" -> "wavy orange" [weight=1]
+    "dotted purple" -> "pale aqua" [weight=5]
+    "dotted purple" -> "plaid chartreuse" [weight=2]
+    "dark teal" -> "vibrant beige" [weight=4]
+    "dark teal" -> "dotted white" [weight=1]
+    "drab salmon" -> "plaid beige" [weight=3]
+    "faded bronze" -> "dark lime" [weight=5]
+    "dull lavender" -> "dull bronze" [weight=4]
+    "dull lavender" -> "faded silver" [weight=2]
+    "dull lavender" -> "drab teal" [weight=1]
+    "dull lavender" -> "light aqua" [weight=4]
+    "dull lavender" -> "muted aqua" [weight=5]
+    "dull lavender" -> "faded lime" [weight=2]
+    "vibrant purple" -> "wavy violet" [weight=2]
+    "vibrant purple" -> "dark plum" [weight=5]
+    "vibrant purple" -> "plaid maroon" [weight=5]
+    "vibrant purple" -> "bright tomato" [weight=1]
+    "vibrant purple" -> "faded olive" [weight=5]
+    "vibrant purple" -> "light gold" [weight=2]
+    "bright coral" -> "vibrant silver" [weight=1]
+    "bright coral" -> "faded olive" [weight=3]
+    "bright coral" -> "drab gray" [weight=5]
+    "dark beige" -> "dull white" [weight=4]
+    "dark beige" -> "striped bronze" [weight=2]
+    "mirrored yellow" -> "vibrant black" [weight=1]
+    "mirrored indigo" -> "striped beige" [weight=1]
+    "mirrored indigo" -> "muted brown" [weight=5]
+    "mirrored indigo" -> "dark blue" [weight=3]
+    "dark cyan" -> "shiny beige" [weight=1]
+    "dark cyan" -> "faded tan" [weight=1]
+    "bright plum" -> "posh salmon" [weight=3]
+    "dotted cyan" -> "dull black" [weight=5]
+    "dotted cyan" -> "pale red" [weight=1]
+    "muted indigo" -> "bright gray" [weight=2]
+    "muted indigo" -> "vibrant olive" [weight=3]
+    "vibrant maroon" -> "posh gray" [weight=4]
+    "dark yellow" -> "drab white" [weight=5]
+    "dark yellow" -> "plaid yellow" [weight=5]
+    "dark yellow" -> "striped yellow" [weight=5]
+    "dark yellow" -> "light orange" [weight=1]
+    "bright blue" -> "mirrored turquoise" [weight=5]
+    "bright blue" -> "drab crimson" [weight=4]
+    "bright blue" -> "dotted lavender" [weight=2]
+    "bright blue" -> "striped gray" [weight=1]
+    "bright blue" -> "light orange" [weight=2]
+    "bright blue" -> "striped tomato" [weight=5]
+    "bright blue" -> "posh fuchsia" [weight=5]
+    "bright blue" -> "mirrored white" [weight=2]
+    "shiny red" -> "vibrant black" [weight=2]
+    "shiny red" -> "posh white" [weight=3]
+    "dotted fuchsia" -> "light cyan" [weight=1]
+    "light purple" -> "drab indigo" [weight=5]
+    "light purple" -> "dotted aqua" [weight=4]
+    "dark salmon" -> "drab yellow" [weight=4]
+    "dark salmon" -> "pale gray" [weight=2]
+    "dark salmon" -> "dark yellow" [weight=1]
+    "dark salmon" -> "shiny white" [weight=4]
+    "dark salmon" -> "clear maroon" [weight=3]
+    "dark salmon" -> "faded olive" [weight=5]
+    "dark salmon" -> "light gold" [weight=5]
+    "dark salmon" -> "pale teal" [weight=5]
+    "dark salmon" -> "shiny blue" [weight=4]
+    "dark salmon" -> "muted black" [weight=1]
+    "posh orange" -> "faded turquoise" [weight=1]
+    "posh orange" -> "shiny red" [weight=5]
+    "posh orange" -> "plaid indigo" [weight=2]
+    "posh orange" -> "faded brown" [weight=1]
+    "posh orange" -> "bright tomato" [weight=2]
+    "posh orange" -> "mirrored yellow" [weight=2]
+    "light chartreuse" -> "dark salmon" [weight=1]
+    "light chartreuse" -> "dotted lavender" [weight=3]
+    "light chartreuse" -> "clear chartreuse" [weight=5]
+    "light chartreuse" -> "bright violet" [weight=5]
+    "light chartreuse" -> "posh orange" [weight=5]
+    "vibrant indigo" -> "vibrant gray" [weight=4]
+    "plaid purple" -> "muted tan" [weight=5]
+    "plaid purple" -> "dim salmon" [weight=4]
+    "plaid purple" -> "muted maroon" [weight=5]
+    "plaid purple" -> "vibrant plum" [weight=4]
+    "plaid purple" -> "pale aqua" [weight=5]
+    "plaid purple" -> "light violet" [weight=3]
+    "plaid purple" -> "muted chartreuse" [weight=1]
+    "plaid purple" -> "muted magenta" [weight=1]
+    "light silver" -> "shiny olive" [weight=1]
+    "light silver" -> "dark magenta" [weight=3]
+    "light silver" -> "faded brown" [weight=5]
+    "light silver" -> "plaid lavender" [weight=5]
+    "shiny lime" -> "posh tomato" [weight=3]
+    "shiny lime" -> "clear white" [weight=2]
+    "shiny lime" -> "faded turquoise" [weight=1]
+    "shiny lime" -> "plaid yellow" [weight=1]
+    "shiny lime" -> "plaid salmon" [weight=5]
+    "shiny lime" -> "wavy indigo" [weight=4]
+    "shiny lime" -> "pale olive" [weight=3]
+    "shiny lime" -> "dull orange" [weight=4]
+    "shiny lime" -> "faded maroon" [weight=2]
+    "shiny lime" -> "drab chartreuse" [weight=3]
+    "shiny lime" -> "plaid fuchsia" [weight=1]
+    "shiny lime" -> "plaid maroon" [weight=1]
+    "shiny lime" -> "drab red" [weight=4]
+    "shiny lime" -> "muted yellow" [weight=4]
+    "shiny lime" -> "posh gray" [weight=4]
+    "mirrored silver" -> "wavy aqua" [weight=1]
+    "wavy beige" -> "posh tomato" [weight=5]
+    "wavy beige" -> "vibrant beige" [weight=3]
+    "wavy beige" -> "pale fuchsia" [weight=1]
+    "wavy beige" -> "dim turquoise" [weight=4]
+    "wavy beige" -> "dark olive" [weight=2]
+    "wavy beige" -> "posh yellow" [weight=2]
+    "wavy beige" -> "dull lavender" [weight=2]
+    "wavy beige" -> "posh tan" [weight=3]
+    "wavy beige" -> "faded violet" [weight=3]
+    "wavy beige" -> "dark red" [weight=2]
+    "drab red" -> "dotted chartreuse" [weight=1]
+    "drab red" -> "posh brown" [weight=5]
+    "shiny purple" -> "drab yellow" [weight=3]
+    "shiny purple" -> "light bronze" [weight=2]
+    "shiny purple" -> "vibrant purple" [weight=5]
+    "shiny purple" -> "plaid blue" [weight=5]
+    "shiny purple" -> "wavy blue" [weight=3]
+    "shiny purple" -> "shiny indigo" [weight=1]
+    "shiny purple" -> "faded yellow" [weight=3]
+    "shiny purple" -> "clear purple" [weight=4]
+    "shiny purple" -> "bright blue" [weight=1]
+    "shiny purple" -> "bright magenta" [weight=5]
+    "shiny purple" -> "muted black" [weight=3]
+    "dark black" -> "striped silver" [weight=5]
+    "dark black" -> "posh purple" [weight=3]
+    "dark black" -> "posh green" [weight=1]
+    "dark black" -> "light salmon" [weight=1]
+    "dark black" -> "dull turquoise" [weight=3]
+    "posh lime" -> "striped aqua" [weight=1]
+    "drab blue" -> "striped coral" [weight=5]
+    "dim gold" -> "striped lime" [weight=3]
+    "dim gold" -> "wavy aqua" [weight=1]
+    "faded black" -> "dull bronze" [weight=1]
+    "faded black" -> "bright gold" [weight=2]
+    "faded black" -> "pale teal" [weight=2]
+    "faded black" -> "dim orange" [weight=3]
+    "dark gold" -> "wavy lavender" [weight=1]
+    "bright cyan" -> "dim yellow" [weight=1]
+    "bright cyan" -> "clear plum" [weight=4]
+    "bright cyan" -> "vibrant plum" [weight=4]
+    "bright cyan" -> "dotted purple" [weight=1]
+    "bright cyan" -> "wavy chartreuse" [weight=3]
+    "striped maroon" -> "shiny red" [weight=5]
+    "striped maroon" -> "clear chartreuse" [weight=5]
+    "striped maroon" -> "vibrant crimson" [weight=1]
+    "striped brown" -> "faded coral" [weight=1]
+    "striped brown" -> "dim teal" [weight=5]
+    "striped brown" -> "striped gold" [weight=2]
+    "posh purple" -> "dim cyan" [weight=1]
+    "shiny white" -> "plaid yellow" [weight=5]
+    "shiny white" -> "striped maroon" [weight=5]
+    "shiny white" -> "wavy bronze" [weight=2]
+    "shiny white" -> "plaid coral" [weight=1]
+    "shiny white" -> "muted black" [weight=2]
+    "faded lime" -> "dotted gray" [weight=1]
+    "faded lime" -> "dotted turquoise" [weight=4]
+    "shiny bronze" -> "clear violet" [weight=2]
+    "shiny bronze" -> "drab fuchsia" [weight=1]
+    "shiny bronze" -> "dim aqua" [weight=5]
+    "shiny bronze" -> "shiny tan" [weight=3]
+    "shiny bronze" -> "pale coral" [weight=4]
+    "shiny bronze" -> "mirrored purple" [weight=4]
+    "shiny bronze" -> "plaid beige" [weight=4]
+    "bright turquoise" -> "shiny lavender" [weight=2]
+    "dim orange" -> "light silver" [weight=4]
+    "clear cyan" -> "dotted blue" [weight=4]
+    "clear cyan" -> "drab green" [weight=1]
+    "clear cyan" -> "dim beige" [weight=5]
+    "clear cyan" -> "dark violet" [weight=4]
+    "clear cyan" -> "bright red" [weight=2]
+    "wavy coral" -> "light brown" [weight=5]
+    "wavy coral" -> "mirrored lime" [weight=5]
+    "wavy coral" -> "clear gold" [weight=2]
+    "wavy coral" -> "wavy lavender" [weight=5]
+    "plaid plum" -> "drab salmon" [weight=2]
+    "plaid plum" -> "wavy tomato" [weight=2]
+    "posh violet" -> "wavy salmon" [weight=1]
+    "posh violet" -> "vibrant beige" [weight=1]
+    "posh violet" -> "dotted crimson" [weight=5]
+    "muted gold" -> "posh bronze" [weight=1]
+    "dotted gold" -> "posh gray" [weight=5]
+    "muted magenta" -> "dim teal" [weight=1]
+    "muted magenta" -> "mirrored crimson" [weight=3]
+    "muted magenta" -> "mirrored beige" [weight=2]
+    "striped teal" -> "plaid red" [weight=1]
+    "striped teal" -> "light white" [weight=2]
+    "striped teal" -> "striped fuchsia" [weight=2]
+    "striped teal" -> "bright indigo" [weight=4]
+    "striped teal" -> "pale lime" [weight=5]
+    "striped teal" -> "light gold" [weight=1]
+    "striped teal" -> "faded indigo" [weight=4]
+    "striped teal" -> "drab black" [weight=4]
+    "dotted green" -> "bright turquoise" [weight=1]
+    "vibrant gold" -> "pale crimson" [weight=2]
+    "mirrored brown" -> "plaid magenta" [weight=3]
+    "mirrored brown" -> "mirrored gray" [weight=2]
+    "mirrored brown" -> "drab gray" [weight=5]
+    "bright tomato" -> "posh turquoise" [weight=3]
+    "dull orange" -> "light blue" [weight=5]
+    "dull orange" -> "muted orange" [weight=1]
+    "wavy orange" -> "pale aqua" [weight=3]
+    "bright orange" -> "drab aqua" [weight=2]
+    "bright orange" -> "wavy orange" [weight=4]
+    "bright orange" -> "dim coral" [weight=2]
+    "bright orange" -> "clear coral" [weight=1]
+    "light gray" -> "clear indigo" [weight=4]
+    "light gray" -> "striped silver" [weight=5]
+    "dull green" -> "mirrored plum" [weight=3]
+    "dull green" -> "faded fuchsia" [weight=4]
+    "dull green" -> "drab plum" [weight=2]
+    "dull green" -> "plaid orange" [weight=1]
+    "dull chartreuse" -> "vibrant lime" [weight=3]
+    "dull chartreuse" -> "plaid cyan" [weight=3]
+    "posh beige" -> "dotted red" [weight=3]
+    "posh beige" -> "dull yellow" [weight=1]
+    "posh beige" -> "muted teal" [weight=4]
+    "posh beige" -> "dull white" [weight=1]
+    "dim blue" -> "light gray" [weight=4]
+    "dim blue" -> "faded green" [weight=4]
+    "shiny yellow" -> "posh blue" [weight=1]
+    "shiny yellow" -> "dotted magenta" [weight=2]
+    "shiny yellow" -> "dull orange" [weight=2]
+    "shiny yellow" -> "vibrant lime" [weight=5]
+    "shiny yellow" -> "mirrored brown" [weight=2]
+    "shiny yellow" -> "mirrored violet" [weight=1]
+    "shiny yellow" -> "bright indigo" [weight=1]
+    "shiny yellow" -> "shiny coral" [weight=5]
+    "shiny yellow" -> "striped salmon" [weight=3]
+    "dark red" -> "bright green" [weight=4]
+    "dark red" -> "dim brown" [weight=2]
+    "dark red" -> "muted maroon" [weight=4]
+    "dark red" -> "mirrored silver" [weight=5]
+    "dark red" -> "pale gold" [weight=5]
+    "dark red" -> "pale purple" [weight=1]
+    "dark red" -> "posh orange" [weight=1]
+    "dark red" -> "dark blue" [weight=3]
+    "light maroon" -> "muted tan" [weight=1]
+    "light maroon" -> "mirrored gray" [weight=2]
+    "light maroon" -> "light violet" [weight=3]
+    "striped violet" -> "dim lavender" [weight=4]
+    "wavy turquoise" -> "striped magenta" [weight=2]
+    "wavy turquoise" -> "pale violet" [weight=5]
+    "striped plum" -> "dim crimson" [weight=4]
+    "drab tan" -> "muted teal" [weight=4]
+    "drab tan" -> "drab plum" [weight=3]
+    "drab tan" -> "dim orange" [weight=4]
+    "pale orange" -> "clear red" [weight=1]
+    "pale orange" -> "posh turquoise" [weight=4]
+    "pale orange" -> "light violet" [weight=2]
+    "clear aqua" -> "faded tomato" [weight=1]
+    "plaid cyan" -> "dull indigo" [weight=1]
+    "plaid cyan" -> "dotted orange" [weight=3]
+    "drab magenta" -> "drab blue" [weight=1]
+    "drab yellow" -> "bright gray" [weight=2]
+    "drab yellow" -> "faded bronze" [weight=1]
+    "drab yellow" -> "dotted indigo" [weight=2]
+    "drab yellow" -> "posh olive" [weight=3]
+    "drab black" -> "dim plum" [weight=1]
+    "drab black" -> "dim maroon" [weight=2]
+    "drab black" -> "bright yellow" [weight=5]
+    "drab black" -> "striped fuchsia" [weight=5]
+    "drab black" -> "dark violet" [weight=5]
+    "drab black" -> "clear chartreuse" [weight=4]
+    "drab black" -> "dull lavender" [weight=3]
+    "drab black" -> "vibrant magenta" [weight=3]
+    "drab black" -> "mirrored fuchsia" [weight=3]
+    "drab black" -> "dim lime" [weight=3]
+    "striped lavender" -> "mirrored bronze" [weight=4]
+    "striped lavender" -> "clear salmon" [weight=3]
+    "striped lavender" -> "dim purple" [weight=5]
+    "striped lavender" -> "dim maroon" [weight=3]
+    "striped lavender" -> "vibrant turquoise" [weight=5]
+    "wavy chartreuse" -> "pale green" [weight=1]
+    "wavy chartreuse" -> "vibrant yellow" [weight=3]
+    "pale tan" -> "dull salmon" [weight=2]
+    "dull bronze" -> "shiny green" [weight=4]
+    "plaid fuchsia" -> "clear teal" [weight=3]
+    "plaid fuchsia" -> "plaid olive" [weight=5]
+    "faded gray" -> "dark tomato" [weight=2]
+    "plaid red" -> "dark green" [weight=5]
+    "plaid red" -> "drab brown" [weight=4]
+    "striped cyan" -> "posh white" [weight=1]
+    "striped cyan" -> "vibrant chartreuse" [weight=1]
+    "drab orange" -> "plaid violet" [weight=4]
+    "drab orange" -> "bright salmon" [weight=1]
+    "plaid blue" -> "clear indigo" [weight=1]
+    "plaid blue" -> "shiny tan" [weight=5]
+    "plaid blue" -> "bright tomato" [weight=5]
+    "plaid blue" -> "faded indigo" [weight=2]
+    "plaid blue" -> "bright silver" [weight=1]
+    "dull yellow" -> "plaid violet" [weight=2]
+    "dull yellow" -> "striped beige" [weight=3]
+    "muted crimson" -> "faded gray" [weight=4]
+    "muted crimson" -> "muted silver" [weight=2]
+    "clear olive" -> "pale cyan" [weight=1]
+    "clear olive" -> "pale orange" [weight=1]
+    "clear olive" -> "dull fuchsia" [weight=3]
+    "clear olive" -> "posh violet" [weight=5]
+    "clear olive" -> "bright chartreuse" [weight=2]
+    "posh yellow" -> "drab magenta" [weight=2]
+    "posh yellow" -> "drab coral" [weight=2]
+    "posh yellow" -> "drab lavender" [weight=4]
+    "posh tomato" -> "bright lavender" [weight=5]
+    "posh tomato" -> "dim plum" [weight=2]
+    "posh tomato" -> "dotted crimson" [weight=3]
+    "posh tomato" -> "dotted magenta" [weight=3]
+    "posh tomato" -> "dim maroon" [weight=5]
+    "posh tomato" -> "dotted salmon" [weight=1]
+    "posh tomato" -> "wavy yellow" [weight=4]
+    "posh tomato" -> "wavy gold" [weight=5]
+    "posh tomato" -> "posh fuchsia" [weight=3]
+    "bright purple" -> "plaid beige" [weight=3]
+    "drab gold" -> "light tomato" [weight=3]
+    "drab gold" -> "vibrant chartreuse" [weight=3]
+    "vibrant bronze" -> "mirrored plum" [weight=2]
+    "vibrant bronze" -> "faded purple" [weight=4]
+    "vibrant bronze" -> "dotted fuchsia" [weight=3]
+    "vibrant bronze" -> "faded tomato" [weight=3]
+    "wavy indigo" -> "muted red" [weight=1]
+    "wavy indigo" -> "wavy tan" [weight=4]
+    "wavy indigo" -> "dotted fuchsia" [weight=5]
+    "wavy indigo" -> "plaid coral" [weight=5]
+    "light orange" -> "mirrored gold" [weight=1]
+    "light orange" -> "dim crimson" [weight=3]
+    "dotted tomato" -> "plaid bronze" [weight=2]
+    "dotted tomato" -> "faded violet" [weight=5]
+    "plaid green" -> "mirrored teal" [weight=3]
+    "plaid green" -> "wavy white" [weight=3]
+    "plaid green" -> "dull lime" [weight=5]
+    "dull turquoise" -> "posh crimson" [weight=2]
+    "dull turquoise" -> "clear silver" [weight=5]
+    "clear gray" -> "dark salmon" [weight=2]
+    "clear gray" -> "striped chartreuse" [weight=4]
+    "clear gray" -> "plaid silver" [weight=3]
+    "clear gray" -> "dark brown" [weight=4]
+    "clear gray" -> "vibrant gold" [weight=3]
+    "clear gray" -> "light orange" [weight=2]
+    "dull gold" -> "wavy white" [weight=2]
+    "posh lavender" -> "mirrored tomato" [weight=3]
+    "posh lavender" -> "dotted red" [weight=3]
+    "posh lavender" -> "plaid violet" [weight=4]
+    "posh lavender" -> "drab plum" [weight=5]
+    "vibrant red" -> "clear teal" [weight=3]
+    "vibrant red" -> "striped lime" [weight=4]
+    "dotted white" -> "bright olive" [weight=5]
+    "dim crimson" -> "muted maroon" [weight=5]
+    "dotted teal" -> "dim cyan" [weight=3]
+    "dotted teal" -> "bright cyan" [weight=4]
+    "drab olive" -> "shiny violet" [weight=3]
+    "vibrant green" -> "striped tan" [weight=3]
+    "faded chartreuse" -> "dim crimson" [weight=3]
+    "posh tan" -> "posh cyan" [weight=4]
+    "posh tan" -> "dark beige" [weight=2]
+    "posh tan" -> "clear blue" [weight=1]
+    "faded tomato" -> "wavy magenta" [weight=4]
+    "faded tomato" -> "faded white" [weight=4]
+    "faded tomato" -> "dark chartreuse" [weight=4]
+    "striped chartreuse" -> "pale turquoise" [weight=2]
+    "striped chartreuse" -> "bright teal" [weight=2]
+    "shiny brown" -> "clear maroon" [weight=2]
+    "dark plum" -> "posh black" [weight=4]
+    "light indigo" -> "drab indigo" [weight=3]
+    "wavy violet" -> "clear orange" [weight=2]
+    "wavy violet" -> "shiny maroon" [weight=5]
+    "wavy violet" -> "dotted purple" [weight=5]
+    "wavy violet" -> "pale salmon" [weight=3]
+    "bright chartreuse" -> "dotted orange" [weight=1]
+    "mirrored white" -> "mirrored olive" [weight=5]
+    "mirrored white" -> "plaid yellow" [weight=1]
+    "mirrored white" -> "striped white" [weight=1]
+    "mirrored white" -> "plaid blue" [weight=5]
+    "mirrored white" -> "faded orange" [weight=2]
+    "mirrored white" -> "bright chartreuse" [weight=2]
+    "mirrored white" -> "muted gray" [weight=1]
+    "mirrored white" -> "drab tan" [weight=4]
+    "dull red" -> "shiny green" [weight=2]
+    "clear chartreuse" -> "mirrored beige" [weight=1]
+    "dark indigo" -> "dark plum" [weight=2]
+    "dark indigo" -> "muted turquoise" [weight=5]
+    "dark indigo" -> "striped crimson" [weight=2]
+    "dim white" -> "dim yellow" [weight=5]
+    "dark fuchsia" -> "dull silver" [weight=3]
+    "plaid orange" -> "plaid tan" [weight=2]
+    "drab turquoise" -> "faded plum" [weight=5]
+    "drab turquoise" -> "muted tan" [weight=5]
+    "drab turquoise" -> "plaid red" [weight=1]
+    "drab turquoise" -> "shiny salmon" [weight=2]
+    "drab turquoise" -> "vibrant brown" [weight=2]
+    "drab turquoise" -> "dotted yellow" [weight=2]
+    "drab turquoise" -> "muted beige" [weight=1]
+    "bright magenta" -> "striped fuchsia" [weight=2]
+    "bright magenta" -> "clear magenta" [weight=3]
+    "bright magenta" -> "shiny silver" [weight=5]
+    "mirrored turquoise" -> "clear tan" [weight=4]
+    "mirrored turquoise" -> "dim white" [weight=3]
+    "dim beige" -> "dim fuchsia" [weight=1]
+    "vibrant cyan" -> "dark indigo" [weight=4]
+    "vibrant cyan" -> "drab maroon" [weight=2]
+    "vibrant cyan" -> "pale gold" [weight=4]
+    "vibrant cyan" -> "pale indigo" [weight=2]
+    "vibrant cyan" -> "dotted purple" [weight=3]
+    "vibrant cyan" -> "wavy crimson" [weight=1]
+    "vibrant cyan" -> "striped orange" [weight=4]
+    "dotted plum" -> "shiny tomato" [weight=3]
+    "dotted plum" -> "dotted white" [weight=1]
+    "dotted plum" -> "plaid coral" [weight=2]
+    "faded olive" -> "plaid plum" [weight=3]
+    "faded olive" -> "pale green" [weight=4]
+    "dull violet" -> "light purple" [weight=5]
+    "dull violet" -> "dark lavender" [weight=5]
+    "dull violet" -> "shiny yellow" [weight=5]
+    "dull violet" -> "plaid turquoise" [weight=1]
+    "dull violet" -> "drab bronze" [weight=5]
+    "pale coral" -> "wavy teal" [weight=1]
+    "bright red" -> "dim violet" [weight=4]
+    "bright red" -> "shiny salmon" [weight=3]
+    "bright red" -> "dim lime" [weight=3]
+    "dark olive" -> "clear orange" [weight=2]
+    "dark olive" -> "bright fuchsia" [weight=1]
+    "dull blue" -> "wavy orange" [weight=3]
+    "clear plum" -> "dim teal" [weight=4]
+    "striped magenta" -> "wavy aqua" [weight=1]
+    "striped magenta" -> "vibrant fuchsia" [weight=1]
+    "muted plum" -> "faded teal" [weight=5]
+    "muted plum" -> "wavy cyan" [weight=4]
+    "muted plum" -> "bright cyan" [weight=1]
+    "faded green" -> "striped turquoise" [weight=1]
+    "faded green" -> "muted teal" [weight=4]
+    "dark maroon" -> "dim indigo" [weight=5]
+    "dark maroon" -> "dotted maroon" [weight=3]
+    "dark maroon" -> "drab lime" [weight=5]
+    "dark maroon" -> "bright lime" [weight=5]
+    "muted teal" -> "shiny lavender" [weight=4]
+    "faded salmon" -> "dim olive" [weight=1]
+    "faded salmon" -> "dull cyan" [weight=5]
+    "faded salmon" -> "mirrored salmon" [weight=3]
+    "faded salmon" -> "dark gold" [weight=4]
+    "faded salmon" -> "bright lavender" [weight=3]
+    "faded salmon" -> "drab crimson" [weight=4]
+    "faded salmon" -> "dark bronze" [weight=2]
+    "faded salmon" -> "shiny gray" [weight=5]
+    "faded salmon" -> "bright yellow" [weight=4]
+    "faded salmon" -> "posh crimson" [weight=5]
+    "faded salmon" -> "shiny tan" [weight=4]
+    "faded salmon" -> "dark black" [weight=1]
+    "faded salmon" -> "striped salmon" [weight=4]
+    "wavy brown" -> "dark plum" [weight=5]
+    "wavy brown" -> "shiny red" [weight=1]
+    "wavy brown" -> "shiny yellow" [weight=3]
+    "wavy brown" -> "dull purple" [weight=5]
+    "wavy brown" -> "striped indigo" [weight=2]
+    "wavy brown" -> "clear purple" [weight=2]
+    "wavy brown" -> "dim tan" [weight=5]
+    "wavy brown" -> "bright blue" [weight=1]
+    "wavy brown" -> "drab black" [weight=4]
+    "wavy brown" -> "dotted violet" [weight=1]
+    "mirrored plum" -> "dark brown" [weight=5]
+    "plaid teal" -> "vibrant teal" [weight=4]
+    "plaid teal" -> "light brown" [weight=3]
+    "clear yellow" -> "drab white" [weight=1]
+    "clear yellow" -> "dim blue" [weight=2]
+    "clear yellow" -> "mirrored brown" [weight=5]
+    "clear yellow" -> "faded gold" [weight=5]
+    "muted white" -> "striped silver" [weight=3]
+    "muted white" -> "faded gold" [weight=2]
+    "dim olive" -> "plaid teal" [weight=1]
+    "dim olive" -> "dim aqua" [weight=2]
+    "dim olive" -> "plaid plum" [weight=4]
+    "dim olive" -> "vibrant fuchsia" [weight=3]
+    "pale bronze" -> "dotted red" [weight=4]
+    "clear lavender" -> "posh cyan" [weight=2]
+    "clear lavender" -> "mirrored aqua" [weight=2]
+    "clear lavender" -> "mirrored magenta" [weight=2]
+    "clear lavender" -> "dim coral" [weight=3]
+    "clear lavender" -> "shiny teal" [weight=3]
+    "clear lavender" -> "dim fuchsia" [weight=1]
+    "plaid maroon" -> "faded turquoise" [weight=1]
+    "plaid maroon" -> "mirrored lavender" [weight=2]
+    "plaid maroon" -> "faded orange" [weight=3]
+    "plaid maroon" -> "shiny bronze" [weight=1]
+    "plaid maroon" -> "plaid crimson" [weight=2]
+    "plaid maroon" -> "clear yellow" [weight=2]
+    "wavy maroon" -> "drab cyan" [weight=1]
+    "wavy maroon" -> "dim teal" [weight=5]
+    "wavy maroon" -> "striped gray" [weight=5]
+    "dark turquoise" -> "pale red" [weight=2]
+    "bright beige" -> "wavy green" [weight=2]
+    "bright beige" -> "faded black" [weight=2]
+    "mirrored fuchsia" -> "pale chartreuse" [weight=4]
+    "mirrored fuchsia" -> "striped lavender" [weight=5]
+    "mirrored fuchsia" -> "posh tan" [weight=1]
+    "mirrored fuchsia" -> "dark coral" [weight=5]
+    "mirrored lavender" -> "mirrored black" [weight=5]
+    "striped salmon" -> "mirrored orange" [weight=2]
+    "striped salmon" -> "plaid white" [weight=2]
+    "striped salmon" -> "dim silver" [weight=1]
+    "striped salmon" -> "shiny maroon" [weight=3]
+    "striped salmon" -> "dull crimson" [weight=5]
+    "striped salmon" -> "light orange" [weight=2]
+    "posh salmon" -> "dotted gray" [weight=1]
+    "faded purple" -> "striped yellow" [weight=5]
+    "faded purple" -> "faded brown" [weight=3]
+    "faded purple" -> "plaid teal" [weight=2]
+    "faded purple" -> "dull crimson" [weight=3]
+    "faded purple" -> "clear magenta" [weight=3]
+    "faded purple" -> "drab tomato" [weight=2]
+    "dark magenta" -> "mirrored teal" [weight=1]
+    "dark magenta" -> "vibrant fuchsia" [weight=2]
+    "pale chartreuse" -> "posh maroon" [weight=2]
+    "pale chartreuse" -> "mirrored salmon" [weight=1]
+    "pale chartreuse" -> "striped beige" [weight=2]
+    "pale chartreuse" -> "vibrant cyan" [weight=2]
+    "pale chartreuse" -> "plaid crimson" [weight=5]
+    "dotted beige" -> "faded lavender" [weight=2]
+    "dotted beige" -> "vibrant purple" [weight=1]
+    "dotted beige" -> "dim maroon" [weight=1]
+    "dotted beige" -> "bright yellow" [weight=3]
+    "dotted beige" -> "bright indigo" [weight=5]
+    "dotted beige" -> "pale lime" [weight=5]
+    "dotted beige" -> "wavy yellow" [weight=1]
+    "dotted beige" -> "pale purple" [weight=2]
+    "dotted beige" -> "light plum" [weight=2]
+    "dotted beige" -> "plaid crimson" [weight=3]
+    "shiny black" -> "shiny crimson" [weight=3]
+    "shiny black" -> "wavy coral" [weight=1]
+    "shiny black" -> "light lime" [weight=3]
+    "shiny black" -> "shiny orange" [weight=2]
+    "shiny black" -> "light turquoise" [weight=2]
+    "muted coral" -> "dim red" [weight=4]
+    "clear maroon" -> "faded beige" [weight=3]
+    "dull crimson" -> "muted green" [weight=1]
+    "dull crimson" -> "wavy tan" [weight=3]
+    "shiny gray" -> "drab salmon" [weight=1]
+    "shiny gray" -> "vibrant violet" [weight=3]
+    "shiny gray" -> "plaid teal" [weight=4]
+    "shiny gray" -> "mirrored gray" [weight=3]
+    "shiny gray" -> "posh green" [weight=5]
+    "shiny gray" -> "pale crimson" [weight=4]
+    "shiny gray" -> "bright lime" [weight=1]
+    "drab aqua" -> "striped olive" [weight=2]
+    "plaid lime" -> "light maroon" [weight=3]
+    "plaid lime" -> "striped aqua" [weight=2]
+    "plaid lime" -> "wavy lavender" [weight=5]
+    "shiny lavender" -> "dotted red" [weight=3]
+    "light fuchsia" -> "faded gold" [weight=1]
+    "light fuchsia" -> "dim bronze" [weight=3]
+    "faded brown" -> "dim cyan" [weight=2]
+    "dark lavender" -> "dark teal" [weight=4]
+    "dark lavender" -> "dull beige" [weight=2]
+    "dark lavender" -> "posh gold" [weight=2]
+    "dark lavender" -> "faded blue" [weight=1]
+    "light coral" -> "dull teal" [weight=5]
+    "light coral" -> "bright silver" [weight=2]
+    "mirrored beige" -> "mirrored lime" [weight=2]
+    "mirrored beige" -> "vibrant red" [weight=3]
+    "mirrored beige" -> "striped violet" [weight=4]
+    "dotted chartreuse" -> "pale tan" [weight=3]
+    "dotted chartreuse" -> "posh green" [weight=3]
+    "dotted chartreuse" -> "shiny teal" [weight=3]
+    "dotted chartreuse" -> "faded lime" [weight=3]
+    "dull lime" -> "wavy purple" [weight=2]
+    "dull lime" -> "dotted tomato" [weight=1]
+    "dull lime" -> "dark indigo" [weight=1]
+    "dull lime" -> "posh purple" [weight=1]
+    "dull lime" -> "wavy bronze" [weight=4]
+    "dull lime" -> "wavy tomato" [weight=1]
+    "dotted silver" -> "plaid bronze" [weight=2]
+    "dotted silver" -> "striped black" [weight=5]
+    "dotted silver" -> "drab lime" [weight=4]
+    "dotted silver" -> "drab silver" [weight=2]
+    "dotted silver" -> "dotted turquoise" [weight=2]
+    "bright violet" -> "vibrant purple" [weight=2]
+    "bright violet" -> "dark lavender" [weight=3]
+    "bright violet" -> "drab violet" [weight=5]
+    "plaid lavender" -> "dull white" [weight=3]
+    "plaid indigo" -> "clear fuchsia" [weight=3]
+    "plaid indigo" -> "posh crimson" [weight=5]
+    "plaid indigo" -> "shiny fuchsia" [weight=4]
+    "mirrored gold" -> "muted cyan" [weight=5]
+    "mirrored gold" -> "shiny tan" [weight=1]
+    "dim chartreuse" -> "dark gold" [weight=4]
+    "dim chartreuse" -> "bright gold" [weight=5]
+    "dim chartreuse" -> "faded red" [weight=5]
+    "striped indigo" -> "dotted chartreuse" [weight=3]
+    "striped indigo" -> "dim white" [weight=3]
+    "wavy magenta" -> "light lavender" [weight=2]
+    "wavy lavender" -> "bright olive" [weight=2]
+    "wavy lavender" -> "light lime" [weight=5]
+    "drab teal" -> "dull aqua" [weight=3]
+    "dark bronze" -> "bright cyan" [weight=5]
+    "dark bronze" -> "clear red" [weight=3]
+    "dark bronze" -> "muted yellow" [weight=5]
+    "wavy purple" -> "clear maroon" [weight=4]
+    "wavy purple" -> "wavy fuchsia" [weight=5]
+    "wavy purple" -> "dull olive" [weight=5]
+    "light salmon" -> "dull blue" [weight=1]
+    "light salmon" -> "striped cyan" [weight=2]
+    "light salmon" -> "dull red" [weight=1]
+    "posh teal" -> "striped green" [weight=3]
+    "posh teal" -> "dull yellow" [weight=2]
+    "posh teal" -> "clear salmon" [weight=5]
+    "drab lime" -> "dotted gray" [weight=5]
+    "drab lime" -> "shiny silver" [weight=2]
+    "muted black" -> "dim violet" [weight=3]
+    "muted black" -> "bright aqua" [weight=1]
+    "muted black" -> "drab magenta" [weight=4]
+    "muted black" -> "striped red" [weight=2]
+    "muted black" -> "vibrant chartreuse" [weight=1]
+    "muted black" -> "pale green" [weight=1]
+    "bright lavender" -> "dull chartreuse" [weight=2]
+    "bright lavender" -> "shiny tomato" [weight=1]
+    "bright lavender" -> "plaid lavender" [weight=1]
+    "bright lavender" -> "pale lavender" [weight=3]
+    "bright lavender" -> "muted gold" [weight=3]
+    "bright lavender" -> "vibrant yellow" [weight=3]
+    "bright lavender" -> "vibrant turquoise" [weight=5]
+    "bright lavender" -> "muted black" [weight=3]
+    "bright lavender" -> "clear lavender" [weight=2]
+    "vibrant silver" -> "pale blue" [weight=3]
+    "vibrant silver" -> "muted coral" [weight=2]
+    "vibrant silver" -> "vibrant aqua" [weight=5]
+    "vibrant silver" -> "dark cyan" [weight=5]
+    "shiny magenta" -> "posh coral" [weight=4]
+    "shiny magenta" -> "dull indigo" [weight=4]
+    "vibrant lime" -> "muted salmon" [weight=2]
+    "mirrored blue" -> "posh yellow" [weight=5]
+    "dull purple" -> "pale cyan" [weight=2]
+    "dull purple" -> "dark purple" [weight=3]
+    "shiny indigo" -> "clear gray" [weight=4]
+    "shiny indigo" -> "posh aqua" [weight=2]
+    "shiny indigo" -> "mirrored brown" [weight=1]
+    "shiny indigo" -> "mirrored cyan" [weight=5]
+    "shiny indigo" -> "dull green" [weight=1]
+    "shiny indigo" -> "drab black" [weight=4]
+    "shiny indigo" -> "dark red" [weight=3]
+    "shiny indigo" -> "plaid green" [weight=1]
+    "shiny indigo" -> "clear yellow" [weight=5]
+    "drab bronze" -> "plaid salmon" [weight=2]
+    "drab bronze" -> "dim brown" [weight=5]
+    "drab bronze" -> "dull orange" [weight=1]
+    "drab bronze" -> "clear lime" [weight=2]
+    "drab bronze" -> "clear tan" [weight=3]
+    "drab bronze" -> "vibrant blue" [weight=1]
+    "posh silver" -> "muted gold" [weight=3]
+    "posh silver" -> "light turquoise" [weight=2]
+    "posh silver" -> "muted blue" [weight=5]
+    "dotted violet" -> "faded gold" [weight=4]
+    "dotted violet" -> "posh lavender" [weight=2]
+    "faded cyan" -> "dotted chartreuse" [weight=4]
+    "mirrored maroon" -> "bright lavender" [weight=5]
+    "mirrored maroon" -> "light bronze" [weight=5]
+    "mirrored maroon" -> "wavy coral" [weight=3]
+    "mirrored maroon" -> "vibrant silver" [weight=1]
+    "mirrored maroon" -> "drab blue" [weight=2]
+    "mirrored maroon" -> "dark violet" [weight=1]
+    "mirrored maroon" -> "plaid green" [weight=4]
+    "plaid coral" -> "plaid brown" [weight=5]
+    "plaid coral" -> "posh white" [weight=1]
+    "plaid black" -> "drab violet" [weight=2]
+    "dark violet" -> "dull chartreuse" [weight=2]
+    "dark violet" -> "light maroon" [weight=5]
+    "dark violet" -> "dotted crimson" [weight=5]
+    "dark violet" -> "clear tomato" [weight=1]
+    "dark violet" -> "pale gold" [weight=5]
+    "dark violet" -> "drab turquoise" [weight=1]
+    "dim silver" -> "drab cyan" [weight=4]
+    "dim silver" -> "wavy bronze" [weight=2]
+    "dim silver" -> "bright purple" [weight=2]
+    "dim silver" -> "light salmon" [weight=1]
+    "shiny tomato" -> "dotted coral" [weight=4]
+    "shiny tomato" -> "muted orange" [weight=5]
+    "muted lavender" -> "striped purple" [weight=3]
+    "faded orange" -> "pale white" [weight=4]
+    "faded orange" -> "muted orange" [weight=1]
+    "faded orange" -> "faded cyan" [weight=1]
+    "vibrant plum" -> "posh black" [weight=4]
+    "mirrored lime" -> "pale magenta" [weight=2]
+    "light lime" -> "dark lime" [weight=1]
+    "plaid violet" -> "light blue" [weight=2]
+    "dim lavender" -> "striped purple" [weight=3]
+    "light plum" -> "posh coral" [weight=4]
+    "light plum" -> "bright beige" [weight=5]
+    "light plum" -> "shiny crimson" [weight=2]
+    "light plum" -> "posh black" [weight=4]
+    "light plum" -> "dark white" [weight=2]
+    "muted tan" -> "clear magenta" [weight=3]
+    "muted tan" -> "muted purple" [weight=3]
+    "posh green" -> "light crimson" [weight=1]
+    "muted cyan" -> "mirrored chartreuse" [weight=1]
+    "muted cyan" -> "wavy fuchsia" [weight=2]
+    "muted cyan" -> "dim fuchsia" [weight=4]
+    "clear crimson" -> "light magenta" [weight=4]
+    "clear crimson" -> "dark aqua" [weight=5]
+    "clear crimson" -> "dim lavender" [weight=3]
+    "clear crimson" -> "clear coral" [weight=3]
+    "dull plum" -> "posh purple" [weight=2]
+    "dull plum" -> "vibrant gray" [weight=1]
+    "dull plum" -> "drab tan" [weight=3]
+    "dim aqua" -> "plaid violet" [weight=5]
+    "dim aqua" -> "vibrant orange" [weight=5]
+    "dim aqua" -> "light silver" [weight=1]
+    "faded blue" -> "vibrant bronze" [weight=3]
+    "faded blue" -> "muted olive" [weight=4]
+    "faded blue" -> "mirrored cyan" [weight=3]
+    "faded blue" -> "clear beige" [weight=4]
+    "faded blue" -> "wavy silver" [weight=4]
+    "faded blue" -> "vibrant green" [weight=2]
+    "light green" -> "dim olive" [weight=1]
+    "light green" -> "clear gray" [weight=2]
+    "light green" -> "light white" [weight=4]
+    "light green" -> "muted bronze" [weight=3]
+    "light green" -> "pale crimson" [weight=2]
+    "light green" -> "drab bronze" [weight=1]
+    "light green" -> "dark black" [weight=1]
+    "light green" -> "light plum" [weight=4]
+    "light green" -> "dotted aqua" [weight=4]
+    "pale silver" -> "bright magenta" [weight=4]
+    "pale silver" -> "plaid gray" [weight=5]
+    "dotted magenta" -> "dotted olive" [weight=5]
+    "dotted magenta" -> "vibrant turquoise" [weight=4]
+    "mirrored salmon" -> "striped green" [weight=4]
+    "mirrored salmon" -> "mirrored orange" [weight=4]
+    "mirrored salmon" -> "mirrored green" [weight=2]
+    "mirrored salmon" -> "dull coral" [weight=5]
+    "mirrored salmon" -> "drab magenta" [weight=4]
+    "mirrored salmon" -> "mirrored tan" [weight=4]
+    "mirrored salmon" -> "shiny magenta" [weight=1]
+    "mirrored salmon" -> "light lavender" [weight=4]
+    "mirrored salmon" -> "light salmon" [weight=5]
+    "mirrored salmon" -> "pale silver" [weight=5]
+    "drab white" -> "vibrant fuchsia" [weight=2]
+    "drab white" -> "wavy green" [weight=5]
+    "mirrored cyan" -> "dotted turquoise" [weight=4]
+    "bright gray" -> "dark indigo" [weight=1]
+    "bright gray" -> "drab beige" [weight=5]
+    "bright gray" -> "clear yellow" [weight=5]
+    "posh cyan" -> "faded bronze" [weight=5]
+    "posh cyan" -> "bright teal" [weight=1]
+    "dim tan" -> "mirrored tomato" [weight=1]
+    "dim tan" -> "light tomato" [weight=2]
+    "dim tan" -> "dim tomato" [weight=5]
+    "dim tan" -> "drab chartreuse" [weight=5]
+    "dim tan" -> "plaid maroon" [weight=2]
+    "dim tan" -> "muted silver" [weight=2]
+    "dim tan" -> "pale gold" [weight=2]
+    "dim tan" -> "clear beige" [weight=5]
+    "dim tan" -> "light plum" [weight=5]
+    "dim tan" -> "wavy green" [weight=4]
+    "dim tan" -> "faded blue" [weight=2]
+    "dim tan" -> "plaid purple" [weight=2]
+    "pale olive" -> "plaid magenta" [weight=5]
+    "pale olive" -> "clear olive" [weight=2]
+    "pale olive" -> "drab beige" [weight=3]
+    "pale olive" -> "clear yellow" [weight=4]
+    "striped green" -> "dim yellow" [weight=3]
+    "striped green" -> "dotted indigo" [weight=3]
+    "posh fuchsia" -> "wavy fuchsia" [weight=4]
+    "posh fuchsia" -> "dim tan" [weight=5]
+    "posh fuchsia" -> "striped salmon" [weight=4]
+    "posh fuchsia" -> "bright red" [weight=2]
+    "posh fuchsia" -> "dark coral" [weight=4]
+    "wavy crimson" -> "mirrored tomato" [weight=1]
+    "wavy crimson" -> "light aqua" [weight=2]
+    "wavy crimson" -> "dark brown" [weight=1]
 }
