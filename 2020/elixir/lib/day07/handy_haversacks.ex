@@ -71,8 +71,6 @@ defmodule Advent2020.Day7 do
       4
   """
   def p1(inventory) do
-    with {:ok, file} <- Graph.Serializers.DOT.serialize(inventory), do: File.write("#{__DIR__}/graph.dot", file)
-
     target = "shiny gold"
 
     inventory
@@ -82,19 +80,15 @@ defmodule Advent2020.Day7 do
   end
 
   def calc_weight(%{v1: bag, weight: weight}, inventory) do
-    # neighbors = Graph.in_edges(inventory, bag)
-
-    # calc_weight([neighbor|queue], sum + weight, inventory)
-
     neighbors = Graph.in_edges(inventory, bag)
 
     if Enum.empty?(neighbors) do
       weight
     else
       neighbors
-      |> Enum.map(&calc_weight(&1, inventory))
+      |> Enum.map(&calc_weight(&1, inventory) * weight)
       |> Enum.sum
-      |> Kernel.*(weight)
+      |> Kernel.+(1)
     end
   end
 
