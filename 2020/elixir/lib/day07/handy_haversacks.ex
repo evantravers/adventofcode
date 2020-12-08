@@ -86,11 +86,16 @@ defmodule Advent2020.Day7 do
 
     # calc_weight([neighbor|queue], sum + weight, inventory)
 
-    inventory
-    |> Graph.in_edges(bag)
-    |> Enum.map(&calc_weight(&1, inventory))
-    |> Enum.sum
-    |> Kernel.+(weight)
+    neighbors = Graph.in_edges(inventory, bag)
+
+    if Enum.empty?(neighbors) do
+      weight
+    else
+      neighbors
+      |> Enum.map(&calc_weight(&1, inventory))
+      |> Enum.sum
+      |> Kernel.*(weight)
+    end
   end
 
   @doc """
