@@ -61,6 +61,9 @@ defmodule Advent2020.Day8 do
     |> Map.update!(:pointer, & &1 + 1)
   end
 
+  def flip(:nop), do: :jmp
+  def flip(:jmp), do: :nop
+
   @doc """
       iex> "nop +0
       ...>acc +1
@@ -82,5 +85,17 @@ defmodule Advent2020.Day8 do
   end
   def p2(starting_state) do
     starting_state
+    |> Map.get(:instructions)
+    |> Enum.filter(fn({_index, {code, _arg}}) -> code == :jmp || code == :nop end)
+    |> Enum.find_value(fn({index, {op, arg}}) ->
+      flipped = put_in(starting_state, [:instructions, index], {flip(op), arg})
+
+      with {:ok, final} <- execute(flipped) do
+        final
+      else
+        {:infinite, _state} -> false
+      end
+    end)
+    |> Map.get(:accumulator)
   end
 end
