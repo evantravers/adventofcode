@@ -81,5 +81,31 @@ defmodule Advent2020.Day7 do
     |> Enum.count
   end
 
-  def p2(_i), do: nil
+  def calc_weight(%{v1: bag, weight: weight}, inventory) do
+    # neighbors = Graph.in_edges(inventory, bag)
+
+    # calc_weight([neighbor|queue], sum + weight, inventory)
+
+    inventory
+    |> Graph.in_edges(bag)
+    |> Enum.map(&calc_weight(&1, inventory))
+    |> Enum.sum
+    |> Kernel.+(weight)
+  end
+
+  @doc """
+      iex> "light red bags contain 1 bright white bag, 2 muted yellow bags.
+      ...>dark orange bags contain 3 bright white bags, 4 muted yellow bags.
+      ...>bright white bags contain 1 shiny gold bag.
+      ...>muted yellow bags contain 2 shiny gold bags, 9 faded blue bags.
+      ...>shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.
+      ...>dark olive bags contain 3 faded blue bags, 4 dotted black bags.
+      ...>vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.
+      ...>faded blue bags contain no other bags.
+      ...>dotted black bags contain no other bags."
+      ...> |> setup_str
+      ...> |> p2
+      32
+  """
+  def p2(inventory), do: calc_weight(%{v1: "shiny gold", weight: 1}, inventory)
 end

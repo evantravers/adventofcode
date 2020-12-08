@@ -1,0 +1,24 @@
+strict digraph {
+    "bright white"
+    "vibrant plum"
+    "dark olive"
+    "dark orange"
+    "faded blue"
+    "muted yellow"
+    "light red"
+    "dotted black"
+    "shiny gold"
+    "bright white" -> "dark orange" [weight=3]
+    "bright white" -> "light red" [weight=1]
+    "vibrant plum" -> "shiny gold" [weight=2]
+    "dark olive" -> "shiny gold" [weight=1]
+    "faded blue" -> "vibrant plum" [weight=5]
+    "faded blue" -> "dark olive" [weight=3]
+    "faded blue" -> "muted yellow" [weight=9]
+    "muted yellow" -> "dark orange" [weight=4]
+    "muted yellow" -> "light red" [weight=2]
+    "dotted black" -> "vibrant plum" [weight=6]
+    "dotted black" -> "dark olive" [weight=4]
+    "shiny gold" -> "bright white" [weight=1]
+    "shiny gold" -> "muted yellow" [weight=2]
+}
