@@ -24,17 +24,20 @@ defmodule Advent2020.Day8 do
     Map.update(state, :instructions, [instruction], & [instruction|&1])
   end
 
-  def execute(state = %{pointer: pointer,
+  def execute(state = %{
+                        pointer: pointer,
                         instructions: instructions,
-                        visited: visited}) do
-    if Enum.member?(visited, pointer) do
-      state
-    else
-      instructions
-      |> Enum.at(pointer)
-      |> evaluate(state)
-      |> Map.update!(:visited, &MapSet.put(&1, pointer))
-      |> execute
+                        visited: visited
+                      }) do
+    cond do
+      pointer == Enum.count(instructions) + 1 -> {:ok, state}
+      Enum.member?(visited, pointer)  -> {:infinite, state}
+      true ->
+        instructions
+        |> Enum.at(pointer)
+        |> evaluate(state)
+        |> Map.update!(:visited, &MapSet.put(&1, pointer))
+        |> execute
     end
   end
 
@@ -67,9 +70,11 @@ defmodule Advent2020.Day8 do
       5
   """
   def p1(state) do
-    state
-    |> execute
-    |> Map.get(:accumulator)
+    with {:infinite, final} <- execute(state) do
+      Map.get(final, :accumulator)
+    end
   end
-  def p2(_i), do: nil
+  def p2(starting_state) do
+    starting_state
+  end
 end
