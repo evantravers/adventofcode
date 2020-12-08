@@ -117,5 +117,7 @@ defmodule Advent2020.Day7 do
       ...> |> p2
       126
   """
-  def p2(inventory), do: calc_weight(%{v1: "shiny gold", weight: 1}, inventory) - 1
+  def p2(inventory) do
+    calc_weight(%{v1: "shiny gold", weight: 1}, inventory) - 1 # sub 1 for start
+  end
 end
