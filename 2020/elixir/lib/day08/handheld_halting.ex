@@ -9,7 +9,13 @@ defmodule Advent2020.Day8 do
     str
     |> String.split("\n", trim: true)
     |> Enum.reduce(%{}, &parse_instruction/2)
-    |> Map.update!(:instructions, &Enum.reverse(&1))
+    |> Map.update!(:instructions, fn(instructions) ->
+      instructions
+      |> Enum.reverse
+      |> Enum.with_index
+      |> Enum.map(fn({v, k}) -> {k, v} end)
+      |> Map.new
+    end)
     |> Map.put(:pointer, 0)
     |> Map.put(:accumulator, 0)
     |> Map.put(:visited, MapSet.new)
@@ -34,7 +40,7 @@ defmodule Advent2020.Day8 do
       Enum.member?(visited, pointer)  -> {:infinite, state}
       true ->
         instructions
-        |> Enum.at(pointer)
+        |> Map.get(pointer)
         |> evaluate(state)
         |> Map.update!(:visited, &MapSet.put(&1, pointer))
         |> execute
