@@ -8,7 +8,7 @@ defmodule Advent2020.Day7 do
   def setup_str(str) do
     str
     |> String.split("\n", trim: true)
-    |> Enum.reduce(Graph.new, &parse_sentence/2)
+    |> Enum.reduce(Graph.new(), &parse_sentence/2)
   end
 
   @doc """
@@ -18,7 +18,7 @@ defmodule Advent2020.Day7 do
   def parse_bag(str) do
     ~r/(?:(?<num>\d+) )?(?<color>\w+ \w+) bags?/
     |> Regex.named_captures(str)
-    |> Enum.reduce(%{}, fn({k, v}, map) ->
+    |> Enum.reduce(%{}, fn {k, v}, map ->
       if String.length(v) == 0 do
         map
       else
@@ -76,7 +76,7 @@ defmodule Advent2020.Day7 do
     inventory
     |> Graph.reachable([target])
     |> List.delete(target)
-    |> Enum.count
+    |> Enum.count()
   end
 
   def calc_weight(%{v1: bag, weight: weight}, inventory) do
@@ -86,8 +86,8 @@ defmodule Advent2020.Day7 do
       weight
     else
       neighbors
-      |> Enum.map(&calc_weight(&1, inventory) * weight)
-      |> Enum.sum
+      |> Enum.map(&(calc_weight(&1, inventory) * weight))
+      |> Enum.sum()
       |> Kernel.+(weight)
     end
   end
@@ -118,6 +118,7 @@ defmodule Advent2020.Day7 do
       126
   """
   def p2(inventory) do
-    calc_weight(%{v1: "shiny gold", weight: 1}, inventory) - 1 # sub 1 for start
+    # sub 1 for start
+    calc_weight(%{v1: "shiny gold", weight: 1}, inventory) - 1
   end
 end
