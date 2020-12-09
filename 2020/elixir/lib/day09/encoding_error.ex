@@ -24,7 +24,7 @@ defmodule Advent2020.Day9 do
   def find_contiguous(integers, target, visited \\ [])
   def find_contiguous([consider|remaining] = entire, target, visited) do
     cond do
-      Enum.sum(visited) + consider == target -> entire # win
+      Enum.sum(visited) + consider == target -> [consider|visited] # win
       Enum.sum(visited) + consider > target -> # try again with remaining.
         find_contiguous(tl(Enum.reverse(visited) ++ entire), target)
       Enum.sum(visited) + consider < target ->
@@ -39,12 +39,16 @@ defmodule Advent2020.Day9 do
     |> List.last
   end
 
-  def p2(integers) do
-    target = 258585477
-
-    contiguous = find_contiguous(integers, target)
-                 |> IO.inspect
-
-    hd(contiguous) + List.last(contiguous)
+  @doc """
+      iex> [35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576]
+      ...> |> p2(127)
+      62
+  """
+  def p2(integers, target \\ 258585477) do
+    integers
+    |> find_contiguous(target)
+    |> Enum.min_max
+    |> Tuple.to_list
+    |> Enum.sum
   end
 end
