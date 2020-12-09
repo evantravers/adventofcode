@@ -10,10 +10,10 @@ defmodule Advent2020.Day9 do
   end
 
   def valid?(twentysix) do
-    [sum|twentyfive] = Enum.reverse(twentysix)
+    [sum | twentyfive] = Enum.reverse(twentysix)
 
-    Enum.any?(twentyfive, fn(int1) ->
-      Enum.any?(List.delete(twentyfive, int1), fn(int2) ->
+    Enum.any?(twentyfive, fn int1 ->
+      Enum.any?(List.delete(twentyfive, int1), fn int2 ->
         sum == int1 + int2
       end)
     end)
@@ -22,13 +22,17 @@ defmodule Advent2020.Day9 do
   def invalid?(list), do: !valid?(list)
 
   def find_contiguous(integers, target, visited \\ [])
-  def find_contiguous([consider|remaining] = entire, target, visited) do
+
+  def find_contiguous([consider | remaining] = entire, target, visited) do
     cond do
-      Enum.sum(visited) + consider == target -> [consider|visited] # win
-      Enum.sum(visited) + consider > target -> # try again with remaining.
+      Enum.sum(visited) + consider == target ->
+        [consider | visited]
+
+      Enum.sum(visited) + consider > target ->
         find_contiguous(tl(Enum.reverse(visited) ++ entire), target)
+
       Enum.sum(visited) + consider < target ->
-        find_contiguous(remaining, target, [consider|visited]) # hit the dealer
+        find_contiguous(remaining, target, [consider | visited])
     end
   end
 
@@ -36,7 +40,7 @@ defmodule Advent2020.Day9 do
     integers
     |> Enum.chunk_every(26, 1)
     |> Enum.find(&invalid?/1)
-    |> List.last
+    |> List.last()
   end
 
   @doc """
@@ -44,11 +48,11 @@ defmodule Advent2020.Day9 do
       ...> |> p2(127)
       62
   """
-  def p2(integers, target \\ 258585477) do
+  def p2(integers, target \\ 258_585_477) do
     integers
     |> find_contiguous(target)
-    |> Enum.min_max
-    |> Tuple.to_list
-    |> Enum.sum
+    |> Enum.min_max()
+    |> Tuple.to_list()
+    |> Enum.sum()
   end
 end
