@@ -9,7 +9,6 @@ defmodule Advent2020.Day9 do
     end
   end
 
-  def valid?(list) when length(list) < 25, do: true
   def valid?(twentysix) do
     [sum|twentyfive] = Enum.reverse(twentysix)
 
