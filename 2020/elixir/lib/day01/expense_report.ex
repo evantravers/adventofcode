@@ -31,6 +31,7 @@ defmodule Advent2020.Day1 do
   def p2(list_of_ints) do
     for int1 <- list_of_ints,
         int2 <- list_of_ints,
+        int1 + int2 < 2020,
         int3 <- list_of_ints do
       {int1, int2, int3}
     end
