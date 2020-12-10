@@ -5,7 +5,7 @@ defmodule Advent2020.Day10 do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
       # start graph with the outlet
       graph =
-        Graph.new
+        Graph.new()
         |> Graph.add_vertex(0)
 
       adapters =
@@ -56,6 +56,11 @@ defmodule Advent2020.Day10 do
   end
 
   def p2(adapters) do
-
+    components =
+      Graph.new(type: :undirected)
+      |> Graph.add_edges(Graph.edges(adapters))
+      |> Graph.cliques
+      # |> Enum.map(&Enum.count/1)
+      # |> Enum.reduce(1, & &1 * &2)
   end
 end
