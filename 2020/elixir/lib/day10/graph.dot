@@ -1,0 +1,265 @@
+strict digraph {
+    53
+    26
+    115
+    85
+    33
+    96
+    1
+    80
+    62
+    11
+    134
+    147
+    110
+    71
+    6
+    2
+    23
+    58
+    20
+    151
+    136
+    107
+    61
+    126
+    52
+    72
+    158
+    48
+    84
+    116
+    49
+    29
+    98
+    73
+    16
+    55
+    43
+    12
+    123
+    9
+    154
+    54
+    63
+    36
+    15
+    104
+    92
+    87
+    27
+    133
+    139
+    46
+    67
+    88
+    146
+    68
+    77
+    117
+    114
+    79
+    34
+    132
+    101
+    81
+    0
+    47
+    10
+    74
+    42
+    102
+    156
+    135
+    78
+    91
+    120
+    28
+    3
+    39
+    161
+    40
+    64
+    103
+    17
+    155
+    97
+    148
+    145
+    108
+    35
+    30
+    111
+    129
+    109
+    157
+    86
+    93
+    41
+    142
+    53 -> 52 [label="{:difference, 1}"; weight=1]
+    26 -> 23 [label="{:difference, 3}"; weight=1]
+    115 -> 114 [label="{:difference, 1}"; weight=1]
+    85 -> 84 [label="{:difference, 1}"; weight=1]
+    33 -> 30 [label="{:difference, 3}"; weight=1]
+    96 -> 93 [label="{:difference, 3}"; weight=1]
+    1 -> 0 [label="{:difference, 1}"; weight=1]
+    80 -> 78 [label="{:difference, 2}"; weight=1]
+    80 -> 77 [label="{:difference, 3}"; weight=1]
+    80 -> 79 [label="{:difference, 1}"; weight=1]
+    62 -> 61 [label="{:difference, 1}"; weight=1]
+    11 -> 9 [label="{:difference, 2}"; weight=1]
+    11 -> 10 [label="{:difference, 1}"; weight=1]
+    134 -> 133 [label="{:difference, 1}"; weight=1]
+    134 -> 132 [label="{:difference, 2}"; weight=1]
+    147 -> 145 [label="{:difference, 2}"; weight=1]
+    147 -> 146 [label="{:difference, 1}"; weight=1]
+    110 -> 108 [label="{:difference, 2}"; weight=1]
+    110 -> 107 [label="{:difference, 3}"; weight=1]
+    110 -> 109 [label="{:difference, 1}"; weight=1]
+    71 -> 68 [label="{:difference, 3}"; weight=1]
+    6 -> 3 [label="{:difference, 3}"; weight=1]
+    2 -> 1 [label="{:difference, 1}"; weight=1]
+    2 -> 0 [label="{:difference, 2}"; weight=1]
+    23 -> 20 [label="{:difference, 3}"; weight=1]
+    58 -> 55 [label="{:difference, 3}"; weight=1]
+    20 -> 17 [label="{:difference, 3}"; weight=1]
+    151 -> 148 [label="{:difference, 3}"; weight=1]
+    136 -> 134 [label="{:difference, 2}"; weight=1]
+    136 -> 133 [label="{:difference, 3}"; weight=1]
+    136 -> 135 [label="{:difference, 1}"; weight=1]
+    107 -> 104 [label="{:difference, 3}"; weight=1]
+    61 -> 58 [label="{:difference, 3}"; weight=1]
+    126 -> 123 [label="{:difference, 3}"; weight=1]
+    52 -> 49 [label="{:difference, 3}"; weight=1]
+    72 -> 71 [label="{:difference, 1}"; weight=1]
+    158 -> 157 [label="{:difference, 1}"; weight=1]
+    158 -> 156 [label="{:difference, 2}"; weight=1]
+    158 -> 155 [label="{:difference, 3}"; weight=1]
+    48 -> 46 [label="{:difference, 2}"; weight=1]
+    48 -> 47 [label="{:difference, 1}"; weight=1]
+    84 -> 81 [label="{:difference, 3}"; weight=1]
+    116 -> 114 [label="{:difference, 2}"; weight=1]
+    116 -> 115 [label="{:difference, 1}"; weight=1]
+    49 -> 48 [label="{:difference, 1}"; weight=1]
+    49 -> 46 [label="{:difference, 3}"; weight=1]
+    49 -> 47 [label="{:difference, 2}"; weight=1]
+    29 -> 28 [label="{:difference, 1}"; weight=1]
+    29 -> 26 [label="{:difference, 3}"; weight=1]
+    29 -> 27 [label="{:difference, 2}"; weight=1]
+    98 -> 97 [label="{:difference, 1}"; weight=1]
+    98 -> 96 [label="{:difference, 2}"; weight=1]
+    73 -> 71 [label="{:difference, 2}"; weight=1]
+    73 -> 72 [label="{:difference, 1}"; weight=1]
+    16 -> 15 [label="{:difference, 1}"; weight=1]
+    55 -> 54 [label="{:difference, 1}"; weight=1]
+    55 -> 52 [label="{:difference, 3}"; weight=1]
+    55 -> 53 [label="{:difference, 2}"; weight=1]
+    43 -> 40 [label="{:difference, 3}"; weight=1]
+    43 -> 42 [label="{:difference, 1}"; weight=1]
+    43 -> 41 [label="{:difference, 2}"; weight=1]
+    12 -> 9 [label="{:difference, 3}"; weight=1]
+    12 -> 10 [label="{:difference, 2}"; weight=1]
+    12 -> 11 [label="{:difference, 1}"; weight=1]
+    123 -> 120 [label="{:difference, 3}"; weight=1]
+    9 -> 6 [label="{:difference, 3}"; weight=1]
+    154 -> 151 [label="{:difference, 3}"; weight=1]
+    54 -> 52 [label="{:difference, 2}"; weight=1]
+    54 -> 53 [label="{:difference, 1}"; weight=1]
+    63 -> 62 [label="{:difference, 1}"; weight=1]
+    63 -> 61 [label="{:difference, 2}"; weight=1]
+    36 -> 33 [label="{:difference, 3}"; weight=1]
+    36 -> 34 [label="{:difference, 2}"; weight=1]
+    36 -> 35 [label="{:difference, 1}"; weight=1]
+    15 -> 12 [label="{:difference, 3}"; weight=1]
+    104 -> 103 [label="{:difference, 1}"; weight=1]
+    104 -> 102 [label="{:difference, 2}"; weight=1]
+    104 -> 101 [label="{:difference, 3}"; weight=1]
+    92 -> 91 [label="{:difference, 1}"; weight=1]
+    87 -> 85 [label="{:difference, 2}"; weight=1]
+    87 -> 86 [label="{:difference, 1}"; weight=1]
+    87 -> 84 [label="{:difference, 3}"; weight=1]
+    27 -> 26 [label="{:difference, 1}"; weight=1]
+    133 -> 132 [label="{:difference, 1}"; weight=1]
+    139 -> 136 [label="{:difference, 3}"; weight=1]
+    46 -> 43 [label="{:difference, 3}"; weight=1]
+    67 -> 64 [label="{:difference, 3}"; weight=1]
+    88 -> 85 [label="{:difference, 3}"; weight=1]
+    88 -> 86 [label="{:difference, 2}"; weight=1]
+    88 -> 87 [label="{:difference, 1}"; weight=1]
+    146 -> 145 [label="{:difference, 1}"; weight=1]
+    68 -> 67 [label="{:difference, 1}"; weight=1]
+    77 -> 74 [label="{:difference, 3}"; weight=1]
+    117 -> 114 [label="{:difference, 3}"; weight=1]
+    117 -> 116 [label="{:difference, 1}"; weight=1]
+    117 -> 115 [label="{:difference, 2}"; weight=1]
+    114 -> 111 [label="{:difference, 3}"; weight=1]
+    79 -> 78 [label="{:difference, 1}"; weight=1]
+    79 -> 77 [label="{:difference, 2}"; weight=1]
+    34 -> 33 [label="{:difference, 1}"; weight=1]
+    132 -> 129 [label="{:difference, 3}"; weight=1]
+    101 -> 98 [label="{:difference, 3}"; weight=1]
+    81 -> 78 [label="{:difference, 3}"; weight=1]
+    81 -> 80 [label="{:difference, 1}"; weight=1]
+    81 -> 79 [label="{:difference, 2}"; weight=1]
+    47 -> 46 [label="{:difference, 1}"; weight=1]
+    10 -> 9 [label="{:difference, 1}"; weight=1]
+    74 -> 73 [label="{:difference, 1}"; weight=1]
+    74 -> 71 [label="{:difference, 3}"; weight=1]
+    74 -> 72 [label="{:difference, 2}"; weight=1]
+    42 -> 40 [label="{:difference, 2}"; weight=1]
+    42 -> 39 [label="{:difference, 3}"; weight=1]
+    42 -> 41 [label="{:difference, 1}"; weight=1]
+    102 -> 101 [label="{:difference, 1}"; weight=1]
+    156 -> 154 [label="{:difference, 2}"; weight=1]
+    156 -> 155 [label="{:difference, 1}"; weight=1]
+    135 -> 134 [label="{:difference, 1}"; weight=1]
+    135 -> 133 [label="{:difference, 2}"; weight=1]
+    135 -> 132 [label="{:difference, 3}"; weight=1]
+    78 -> 77 [label="{:difference, 1}"; weight=1]
+    91 -> 88 [label="{:difference, 3}"; weight=1]
+    120 -> 117 [label="{:difference, 3}"; weight=1]
+    28 -> 26 [label="{:difference, 2}"; weight=1]
+    28 -> 27 [label="{:difference, 1}"; weight=1]
+    3 -> 1 [label="{:difference, 2}"; weight=1]
+    3 -> 2 [label="{:difference, 1}"; weight=1]
+    3 -> 0 [label="{:difference, 3}"; weight=1]
+    39 -> 36 [label="{:difference, 3}"; weight=1]
+    161 -> 158 [label="{:difference, 3}"; weight=1]
+    40 -> 39 [label="{:difference, 1}"; weight=1]
+    64 -> 62 [label="{:difference, 2}"; weight=1]
+    64 -> 63 [label="{:difference, 1}"; weight=1]
+    64 -> 61 [label="{:difference, 3}"; weight=1]
+    103 -> 102 [label="{:difference, 1}"; weight=1]
+    103 -> 101 [label="{:difference, 2}"; weight=1]
+    17 -> 15 [label="{:difference, 2}"; weight=1]
+    17 -> 16 [label="{:difference, 1}"; weight=1]
+    155 -> 154 [label="{:difference, 1}"; weight=1]
+    97 -> 96 [label="{:difference, 1}"; weight=1]
+    148 -> 145 [label="{:difference, 3}"; weight=1]
+    148 -> 146 [label="{:difference, 2}"; weight=1]
+    148 -> 147 [label="{:difference, 1}"; weight=1]
+    145 -> 142 [label="{:difference, 3}"; weight=1]
+    108 -> 107 [label="{:difference, 1}"; weight=1]
+    35 -> 33 [label="{:difference, 2}"; weight=1]
+    35 -> 34 [label="{:difference, 1}"; weight=1]
+    30 -> 28 [label="{:difference, 2}"; weight=1]
+    30 -> 27 [label="{:difference, 3}"; weight=1]
+    30 -> 29 [label="{:difference, 1}"; weight=1]
+    111 -> 110 [label="{:difference, 1}"; weight=1]
+    111 -> 108 [label="{:difference, 3}"; weight=1]
+    111 -> 109 [label="{:difference, 2}"; weight=1]
+    129 -> 126 [label="{:difference, 3}"; weight=1]
+    109 -> 108 [label="{:difference, 1}"; weight=1]
+    109 -> 107 [label="{:difference, 2}"; weight=1]
+    157 -> 154 [label="{:difference, 3}"; weight=1]
+    157 -> 156 [label="{:difference, 1}"; weight=1]
+    157 -> 155 [label="{:difference, 2}"; weight=1]
+    86 -> 85 [label="{:difference, 1}"; weight=1]
+    86 -> 84 [label="{:difference, 2}"; weight=1]
+    93 -> 91 [label="{:difference, 2}"; weight=1]
+    93 -> 92 [label="{:difference, 1}"; weight=1]
+    41 -> 40 [label="{:difference, 1}"; weight=1]
+    41 -> 39 [label="{:difference, 2}"; weight=1]
+    142 -> 139 [label="{:difference, 3}"; weight=1]
+}

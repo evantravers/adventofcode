@@ -3,17 +3,22 @@ defmodule Advent2020.Day10 do
 
   def setup do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
+      # start graph with the outlet
+      graph =
+        Graph.new
+        |> Graph.add_vertex(0)
+
       file
       |> String.split("\n", trim: true)
       |> Enum.map(&String.to_integer/1)
       |> Enum.sort
-      |> Enum.reduce(Graph.new, &parse_adapter/2)
+      |> Enum.reduce(graph, &parse_adapter/2)
     end
   end
 
   def possible_adapters(graph, joltage) do
     for jolt <- (joltage - 3)..joltage, Graph.has_vertex?(graph, jolt) do
-      {joltage, jolt}
+      {jolt, joltage, label: {:difference, joltage - jolt}}
     end
   end
 
@@ -24,15 +29,28 @@ defmodule Advent2020.Day10 do
   end
 
   def p1(adapters) do
-    outlet = %{output: 0}
-
     device_adapter_joltage =
       adapters
-      |> Enum.map(&Map.get(&1, :output))
+      |> Graph.vertices
       |> Enum.max
       |> Kernel.+(3)
 
-    device = %{input: device_adapter_joltage}
+    ordering =
+      device_adapter_joltage
+      |> parse_adapter(adapters)
+      |> Graph.topsort
+
+    score =
+      Enum.reduce(ordering, %{ones: 0, threes: 0, last: 0}, fn(num, score) ->
+        case num - Map.get(score, :last) do
+          1 -> Map.update!(score, :ones, & &1 + 1)
+          3 -> Map.update!(score, :threes, & &1 + 1)
+          _ -> score
+        end
+        |> Map.put(:last, num)
+      end)
+
+    Map.get(score, :ones) * Map.get(score, :threes)
   end
 
   def p2(_i), do: nil
