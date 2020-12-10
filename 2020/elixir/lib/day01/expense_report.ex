@@ -31,10 +31,8 @@ defmodule Advent2020.Day1 do
   def p2(list_of_ints) do
     for int1 <- list_of_ints,
         int2 <- list_of_ints,
-        int3 <- list_of_ints,
         int1 + int2 < 2020,
-        int2 + int3 < 2020,
-        int1 + int3 < 2020 do
+        int3 <- list_of_ints do
       {int1, int2, int3}
     end
     |> Enum.find(fn({int1, int2, int3}) -> int1 + int2 + int3 == 2020 end)
