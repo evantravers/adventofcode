@@ -8,11 +8,21 @@ defmodule Advent2020.Day10 do
         Graph.new
         |> Graph.add_vertex(0)
 
-      file
-      |> String.split("\n", trim: true)
-      |> Enum.map(&String.to_integer/1)
-      |> Enum.sort
-      |> Enum.reduce(graph, &parse_adapter/2)
+      adapters =
+        file
+        |> String.split("\n", trim: true)
+        |> Enum.map(&String.to_integer/1)
+        |> Enum.sort
+        |> Enum.reduce(graph, &parse_adapter/2)
+
+      device_adapter_joltage =
+        adapters
+        |> Graph.vertices
+        |> Enum.max
+        |> Kernel.+(3)
+
+      # add the device at the end
+      parse_adapter(device_adapter_joltage, adapters)
     end
   end
 
@@ -29,16 +39,8 @@ defmodule Advent2020.Day10 do
   end
 
   def p1(adapters) do
-    device_adapter_joltage =
-      adapters
-      |> Graph.vertices
-      |> Enum.max
-      |> Kernel.+(3)
-
     ordering =
-      device_adapter_joltage
-      |> parse_adapter(adapters)
-      |> Graph.topsort
+      Graph.topsort(adapters)
 
     score =
       Enum.reduce(ordering, %{ones: 0, threes: 0, last: 0}, fn(num, score) ->
@@ -53,5 +55,7 @@ defmodule Advent2020.Day10 do
     Map.get(score, :ones) * Map.get(score, :threes)
   end
 
-  def p2(_i), do: nil
+  def p2(adapters) do
+
+  end
 end
