@@ -67,7 +67,6 @@ defmodule Mix.Tasks.Day do
           ----------------------------
           """
         )
-
       end)
       IO.puts timestring(total_time)
     end
