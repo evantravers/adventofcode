@@ -69,6 +69,7 @@ defmodule Advent2020.Day11 do
   """
   def next_round(map) do
     map
+    |>print
     |> Map.keys
     |> Enum.map(&{&1, next_state(map, &1)})
     |> Enum.into(%{})
@@ -76,6 +77,28 @@ defmodule Advent2020.Day11 do
 
   def adjacent_values(map, {x, y}) do
     for adj_x <- (x - 1)..(x + 1), adj_y <- (y - 1)..(y + 1), do: Map.get(map, {adj_x, adj_y})
+  end
+
+  def print(map) do
+    IO.puts("")
+
+    for y <- 0..10 do
+      for x <- 0..10 do
+        map
+        |> Map.get({x, y})
+        |> (fn
+          (:empty) -> "L"
+          (:occupied) -> "#"
+          (_) -> "."
+        end).()
+      end
+      |> Enum.join("")
+      |> IO.puts
+    end
+
+    IO.puts("")
+
+    map
   end
 
   @doc """
