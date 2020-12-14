@@ -39,44 +39,30 @@ defmodule Advent2020.Day11 do
   end
 
   @doc """
-  - If a seat is empty (L) and there are no occupied seats adjacent to it, the
-    seat becomes occupied.
-  - If a seat is occupied (#) and four or more seats adjacent to it are also
-    occupied, the seat becomes empty.  Otherwise, the seat's state does not
-    change.
   """
-  def next_state(map, {x, y}) do
-    case Map.get(map, {x, y}) do
-      :empty ->
-        if all_adjacent_empty?(map, {x, y}) do
-          :occupied
+  def next_round(prev_map) do
+    prev_map
+    |> Enum.reduce(%{}, fn
+      ({coord, :empty}, next_map) ->
+        if all_adjacent_empty?(prev_map, coord) do
+          Map.put(next_map, coord, :occupied)
         else
-          :empty
+          Map.put(next_map, coord, :empty)
         end
-
-      :occupied ->
-        if four_or_more_occupied?(map, {x, y}) do
-          :empty
+      ({coord, :occupied}, next_map) ->
+        if four_or_more_occupied?(prev_map, coord) do
+          Map.put(next_map, coord, :empty)
         else
-          :occupied
+          Map.put(next_map, coord, :occupied)
         end
-    end
-  end
-
-  @doc """
-  FIXME: Pretty sure that making maps all day like this is _thrashing_
-         memory... but it makes adjacent lookup a lot cheaper.
-  """
-  def next_round(map) do
-    map
-    |>print
-    |> Map.keys
-    |> Enum.map(&{&1, next_state(map, &1)})
-    |> Enum.into(%{})
+    end)
   end
 
   def adjacent_values(map, {x, y}) do
-    for adj_x <- (x - 1)..(x + 1), adj_y <- (y - 1)..(y + 1), do: Map.get(map, {adj_x, adj_y})
+    for adj_x <- (x - 1)..(x + 1), adj_y <- (y - 1)..(y + 1) do
+      Map.get(map, {adj_x, adj_y})
+    end
+    |> Enum.reject(&is_nil/1)
   end
 
   def print(map) do
