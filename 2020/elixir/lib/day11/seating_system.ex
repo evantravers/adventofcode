@@ -4,20 +4,24 @@ defmodule Advent2020.Day11 do
 
   def setup do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
-      file
-      |> String.split("\n", trim: true)
-      |> Enum.with_index()
-      |> Enum.reduce(%{}, fn {str, y}, map ->
-        str
-        |> String.graphemes()
-        |> Enum.with_index()
-        |> Enum.reduce(map, fn
-          {"L", x}, map -> Map.put(map, {x, y}, :empty)
-          {"#", x}, map -> Map.put(map, {x, y}, :occupied)
-          {".", _x}, map -> map # no-op
-        end)
-      end)
+      setup_str(file)
     end
+  end
+
+  def setup_str(source) do
+    source
+    |> String.split("\n", trim: true)
+    |> Enum.with_index()
+    |> Enum.reduce(%{}, fn {str, y}, map ->
+      str
+      |> String.graphemes()
+      |> Enum.with_index()
+      |> Enum.reduce(map, fn
+        {"L", x}, map -> Map.put(map, {x, y}, :empty)
+        {"#", x}, map -> Map.put(map, {x, y}, :occupied)
+        {".", _x}, map -> map # no-op
+      end)
+    end)
   end
 
   def all_adjacent_empty?(map, {x, y}) do
@@ -59,6 +63,10 @@ defmodule Advent2020.Day11 do
     end
   end
 
+  @doc """
+  FIXME: Pretty sure that making maps all day like this is _thrashing_
+         memory... but it makes adjacent lookup a lot cheaper.
+  """
   def next_round(map) do
     map
     |> Map.keys
@@ -70,6 +78,21 @@ defmodule Advent2020.Day11 do
     for adj_x <- (x - 1)..(x + 1), adj_y <- (y - 1)..(y + 1), do: Map.get(map, {adj_x, adj_y})
   end
 
+  @doc """
+      iex> "L.LL.LL.LL
+      ...>LLLLLLL.LL
+      ...>L.L.L..L..
+      ...>LLLL.LL.LL
+      ...>L.LL.LL.LL
+      ...>L.LLLLL.LL
+      ...>..L.L.....
+      ...>LLLLLLLLLL
+      ...>L.LLLLLL.L
+      ...>L.LLLLL.LL"
+      ...> |> setup_str
+      ...> |> p1
+      37
+  """
   def p1(seating) do
     next = next_round(seating)
 
