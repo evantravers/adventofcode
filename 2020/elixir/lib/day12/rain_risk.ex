@@ -29,8 +29,8 @@ defmodule Advent2020.Day12 do
   @doc """
   we are handling angles
   """
-  def deg(0), do: 0
-  def deg(num), do: rem(360, num)
+  def deg(num) when num < 0, do: 360 - abs(num)
+  def deg(num), do: rem(num, 360)
 
   def execute({:N, amount}, %{y: y} = ship), do: %{ship | y: y + amount}
   def execute({:S, amount}, %{y: y} = ship), do: %{ship | y: y - amount}
@@ -55,7 +55,7 @@ defmodule Advent2020.Day12 do
       instructions
       |> Enum.reduce(ship, &execute/2)
 
-    Map.get(final, :x) + Map.get(final, :y)
+    abs(Map.get(final, :x)) + abs(Map.get(final, :y))
   end
 
   def p2(_state), do: nil
