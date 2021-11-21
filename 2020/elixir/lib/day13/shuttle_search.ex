@@ -44,5 +44,23 @@ defmodule Advent2020.Day13 do
     Map.get(winner, :bus) * (Map.get(winner, :first) - timestamp)
   end
 
-  def p2(_input), do: nil
+  @doc """
+  I've been thinking about this one a lot, and I think I want to have each
+  "bus" build a generator of an series... then I could theoretically ask the
+  series generators which set of numbers satisfies the order.
+
+      iex> "939
+      ...>7,13,x,x,59,x,31,19"
+      ...> |> setup_string
+      ...> |> p2
+      1068781
+  """
+  def p2(%{buses: buses}) do
+    buses
+    |> Enum.map(fn
+      {"x", _index} -> nil
+      {bus, index} ->
+        # gosh I love pattern matching
+    end)
+  end
 end
