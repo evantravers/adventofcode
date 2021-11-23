@@ -56,11 +56,17 @@ defmodule Advent2020.Day13 do
       1068781
   """
   def p2(%{buses: buses}) do
-    buses
-    |> Enum.map(fn
-      {"x", _index} -> nil
-      {bus, index} ->
-        # gosh I love pattern matching
+    working =
+      buses
+      |> Enum.reject(& elem(&1, 0) == "x" )
+      |> Enum.map(fn{b, offset} -> {String.to_integer(b), offset} end)
+
+    options = 0..9999999
+
+    Enum.find(options, fn(option) ->
+      Enum.all?(working, fn({bus, offset}) ->
+        rem(option + offset, bus) == 0
+      end)
     end)
   end
 end
