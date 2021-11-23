@@ -58,14 +58,16 @@ defmodule Advent2020.Day12 do
     abs(Map.get(final, :x)) + abs(Map.get(final, :y))
   end
 
+  def neg(n), do: n * -1
+
   def point({:N, amount}, %{py: y} = ship), do: %{ship | py: y + amount}
   def point({:S, amount}, %{py: y} = ship), do: %{ship | py: y - amount}
   def point({:E, amount}, %{px: x} = ship), do: %{ship | px: x + amount}
   def point({:W, amount}, %{px: x} = ship), do: %{ship | px: x - amount}
-  def point({:L, 90}, %{px: x, py: y} = ship), do: %{ship | py: -1 * x, px: y}
-  def point({:R, 90}, %{px: x, py: y} = ship), do: %{ship | py: x, px: -1 * y}
-  def point({:L, 180}, %{px: x, py: y} = ship), do: %{ship | py: -1 * y, px: -1 * x}
-  def point({:R, 180}, %{px: x, py: y} = ship), do: %{ship | py: -1 * y, px: -1 * x}
+  def point({:L, 90}, %{px: x, py: y} = ship), do: %{ship | px: neg(y), py: x}
+  def point({:R, 90}, %{px: x, py: y} = ship), do: %{ship | px: y, py: neg(x)}
+  def point({:L, 180}, %{px: x, py: y} = ship), do: %{ship | py: neg(y), px: neg(x)}
+  def point({:R, 180}, %{px: x, py: y} = ship), do: %{ship | py: neg(y), px: neg(x)}
   def point({:L, 270}, %{px: x, py: y} = ship), do: point({:R, 90}, ship)
   def point({:R, 270}, %{px: x, py: y} = ship), do: point({:L, 90}, ship)
   def point({:F, 0}, ship), do: ship
