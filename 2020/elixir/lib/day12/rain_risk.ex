@@ -62,14 +62,27 @@ defmodule Advent2020.Day12 do
   def point({:S, amount}, %{py: y} = ship), do: %{ship | py: y - amount}
   def point({:E, amount}, %{px: x} = ship), do: %{ship | px: x + amount}
   def point({:W, amount}, %{px: x} = ship), do: %{ship | px: x - amount}
-  def point({:L, deg}, %{px: x, py: y} = ship), do: ship
-  def point({:R, deg}, %{px: x, py: y} = ship), do: ship
+  def point({:L, 90}, %{px: x, py: y} = ship), do: %{ship | py: -1 * x, px: y}
+  def point({:L, 180}, %{px: x, py: y} = ship), do: %{ship | py: -1 * y, px: -1 * x}
+  def point({:L, 270}, %{px: x, py: y} = ship), do: point({:R, 90}, ship)
+  def point({:R, 90}, %{px: x, py: y} = ship), do: %{ship | py: x, px: -1 * y}
+  def point({:R, 180}, %{px: x, py: y} = ship), do: %{ship | py: -1 * x, px: -1 * x}
+  def point({:R, 270}, %{px: x, py: y} = ship), do: point({:L, 90}, ship)
+  def point({:F, 0}, ship), do: ship
   def point({:F, amount}, ship) do
-    ship
-    |> Map.update!(:x, & &1 + Map.get(ship, :px))
-    |> Map.update!(:y, & &1 + Map.get(ship, :py))
+    point(
+      {:F, amount - 1},
+      ship
+      |> Map.update!(:x, & &1 + Map.get(ship, :px))
+      |> Map.update!(:y, & &1 + Map.get(ship, :py))
+    )
   end
 
+  @doc """
+      iex> [{:F, 10}, {:N, 3}, {:F, 7}, {:R, 90}, {:F, 11}]
+      ...> |> p2
+      286
+  """
   def p2(instructions) do
     ship = %{x: 0, y: 0, px: -10, py: 1}
 
