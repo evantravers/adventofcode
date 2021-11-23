@@ -54,6 +54,24 @@ defmodule Advent2020.Day13 do
       ...> |> setup_string
       ...> |> p2
       1068781
+
+      iex> "939
+      ...>67,7,59,61"
+      ...> |> setup_string
+      ...> |> p2
+      754018
+
+      iex> "939
+      ...>67,x,7,59,61"
+      ...> |> setup_string
+      ...> |> p2
+      779210
+
+      iex> "939
+      ...>67,7,x,59,61"
+      ...> |> setup_string
+      ...> |> p2
+      1261476
   """
   def p2(%{buses: buses}) do
     working =
