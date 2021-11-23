@@ -86,7 +86,7 @@ defmodule Advent2020.Day12 do
       286
   """
   def p2(instructions) do
-    ship = %{x: 0, y: 0, px: -10, py: 1}
+    ship = %{x: 0, y: 0, px: 10, py: 1}
 
     final =
       instructions
