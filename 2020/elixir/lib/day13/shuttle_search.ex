@@ -44,6 +44,16 @@ defmodule Advent2020.Day13 do
     Map.get(winner, :bus) * (Map.get(winner, :first) - timestamp)
   end
 
+  # After reading wikipedia, I finally understood this gorgeous code:
+  # https://github.com/h-j-k/advent20/blob/master/lib/advent_of_code/day13.ex
+  def sieve({bus, offset}, {start, step}) do
+    if rem(start + offset, bus) == 0 do
+      {start, (&(div(&1 * &2, Integer.gcd(&1, &2)))).(bus, step)}
+    else
+      sieve({bus,offset}, {start + step, step})
+    end
+  end
+
   @doc """
   I've been thinking about this one a lot, and I think I want to have each
   "bus" build a generator of an series... then I could theoretically ask the
@@ -74,17 +84,10 @@ defmodule Advent2020.Day13 do
       1261476
   """
   def p2(%{buses: buses}) do
-    working =
-      buses
-      |> Enum.reject(& elem(&1, 0) == "x" )
-      |> Enum.map(fn{b, offset} -> {String.to_integer(b), offset} end)
-
-    options = 0..9999999
-
-    Enum.find(options, fn(option) ->
-      Enum.all?(working, fn({bus, offset}) ->
-        rem(option + offset, bus) == 0
-      end)
-    end)
+    buses
+    |> Enum.reject(& elem(&1, 0) == "x" )
+    |> Enum.map(fn{b, offset} -> {String.to_integer(b), offset} end)
+    |> Enum.reduce({0, 1}, &sieve/2)
+    |> elem(0)
   end
 end
