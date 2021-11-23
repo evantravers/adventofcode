@@ -32,16 +32,16 @@ defmodule Advent2020.Day12 do
   def deg(num) when num < 0, do: 360 - abs(num)
   def deg(num), do: rem(num, 360)
 
-  def execute({:N, amount}, %{y: y} = ship), do: %{ship | y: y + amount}
-  def execute({:S, amount}, %{y: y} = ship), do: %{ship | y: y - amount}
-  def execute({:E, amount}, %{x: x} = ship), do: %{ship | x: x + amount}
-  def execute({:W, amount}, %{x: x} = ship), do: %{ship | x: x - amount}
-  def execute({:L, amount}, %{head: head} = ship), do: %{ship | head: deg(head - amount)}
-  def execute({:R, amount}, %{head: head} = ship), do: %{ship | head: deg(head + amount)}
-  def execute({:F, amount}, %{head: 0} = ship), do: execute({:N, amount}, ship)
-  def execute({:F, amount}, %{head: 90} = ship), do: execute({:E, amount}, ship)
-  def execute({:F, amount}, %{head: 180} = ship), do: execute({:S, amount}, ship)
-  def execute({:F, amount}, %{head: 270} = ship), do: execute({:W, amount}, ship)
+  def ship({:N, amount}, %{y: y} = ship), do: %{ship | y: y + amount}
+  def ship({:S, amount}, %{y: y} = ship), do: %{ship | y: y - amount}
+  def ship({:E, amount}, %{x: x} = ship), do: %{ship | x: x + amount}
+  def ship({:W, amount}, %{x: x} = ship), do: %{ship | x: x - amount}
+  def ship({:L, amount}, %{head: head} = ship), do: %{ship | head: deg(head - amount)}
+  def ship({:R, amount}, %{head: head} = ship), do: %{ship | head: deg(head + amount)}
+  def ship({:F, amount}, %{head: 0} = ship), do: ship({:N, amount}, ship)
+  def ship({:F, amount}, %{head: 90} = ship), do: ship({:E, amount}, ship)
+  def ship({:F, amount}, %{head: 180} = ship), do: ship({:S, amount}, ship)
+  def ship({:F, amount}, %{head: 270} = ship), do: ship({:W, amount}, ship)
 
   @doc """
       iex> [{:F, 10}, {:N, 3}, {:F, 7}, {:R, 90}, {:F, 11}]
@@ -53,10 +53,30 @@ defmodule Advent2020.Day12 do
 
     final =
       instructions
-      |> Enum.reduce(ship, &execute/2)
+      |> Enum.reduce(ship, &ship/2)
 
     abs(Map.get(final, :x)) + abs(Map.get(final, :y))
   end
 
-  def p2(_state), do: nil
+  def point({:N, amount}, %{py: y} = ship), do: %{ship | py: y + amount}
+  def point({:S, amount}, %{py: y} = ship), do: %{ship | py: y - amount}
+  def point({:E, amount}, %{px: x} = ship), do: %{ship | px: x + amount}
+  def point({:W, amount}, %{px: x} = ship), do: %{ship | px: x - amount}
+  def point({:L, deg}, %{px: x, py: y} = ship), do: ship
+  def point({:R, deg}, %{px: x, py: y} = ship), do: ship
+  def point({:F, amount}, ship) do
+    ship
+    |> Map.update!(:x, & &1 + Map.get(ship, :px))
+    |> Map.update!(:y, & &1 + Map.get(ship, :py))
+  end
+
+  def p2(instructions) do
+    ship = %{x: 0, y: 0, px: -10, py: 1}
+
+    final =
+      instructions
+      |> Enum.reduce(ship, &point/2)
+
+    abs(Map.get(final, :x)) + abs(Map.get(final, :y))
+  end
 end
