@@ -33,6 +33,17 @@ defmodule Advent2020.Day14 do
     Map.put(memory, address, value)
   end
 
+  def get_sum(memory) do
+    memory
+    |> Map.delete(:mask)
+    |> Enum.map(fn({_address, tape}) ->
+      tape
+      |> to_string
+      |> String.to_integer(2)
+    end)
+    |> Enum.sum
+  end
+
   @doc ~S"""
       iex> "mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
       ...>mem[8] = 11
@@ -48,14 +59,48 @@ defmodule Advent2020.Day14 do
       ("mask = " <> mask, memory) -> set_mask(mask, memory)
       ("mem[" <> store, memory) -> store_mem(store, memory)
     end)
-    |> Map.delete(:mask)
-    |> Enum.map(fn({_address, tape}) ->
-      tape
-      |> to_string
-      |> String.to_integer(2)
-    end)
-    |> Enum.sum
+    |> get_sum
   end
 
-  def p2(_input), do: nil
+  def store_mem_v2(instruction, %{mask: mask} = memory) do
+    [address, integer] =
+      ~r/(\d+)] = (\d+)/
+      |> Regex.run(instruction)
+      |> tl
+      |> Enum.map(&String.to_integer/1)
+
+    bitstring =
+      integer
+      |> Integer.to_string(2)
+      |> String.pad_leading(36, "0")
+      |> String.to_charlist
+
+    value =
+      Enum.zip_reduce([mask, bitstring], [], fn
+        ([?X, _v], result) -> result ++ [X]
+        ([0, v], result) -> result ++ [v]
+        ([1, _v], result) -> result ++ [1]
+      end)
+    # TODO: need to replace each instance of an X with a version with both 0 and 1
+
+    Map.put(memory, address, value)
+  end
+
+  @doc ~S"""
+      iex> "mask = 000000000000000000000000000000X1001X
+      ...>mem[42] = 100
+      ...>mask = 00000000000000000000000000000000X0XX
+      ...>mem[26] = 1"
+      ...> |> String.split("\n", trim: true)
+      ...> |> p2
+      208
+  """
+  def p2(instructions) do
+    instructions
+    |> Enum.reduce(%{mask: '000000000000000000000000000000000000'}, fn
+      ("mask = " <> mask, memory) -> set_mask(mask, memory)
+      ("mem[" <> store, memory) -> store_mem_v2(store, memory)
+    end)
+    |> get_sum
+  end
 end
