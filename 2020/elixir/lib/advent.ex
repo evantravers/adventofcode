@@ -13,9 +13,9 @@ defmodule Advent do
   `setup/0` once and runs `p1/1` and/or `p2/1` when appropriate.
   """
 
-  @callback setup() :: {:ok, term}
-  @callback p1(term) :: {:ok, term}
-  @callback p2(term) :: {:ok, term}
+  @callback setup() :: term
+  @callback p1(term) :: term
+  @callback p2(term) :: term
 end
 
 defmodule Mix.Tasks.Day do
