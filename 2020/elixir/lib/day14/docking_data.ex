@@ -26,7 +26,7 @@ defmodule Advent2020.Day14 do
 
     value =
       Enum.zip_reduce([mask, bitstring], [], fn
-        ([88, v], result) -> result ++ [v] # 88 is the charcode for 'X' 🤷
+        ([?X, v], result) -> result ++ [v]
         ([mask, _v], result) -> result ++ [mask]
       end)
 
