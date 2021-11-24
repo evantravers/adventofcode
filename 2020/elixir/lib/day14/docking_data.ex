@@ -12,10 +12,23 @@ defmodule Advent2020.Day14 do
   def set_mask(m, memory), do: Map.put(memory, :mask, String.to_charlist(m))
 
   def store_mem(instruction, %{mask: mask} = memory) do
-    # TODO: implement mask
-    # TODO: extract address from instruction
-    address = 0
-    value = 11
+    [address, integer] =
+      ~r/(\d+)] = (\d+)/
+      |> Regex.run(instruction)
+      |> tl
+      |> Enum.map(&String.to_integer/1)
+
+    bitstring =
+      integer
+      |> Integer.to_string(2)
+      |> String.pad_leading(36, "0")
+      |> String.to_charlist
+
+    value =
+      Enum.zip_reduce([mask, bitstring], [], fn
+        ([88, v], result) -> result ++ [v] # 88 is the charcode for 'X' 🤷
+        ([mask, _v], result) -> result ++ [mask]
+      end)
 
     Map.put(memory, address, value)
   end
@@ -35,9 +48,10 @@ defmodule Advent2020.Day14 do
       ("mask = " <> mask, memory) -> set_mask(mask, memory)
       ("mem[" <> store, memory) -> store_mem(store, memory)
     end)
-    |> Enum.map(fn(tape) ->
+    |> Map.delete(:mask)
+    |> Enum.map(fn({_address, tape}) ->
       tape
-      |> Enum.join
+      |> to_string
       |> String.to_integer(2)
     end)
     |> Enum.sum
