@@ -19,19 +19,27 @@ defmodule Advent2020.Day14 do
     |> Enum.map(&String.to_integer/1)
   end
 
-  def build_charlist(integer) do
+  @doc """
+  integer -> charlist representing a 36 bit binary integer
+  """
+  def to_36bit(integer) do
     integer
     |> Integer.to_string(2)
     |> String.pad_leading(36, "0")
     |> String.to_charlist
   end
 
+  @doc """
+  charlist representing a 36 bit binary integer -> integer
+  """
+  def to_integer(charlist), do: to_string(charlist) |> String.to_integer(2)
+
   def set_mask(m, memory), do: Map.put(memory, :mask, String.to_charlist(m))
 
   def store_mem(instruction, %{mask: mask} = memory) do
     [address, integer] = read_memory_instruction(instruction)
 
-    charlist = build_charlist(integer)
+    charlist = to_36bit(integer)
 
     value =
       Enum.zip_reduce(mask, charlist, [], fn
@@ -58,11 +66,7 @@ defmodule Advent2020.Day14 do
       ("mem[" <> store, memory) -> store_mem(store, memory)
     end)
     |> Map.delete(:mask)
-    |> Enum.map(fn({_address, tape}) ->
-      tape
-      |> to_string
-      |> String.to_integer(2)
-    end)
+    |> Enum.map(fn({_address, tape}) -> to_integer(tape) end)
     |> Enum.sum
   end
 
@@ -71,24 +75,17 @@ defmodule Advent2020.Day14 do
     |> Enum.map(& &1 ++ [value])
   end
 
-  def memory_decoder(instruction, %{mask: mask} = memory) do
+  def address_decoder(instruction, %{mask: mask} = memory) do
     [address, integer] = read_memory_instruction(instruction)
 
-    charlist = build_charlist(address)
+    charlist = to_36bit(address)
 
-    addresses =
-      Enum.zip_reduce(mask, charlist, [[]], fn
-        (?X, _v, options) -> write_to_options(options, ?1) ++ write_to_options(options, ?0)
-        (?0, v, options) -> write_to_options(options, v)
-        (?1, _v, options) -> write_to_options(options, ?1)
-      end)
-    |> Enum.map(fn(num) ->
-      num
-      |> to_string
-      |> String.to_integer(2)
+    Enum.zip_reduce(mask, charlist, [[]], fn
+      (?X, _v, options) -> write_to_options(options, ?1) ++ write_to_options(options, ?0)
+      (?0, v, options) -> write_to_options(options, v)
+      (?1, _v, options) -> write_to_options(options, ?1)
     end)
-
-    addresses
+    |> Enum.map(fn(num) -> to_integer(num) end)
     |> Enum.reduce(memory, fn(address, memory) ->
       Map.put(memory, address, integer)
     end)
@@ -107,7 +104,7 @@ defmodule Advent2020.Day14 do
     instructions
     |> Enum.reduce(%{mask: '000000000000000000000000000000000000'}, fn
       ("mask = " <> mask, memory) -> set_mask(mask, memory)
-      ("mem[" <> store, memory) -> memory_decoder(store, memory)
+      ("mem[" <> store, memory) -> address_decoder(store, memory)
     end)
     |> Map.delete(:mask)
     |> Enum.map(&elem(&1, 1)) # ignore address, get values
