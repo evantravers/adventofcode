@@ -9,23 +9,32 @@ defmodule Advent2020.Day14 do
     end
   end
 
+  @doc """
+  returns [address, integer]
+  """
+  def read_memory_instruction(str) do
+    ~r/(\d+)] = (\d+)/
+    |> Regex.run(str)
+    |> tl
+    |> Enum.map(&String.to_integer/1)
+  end
+
+  def build_charlist(integer) do
+    integer
+    |> Integer.to_string(2)
+    |> String.pad_leading(36, "0")
+    |> String.to_charlist
+  end
+
   def set_mask(m, memory), do: Map.put(memory, :mask, String.to_charlist(m))
 
   def store_mem(instruction, %{mask: mask} = memory) do
-    [address, integer] =
-      ~r/(\d+)] = (\d+)/
-      |> Regex.run(instruction)
-      |> tl
-      |> Enum.map(&String.to_integer/1)
+    [address, integer] = read_memory_instruction(instruction)
 
-    bitstring =
-      integer
-      |> Integer.to_string(2)
-      |> String.pad_leading(36, "0")
-      |> String.to_charlist
+    charlist = build_charlist(integer)
 
     value =
-      Enum.zip_reduce(mask, bitstring, [], fn
+      Enum.zip_reduce(mask, charlist, [], fn
         (?X, v, result) -> result ++ [v]
         (mask, _v, result) -> result ++ [mask]
       end)
@@ -63,20 +72,12 @@ defmodule Advent2020.Day14 do
   end
 
   def memory_decoder(instruction, %{mask: mask} = memory) do
-    [address, integer] =
-      ~r/(\d+)] = (\d+)/
-      |> Regex.run(instruction)
-      |> tl
-      |> Enum.map(&String.to_integer/1)
+    [address, integer] = read_memory_instruction(instruction)
 
-    bitstring =
-      address
-      |> Integer.to_string(2)
-      |> String.pad_leading(36, "0")
-      |> String.to_charlist
+    charlist = build_charlist(address)
 
     addresses =
-      Enum.zip_reduce(mask, bitstring, [[]], fn
+      Enum.zip_reduce(mask, charlist, [[]], fn
         (?X, _v, options) -> write_to_options(options, ?1) ++ write_to_options(options, ?0)
         (?0, v, options) -> write_to_options(options, v)
         (?1, _v, options) -> write_to_options(options, ?1)
