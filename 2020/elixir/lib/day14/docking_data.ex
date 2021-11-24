@@ -25,23 +25,12 @@ defmodule Advent2020.Day14 do
       |> String.to_charlist
 
     value =
-      Enum.zip_reduce([mask, bitstring], [], fn
-        ([?X, v], result) -> result ++ [v]
-        ([mask, _v], result) -> result ++ [mask]
+      Enum.zip_reduce(mask, bitstring, [], fn
+        (?X, v, result) -> result ++ [v]
+        (mask, _v, result) -> result ++ [mask]
       end)
 
     Map.put(memory, address, value)
-  end
-
-  def get_sum(memory) do
-    memory
-    |> Map.delete(:mask)
-    |> Enum.map(fn({_address, tape}) ->
-      tape
-      |> to_string
-      |> String.to_integer(2)
-    end)
-    |> Enum.sum
   end
 
   @doc ~S"""
@@ -59,10 +48,21 @@ defmodule Advent2020.Day14 do
       ("mask = " <> mask, memory) -> set_mask(mask, memory)
       ("mem[" <> store, memory) -> store_mem(store, memory)
     end)
-    |> get_sum
+    |> Map.delete(:mask)
+    |> Enum.map(fn({_address, tape}) ->
+      tape
+      |> to_string
+      |> String.to_integer(2)
+    end)
+    |> Enum.sum
   end
 
-  def store_mem_v2(instruction, %{mask: mask} = memory) do
+  def write_to_options(list_of_options, value) do
+    list_of_options
+    |> Enum.map(& &1 ++ [value])
+  end
+
+  def memory_decoder(instruction, %{mask: mask} = memory) do
     [address, integer] =
       ~r/(\d+)] = (\d+)/
       |> Regex.run(instruction)
@@ -70,20 +70,27 @@ defmodule Advent2020.Day14 do
       |> Enum.map(&String.to_integer/1)
 
     bitstring =
-      integer
+      address
       |> Integer.to_string(2)
       |> String.pad_leading(36, "0")
       |> String.to_charlist
 
-    value =
-      Enum.zip_reduce([mask, bitstring], [], fn
-        ([?X, _v], result) -> result ++ [X]
-        ([0, v], result) -> result ++ [v]
-        ([1, _v], result) -> result ++ [1]
+    addresses =
+      Enum.zip_reduce(mask, bitstring, [[]], fn
+        (?X, _v, options) -> write_to_options(options, ?1) ++ write_to_options(options, ?0)
+        (?0, v, options) -> write_to_options(options, v)
+        (?1, _v, options) -> write_to_options(options, ?1)
       end)
-    # TODO: need to replace each instance of an X with a version with both 0 and 1
+    |> Enum.map(fn(num) ->
+      num
+      |> to_string
+      |> String.to_integer(2)
+    end)
 
-    Map.put(memory, address, value)
+    addresses
+    |> Enum.reduce(memory, fn(address, memory) ->
+      Map.put(memory, address, integer)
+    end)
   end
 
   @doc ~S"""
@@ -99,8 +106,10 @@ defmodule Advent2020.Day14 do
     instructions
     |> Enum.reduce(%{mask: '000000000000000000000000000000000000'}, fn
       ("mask = " <> mask, memory) -> set_mask(mask, memory)
-      ("mem[" <> store, memory) -> store_mem_v2(store, memory)
+      ("mem[" <> store, memory) -> memory_decoder(store, memory)
     end)
-    |> get_sum
+    |> Map.delete(:mask)
+    |> Enum.map(&elem(&1, 1)) # ignore address, get values
+    |> Enum.sum
   end
 end
