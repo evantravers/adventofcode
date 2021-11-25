@@ -46,5 +46,19 @@ defmodule Advent2020.Day15 do
     end
   end
 
-  def p2(_input), do: nil
+  def p2(%{turn: 30000001, last: last}), do: last
+  def p2(%{turn: turn, last: last} = history) do
+    # if last_spoken in history
+    if Enum.count(Map.get(history, last)) > 1 do
+      history
+      |> say((turn - 1) - last_said(history, last))
+      |> next_turn
+      |> p2
+    else
+      history
+      |> say(0)
+      |> next_turn
+      |> p2
+    end
+  end
 end
