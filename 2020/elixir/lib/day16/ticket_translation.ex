@@ -9,7 +9,6 @@ defmodule Advent2020.Day16 do
       %{fields: %{}, nearby: []}
       |> eval_fields(fields)
       |> eval_tickets(nearby_tickets)
-      |> IO.inspect
     end
   end
 
@@ -46,6 +45,18 @@ defmodule Advent2020.Day16 do
     end)
   end
 
-  def p1(_input), do: nil
+  def p1(%{nearby: nearby, fields: fields}) do
+    rules = Map.values(fields) |> List.flatten
+
+    nearby
+    |> List.flatten
+    |> Enum.filter(fn(number) ->
+      !Enum.any?(rules, fn(rule) ->
+        Enum.member?(rule, number)
+      end)
+    end)
+    |> Enum.sum
+  end
+
   def p2(_input), do: nil
 end
