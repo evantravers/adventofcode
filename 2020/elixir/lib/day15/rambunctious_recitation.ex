@@ -16,11 +16,11 @@ defmodule Advent2020.Day15 do
 
   def next_turn(history), do: Map.update!(history, :turn, & &1 + 1)
 
-  def last_said(history, last), do: Map.get(history, last)
+  def last_said(history, last), do: Map.get(history, last) |> tl |> hd
 
   def say(%{turn: turn} = history, value) do
     history
-    |> Map.put(value, turn)
+    |> Map.update(value, [turn], &[turn | &1])
     |> Map.put(:last, value)
   end
 
@@ -33,7 +33,7 @@ defmodule Advent2020.Day15 do
   def p1(%{turn: 2021, last: last}), do: last
   def p1(%{turn: turn, last: last} = history) do
     # if last_spoken in history
-    if Map.get(history, last) do
+    if Enum.count(Map.get(history, last)) > 1 do
       history
       |> say((turn - 1) - last_said(history, last))
       |> next_turn
