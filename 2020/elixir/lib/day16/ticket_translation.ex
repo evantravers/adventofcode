@@ -4,15 +4,17 @@ defmodule Advent2020.Day16 do
 
   def setup do
     with {:ok, file} <- File.read("#{__DIR__}/input") do
-      [fields, _your_ticket, nearby_tickets] = String.split(file, "\n\n", trim: true)
+      [fields, your_ticket, nearby_tickets] = String.split(file, "\n\n", trim: true)
 
       %{fields: %{}, nearby: []}
       |> eval_fields(fields)
       |> eval_tickets(nearby_tickets)
+      |> eval_tickets(your_ticket, :your_ticket)
+      |> Map.update!(:your_ticket, &List.flatten/1)
     end
   end
 
-  def eval_tickets(state, str) do
+  def eval_tickets(state, str, key \\ :nearby) do
     str
     |> String.split("\n", trim: true)
     |> tl # skip the header
@@ -22,7 +24,7 @@ defmodule Advent2020.Day16 do
         |> String.split(",", trim: true)
         |> Enum.map(&String.to_integer/1)
 
-      Map.update(state, :nearby, [ticket], &[ticket|&1])
+      Map.update(state, key, [ticket], &[ticket|&1])
     end)
   end
 
@@ -58,5 +60,7 @@ defmodule Advent2020.Day16 do
     |> Enum.sum
   end
 
-  def p2(_input), do: nil
+  def p2(%{nearby: nearby, fields: fields, your_ticket: ticket}) do
+    ticket
+  end
 end
