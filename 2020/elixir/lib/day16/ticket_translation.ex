@@ -3,15 +3,17 @@ defmodule Advent2020.Day16 do
   @behaviour Advent
 
   def setup do
-    with {:ok, file} <- File.read("#{__DIR__}/input") do
-      [fields, your_ticket, nearby_tickets] = String.split(file, "\n\n", trim: true)
+    with {:ok, file} <- File.read("#{__DIR__}/input"), do: setup_string(file)
+  end
 
-      %{fields: %{}, nearby: []}
-      |> eval_fields(fields)
-      |> eval_tickets(nearby_tickets)
-      |> eval_tickets(your_ticket, :your_ticket)
-      |> Map.update!(:your_ticket, &List.flatten/1)
-    end
+  def setup_string(str) do
+    [fields, your_ticket, nearby_tickets] = String.split(str, "\n\n", trim: true)
+
+    %{fields: %{}, nearby: []}
+    |> eval_fields(fields)
+    |> eval_tickets(nearby_tickets)
+    |> eval_tickets(your_ticket, :your_ticket)
+    |> Map.update!(:your_ticket, &List.flatten/1)
   end
 
   def eval_tickets(state, str, key \\ :nearby) do
@@ -48,15 +50,17 @@ defmodule Advent2020.Day16 do
   end
 
   def valid_number(number, %{fields: fields}) do
-    rules = Map.values(fields) |> List.flatten
+    rules = Map.values(fields)
 
-    Enum.any?(rules, fn(rule) ->
-      Enum.member?(rule, number)
-    end)
+    Enum.any?(rules, fn(rule) -> match_rule?(number, rule) end)
   end
 
-  def valid_ticket(ticket, state) do
+  def valid_ticket?(ticket, state) do
     Enum.all?(ticket, fn(num) -> valid_number(num, state) end)
+  end
+
+  def match_rule?(num, [r1, r2]) do
+    Enum.member?(r1, num) || Enum.member?(r2, num)
   end
 
   def p1(%{nearby: nearby} = state) do
@@ -66,7 +70,28 @@ defmodule Advent2020.Day16 do
     |> Enum.sum
   end
 
-  def p2(%{nearby: nearby, fields: fields, your_ticket: ticket}) do
-    ticket
+  def p2(%{nearby: nearby, fields: fields, your_ticket: ticket} = state) do
+    valid =
+      nearby
+      |> Enum.filter(&valid_ticket?(&1, state))
+
+    field_keys =
+      Enum.reduce(fields, %{}, fn({key, rule}, locations) ->
+        field_number =
+          Enum.find(0..19, fn(num) ->
+            valid
+            |> Enum.map(&Enum.at(&1, num)) # vertical slice of numbers
+            |> Enum.all?(&match_rule?(&1, rule))
+          end)
+
+        Map.put(locations, key, field_number)
+      end)
+
+    field_keys
+    |> Enum.filter(fn({key, _val}) -> key =~ "departure" end)
+    |> Enum.map(fn({_key, val}) ->
+      Enum.at(ticket, val)
+    end)
+    |> Enum.product
   end
 end
