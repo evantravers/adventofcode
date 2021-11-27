@@ -89,9 +89,7 @@ defmodule Advent2020.Day16 do
 
     field_keys
     |> Enum.filter(fn({key, _val}) -> key =~ "departure" end)
-    |> Enum.map(fn({_key, val}) ->
-      Enum.at(ticket, val)
-    end)
+    |> Enum.map(fn({_key, val}) -> Enum.at(ticket, val) end)
     |> Enum.product
   end
 end
