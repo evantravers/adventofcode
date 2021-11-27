@@ -49,14 +49,14 @@ defmodule Advent2020.Day16 do
     end)
   end
 
-  def valid_number(number, %{fields: fields}) do
+  def valid_number?(number, %{fields: fields}) do
     rules = Map.values(fields)
 
     Enum.any?(rules, fn(rule) -> match_rule?(number, rule) end)
   end
 
   def valid_ticket?(ticket, state) do
-    Enum.all?(ticket, fn(num) -> valid_number(num, state) end)
+    Enum.all?(ticket, fn(num) -> valid_number?(num, state) end)
   end
 
   def match_rule?(num, [r1, r2]) do
@@ -65,8 +65,9 @@ defmodule Advent2020.Day16 do
 
   def p1(%{nearby: nearby} = state) do
     nearby
+    |> Enum.reject(&valid_ticket?(&1, state))
+    |> Enum.filter(&valid_number?(&1, state))
     |> List.flatten
-    |> Enum.reject(&valid_number(&1, state))
     |> Enum.sum
   end
 
