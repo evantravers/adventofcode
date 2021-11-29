@@ -59,6 +59,14 @@ defmodule Advent2020.Day16 do
     Enum.all?(ticket, fn(num) -> valid_number?(num, state) end)
   end
 
+  @doc """
+      iex> match_rule?(4, [1..3, 5..7])
+      false
+      iex> match_rule?(3, [1..3, 5..7])
+      true
+      iex> match_rule?(5, [1..3, 5..7])
+      true
+  """
   def match_rule?(num, [r1, r2]) do
     Enum.member?(r1, num) || Enum.member?(r2, num)
   end
