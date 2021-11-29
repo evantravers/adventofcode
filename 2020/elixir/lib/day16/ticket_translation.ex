@@ -55,9 +55,11 @@ defmodule Advent2020.Day16 do
     Enum.any?(rules, fn(rule) -> match_rule?(number, rule) end)
   end
 
-  def valid_ticket?(ticket, state) do
-    Enum.all?(ticket, fn(num) -> valid_number?(num, state) end)
+  def invalid_ticket?(ticket, state) do
+    Enum.any?(ticket, fn(num) -> !valid_number?(num, state)end)
   end
+
+  def valid_ticket?(ticket, state), do: !invalid_ticket?(ticket, state)
 
   @doc """
       iex> match_rule?(4, [1..3, 5..7])
@@ -73,7 +75,7 @@ defmodule Advent2020.Day16 do
 
   def p1(%{nearby: nearby} = state) do
     nearby
-    |> Enum.reject(&valid_ticket?(&1, state))
+    |> Enum.filter(&invalid_ticket?(&1, state))
     |> List.flatten
     |> Enum.filter(&valid_number?(&1, state))
     |> Enum.sum
