@@ -94,7 +94,7 @@ defmodule Advent2020.Day16 do
     nearby
     |> Enum.filter(&invalid_ticket?(&1, state))
     |> List.flatten
-    |> Enum.filter(&valid_number?(&1, state))
+    |> Enum.reject(&valid_number?(&1, state))
     |> Enum.sum
   end
 
