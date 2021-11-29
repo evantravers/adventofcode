@@ -74,15 +74,13 @@ defmodule Advent2020.Day16 do
   def p1(%{nearby: nearby} = state) do
     nearby
     |> Enum.reject(&valid_ticket?(&1, state))
-    |> Enum.filter(&valid_number?(&1, state))
     |> List.flatten
+    |> Enum.filter(&valid_number?(&1, state))
     |> Enum.sum
   end
 
   def p2(%{nearby: nearby, fields: fields, your_ticket: ticket} = state) do
-    valid =
-      nearby
-      |> Enum.filter(&valid_ticket?(&1, state))
+    valid = Enum.filter(nearby, &valid_ticket?(&1, state))
 
     field_keys =
       Enum.reduce(fields, %{}, fn({key, rule}, locations) ->
