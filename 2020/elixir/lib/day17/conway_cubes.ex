@@ -74,8 +74,8 @@ defmodule Advent2020.Day17 do
           |> Enum.join
           |> Kernel.<>("\n")
         end
-        |> Enum.join
       ]
+      |> Enum.join
     end
     |> Enum.join
     |> IO.puts
