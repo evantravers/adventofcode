@@ -68,6 +68,10 @@ defmodule Advent2020.Day16 do
       true
       iex> match_rule?(5, [1..3, 5..7])
       true
+      iex> match_rule?(1, [1..3, 5..7])
+      true
+      iex> match_rule?(7, [1..3, 5..7])
+      true
   """
   def match_rule?(num, [r1, r2]) do
     Enum.member?(r1, num) || Enum.member?(r2, num)
