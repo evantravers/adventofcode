@@ -41,17 +41,45 @@ defmodule Advent2020.Day17 do
     }
   end
 
-  def adjacent({x, y, z}) do
+  def neighbors({x, y, z}) do
     for x <- x-1..x+1, y <- y-1..y+1, z <- z-1..z+1 do
       {x, y, z}
     end
   end
 
-  def adjacent_count(coord, state) do
+  def neighbors_count(coord, state) do
     coord
-    |> adjacent
+    |> neighbors
     |> Enum.map(&Map.get(state, &1, false))
     |> Enum.count(& &1)
+  end
+
+  def print(state) do
+    {
+      {min_x, max_x},
+      {min_y, max_y},
+      {min_z, max_z}
+    } = bounding_box(state)
+
+    for z <- min_z..max_z do
+      ["\n\nz=#{z}\n" |
+        for y <- min_y..max_y do
+          for x <- min_x..max_x do
+            if Map.get(state, {x, y, z}) do
+              "#"
+            else
+              "."
+            end
+          end
+          |> Enum.join
+          |> Kernel.<>("\n")
+        end
+        |> Enum.join
+      ]
+    end
+    |> Enum.join
+    |> IO.puts
+
   end
 
   def play(state, count \\ 6)
@@ -63,10 +91,12 @@ defmodule Advent2020.Day17 do
       {min_z, max_z}
     } = bounding_box(state)
 
+    print(state)
+
     for x <- min_x..max_x, y <- min_y..max_y, z <- min_z..max_z, into: %{} do
       coord  = {x, y, z}
       active = Map.get(state, coord)
-      count  = adjacent_count(coord, state)
+      count  = neighbors_count(coord, state)
 
       if active do
         # If a cube is active and exactly 2 or 3 of its neighbors are also
