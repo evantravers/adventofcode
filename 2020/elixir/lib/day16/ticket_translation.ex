@@ -84,6 +84,19 @@ defmodule Advent2020.Day16 do
   """
   def vertical_slice(list, num), do: Enum.map(list, &Enum.at(&1, num))
 
+  def elimination(fields, final \\ %{})
+  def elimination([], final), do: final
+  def elimination(fields_and_possibles, final) do
+    {key, [field]} = Enum.find(fields_and_possibles, fn({_key, val}) -> Enum.count(val) == 1 end)
+
+    elimination(
+      fields_and_possibles
+      |> List.delete({key, [field]})
+      |> Enum.map(fn({key, possibles})-> {key, List.delete(possibles, field)} end),
+      Map.put(final, key, field)
+    )
+  end
+
   @doc """
       iex> "class: 1-3 or 5-7
       ...>row: 6-11 or 33-44
@@ -112,19 +125,28 @@ defmodule Advent2020.Day16 do
   def p2(%{nearby: nearby, fields: fields, your_ticket: ticket} = state) do
     valid = Enum.filter(nearby, &valid_ticket?(&1, state))
 
-    field_keys =
-      Enum.reduce(fields, %{}, fn({key, rule}, locations) ->
-        field_number =
-          Enum.find(0..19, fn(num) ->
-            valid
-            |> vertical_slice(num)
-            |> Enum.all?(&match_rule?(&1, rule))
+    possible_keys =
+      Enum.reduce(fields, [], fn({key, rule}, locations) ->
+        possible_fields =
+          Enum.reduce(19..0, [], fn(num, possible) ->
+            match =
+              valid
+              |> vertical_slice(num)
+              |> Enum.all?(&match_rule?(&1, rule))
+
+            if match do
+              [num|possible]
+            else
+              possible
+            end
           end)
 
-        Map.put(locations, key, field_number)
+        [{key, possible_fields} | locations]
       end)
 
-    field_keys
+    keys = elimination(possible_keys)
+
+    keys
     |> Enum.filter(fn({key, _val}) -> key =~ "departure" end)
     |> Enum.map(fn({_key, val}) -> Enum.at(ticket, val) end)
     |> Enum.product
