@@ -74,6 +74,13 @@ defmodule Advent2020.Day16 do
   end
 
   @doc """
+      iex> [[2, 1, 3], [3, 2, 1], [2, 3, 1]]
+      ...> |> vertical_slice(1)
+      [1, 2, 3]
+  """
+  def vertical_slice(list, num), do: Enum.map(list, &Enum.at(&1, num))
+
+  @doc """
       iex> "class: 1-3 or 5-7
       ...>row: 6-11 or 33-44
       ...>seat: 13-40 or 45-50
@@ -106,7 +113,7 @@ defmodule Advent2020.Day16 do
         field_number =
           Enum.find(0..19, fn(num) ->
             valid
-            |> Enum.map(&Enum.at(&1, num)) # vertical slice of numbers
+            |> vertical_slice(num)
             |> Enum.all?(&match_rule?(&1, rule))
           end)
 
