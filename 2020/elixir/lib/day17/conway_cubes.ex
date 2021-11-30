@@ -45,6 +45,7 @@ defmodule Advent2020.Day17 do
     for x <- x-1..x+1, y <- y-1..y+1, z <- z-1..z+1 do
       {x, y, z}
     end
+    |> List.delete({x, y, z})
   end
 
   def neighbors_count(coord, state) do
@@ -91,7 +92,7 @@ defmodule Advent2020.Day17 do
       {min_z, max_z}
     } = bounding_box(state)
 
-    print(state)
+    # print(state)
 
     for x <- min_x..max_x, y <- min_y..max_y, z <- min_z..max_z, into: %{} do
       coord  = {x, y, z}
