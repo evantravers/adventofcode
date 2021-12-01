@@ -92,6 +92,32 @@ defmodule Advent2020.Day17 do
 
   end
 
+  def apply_rules(coord, state) do
+    active = Map.get(state, coord)
+    count  = neighbors_count(coord, state)
+
+    if active do
+      # If a cube is active and exactly 2 or 3 of its neighbors are also
+      # active, the cube remains active. Otherwise, the cube becomes
+      # inactive.
+
+      if count == 2 || count == 3 do
+        {coord, true}
+      else
+        {coord, false}
+      end
+    else
+      # If a cube is inactive but exactly 3 of its neighbors are active, the
+      # cube becomes active. Otherwise, the cube remains inactive.
+
+      if count == 3 do
+        {coord, true}
+      else
+        {coord, false}
+      end
+    end
+  end
+
   def play(state, count \\ 6)
   def play(state, 0), do: state
   def play(state, count) do
@@ -104,30 +130,7 @@ defmodule Advent2020.Day17 do
     # print(state)
 
     for x <- min_x..max_x, y <- min_y..max_y, z <- min_z..max_z, into: %{} do
-      coord  = {x, y, z}
-      active = Map.get(state, coord)
-      count  = neighbors_count(coord, state)
-
-      if active do
-        # If a cube is active and exactly 2 or 3 of its neighbors are also
-        # active, the cube remains active. Otherwise, the cube becomes
-        # inactive.
-
-        if count == 2 || count == 3 do
-          {coord, true}
-        else
-          {coord, false}
-        end
-      else
-        # If a cube is inactive but exactly 3 of its neighbors are active, the
-        # cube becomes active. Otherwise, the cube remains inactive.
-
-        if count == 3 do
-          {coord, true}
-        else
-          {coord, false}
-        end
-      end
+      apply_rules({x, y, z}, state)
     end
     |> play(count - 1)
   end
@@ -145,30 +148,7 @@ defmodule Advent2020.Day17 do
     # print(state)
 
     for x <- min_x..max_x, y <- min_y..max_y, z <- min_z..max_z, w <- min_w..max_w, into: %{} do
-      coord  = {x, y, z, w}
-      active = Map.get(state, coord)
-      count  = neighbors_count(coord, state)
-
-      if active do
-        # If a cube is active and exactly 2 or 3 of its neighbors are also
-        # active, the cube remains active. Otherwise, the cube becomes
-        # inactive.
-
-        if count == 2 || count == 3 do
-          {coord, true}
-        else
-          {coord, false}
-        end
-      else
-        # If a cube is inactive but exactly 3 of its neighbors are active, the
-        # cube becomes active. Otherwise, the cube remains inactive.
-
-        if count == 3 do
-          {coord, true}
-        else
-          {coord, false}
-        end
-      end
+      apply_rules({x, y, z, w}, state)
     end
     |> play_4d(count - 1)
   end
