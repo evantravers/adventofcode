@@ -36,5 +36,10 @@ defmodule Advent2021.Day1 do
     end
   end
 
-  def p2(_i), do: nil
+  def p2(list) do
+    list
+    |> Enum.chunk_every(3, 1)
+    |> Enum.map(&Enum.sum/1)
+    |> p1
+  end
 end
