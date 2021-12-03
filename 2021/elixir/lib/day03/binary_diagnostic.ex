@@ -11,7 +11,7 @@ defmodule Advent2021.Day3 do
     |> Enum.map(&String.codepoints/1)
   end
 
-  def gamma(input) do
+  def frequencies(input, function) do
     length = input |> hd |> Enum.count
 
     Enum.reduce(0..length, [], fn(num, result) ->
@@ -19,7 +19,7 @@ defmodule Advent2021.Day3 do
         input
         |> Enum.map(&Enum.at(&1, num))
         |> Enum.frequencies
-        |> Enum.max_by(&elem(&1, 1))
+        |> function.()
         |> elem(0)
 
       result ++ [char]
@@ -28,21 +28,12 @@ defmodule Advent2021.Day3 do
     |> String.to_integer(2)
   end
 
+  def gamma(input) do
+    frequencies(input, fn(freq) -> Enum.max_by(freq, &elem(&1, 1)) end)
+  end
+
   def epsilon(input) do
-    length = input |> hd |> Enum.count
-
-    Enum.reduce(0..length, [], fn(num, result) ->
-      char =
-        input
-        |> Enum.map(&Enum.at(&1, num))
-        |> Enum.frequencies
-        |> Enum.min_by(&elem(&1, 1))
-        |> elem(0)
-
-      result ++ [char]
-    end)
-    |> Enum.join
-    |> String.to_integer(2)
+    frequencies(input, fn(freq) -> Enum.min_by(freq, &elem(&1, 1)) end)
   end
 
   def filter(list, index \\ 0, function)
