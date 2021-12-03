@@ -5,23 +5,6 @@ defmodule Advent2021.Day3 do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt"), do: setup_string(file)
   end
 
-  @doc """
-      iex> "00100
-      ...>11110
-      ...>10110
-      ...>10111
-      ...>10101
-      ...>01111
-      ...>00111
-      ...>11100
-      ...>10000
-      ...>11001
-      ...>00010
-      ...>01010"
-      ...> |> setup_string
-      ...> |> p1
-      22
-  """
   def setup_string(str) do
     str
     |> String.split("\n", trim: true)
@@ -62,9 +45,66 @@ defmodule Advent2021.Day3 do
     |> String.to_integer(2)
   end
 
+  def filter(list, index \\ 0, function)
+  def filter([result], _index, _function) do
+    result
+    |> Enum.join
+    |> String.to_integer(2)
+  end
+  def filter(list, index, function) do
+    char =
+      list
+      |> Enum.map(&Enum.at(&1, index))
+      |> Enum.frequencies
+      |> function.()
+
+    list
+    |> Enum.filter(&Enum.at(&1, index) == char)
+    |> filter(index + 1, function)
+  end
+
+  def oxygen(input) do
+    filter(input, fn
+      (%{"1" => ones, "0" => zeroes}) when ones == zeroes -> "1"
+      (%{"1" => ones, "0" => zeroes}) when ones > zeroes -> "1"
+      (%{"1" => ones, "0" => zeroes}) when ones < zeroes -> "0"
+      (%{"1" => _ones}) -> "1"
+      (%{"0" => _zeroes}) -> "0"
+    end)
+  end
+
+  def co2(input) do
+    filter(input, fn
+      (%{"1" => ones, "0" => zeroes}) when ones == zeroes -> "0"
+      (%{"1" => ones, "0" => zeroes}) when ones > zeroes -> "0"
+      (%{"1" => ones, "0" => zeroes}) when ones < zeroes -> "1"
+      (%{"1" => _ones}) -> "1"
+      (%{"0" => _zeroes}) -> "0"
+    end)
+  end
+
   def p1(input) do
     gamma(input) * epsilon(input)
   end
 
-  def p2(_i), do: nil
+  @doc """
+      iex> "00100
+      ...>11110
+      ...>10110
+      ...>10111
+      ...>10101
+      ...>01111
+      ...>00111
+      ...>11100
+      ...>10000
+      ...>11001
+      ...>00010
+      ...>01010"
+      ...> |> setup_string
+      ...> |> p2
+      230
+  """
+  def p2(input) do
+    oxygen(input) * co2(input)
+  end
 end
