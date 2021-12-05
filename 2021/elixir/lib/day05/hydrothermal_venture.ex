@@ -23,6 +23,10 @@ defmodule Advent2021.Day5 do
     !Range.disjoint?(x1, x2) && !Range.disjoint?(y1, y2)
   end
 
+  def generate_points({x1..x2, y1..y2}) do
+    for x <- x1..x2, y <- y1..y2, do: {x, y}
+  end
+
   @doc """
       iex> "0,9 -> 5,9
       ...>8,0 -> 0,8
@@ -40,12 +44,12 @@ defmodule Advent2021.Day5 do
   """
   def p1(list) do
     list
-    |> Combination.combine(2)
+    |> Enum.map(&generate_points/1)
+    |> List.flatten
     |> IO.inspect
-    |> Enum.uniq
-    |> Enum.count(fn([a, b]) ->
-      cross?(a, b)
-    end)
+    |> Enum.frequencies
+    |> Map.values
+    |> Enum.count(& &1 > 2)
   end
 
   def p2(_i), do: nil
