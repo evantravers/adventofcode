@@ -168,5 +168,46 @@ defmodule Advent2021.Day4 do
       1924
   """
   def p2({bingo_balls, locations}) do
+    starting_boards =
+      locations
+      |> Map.values
+      |> List.flatten
+      |> Enum.map(&elem(&1, 0))
+      |> MapSet.new
+
+
+    {loser, number} =
+      bingo_balls
+      |> Enum.reduce_while({starting_boards, %{}}, fn(number, {remaining, marked}) ->
+        # call out the ball
+        boards =
+          locations
+          |> Map.get(number)
+          |> Enum.reduce(marked, fn({index, coord}, marked) ->
+            marked
+            |> Map.update(index, MapSet.new([coord]), fn(board) ->
+              MapSet.put(board, coord)
+            end)
+          end)
+
+        if Enum.all?(boards, &bingo?/1) do
+          loser = hd(MapSet.to_list(remaining))
+
+          {:halt, {{loser, Map.get(boards, loser)}, number}}
+        else
+          winners =
+            boards
+            |> Enum.filter(&bingo?/1)
+            |> Enum.map(&elem(&1, 0))
+            |> MapSet.new
+
+          {:cont, {MapSet.difference(remaining, winners), boards}}
+        end
+      end)
+
+    loser
+    |> unmarked_numbers(locations)
+    |> Enum.sum
+    |> Kernel.*(number)
   end
 end
