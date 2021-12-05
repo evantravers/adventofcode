@@ -24,7 +24,8 @@ defmodule Advent2021.Mixfile do
       {:angle, "~> 0.3.0"},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:timex, "~> 3.1"},
-      {:libgraph, "~> 0.7"}
+      {:libgraph, "~> 0.7"},
+      {:combination, "~> 0.0.3"}
     ]
   end
 end
