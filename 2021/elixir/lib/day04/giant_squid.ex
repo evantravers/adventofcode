@@ -89,6 +89,17 @@ defmodule Advent2021.Day4 do
     end)
   end
 
+  def call_the_ball(marked, locations, number) do
+    locations
+    |> Map.get(number)
+    |> Enum.reduce(marked, fn({index, coord}, marked) ->
+      marked
+      |> Map.update(index, MapSet.new([coord]), fn(board) ->
+        MapSet.put(board, coord)
+      end)
+    end)
+  end
+
   @doc """
       iex> "7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
       ...>
@@ -117,16 +128,7 @@ defmodule Advent2021.Day4 do
     {winner, number} =
       bingo_balls
       |> Enum.reduce_while(%{}, fn(number, marked) ->
-        # call out the ball
-        boards =
-          locations
-          |> Map.get(number)
-          |> Enum.reduce(marked, fn({index, coord}, marked) ->
-            marked
-            |> Map.update(index, MapSet.new([coord]), fn(board) ->
-              MapSet.put(board, coord)
-            end)
-          end)
+        boards = call_the_ball(marked, locations, number)
 
         if Enum.any?(boards, &bingo?/1) do
           winner = Enum.find(boards, &bingo?/1)
@@ -179,21 +181,12 @@ defmodule Advent2021.Day4 do
     {loser, number} =
       bingo_balls
       |> Enum.reduce_while({starting_boards, %{}}, fn(number, {remaining, marked}) ->
-        # call out the ball
-        boards =
-          locations
-          |> Map.get(number)
-          |> Enum.reduce(marked, fn({index, coord}, marked) ->
-            marked
-            |> Map.update(index, MapSet.new([coord]), fn(board) ->
-              MapSet.put(board, coord)
-            end)
-          end)
+        boards = call_the_ball(marked, locations, number)
 
         if Enum.all?(boards, &bingo?/1) do
-          loser = hd(MapSet.to_list(remaining))
+          index = hd(MapSet.to_list(remaining))
 
-          {:halt, {{loser, Map.get(boards, loser)}, number}}
+          {:halt, {{index, Map.get(boards, index)}, number}}
         else
           winners =
             boards
