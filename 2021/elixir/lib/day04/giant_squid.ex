@@ -8,41 +8,38 @@ defmodule Advent2021.Day4 do
   def setup_string(file) do
     fields = String.split(file, "\n\n", trim: true)
 
-    numbers =
+    bingo_balls =
       fields
       |> hd
       |> String.split(",", trim: true)
       |> Enum.map(&String.to_integer/1)
 
-    boards =
+    locations =
       fields
       |> tl
-      |> Enum.map(&build_board/1)
-
-    %{numbers: numbers, boards: boards}
-  end
-
-  def build_board(str) do
-    str
-    |> String.split("\n", trim: true)
-    |> Enum.with_index
-    |> Enum.reduce(%{location: %{}, marked: %{}}, fn({row, y}, board) ->
-      row
-      |> String.split(" ", trim: true)
       |> Enum.with_index
-      |> Enum.reduce(board, fn({num, x}, board) ->
+      |> Enum.reduce(%{}, fn({board, b}, acc) ->
         board
-        |> Map.update!(:location, &Map.put(&1, String.to_integer(num), {x, y}))
-        |> Map.update!(:marked, &Map.put(&1, {x, y}, false))
+        |> String.split("\n", trim: true)
+        |> Enum.with_index
+        |> Enum.reduce(acc, fn({row, y}, acc) ->
+          row
+          |> String.split(" ", trim: true)
+          |> Enum.with_index
+          |> Enum.reduce(acc, fn({char, x}, acc) ->
+            Map.update(acc, String.to_integer(char), [{b, {x, y}}], &[{b, {x, y}}|&1])
+          end)
+        end)
       end)
-    end)
+
+    {bingo_balls, locations}
   end
 
-  def bingo?(%{marked: marked}) do
+  def bingo?({_index, marked}) do
     [
       # diagonals
-      [{0, 0}, {1, 1}, {2, 2}, {3, 3}, {4, 4}],
-      [{0, 4}, {1, 3}, {2, 2}, {3, 1}, {4, 0}],
+      # [{0, 0}, {1, 1}, {2, 2}, {3, 3}, {4, 4}],
+      # [{0, 4}, {1, 3}, {2, 2}, {3, 1}, {4, 0}],
       # horizontal
       [{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}],
       [{0, 1}, {1, 1}, {2, 1}, {3, 1}, {4, 1}],
@@ -56,29 +53,40 @@ defmodule Advent2021.Day4 do
       [{3, 0}, {3, 1}, {3, 2}, {3, 3}, {3, 4}],
       [{4, 0}, {4, 1}, {4, 2}, {4, 3}, {4, 4}],
     ]
-    |> Enum.any?(fn(list_of_coords) -> Enum.all?(list_of_coords, &Map.get(marked, &1)) end)
+    |> Enum.any?(fn(list_of_coords) ->
+      Enum.all?(list_of_coords, &Enum.member?(marked, &1))
+    end)
   end
 
-  def call(%{location: location} = board, number) do
-    coord = Map.get(location, number)
+  @doc """
+  Reconstructs the board from the locations
+  """
+  def board(index, locations) do
+    locations
+    |> Enum.filter(fn({_num, coords}) ->
+      Enum.any?(coords, &elem(&1, 0) == index)
+    end)
+    |> Enum.map(fn({num, coords}) ->
+      {
+        coords
+        |> Enum.find(&elem(&1, 0) == index) # find the one for this board
+        |> elem(1),
+        num
+      }
+    end)
+    |> Enum.into(%{})
+  end
 
-    if coord do
-      Map.update!(board, :marked, &Map.put(&1, coord, true))
-    else
-      board
+  def unmarked_numbers({index, marked}, locations) do
+    board = board(index, locations)
+
+    for x <- 0..4, y <- 0..4, into: %MapSet{} do
+      {x, y}
     end
-  end
-
-  def unmarked_numbers(%{location: location, marked: marked}) do
-    squares =
-      location
-      |> Enum.map(fn{key, val} -> {val, key} end)
-      |> Enum.into(%{})
-
-    marked
-    |> Enum.reject(&elem(&1, 1))
-    |> Enum.map(&elem(&1, 0))
-    |> Enum.map(&Map.get(squares, &1))
+    |> MapSet.difference(marked)
+    |> Enum.map(fn(coord) ->
+      Map.get(board, coord)
+    end)
   end
 
   @doc """
@@ -105,23 +113,32 @@ defmodule Advent2021.Day4 do
       ...> |> p1
       4512
   """
-  def p1(%{numbers: numbers} = state) do
+  def p1({bingo_balls, locations}) do
     {winner, number} =
-      numbers
-      |> Enum.reduce_while(state, fn(number, %{boards: boards} = state) ->
-        # call out the number
-        new_boards = Enum.map(boards, &call(&1, number))
+      bingo_balls
+      |> Enum.reduce_while(%{}, fn(number, marked) ->
+        # call out the ball
+        boards =
+          locations
+          |> Map.get(number)
+          |> Enum.reduce(marked, fn({index, coord}, marked) ->
+            marked
+            |> Map.update(index, MapSet.new([coord]), fn(board) ->
+              MapSet.put(board, coord)
+            end)
+          end)
 
-        if Enum.any?(new_boards, &bingo?/1) do
-          winner = Enum.find(new_boards, &bingo?/1)
+        if Enum.any?(boards, &bingo?/1) do
+          winner = Enum.find(boards, &bingo?/1)
+
           {:halt, {winner, number}}
         else
-          {:cont, %{state | boards: new_boards}}
+          {:cont, boards}
         end
       end)
 
     winner
-    |> unmarked_numbers
+    |> unmarked_numbers(locations)
     |> Enum.sum
     |> Kernel.*(number)
   end
