@@ -44,12 +44,12 @@ defmodule Advent2021.Day5 do
   """
   def p1(list) do
     list
+    |> Enum.filter(fn({x1..x2, y1..y2}) -> x1 == x2 || y1 == y2 end)
     |> Enum.map(&generate_points/1)
     |> List.flatten
-    |> IO.inspect
     |> Enum.frequencies
     |> Map.values
-    |> Enum.count(& &1 > 2)
+    |> Enum.count(& &1 > 1)
   end
 
   def p2(_i), do: nil
