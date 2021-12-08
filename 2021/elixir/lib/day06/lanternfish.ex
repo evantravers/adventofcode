@@ -16,14 +16,22 @@ defmodule Advent2021.Day6 do
     end
   end
 
-  def tick({0, count}), do: [{@lifespan, count}, {@lifespan + 2, count}]
-  def tick({clock, count}), do: {clock - 1, count}
+  def tick({0 = clock, count}, groups) do
+    groups
+    |> Map.update(clock, 0, & &1 - count) # delete
+    |> Map.update(@lifespan, count, & count + &1)
+    |> Map.put(@lifespan + 2, count)
+  end
+  def tick({clock, count}, groups) do
+    groups
+    |> Map.update(clock, 0, & &1 - count) # delete
+    |> Map.update(clock - 1, count, & count + &1)
+  end
 
   def sim(fish, 0), do: fish |> Enum.map(fn({_clock, count}) -> count end) |> Enum.sum
   def sim(fish, countdown) do
     fish
-    |> Enum.map(&tick/1)
-    |> List.flatten
+    |> Enum.reduce(%{}, &tick/2)
     |> sim(countdown - 1)
   end
 
