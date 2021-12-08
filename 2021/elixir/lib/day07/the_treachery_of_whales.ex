@@ -10,6 +10,18 @@ defmodule Advent2021.Day7 do
   end
 
   @doc """
+    As it turns out, crab submarine engines don't burn fuel at a constant rate.
+  Instead, each change of 1 step in horizontal position costs 1 more unit of
+  fuel than the last: the first step costs 1, the second step costs 2, the
+  third step costs 3, and so on.
+  """
+  def cost(p1, p2) do
+    distance = abs(p1 - p2)
+
+    (Integer.pow(distance, 2) + distance)/2
+  end
+
+  @doc """
       iex> [16,1,2,0,4,2,7,1,2,14] |> p1
       37
   """
@@ -24,5 +36,18 @@ defmodule Advent2021.Day7 do
     |> Enum.min
   end
 
-  def p2(_i), do: nil
+  @doc """
+      iex> [16,1,2,0,4,2,7,1,2,14] |> p1
+      168
+  """
+  def p2(crabs) do
+    {min, max} = Enum.min_max(crabs)
+
+    for position <- min..max do
+      crabs
+      |> Enum.map(fn(crab) -> cost(crab, position) end)
+      |> Enum.sum
+    end
+    |> Enum.min
+  end
 end
