@@ -13,7 +13,6 @@ defmodule Advent2021.Day6 do
         |> String.to_integer
       end)
       |> Enum.frequencies
-      |> Map.to_list
     end
   end
 
