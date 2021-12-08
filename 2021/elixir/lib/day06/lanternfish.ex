@@ -7,22 +7,27 @@ defmodule Advent2021.Day6 do
     with {:ok, file} <- File.read("#{__DIR__}/input.txt") do
       file
       |> String.split(",", trim: true)
-      |> Enum.map(fn(i) -> i |> String.trim |> String.to_integer end)
+      |> Enum.map(fn(int) ->
+        int
+        |> String.trim
+        |> String.to_integer
+      end)
+      |> Enum.frequencies
+      |> Map.to_list
     end
   end
 
-  def live(0), do: [@lifespan, @lifespan + 2]
-  def live(int), do: int - 1
+  def tick({0, count}), do: [{@lifespan, count}, {@lifespan + 2, count}]
+  def tick({clock, count}), do: {clock - 1, count}
 
-  def sim(input, count \\ 80)
-  def sim(input, 0), do: Enum.count(input)
-  def sim(input, count) do
-    input
-    |> Enum.map(&live/1)
+  def sim(fish, 0), do: fish |> Enum.map(fn({_clock, count}) -> count end) |> Enum.sum
+  def sim(fish, countdown) do
+    fish
+    |> Enum.map(&tick/1)
     |> List.flatten
-    |> sim(count - 1)
+    |> sim(countdown - 1)
   end
 
   def p1(input), do: sim(input, 80)
-  def p2(input), do: nil # sim(input, 256)
+  def p2(input), do: sim(input, 256)
 end
