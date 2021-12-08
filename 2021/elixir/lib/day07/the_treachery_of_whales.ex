@@ -37,8 +37,8 @@ defmodule Advent2021.Day7 do
   end
 
   @doc """
-      iex> [16,1,2,0,4,2,7,1,2,14] |> p1
-      168
+      iex> [16,1,2,0,4,2,7,1,2,14] |> p2
+      168.0
   """
   def p2(crabs) do
     {min, max} = Enum.min_max(crabs)
