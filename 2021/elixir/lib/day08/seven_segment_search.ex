@@ -58,28 +58,31 @@ defmodule Advent2021.Day8 do
           case Enum.count(signal) do
             2 -> # found 1!
               possible
-              |> Map.update!(:c, &MapSet.intersection(&1, signal))
-              |> Map.update!(:f, &MapSet.intersection(&1, signal))
+              |> Map.update!(:c, &MapSet.intersection(&1, signal)) # true
+              |> Map.update!(:f, &MapSet.intersection(&1, signal)) # true
+              |> Map.update!(:a, &MapSet.difference(&1, signal)) # false
+              |> Map.update!(:b, &MapSet.difference(&1, signal)) # false
+              |> Map.update!(:d, &MapSet.difference(&1, signal)) # false
+              |> Map.update!(:e, &MapSet.difference(&1, signal)) # false
+              |> Map.update!(:g, &MapSet.difference(&1, signal)) # false
             3 -> # found 7!
               possible
-              |> Map.update!(:a, &MapSet.intersection(&1, signal))
-              |> Map.update!(:c, &MapSet.intersection(&1, signal))
-              |> Map.update!(:f, &MapSet.intersection(&1, signal))
+              |> Map.update!(:a, &MapSet.intersection(&1, signal)) # true
+              |> Map.update!(:c, &MapSet.intersection(&1, signal)) # true
+              |> Map.update!(:f, &MapSet.intersection(&1, signal)) # true
+              |> Map.update!(:b, &MapSet.difference(&1, signal)) # false
+              |> Map.update!(:d, &MapSet.difference(&1, signal)) # false
+              |> Map.update!(:e, &MapSet.difference(&1, signal)) # false
+              |> Map.update!(:g, &MapSet.difference(&1, signal)) # false
             4 -> # found 4!
               possible
-              |> Map.update!(:b, &MapSet.intersection(&1, signal))
-              |> Map.update!(:c, &MapSet.intersection(&1, signal))
-              |> Map.update!(:d, &MapSet.intersection(&1, signal))
-              |> Map.update!(:f, &MapSet.intersection(&1, signal))
-            7 -> # found 8!
-              possible
-              |> Map.update!(:a, &MapSet.intersection(&1, signal))
-              |> Map.update!(:b, &MapSet.intersection(&1, signal))
-              |> Map.update!(:c, &MapSet.intersection(&1, signal))
-              |> Map.update!(:d, &MapSet.intersection(&1, signal))
-              |> Map.update!(:e, &MapSet.intersection(&1, signal))
-              |> Map.update!(:f, &MapSet.intersection(&1, signal))
-              |> Map.update!(:g, &MapSet.intersection(&1, signal))
+              |> Map.update!(:b, &MapSet.intersection(&1, signal)) # true
+              |> Map.update!(:c, &MapSet.intersection(&1, signal)) # true
+              |> Map.update!(:d, &MapSet.intersection(&1, signal)) # true
+              |> Map.update!(:f, &MapSet.intersection(&1, signal)) # true
+              |> Map.update!(:a, &MapSet.difference(&1, signal)) # false
+              |> Map.update!(:e, &MapSet.difference(&1, signal)) # false
+              |> Map.update!(:g, &MapSet.difference(&1, signal)) # false
             _ -> possible
           end
         end)
