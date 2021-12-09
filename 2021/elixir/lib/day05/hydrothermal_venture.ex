@@ -23,6 +23,20 @@ defmodule Advent2021.Day5 do
     !Range.disjoint?(x1, x2) && !Range.disjoint?(y1, y2)
   end
 
+  @doc """
+      iex> cross({0..3, 0..0}, {0..0, 3..0})
+      {0, 0}
+
+      iex> cross({1..3, 1..3}, {1..1, 3..0})
+      {1, 1}
+  """
+  def cross({x1, y1}, {x2, y2}) do
+    {
+      Enum.find(x1, &Enum.member?(x2, &1)),
+      Enum.find(y1, &Enum.member?(y2, &1))
+    }
+  end
+
   def generate_points({x1..x2, y1..y2}) do
     for x <- x1..x2, y <- y1..y2, do: {x, y}
   end
@@ -52,5 +66,11 @@ defmodule Advent2021.Day5 do
     |> Enum.count(& &1 > 1)
   end
 
-  def p2(_i), do: nil
+  def p2(list) do
+    # take every item in the list
+    # compare against the other items in the list
+    # find the coords where they cross
+    # put in a MapSet for history
+    # count the MapSet
+  end
 end
