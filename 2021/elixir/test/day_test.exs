@@ -7,4 +7,5 @@ defmodule Advent2021Test do
   doctest Advent2021.Day5, import: true
   doctest Advent2021.Day7, import: true
   doctest Advent2021.Day8, import: true
+  doctest Advent2021.Day9, import: true
 end
