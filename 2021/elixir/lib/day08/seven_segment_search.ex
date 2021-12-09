@@ -19,21 +19,18 @@ defmodule Advent2021.Day8 do
   end
 
   @doc """
-      iex> ["abcefg","acdfg","cf","acdeg","bcdf","acf","abdfg","abdefg","abcdefg","abcdfg"]
-      ...> |> frequency_analysis
-      %{
-        "cf"      => 1,
-        "acdeg"   => 2,
-        "acdfg"  => 3,
-        "bcdf"    => 4,
-        "abdfg"   => 5,
-        "abdefg"  => 6,
-        "acf"     => 7,
-        "abcdefg" => 8,
-        "abcdfg"  => 9,
-        "abcefg"  => 0
-      }
+  https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnpfi4k/
+
+  Pre-computing the ideal frequencies.
   """
+  def ideal_frequencies do
+    ["abcefg","cf","acdeg","acdfg","bcdf","abdfg","abdefg","acf","abcdefg","abcdfg"]
+    |> frequency_analysis
+    |> Enum.with_index
+    |> Enum.map(fn({{_word, sum}, index}) -> {sum, index} end)
+    |> Map.new
+  end
+
   def frequency_analysis(signals) do
     map =
     signals
@@ -44,19 +41,20 @@ defmodule Advent2021.Day8 do
     signals
     |> Enum.map(fn(str) ->
       {
+        str,
         str
         |> String.codepoints
         |> Enum.map(&Map.get(map, &1))
-        |> Enum.sort
-        |> Enum.join,
-        str
+        |> Enum.sum
       }
     end)
-    |> Enum.sort_by(fn({magic, _key}) -> magic end)
-    |> Enum.reverse
-    |> Enum.with_index
-    |> Enum.map(fn({{_magic, key}, val}) -> {key, val} end)
-    |> Map.new
+  end
+
+  def norm(str) do
+    str
+    |> String.codepoints
+    |> Enum.sort
+    |> Enum.join
   end
 
   def p1(input) do
@@ -78,10 +76,16 @@ defmodule Advent2021.Day8 do
   def p2(input) do
     input
     |> Enum.map(fn(%{signals: signals, output: output}) ->
-      decoder = frequency_analysis(signals)
+      wiring =
+      signals
+      |> frequency_analysis
+      |> Enum.map(fn({word, sum}) ->
+        {norm(word), Map.get(ideal_frequencies(), sum)}
+      end)
+      |> Map.new
 
       output
-      |> Enum.map(&Map.get(decoder, &1))
+      |> Enum.map(&Map.get(wiring, norm(&1)))
       |> Enum.join
       |> String.to_integer
     end)
