@@ -75,7 +75,6 @@ defmodule Advent2021.Day9 do
       1134
   """
   def p2(map) do
-    low_points =
     map
     |> Enum.filter(&low_point?(&1, map))
     |> Enum.map(fn(low_point) ->
