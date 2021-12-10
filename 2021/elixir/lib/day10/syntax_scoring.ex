@@ -51,7 +51,7 @@ defmodule Advent2021.Day10 do
       iex> "])}>"
       ...> |> String.codepoints
       ...> |> autocomplete_score
-      295
+      294
   """
   def autocomplete_score(codepoints) do
     codepoints
