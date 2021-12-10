@@ -1,7 +1,7 @@
 defmodule Advent2021.Day10 do
   @moduledoc "https://adventofcode.com/2021/day/10"
 
-  @score %{
+  @corrupted %{
     ")" => 3,
     "]" => 57,
     "}" => 1197,
@@ -13,6 +13,7 @@ defmodule Advent2021.Day10 do
       file
       |> String.split("\n", trim: true)
       |> Enum.map(&String.codepoints/1)
+      |> Enum.map(&parse/1)
     end
   end
 
@@ -21,7 +22,7 @@ defmodule Advent2021.Day10 do
   each queue.
   """
   def parse(input, matches \\ [])
-  def parse([], matches), do: matches
+  def parse([], incomplete), do: incomplete
   # open
   def parse(["{"|queue], matches), do: parse(queue, ["}"|matches])
   def parse(["("|queue], matches), do: parse(queue, [")"|matches])
@@ -38,15 +39,42 @@ defmodule Advent2021.Day10 do
   def parse(["]"|_queue], _matches), do: {:corrupted, "]"}
   def parse([">"|_queue], _matches), do: {:corrupted, ">"}
 
+  def corrupted?({:corrupted, _}), do: true
+  def corrupted?(_), do: false
+
+  def score(")"), do: 1
+  def score("]"), do: 2
+  def score("}"), do: 3
+  def score(">"), do: 4
+
+  @doc """
+      iex> "])}>"
+      ...> |> String.codepoints
+      ...> |> autocomplete_score
+      295
+  """
+  def autocomplete_score(codepoints) do
+    codepoints
+    |> Enum.reduce(0, fn(char, score) ->
+      (score * 5) + score(char)
+    end)
+  end
+
   def p1(list) do
     list
-    |> Enum.map(&parse/1)
-    |> Enum.filter(fn
-      {:corrupted, _char} -> true
-      _ -> false
-    end)
-    |> Enum.map(fn({:corrupted, char}) -> Map.get(@score, char) end)
+    |> Enum.filter(&corrupted?/1)
+    |> Enum.map(fn({:corrupted, char}) -> Map.get(@corrupted, char) end)
     |> Enum.sum
   end
-  def p2(_i), do: nil
+
+  def p2(list) do
+    incomplete =
+    list
+    |> Enum.reject(&corrupted?/1)
+
+    incomplete
+    |> Enum.map(&autocomplete_score/1)
+    |> Enum.sort
+    |> Enum.at(ceil(Enum.count(incomplete) / 2) - 1)
+  end
 end
