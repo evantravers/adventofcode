@@ -44,12 +44,22 @@ defmodule Advent2021.Day11 do
     |> Map.update!(coord, 0)
   end
 
+  def chain_reaction(octopi) do
+    flashed = Enum.reduce(octopi, %{}, &flash/2)
+
+    if flashed == octopi do
+      octopi
+    else
+      chain_reaction(flashed)
+    end
+  end
+
   def p1(octopi, countdown \\ 100)
   def p1(octopi, 0), do: octopi |> IO.inspect
   def p1(octopi, countdown) do
     octopi
     |> Enum.map(&increase_energy_level/1)
-    |> Enum.reduce(%{}, &flash/2)
+    |> chain_reaction
     |> p1(countdown - 1)
   end
 
