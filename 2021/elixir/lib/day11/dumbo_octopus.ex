@@ -34,7 +34,7 @@ defmodule Advent2021.Day11 do
     ]
   end
 
-  def flash({_coord, energy}, octopi) when energy < 10, do: octopi
+  def flash({_coord, energy}, octopi) when energy <= 9, do: octopi
   def flash({coord, _energy}, octopi) do
     coord
     |> adjacent
@@ -54,13 +54,19 @@ defmodule Advent2021.Day11 do
     end
   end
 
-  def p1(octopi, countdown \\ 100)
-  def p1(octopi, 0), do: octopi |> IO.inspect
-  def p1(octopi, countdown) do
+  def step(octopi, countdown \\ 100)
+  def step(octopi, 0), do: octopi
+  def step(octopi, countdown) do
     octopi
     |> Enum.map(&increase_energy_level/1)
     |> chain_reaction
-    |> p1(countdown - 1)
+    |> Map.new
+    |> step(countdown - 1)
+  end
+
+  def p1(octopi) do
+    octopi
+    |> step(100)
   end
 
   def p2(_i), do: nil
