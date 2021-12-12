@@ -30,6 +30,7 @@ defmodule Advent2021.Day11 do
     if Map.has_key?(octopi, coord) do
       Map.update!(octopi, coord, & &1 + 1) # FIXME: isn't this increase_energy_level?
     else
+      IO.puts("OOB!")
       octopi
     end
   end
@@ -51,6 +52,7 @@ defmodule Advent2021.Day11 do
   end
 
   def chain_reaction(octopi) do
+    print(octopi)
     flashed = Enum.reduce(octopi, octopi, &flash/2)
 
     if flashed == octopi do
@@ -154,7 +156,7 @@ defmodule Advent2021.Day11 do
       ...>19991
       ...>11111"
       ...> |> setup_string
-      ...> |> p1(1)
+      ...> |> p1(2)
   """
   def p1(octopi, steps \\ 100) do
     octopi
