@@ -19,33 +19,36 @@ defmodule Advent2021.Day11 do
     end)
   end
 
+  @doc """
+      iex> increase_energy_level({{1, 1}, 1})
+      {{1, 1}, 2}
+  """
   def increase_energy_level({coord, num}), do: {coord, num + 1}
 
-  def adjacent({{x, y}, _energy}) do
-    [
-      {x - 1, y - 1},
-      {x - 1, y},
-      {x - 1, y + 1},
-      {x, y - 1},
-      {x, y + 1},
-      {x + 1, y - 1},
-      {x + 1, y},
-      {x + 1, y + 1}
-    ]
+  def update(octopi, coord) do
+    if Map.has_key?(octopi, coord) do
+      Map.update!(octopi, coord, & &1 + 1) # FIXME: isn't this increase_energy_level?
+    else
+      octopi
+    end
   end
 
   def flash({_coord, energy}, octopi) when energy <= 9, do: octopi
-  def flash({coord, _energy}, octopi) do
-    coord
-    |> adjacent
-    |> Enum.reduce(octopi, fn(flashed, map) ->
-      Map.update!(map, flashed, & &1 + 1)
-    end)
-    |> Map.update!(coord, 0)
+  def flash({{x, y}, _energy}, octopi) do
+    octopi
+    |> update({x - 1, y - 1})
+    |> update({x - 1, y})
+    |> update({x - 1, y + 1})
+    |> update({x, y - 1})
+    |> update({x, y + 1})
+    |> update({x + 1, y - 1})
+    |> update({x + 1, y})
+    |> update({x + 1, y + 1})
+    |> Map.put({x, y}, 0)
   end
 
   def chain_reaction(octopi) do
-    flashed = Enum.reduce(octopi, %{}, &flash/2)
+    flashed = Enum.reduce(octopi, octopi, &flash/2)
 
     if flashed == octopi do
       octopi
@@ -59,8 +62,8 @@ defmodule Advent2021.Day11 do
   def step(octopi, countdown) do
     octopi
     |> Enum.map(&increase_energy_level/1)
-    |> chain_reaction
     |> Map.new
+    |> chain_reaction
     |> step(countdown - 1)
   end
 
