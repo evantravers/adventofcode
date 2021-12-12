@@ -23,6 +23,7 @@ defmodule Advent2021.Day11 do
       iex> increase_energy_level({{1, 1}, 1})
       {{1, 1}, 2}
   """
+  def increase_energy_level({:flashes, _count} = flashes), do: flashes
   def increase_energy_level({coord, num}), do: {coord, num + 1}
 
   def update(octopi, coord) do
@@ -33,6 +34,7 @@ defmodule Advent2021.Day11 do
     end
   end
 
+  def flash({:flashes, _count}, octopi), do: octopi
   def flash({_coord, energy}, octopi) when energy <= 9, do: octopi
   def flash({{x, y}, _energy}, octopi) do
     octopi
@@ -45,6 +47,7 @@ defmodule Advent2021.Day11 do
     |> update({x + 1, y})
     |> update({x + 1, y + 1})
     |> Map.put({x, y}, 0)
+    |> Map.update!(:flashes, & &1 + 1)
   end
 
   def chain_reaction(octopi) do
@@ -67,9 +70,26 @@ defmodule Advent2021.Day11 do
     |> step(countdown - 1)
   end
 
+  @doc """
+      iex> "5483143223
+      ...>2745854711
+      ...>5264556173
+      ...>6141336146
+      ...>6357385478
+      ...>4167524645
+      ...>2176841721
+      ...>6882881134
+      ...>4846848554
+      ...>5283751526"
+      ...> |> setup_string
+      ...> |> p1
+      1656
+  """
   def p1(octopi) do
     octopi
+    |> Map.put(:flashes, 0)
     |> step(100)
+    |> Map.get(:flashes)
   end
 
   def p2(_i), do: nil
