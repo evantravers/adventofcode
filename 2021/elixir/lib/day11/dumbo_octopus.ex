@@ -60,10 +60,31 @@ defmodule Advent2021.Day11 do
     end
   end
 
+  def print(octopi) do
+    for y <- 0..9 do
+      for x <- 0..9 do
+        if Map.get(octopi, {x, y}) == 0 do
+          IO.ANSI.blue_background() <> "0" <> IO.ANSI.reset()
+        else
+          Map.get(octopi, {x, y})
+        end
+      end
+      |> Enum.join
+      |> Kernel.<>("\n")
+    end
+    |> Enum.join
+    |> IO.puts
+
+    octopi
+  end
+
   def step(octopi, countdown \\ 100)
   def step(octopi, 0), do: octopi
   def step(octopi, countdown) do
+    IO.puts(countdown)
+
     octopi
+    |> print
     |> Enum.map(&increase_energy_level/1)
     |> Map.new
     |> chain_reaction
@@ -82,13 +103,55 @@ defmodule Advent2021.Day11 do
       ...>4846848554
       ...>5283751526"
       ...> |> setup_string
-      ...> |> p1
-      1656
+      ...> |> p1(2)
+      35
+
+      iex> "5483143223
+      ...>2745854711
+      ...>5264556173
+      ...>6141336146
+      ...>6357385478
+      ...>4167524645
+      ...>2176841721
+      ...>6882881134
+      ...>4846848554
+      ...>5283751526"
+      ...> |> setup_string
+      ...> |> p1(3)
+      80
+
+      iex> "5483143223
+      ...>2745854711
+      ...>5264556173
+      ...>6141336146
+      ...>6357385478
+      ...>4167524645
+      ...>2176841721
+      ...>6882881134
+      ...>4846848554
+      ...>5283751526"
+      ...> |> setup_string
+      ...> |> p1(4)
+      96
+
+      iex> "5483143223
+      ...>2745854711
+      ...>5264556173
+      ...>6141336146
+      ...>6357385478
+      ...>4167524645
+      ...>2176841721
+      ...>6882881134
+      ...>4846848554
+      ...>5283751526"
+      ...> |> setup_string
+      ...> |> p1(10)
+      204
   """
-  def p1(octopi) do
+  def p1(octopi, steps \\ 100) do
     octopi
     |> Map.put(:flashes, 0)
-    |> step(100)
+    |> step(steps)
     |> Map.get(:flashes)
   end
 
