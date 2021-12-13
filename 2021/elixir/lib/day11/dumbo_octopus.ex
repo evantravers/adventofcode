@@ -30,14 +30,12 @@ defmodule Advent2021.Day11 do
     if Map.has_key?(octopi, coord) do
       Map.update!(octopi, coord, & &1 + 1) # FIXME: isn't this increase_energy_level?
     else
-      IO.puts("OOB!")
       octopi
     end
   end
 
   def flash({:flashes, _count}, octopi), do: octopi
-  def flash({_coord, energy}, octopi) when energy <= 9, do: octopi
-  def flash({{x, y}, _energy}, octopi) do
+  def flash({{x, y}, energy}, octopi) when energy > 9 do
     octopi
     |> update({x - 1, y - 1})
     |> update({x - 1, y})
@@ -50,9 +48,9 @@ defmodule Advent2021.Day11 do
     |> Map.put({x, y}, 0)
     |> Map.update!(:flashes, & &1 + 1)
   end
+  def flash(_octopus, octopi), do: octopi
 
   def chain_reaction(octopi) do
-    print(octopi)
     flashed = Enum.reduce(octopi, octopi, &flash/2)
 
     if flashed == octopi do
@@ -83,10 +81,7 @@ defmodule Advent2021.Day11 do
   def step(octopi, countdown \\ 100)
   def step(octopi, 0), do: octopi |> print # FIXME: There could be an off by one
   def step(octopi, countdown) do
-    IO.puts(countdown)
-
     octopi
-    |> print
     |> Enum.map(&increase_energy_level/1)
     |> Map.new
     |> chain_reaction
@@ -94,61 +89,61 @@ defmodule Advent2021.Day11 do
   end
 
   @doc """
-      # iex> "5483143223
-      # ...>2745854711
-      # ...>5264556173
-      # ...>6141336146
-      # ...>6357385478
-      # ...>4167524645
-      # ...>2176841721
-      # ...>6882881134
-      # ...>4846848554
-      # ...>5283751526"
-      # ...> |> setup_string
-      # ...> |> p1(2)
-      # 35
+      iex> "5483143223
+      ...>2745854711
+      ...>5264556173
+      ...>6141336146
+      ...>6357385478
+      ...>4167524645
+      ...>2176841721
+      ...>6882881134
+      ...>4846848554
+      ...>5283751526"
+      ...> |> setup_string
+      ...> |> p1(2)
+      35
 
-      # iex> "5483143223
-      # ...>2745854711
-      # ...>5264556173
-      # ...>6141336146
-      # ...>6357385478
-      # ...>4167524645
-      # ...>2176841721
-      # ...>6882881134
-      # ...>4846848554
-      # ...>5283751526"
-      # ...> |> setup_string
-      # ...> |> p1(3)
-      # 80
+      iex> "5483143223
+      ...>2745854711
+      ...>5264556173
+      ...>6141336146
+      ...>6357385478
+      ...>4167524645
+      ...>2176841721
+      ...>6882881134
+      ...>4846848554
+      ...>5283751526"
+      ...> |> setup_string
+      ...> |> p1(3)
+      80
 
-      # iex> "5483143223
-      # ...>2745854711
-      # ...>5264556173
-      # ...>6141336146
-      # ...>6357385478
-      # ...>4167524645
-      # ...>2176841721
-      # ...>6882881134
-      # ...>4846848554
-      # ...>5283751526"
-      # ...> |> setup_string
-      # ...> |> p1(4)
-      # 96
+      iex> "5483143223
+      ...>2745854711
+      ...>5264556173
+      ...>6141336146
+      ...>6357385478
+      ...>4167524645
+      ...>2176841721
+      ...>6882881134
+      ...>4846848554
+      ...>5283751526"
+      ...> |> setup_string
+      ...> |> p1(4)
+      96
 
-      # iex> "5483143223
-      # ...>2745854711
-      # ...>5264556173
-      # ...>6141336146
-      # ...>6357385478
-      # ...>4167524645
-      # ...>2176841721
-      # ...>6882881134
-      # ...>4846848554
-      # ...>5283751526"
-      # ...> |> setup_string
-      # ...> |> p1(10)
-      # 204
+      iex> "5483143223
+      ...>2745854711
+      ...>5264556173
+      ...>6141336146
+      ...>6357385478
+      ...>4167524645
+      ...>2176841721
+      ...>6882881134
+      ...>4846848554
+      ...>5283751526"
+      ...> |> setup_string
+      ...> |> p1(10)
+      204
 
       iex> "11111
       ...>19991
