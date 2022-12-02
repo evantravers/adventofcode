@@ -1,16 +1,10 @@
 Elves = {};
 
 local elf = 0;
-Heaviest = 0;
 
 for line in io.lines("../input/01.txt") do
   if line == "" then
     table.insert(Elves, elf);
-
-    if elf > Heaviest then
-      Heaviest = elf;
-    end
-
     elf = 0;
   else
     elf = elf + tonumber(line)
