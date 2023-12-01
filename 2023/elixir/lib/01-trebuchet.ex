@@ -1,6 +1,4 @@
 defmodule Advent2023.Day1 do
-  require IEx
-
   @moduledoc "https://adventofcode.com/2023/day/1"
 
   def setup do
