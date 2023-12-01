@@ -22,12 +22,11 @@ defmodule Advent2023.Day1 do
   def solve(input, regex, func) do
     input
     |> Enum.map(fn line ->
-      IO.inspect(line)
       numbers =
         regex
         |> Regex.scan(line)
-        |> IO.inspect
         |> List.flatten
+        |> Enum.reject(& &1 == "")
         |> Enum.map(func)
 
       List.first(numbers)*10 + List.last(numbers)
@@ -64,7 +63,7 @@ defmodule Advent2023.Day1 do
   def p2(input) do
     solve(
       input,
-      ~r/\d|one|two|three|four|five|six|seven|eight|nine/,
+      ~r/\d|(?=(one))|(?=(two))|(?=(three))|(?=(four))|(?=(five))|(?=(six))|(?=(seven))|(?=(eight))|(?=(nine))/,
       &process_number/1
     )
   end
