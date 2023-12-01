@@ -10,16 +10,30 @@ defmodule Advent2023.Day1 do
     end
   end
 
-  def p("one"),   do: 1
-  def p("two"),   do: 2
-  def p("three"), do: 3
-  def p("four"),  do: 4
-  def p("five"),  do: 5
-  def p("six"),   do: 6
-  def p("seven"), do: 7
-  def p("eight"), do: 8
-  def p("nine"),  do: 9
-  def p(num),     do: String.to_integer(num)
+  def process_number("one"),   do: 1
+  def process_number("two"),   do: 2
+  def process_number("three"), do: 3
+  def process_number("four"),  do: 4
+  def process_number("five"),  do: 5
+  def process_number("six"),   do: 6
+  def process_number("seven"), do: 7
+  def process_number("eight"), do: 8
+  def process_number("nine"),  do: 9
+  def process_number(num),     do: String.to_integer(num)
+
+  def solve(input, regex, func) do
+    input
+    |> Enum.map(fn line ->
+      numbers =
+        regex
+        |> Regex.scan(line)
+        |> List.flatten
+        |> Enum.map(func)
+
+      List.first(numbers)*10 + List.last(numbers)
+    end)
+    |> Enum.sum
+  end
 
   @doc """
   iex> ["1abc2",
@@ -30,17 +44,7 @@ defmodule Advent2023.Day1 do
   142
   """
   def p1(input) do
-    input
-    |> Enum.map(fn line ->
-      numbers =
-        line
-        |> String.codepoints
-        |> Enum.filter(fn c -> String.match?(c, ~r/\d/) end)
-        |> Enum.map(&String.to_integer/1)
-
-      List.first(numbers)*10 + List.last(numbers)
-    end)
-    |> Enum.sum
+    solve(input, ~r/\d/, &String.to_integer/1)
   end
 
   @doc """
@@ -55,16 +59,10 @@ defmodule Advent2023.Day1 do
   281
   """
   def p2(input) do
-    input
-    |> Enum.map(fn line ->
-      numbers =
-        ~r/\d|one|two|three|four|five|six|seven|eight|nine/
-        |> Regex.scan(line)
-        |> List.flatten
-
-      p(List.first(numbers))*10 + p(List.last(numbers))
-      |> IO.inspect
-    end)
-    |> Enum.sum
+    solve(
+      input,
+      ~r/\d|one|two|three|four|five|six|seven|eight|nine/,
+      &process_number/1
+    )
   end
 end
