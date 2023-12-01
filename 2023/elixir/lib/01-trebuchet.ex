@@ -22,9 +22,11 @@ defmodule Advent2023.Day1 do
   def solve(input, regex, func) do
     input
     |> Enum.map(fn line ->
+      IO.inspect(line)
       numbers =
         regex
         |> Regex.scan(line)
+        |> IO.inspect
         |> List.flatten
         |> Enum.map(func)
 
@@ -55,6 +57,9 @@ defmodule Advent2023.Day1 do
   ...> "7pqrstsixteen"]
   ...> |> p2()
   281
+
+  iex> ["eighthree"] |> p2
+  83
   """
   def p2(input) do
     solve(
