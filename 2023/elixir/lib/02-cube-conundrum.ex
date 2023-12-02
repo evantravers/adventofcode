@@ -35,6 +35,7 @@ defmodule Advent2023.Day2 do
     end
   end
 
+  # TODO: I could make this faster if I memoized max_colors in `setup/1`
   def max_color(rounds, color) do
     rounds
     |> Enum.map(&Map.get(&1, color))
@@ -67,5 +68,21 @@ defmodule Advent2023.Day2 do
     |> Enum.sum
   end
 
-  def p2(_i), do: nil
+  @doc """
+  iex> "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+  ...>Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
+  ...>Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
+  ...>Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
+  ...>Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
+  ...> |> setup_from_string
+  ...> |> p2
+  2286
+  """
+  def p2(games) do
+    games
+    |> Enum.map(fn { _label, rounds } ->
+      max_color(rounds, :red) * max_color(rounds, :green) * max_color(rounds, :blue)
+    end)
+    |> Enum.sum
+  end
 end
