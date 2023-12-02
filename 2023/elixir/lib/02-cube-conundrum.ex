@@ -13,16 +13,18 @@ defmodule Advent2023.Day2 do
         |> String.to_integer,
         games
         |> String.split(";", trim: true)
-        |> Enum.map(fn rounds ->
-          rounds
+        |> Enum.reduce(%{}, fn(round, scores) ->
+          round
           |> String.trim
           |> String.split(", ", trim: true)
-          |> Enum.map(fn round ->
+          |> Enum.reduce(scores, fn(round, scores) ->
             [number, color] = String.split(round, " ")
 
-            { String.to_atom(color), String.to_integer(number) }
+            number = String.to_integer(number)
+            color  = String.to_atom(color)
+
+            Map.update(scores, color, number, fn current -> max(current, number) end)
           end)
-          |> Enum.into(%{})
         end)
       }
     end)
@@ -33,14 +35,6 @@ defmodule Advent2023.Day2 do
     with {:ok, file} <- File.read("../input/2") do
       file |> setup_from_string
     end
-  end
-
-  # TODO: I could make this faster if I memoized max_colors in `setup/1`
-  def max_color(rounds, color) do
-    rounds
-    |> Enum.map(&Map.get(&1, color))
-    |> Enum.reject(&is_nil/1)
-    |> Enum.max
   end
 
   @doc """
@@ -59,10 +53,10 @@ defmodule Advent2023.Day2 do
     max_blue  = 14
 
     games
-    |> Enum.filter(fn { _label, rounds } ->
-      max_color(rounds, :red) <= max_red &&
-      max_color(rounds, :green) <= max_green &&
-      max_color(rounds, :blue) <= max_blue
+    |> Enum.filter(fn { _label, scores } ->
+      Map.get(scores, :red) <= max_red &&
+      Map.get(scores, :green) <= max_green &&
+      Map.get(scores, :blue) <= max_blue
     end)
     |> Enum.map(&elem(&1, 0))
     |> Enum.sum
@@ -80,8 +74,8 @@ defmodule Advent2023.Day2 do
   """
   def p2(games) do
     games
-    |> Enum.map(fn { _label, rounds } ->
-      max_color(rounds, :red) * max_color(rounds, :green) * max_color(rounds, :blue)
+    |> Enum.map(fn { _label, scores } ->
+      Map.get(scores, :red) * Map.get(scores, :green) * Map.get(scores, :blue)
     end)
     |> Enum.sum
   end
