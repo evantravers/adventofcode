@@ -38,7 +38,7 @@ defmodule Mix.Tasks.Day do
       end)
         IO.puts("""
           ============================
-          Total Time: #{timestring(total_time)}
+          Total Time: #{IO.ANSI.red}#{timestring(total_time)}#{IO.ANSI.default_color}
           """)
     else
       {total_time, _} = :timer.tc(fn ->
@@ -55,15 +55,15 @@ defmodule Mix.Tasks.Day do
 
         IO.puts(
           """
-          Day #{day}:
+          #{IO.ANSI.yellow}Day #{day}:#{IO.ANSI.default_color}
           ----------------------------
           Part 1:
-          #{p1_answer}
-          (#{timestring(p1_time)})
+          #{IO.ANSI.italic}#{p1_answer}#{IO.ANSI.normal}
+          (#{IO.ANSI.bright}#{timestring(p1_time)}#{IO.ANSI.normal})
 
           Part 2:
-          #{p2_answer}
-          (#{timestring(p2_time)})
+          #{IO.ANSI.italic}#{p2_answer}#{IO.ANSI.normal}
+          (#{IO.ANSI.bright}#{timestring(p2_time)}#{IO.ANSI.normal})
           ----------------------------
           """
         )
