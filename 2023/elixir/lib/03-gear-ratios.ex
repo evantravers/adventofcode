@@ -131,7 +131,6 @@ defmodule Advent2023.Day3 do
     |> Enum.filter(fn {_part, coords} ->
       Enum.any?(coords, fn coord -> adjacent?(coord, symbols) end)
     end)
-    |> IO.inspect
     |> Enum.map(fn {id, _coords} -> id end)
     |> Enum.sum
   end
