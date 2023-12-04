@@ -42,8 +42,16 @@ defmodule Advent2023.Day3 do
   Should handle the "tokens" being passed into it, if you are thinking of it as
   a parser.
 
-  iex> process(%{}, {0, 0}, "4")
-  %{number: "4"}
+  iex> process(%{}, {0, 0}, "0")
+  %{number: "0"}
+
+  iex> process(%{}, {0, 0}, "9")
+  %{number: "9"}
+
+  iex> %{}
+  ...> |> process({0, 1}, "1")
+  ...> |> process({0, 2}, "2")
+  %{number: "12"}
 
   iex> process(%{}, {0, 0}, ".")
   %{}
