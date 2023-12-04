@@ -28,13 +28,13 @@ defmodule Advent2023.Day3 do
   Should handle the "expression" of the parser completing number.
 
   iex> clear(%{expr: {"123", [{0,0}, {1, 0}, {2, 0}]}})
-  %{parts: %{123 => [{0,0}, {1, 0}, {2, 0}]}}
+  %{parts: [{123, [{0,0}, {1, 0}, {2, 0}]}]}
   """
   def clear(%{expr: {number, coords}} = schema) do
     id = String.to_integer(number)
 
     schema
-    |> Map.update(:parts, %{id => coords}, &Map.put(&1, id, coords))
+    |> Map.update(:parts, [{id, coords}], &[{id, coords}|&1])
     |> Map.delete(:expr)
   end
   def clear(schema), do: schema
