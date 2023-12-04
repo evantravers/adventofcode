@@ -30,7 +30,7 @@ defmodule Advent2023.Day3 do
   iex> clear(%{number: {"123", [{0,0}, {1, 0}, {2, 0}]}})
   %{parts: %{123 => [{0,0}, {1, 0}, {2, 0}]}}
   """
-  def clear(%{number: {number, coords}} = schema) do
+  def clear(%{number: number, number_coords: coords} = schema) do
     id = String.to_integer(number)
     schema
     |> Map.update(:parts, %{id => coords}, &Map.put(&1, id, coords))
@@ -59,10 +59,10 @@ defmodule Advent2023.Day3 do
   iex> process(%{}, {0, 0}, "*")
   %{symbols: [{0,0}]}
   """
-  def process(schema, coord, <<c>> = char) when c <= 48 and c >= 57 do
-    IO.puts("found a number: #{char}, #{coord}")
+  def process(schema, coord, <<c>> = char) when c >= 48 and c <= 57 do
     schema
-    |> Map.update(:number, char, fn current_expr -> current_expr <> char end)
+    |> Map.update(:number, char, fn expr -> expr <> char end)
+    |> Map.update(:number_coords, [coord], fn coords -> [coord|coords] end)
   end
   def process(schema, _coord, "."), do: schema |> clear
   def process(schema, coord, _char) do
