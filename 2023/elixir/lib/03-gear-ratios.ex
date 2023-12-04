@@ -73,10 +73,10 @@ defmodule Advent2023.Day3 do
   end
 
   def adjacent?({x, y}, symbols) do
-    squares = for x <- x-1..x+1, y <- y-1..y+1, into: MapSet.new, do: {x, y}
-    disjoint = MapSet.disjoint?(symbols, squares)
-
-    !disjoint
+    !MapSet.disjoint?(
+      symbols,
+      (for x <- x-1..x+1, y <- y-1..y+1, into: MapSet.new, do: {x, y})
+    )
   end
 
   @doc """
