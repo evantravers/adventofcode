@@ -1,7 +1,6 @@
 defmodule Advent2023.Day3 do
   @moduledoc "https://adventofcode.com/2023/day/3"
 
-  require IEx
   def setup_from_string(str) do
     str
     |> String.split("\n", trim: true)
@@ -26,25 +25,38 @@ defmodule Advent2023.Day3 do
   end
 
   @doc """
-  Since we are no longer building a number, clear the memoized number.
+  Should handle the "expression" of the parser completing number.
+
+  iex> clear(%{number: {"123", [{0,0}, {1, 0}, {2, 0}]}})
+  %{parts: %{123 => [{0,0}, {1, 0}, {2, 0}]}}
   """
-  def clear(%{number: number} = schema) do
+  def clear(%{number: {number, coords}} = schema) do
+    id = String.to_integer(number)
     schema
-    |> Map.update(:parts, String.to_integer(number), fn parts -> Map.merge(number, parts) end)
+    |> Map.update(:parts, %{id => coords}, &Map.put(&1, id, coords))
     |> Map.delete(:number)
   end
   def clear(schema), do: schema
 
-  # '0'->48 :: '9'->57
-  # this is a number
+  @doc """
+  Should handle the "tokens" being passed into it, if you are thinking of it as
+  a parser.
+
+  iex> process(%{}, {0, 0}, "4")
+  %{number: "4"}
+
+  iex> process(%{}, {0, 0}, ".")
+  %{}
+
+  iex> process(%{}, {0, 0}, "*")
+  %{symbols: [{0,0}]}
+  """
   def process(schema, coord, <<c>> = char) when c <= 48 and c >= 57 do
     IO.puts("found a number: #{char}, #{coord}")
     schema
     |> Map.update(:number, char, fn current_expr -> current_expr <> char end)
   end
-  # blank space "."
   def process(schema, _coord, "."), do: schema |> clear
-  # symbol
   def process(schema, coord, _char) do
     schema
     |> clear
