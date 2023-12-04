@@ -58,7 +58,7 @@ defmodule Advent2023.Day3 do
   %{}
 
   iex> process(%{}, {0, 0}, "*")
-  %{symbols: [{0,0}]}
+  %{symbols: MapSet.new([{0,0}])}
   """
   def process(schema, coord, <<c>> = char) when c >= 48 and c <= 57 do
     {number, coords} = Map.get(schema, :expr, {"", []})
@@ -69,7 +69,14 @@ defmodule Advent2023.Day3 do
   def process(schema, coord, _char) do
     schema
     |> clear
-    |> Map.update(:symbols, [coord], fn coords -> [coord|coords] end)
+    |> Map.update(:symbols, MapSet.new([coord]), &MapSet.put(&1, coord))
+  end
+
+  def adjacent?({x, y}, symbols) do
+    squares = for x <- x-1..x+1, y <- y-1..y+1, into: MapSet.new, do: {x, y}
+    disjoint = MapSet.disjoint?(symbols, squares)
+
+    !disjoint
   end
 
   @doc """
@@ -87,9 +94,13 @@ defmodule Advent2023.Day3 do
   ...> |> p1
   4361
   """
-  def p1(schematic) do
-    schematic
-    |> IO.inspect
+  def p1(%{parts: parts, symbols: symbols}) do
+    parts
+    |> Enum.filter(fn {_part, coords} ->
+      Enum.any?(coords, fn coord -> adjacent?(coord, symbols) end)
+    end)
+    |> Enum.map(fn {id, _coords} -> id end)
+    |> Enum.sum
   end
 
   def p2(_i), do: nil
