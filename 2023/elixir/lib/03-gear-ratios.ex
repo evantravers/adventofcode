@@ -7,11 +7,11 @@ defmodule Advent2023.Day3 do
     |> Enum.with_index
     |> Enum.reduce(%{}, fn({row, y}, schema) ->
       row
+      |> clear
       |> String.codepoints
       |> Enum.with_index
       |> Enum.reduce(schema, fn({char, x}, schema) ->
         schema
-        |> clear
         |> process({x, y}, char)
       end)
     end)
@@ -27,14 +27,15 @@ defmodule Advent2023.Day3 do
   @doc """
   Should handle the "expression" of the parser completing number.
 
-  iex> clear(%{number: {"123", [{0,0}, {1, 0}, {2, 0}]}})
+  iex> clear(%{expr: {"123", [{0,0}, {1, 0}, {2, 0}]}})
   %{parts: %{123 => [{0,0}, {1, 0}, {2, 0}]}}
   """
-  def clear(%{number: number, number_coords: coords} = schema) do
+  def clear(%{expr: {number, coords}} = schema) do
     id = String.to_integer(number)
+
     schema
     |> Map.update(:parts, %{id => coords}, &Map.put(&1, id, coords))
-    |> Map.delete(:number)
+    |> Map.delete(:expr)
   end
   def clear(schema), do: schema
 
@@ -43,15 +44,15 @@ defmodule Advent2023.Day3 do
   a parser.
 
   iex> process(%{}, {0, 0}, "0")
-  %{number: "0"}
+  %{expr: {"0", [{0, 0}]}}
 
   iex> process(%{}, {0, 0}, "9")
-  %{number: "9"}
+  %{expr: {"9", [{0, 0}]}}
 
   iex> %{}
-  ...> |> process({0, 1}, "1")
-  ...> |> process({0, 2}, "2")
-  %{number: "12"}
+  ...> |> process({0, 0}, "1")
+  ...> |> process({1, 0}, "2")
+  %{expr: {"12", [{1, 0}, {0, 0}]}}
 
   iex> process(%{}, {0, 0}, ".")
   %{}
@@ -60,9 +61,9 @@ defmodule Advent2023.Day3 do
   %{symbols: [{0,0}]}
   """
   def process(schema, coord, <<c>> = char) when c >= 48 and c <= 57 do
-    schema
-    |> Map.update(:number, char, fn expr -> expr <> char end)
-    |> Map.update(:number_coords, [coord], fn coords -> [coord|coords] end)
+    {number, coords} = Map.get(schema, :expr, {"", []})
+
+    Map.put(schema, :expr, {number <> char, [coord|coords]})
   end
   def process(schema, _coord, "."), do: schema |> clear
   def process(schema, coord, _char) do
