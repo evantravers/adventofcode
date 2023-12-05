@@ -149,6 +149,10 @@ defmodule Advent2023.Day3 do
   def p2(%{parts: parts, gears: gears}) do
     parts
     |> Enum.group_by(fn {_id, coords} ->
+      coords
     end)
+    |> Enum.filter(fn group -> Enum.count(group) == 2 end)
+    |> Enum.map(fn [{id1, _coords1}, {id2, _coords2}] -> id1 * id2 end)
+    |> Enum.sum
   end
 end
