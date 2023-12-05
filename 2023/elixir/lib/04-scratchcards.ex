@@ -47,10 +47,12 @@ defmodule Advent2023.Day4 do
   def update_multipliers(multipliers, card) do
     winners = number_of_winners(card)
     {id, _attr} = card
+    copies = Map.get(multipliers, id, 1)
+    IO.puts("#{copies} instances of card #{id} have #{winners} numbers")
 
-    id..id+winners
+    id+1..id+winners
     |> Enum.reduce(multipliers, fn(id, multipliers) ->
-      Map.update(multipliers, id, 1, & &1+1)
+      Map.update(multipliers, id, 2, & &1+copies)
     end)
   end
 
