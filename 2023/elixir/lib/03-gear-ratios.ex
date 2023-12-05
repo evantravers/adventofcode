@@ -58,8 +58,11 @@ defmodule Advent2023.Day3 do
   iex> process(%{}, {0, 0}, ".")
   %{}
 
-  iex> process(%{}, {0, 0}, "*")
+  iex> process(%{}, {0, 0}, "%")
   %{symbols: MapSet.new([{0,0}])}
+
+  iex> process(%{}, {0, 0}, "*")
+  %{symbols: MapSet.new([{0,0}]), gears: MapSet.new([{0,0}])}
   """
   def process(schema, coord, <<c>> = char) when c >= 48 and c <= 57 do
     {number, coords} = Map.get(schema, :expr, {"", []})
@@ -67,6 +70,12 @@ defmodule Advent2023.Day3 do
     Map.put(schema, :expr, {number <> char, [coord|coords]})
   end
   def process(schema, _coord, "."), do: schema |> clear
+  def process(schema, coord, "*") do
+    schema
+    |> clear
+    |> Map.update(:gears, MapSet.new([coord]), &MapSet.put(&1, coord))
+    |> Map.update(:symbols, MapSet.new([coord]), &MapSet.put(&1, coord))
+  end
   def process(schema, coord, _char) do
     schema
     |> clear
