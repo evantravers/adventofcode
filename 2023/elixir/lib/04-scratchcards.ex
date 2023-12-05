@@ -3,7 +3,7 @@ defmodule Advent2023.Day4 do
 
   def setup do
     with {:ok, file} <- File.read("../input/4") do
-      file |> setup_from_string
+      setup_from_string(file)
     end
   end
 
@@ -17,20 +17,24 @@ defmodule Advent2023.Day4 do
     str
     |> String.split(" ", trim: true)
     |> Enum.map(&String.to_integer/1)
+    |> MapSet.new
   end
 
   @doc """
   iex> "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53"
   ...> |> build_card
-  %{id: 1, have: [83, 86, 6, 31, 17, 9, 48, 53], winners: [41, 48, 83, 86, 17] }
+  %{id: 1, have: MapSet.new([83, 86, 6, 31, 17, 9, 48, 53]), winners: MapSet.new([41, 48, 83, 86, 17]) }
   """
   def build_card(str) do
-    [_match, id]    = Regex.run(~r/(?:^Card )(\d+)/, str)
+    [_match, id]    = Regex.run(~r/(?:^Card +)(\d+)/, str)
     [_id, numbers]  = String.split(str, ":")
     [winners, have] = String.split(numbers, "|")
 
     %{id: String.to_integer(id), winners: nums(winners), have: nums(have)}
   end
+
+  def score(_score, 0), do: 1
+  def score(_score, s), do: s * 2
 
   @doc """
   iex> "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
@@ -41,10 +45,16 @@ defmodule Advent2023.Day4 do
   ...>Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
   ...>|> setup_from_string
   ...>|> p1
+  13
   """
   def p1(cards) do
     cards
-    |> Enum.filter(fn card ->  end)
+    |> Enum.map(fn %{winners: winners, have: have} ->
+      winners
+      |> MapSet.intersection(have)
+      |> Enum.reduce(0, &score/2)
+    end)
+    |> Enum.sum
   end
 
   def p2(_i), do: nil
