@@ -6,8 +6,9 @@ defmodule Advent2023.Day3 do
     |> String.split("\n", trim: true)
     |> Enum.with_index
     |> Enum.reduce(%{}, fn({row, y}, schema) ->
+      schema = clear(schema)
+
       row
-      |> clear
       |> String.codepoints
       |> Enum.with_index
       |> Enum.reduce(schema, fn({char, x}, schema) ->
