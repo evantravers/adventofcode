@@ -82,11 +82,11 @@ defmodule Advent2023.Day3 do
     |> Map.update(:symbols, MapSet.new([coord]), &MapSet.put(&1, coord))
   end
 
-  def adjacent?({x, y}, symbols) do
-    !MapSet.disjoint?(
-      symbols,
-      (for x <- x-1..x+1, y <- y-1..y+1, into: MapSet.new, do: {x, y})
-    )
+  def adjacency(list_of_coords) do
+    for {x, y} <- list_of_coords,
+      x <- x-1..x+1,
+      y <- y-1..y+1,
+      into: MapSet.new, do: {x, y}
   end
 
   @doc """
@@ -123,7 +123,7 @@ defmodule Advent2023.Day3 do
   def p1(%{parts: parts, symbols: symbols}) do
     parts
     |> Enum.filter(fn {_part, coords} ->
-      Enum.any?(coords, fn coord -> adjacent?(coord, symbols) end)
+      !MapSet.disjoint?(adjacency(coords), symbols)
     end)
     |> Enum.map(fn {part, _coords} -> part end)
     |> Enum.sum
@@ -147,8 +147,7 @@ defmodule Advent2023.Day3 do
   def p2(%{parts: parts, gears: gears}) do
     parts
     |> Enum.group_by(fn {_id, coords} ->
-      adjacency = for {x, y} <- coords, x <- x-1..x+1, y <- y-1..y+1, into: MapSet.new, do: {x, y}
-      MapSet.intersection(gears, adjacency)
+      MapSet.intersection(gears, adjacency(coords))
     end)
     |> Enum.filter(fn {_key, group} -> Enum.count(group) == 2 end)
     |> Enum.map(fn {_key, [{id1, _coords1}, {id2, _coords2}]} -> id1 * id2 end)
