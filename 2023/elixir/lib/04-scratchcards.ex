@@ -11,7 +11,6 @@ defmodule Advent2023.Day4 do
     str
     |> String.split("\n", trim: true)
     |> Enum.map(&build_card/1)
-    |> Enum.into(%{})
   end
 
   def nums(str) do
@@ -34,13 +33,37 @@ defmodule Advent2023.Day4 do
     {String.to_integer(id), %{winners: nums(winners), have: nums(have)}}
   end
 
-  def score(_score, 0), do: 1
-  def score(_score, s), do: s * 2
+  def weird_scoring(0), do: 0 # empty case
+  def weird_scoring(num, final \\ 1)
+  def weird_scoring(1, final), do: final
+  def weird_scoring(num, final), do: weird_scoring(num-1, final*2)
 
   def number_of_winners({_id, %{winners: winners, have: have}}) do
     winners
     |> MapSet.intersection(have)
-    |> Enum.reduce(0, &score/2)
+    |> Enum.count
+  end
+
+  def update_multipliers(multipliers, card) do
+    winners = number_of_winners(card)
+    {id, _attr} = card
+
+    id..id+winners
+    |> Enum.reduce(multipliers, fn(id, multipliers) ->
+      Map.update(multipliers, id, 1, & &1+1)
+    end)
+  end
+
+  def play(cards, multipliers \\ %{}, score \\ 0)
+  def play([], _multipliers, score), do: score
+  def play([card|cards], multipliers, score) do
+    {id, _attr} = card
+
+    play(
+      cards,
+      update_multipliers(multipliers, card),
+      score + (1 * Map.get(multipliers, id, 1))
+    )
   end
 
   @doc """
@@ -56,7 +79,11 @@ defmodule Advent2023.Day4 do
   """
   def p1(cards) do
     cards
-    |> Enum.map(&number_of_winners/1)
+    |> Enum.map(fn card ->
+      card
+      |> number_of_winners
+      |> weird_scoring
+    end)
     |> Enum.sum
   end
 
@@ -71,9 +98,5 @@ defmodule Advent2023.Day4 do
   ...>|> p2
   30
   """
-  def p2(cards) do
-    cards
-
-    nil
-  end
+  def p2(cards), do: play(cards)
 end
