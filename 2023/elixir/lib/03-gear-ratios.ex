@@ -130,18 +130,16 @@ defmodule Advent2023.Day3 do
   end
 
   @doc """
-  iex> "12.......*..
-  ...>+.........34
-  ...>.......-12..
-  ...>..78........
-  ...>..*....60...
-  ...>78.........9
-  ...>.5.....23..$
-  ...>8...90*12...
-  ...>............
-  ...>2.2......12.
-  ...>.*.........*
-  ...>1.1..503+.56"
+  iex> "467..114..
+  ...>...*......
+  ...>..35..633.
+  ...>......#...
+  ...>617*......
+  ...>.....+.58.
+  ...>..592.....
+  ...>......755.
+  ...>...$.*....
+  ...>.664.598.."
   ...>|> setup_from_string
   ...>|> p2
   467835
@@ -149,10 +147,11 @@ defmodule Advent2023.Day3 do
   def p2(%{parts: parts, gears: gears}) do
     parts
     |> Enum.group_by(fn {_id, coords} ->
-      coords
+      adjacency = for {x, y} <- coords, x <- x-1..x+1, y <- y-1..y+1, into: MapSet.new, do: {x, y}
+      MapSet.intersection(gears, adjacency)
     end)
-    |> Enum.filter(fn group -> Enum.count(group) == 2 end)
-    |> Enum.map(fn [{id1, _coords1}, {id2, _coords2}] -> id1 * id2 end)
+    |> Enum.filter(fn {_key, group} -> Enum.count(group) == 2 end)
+    |> Enum.map(fn {_key, [{id1, _coords1}, {id2, _coords2}]} -> id1 * id2 end)
     |> Enum.sum
   end
 end
