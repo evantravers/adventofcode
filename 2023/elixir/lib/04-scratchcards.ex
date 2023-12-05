@@ -63,6 +63,7 @@ defmodule Advent2023.Day4 do
   def play(cards, multipliers \\ %{}, score \\ 0)
   def play([], _multipliers, score), do: score
   def play([{id, _attr} = card|cards], multipliers, score) do
+    IO.puts "you end up with #{Map.get(multipliers, id, 1)} of card #{id}"
     play(
       cards,
       update_multipliers(multipliers, card),
