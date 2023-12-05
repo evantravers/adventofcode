@@ -48,8 +48,10 @@ defmodule Advent2023.Day4 do
     winners = number_of_winners(card)
     copies = Map.get(multipliers, id, 1)
 
+    IO.puts "Your #{copies} of card #{id} have #{winners} matching numbers"
+
     if winners > 0 do
-      id+1..id+winners
+      id+1..id+winners # adjust the next N cards where N == winning cards
       |> Enum.reduce(multipliers, fn(id, multipliers) ->
         Map.update(multipliers, id, 2, & &1+copies)
       end)
@@ -64,7 +66,7 @@ defmodule Advent2023.Day4 do
     play(
       cards,
       update_multipliers(multipliers, card),
-      score + (Map.get(multipliers, id, 1))
+      score + Map.get(multipliers, id, 1)
     )
   end
 
