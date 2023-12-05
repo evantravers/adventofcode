@@ -44,9 +44,8 @@ defmodule Advent2023.Day4 do
     |> Enum.count
   end
 
-  def update_multipliers(multipliers, card) do
+  def update_multipliers(multipliers, {id, _attr} = card) do
     winners = number_of_winners(card)
-    {id, _attr} = card
     copies = Map.get(multipliers, id, 1)
 
     if winners > 0 do
@@ -61,9 +60,7 @@ defmodule Advent2023.Day4 do
 
   def play(cards, multipliers \\ %{}, score \\ 0)
   def play([], _multipliers, score), do: score
-  def play([card|cards], multipliers, score) do
-    {id, _attr} = card
-
+  def play([{id, _attr} = card|cards], multipliers, score) do
     play(
       cards,
       update_multipliers(multipliers, card),
