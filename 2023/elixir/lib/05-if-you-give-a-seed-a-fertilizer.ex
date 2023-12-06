@@ -8,25 +8,39 @@ defmodule Advent2023.Day5 do
   end
 
   def setup_from_string(str) do
-    str
-    |> String.split("\n\n", trim: true)
+    [seeds | maps] =
+      str
+      |> String.split("\n\n", trim: true)
+
+    maps
     |> Enum.map(&build_map/1)
+    |> Enum.into(%{})
+    |> Map.put(
+      :seeds,
+      seeds
+      |> String.split(": ")
+      |> tl
+      |> hd
+      |> String.split(" ", trim: true)
+      |> Enum.map(&String.to_integer/1)
+      |> List.flatten
+    )
   end
 
   def atomify(name) do
-    str =
-      name
-      |> String.replace(" map", "")
-      |> String.replace("-", "_")
-      |> Macro.camelize
+    str = String.replace(name, " map", "")
 
-    destructure([source, dest], String.split(str, "To"))
+    destructure([src, dst], String.split(str, "-to-"))
 
-    if dest do
-      {String.to_atom(source), String.to_atom(dest)}
+    if dst do
+      {String.to_atom(src), String.to_atom(dst)}
     else
-      {String.to_atom(source)}
+      {String.to_atom(src)}
     end
+  end
+
+  def rangify([dst_start, src_start, length]) do
+    {Range.new(dst_start, dst_start+length), Range.new(src_start, src_start+length)}
   end
 
   def build_map(str) do
@@ -36,11 +50,13 @@ defmodule Advent2023.Day5 do
       atomify(name),
       values
       |> String.split("\n", trim: true)
+      |> IO.inspect
       |> Enum.map(fn str ->
         str
         |> String.split(" ", trim: true)
         |> Enum.map(&String.to_integer/1)
       end)
+      |> Enum.map(&rangify/1)
     }
   end
 
@@ -83,7 +99,10 @@ defmodule Advent2023.Day5 do
   35
   """
   def p1(input) do
-    input
+    IO.inspect(input)
+
+    # seeds
+    # |> Enum.map(&trace(input, &1))
   end
 
   def p2(_i), do: nil
