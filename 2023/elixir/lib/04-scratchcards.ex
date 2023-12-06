@@ -44,33 +44,6 @@ defmodule Advent2023.Day4 do
     |> Enum.count
   end
 
-  def update_multipliers(multipliers, {id, _attr} = card) do
-    winners = number_of_winners(card)
-    copies = Map.get(multipliers, id, 1)
-
-    IO.puts "Your #{copies} of card #{id} have #{winners} matching numbers"
-
-    if winners > 0 do
-      id+1..id+winners # adjust the next N cards where N == winning cards
-      |> Enum.reduce(multipliers, fn(id, multipliers) ->
-        Map.update(multipliers, id, 2, & &1+copies)
-      end)
-    else
-      multipliers
-    end
-  end
-
-  def play(cards, multipliers \\ %{}, score \\ 0)
-  def play([], _multipliers, score), do: score
-  def play([{id, _attr} = card|cards], multipliers, score) do
-    IO.puts "you end up with #{Map.get(multipliers, id, 1)} of card #{id}"
-    play(
-      cards,
-      update_multipliers(multipliers, card),
-      score + Map.get(multipliers, id, 1)
-    )
-  end
-
   @doc """
   iex> "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
   ...>Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
@@ -92,6 +65,21 @@ defmodule Advent2023.Day4 do
     |> Enum.sum
   end
 
+  def add(list_of_cards, amount) do
+    list_of_cards
+    |> Enum.map(fn {copies, winners} ->
+      {copies + amount, winners}
+    end)
+  end
+
+  def play(list_of_cards, zipper \\ [])
+  def play([], result), do: result |> Enum.reverse
+  def play([{copies, winners} = card|cards], result) do
+    {bonus, rest} = Enum.split(cards, winners)
+
+    play(add(bonus, copies) ++ rest, [card|result])
+  end
+
   @doc """
   iex> "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
   ...>Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
@@ -103,5 +91,11 @@ defmodule Advent2023.Day4 do
   ...>|> p2
   30
   """
-  def p2(cards), do: play(cards)
+  def p2(cards) do
+    cards
+    |> Enum.map(fn(card) -> {1, number_of_winners(card)} end)
+    |> play
+    |> Enum.map(&elem(&1, 0))
+    |> Enum.sum
+  end
 end
