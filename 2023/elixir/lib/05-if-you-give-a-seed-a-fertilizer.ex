@@ -65,10 +65,8 @@ defmodule Advent2023.Day5 do
     end
   end
 
-  def trace(number, :location, _maps), do: number # TODO: Unsure if this is the end case.
+  def trace(number, :location, _maps), do: number
   def trace(number, src, maps) do
-    IO.puts "Searching for map for #{number} from #{src}:"
-
     {{_src, dst}, ranges} =
       Enum.find(maps, fn({{next_src, _dst}, _ranges}) -> src == next_src end)
 
@@ -119,5 +117,17 @@ defmodule Advent2023.Day5 do
     |> Enum.min
   end
 
-  def p2(_i), do: nil
+  def p2({seeds, maps}) do
+    # seeds
+    # |> Enum.chunk_every(2)
+    # |> Enum.map(fn([start, length]) -> start..length+start end)
+    # |> Stream.map(fn range ->
+    #   range
+    #   |> Stream.map(&trace(&1, :seed, maps))
+    #   |> Enum.min
+    # end)
+    # |> Enum.min
+
+    nil
+  end
 end
