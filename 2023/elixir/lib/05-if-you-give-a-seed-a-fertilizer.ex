@@ -61,15 +61,12 @@ defmodule Advent2023.Day5 do
 
   def lookup([], number), do: number # fallback
   def lookup([{src, dst}|ranges], number) do
-    src_num = Enum.find_index(src, & &1 == number)
-    if src_num do
-      next = Enum.at(dst, src_num, false)
-      if next do
-        next
-      end
+    with src_num when not is_nil(src_num) <- Enum.find_index(src, & &1 == number),
+      next when not is_nil(next) <- Enum.at(dst, src_num, false) do
+      next
+    else
+      _ -> lookup(ranges, number)
     end
-
-    lookup(ranges, number)
   end
 
   def trace(number, dst \\ :soil, maps) # starting at seeds
