@@ -27,6 +27,22 @@ defmodule Advent2023.Day5 do
     )
   end
 
+  def build_map(str) do
+    [name, values] = String.split(str, ~r/:\W/m, trim: true)
+
+    {
+      atomify(name),
+      values
+      |> String.split("\n", trim: true)
+      |> Enum.map(fn str ->
+        str
+        |> String.split(" ", trim: true)
+        |> Enum.map(&String.to_integer/1)
+      end)
+      |> Enum.map(&rangify/1)
+    }
+  end
+
   def atomify(name) do
     str = String.replace(name, " map", "")
 
@@ -40,24 +56,38 @@ defmodule Advent2023.Day5 do
   end
 
   def rangify([dst_start, src_start, length]) do
-    {Range.new(dst_start, dst_start+length), Range.new(src_start, src_start+length)}
+    {dst_start..dst_start+length, src_start..src_start+length}
   end
 
-  def build_map(str) do
-    [name, values] = String.split(str, ~r/:\W/m, trim: true)
+  def lookup([], number), do: number # fallback
+  def lookup([{src, dst}|ranges], number) do
+    src_num = Enum.find_index(src, & &1 == number)
+    if src_num do
+      next = Enum.at(dst, src_num, false)
+      if next do
+        next
+      end
+    end
 
-    {
-      atomify(name),
-      values
-      |> String.split("\n", trim: true)
-      |> IO.inspect
-      |> Enum.map(fn str ->
-        str
-        |> String.split(" ", trim: true)
-        |> Enum.map(&String.to_integer/1)
+    lookup(ranges, number)
+  end
+
+  def trace(number, dst \\ :soil, maps) # starting at seeds
+  def trace(number, :location, _maps), do: number
+  def trace(number, dst, maps) do
+    IO.puts(number)
+    IO.puts(dst)
+    {{_src, next_dst}, ranges} =
+      Enum.find(maps, fn
+        {{src, _dst}, _ranges} -> src == dst
+        {:seeds, _seeds} -> false
       end)
-      |> Enum.map(&rangify/1)
-    }
+
+    IO.puts("let's go")
+
+    IO.puts next_dst
+
+    trace(lookup(ranges, number), next_dst, maps)
   end
 
   @doc """
@@ -99,10 +129,10 @@ defmodule Advent2023.Day5 do
   35
   """
   def p1(input) do
-    IO.inspect(input)
-
-    # seeds
-    # |> Enum.map(&trace(input, &1))
+    input
+    |> Map.get(:seeds)
+    |> Enum.map(&trace(&1, input))
+    |> Enum.min
   end
 
   def p2(_i), do: nil
