@@ -8,22 +8,36 @@ defmodule Advent2023.Day5 do
   end
 
   def setup_from_string(str) do
-    [
-      seeds,
-      seed_to_soil,
-      soil_to_fertilizer,
-      fertilizer_to_water,
-      water_to_light,
-      light_to_temperature,
-      temperature_to_humidity,
-      humidity_to_location
-    ] = String.split(str, "\n\n", trim: true)
+    str
+    |> String.split("\n\n", trim: true)
+    |> Enum.map(&build_map/1)
+  end
 
-    seeds
+  def atomify(name) do
+    name
+    |> String.replace(" map", "")
+    |> String.replace("-", "_")
+    |> Macro.camelize
+    |> String.to_atom
+  end
+
+  def build_map(str) do
+    [name, values] = String.split(str, ~r/:\W/m, trim: true)
+
+    {
+      atomify(name),
+      values
+      |> String.split("\n", trim: true)
+      |> Enum.map(fn str ->
+        str
+        |> String.split(" ", trim: true)
+        |> Enum.map(&String.to_integer/1)
+      end)
+    }
   end
 
   @doc """
-  iex> seeds: 79 14 55 13
+  iex> "seeds: 79 14 55 13
   ...>
   ...>seed-to-soil map:
   ...>50 98 2
@@ -58,6 +72,7 @@ defmodule Advent2023.Day5 do
   ...>56 93 4"
   ...> |> setup_from_string
   ...> |> p1
+  35
   """
   def p1(input) do
     input
