@@ -14,11 +14,19 @@ defmodule Advent2023.Day5 do
   end
 
   def atomify(name) do
+    str =
     name
     |> String.replace(" map", "")
     |> String.replace("-", "_")
     |> Macro.camelize
-    |> String.to_atom
+
+    destructure([source, dest], String.split(str, "To"))
+
+    if dest do
+      {String.to_atom(source), String.to_atom(dest)}
+    else
+      {String.to_atom(source)}
+    end
   end
 
   def build_map(str) do
