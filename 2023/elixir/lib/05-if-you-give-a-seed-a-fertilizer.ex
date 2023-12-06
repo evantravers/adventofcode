@@ -8,23 +8,20 @@ defmodule Advent2023.Day5 do
   end
 
   def setup_from_string(str) do
-    [seeds | maps] =
-      str
-      |> String.split("\n\n", trim: true)
+    [seeds | maps] = String.split(str, "\n\n", trim: true)
 
-    maps
-    |> Enum.map(&build_map/1)
-    |> Enum.into(%{})
-    |> Map.put(
-      :seeds,
+    {
       seeds
       |> String.split(": ")
       |> tl
       |> hd
       |> String.split(" ", trim: true)
       |> Enum.map(&String.to_integer/1)
-      |> List.flatten
-    )
+      |> List.flatten,
+      maps
+      |> Enum.map(&build_map/1)
+      |> Enum.into(%{})
+    }
   end
 
   def build_map(str) do
@@ -56,35 +53,26 @@ defmodule Advent2023.Day5 do
   end
 
   def rangify([dst_start, src_start, length]) do
-    {dst_start..dst_start+length, src_start..src_start+length}
+    {src_start, dst_start, length} # just order it sensibly
   end
 
   def lookup([], number), do: number # fallback
-  def lookup([{src, dst}|ranges], number) do
-    with src_num when not is_nil(src_num) <- Enum.find_index(src, & &1 == number),
-      next when not is_nil(next) <- Enum.at(dst, src_num, false) do
-      next
+  def lookup([{src, dst, length}|ranges], number) do
+    if number >= src && number <= src+length do # within the source range
+      dst+(number-src)
     else
-      _ -> lookup(ranges, number)
+      lookup(ranges, number)
     end
   end
 
-  def trace(number, dst \\ :soil, maps) # starting at seeds
-  def trace(number, :location, _maps), do: number
-  def trace(number, dst, maps) do
-    IO.puts(number)
-    IO.puts(dst)
-    {{_src, next_dst}, ranges} =
-      Enum.find(maps, fn
-        {{src, _dst}, _ranges} -> src == dst
-        {:seeds, _seeds} -> false
-      end)
+  def trace(number, :location, _maps), do: number # TODO: Unsure if this is the end case.
+  def trace(number, src, maps) do
+    IO.puts "Searching for map for #{number} from #{src}:"
 
-    IO.puts("let's go")
+    {{_src, dst}, ranges} =
+      Enum.find(maps, fn({{next_src, _dst}, _ranges}) -> src == next_src end)
 
-    IO.puts next_dst
-
-    trace(lookup(ranges, number), next_dst, maps)
+    trace(lookup(ranges, number), dst, maps)
   end
 
   @doc """
@@ -125,10 +113,9 @@ defmodule Advent2023.Day5 do
   ...> |> p1
   35
   """
-  def p1(input) do
-    input
-    |> Map.get(:seeds)
-    |> Enum.map(&trace(&1, input))
+  def p1({seeds, maps}) do
+    seeds
+    |> Enum.map(&trace(&1, :seed, maps))
     |> Enum.min
   end
 
