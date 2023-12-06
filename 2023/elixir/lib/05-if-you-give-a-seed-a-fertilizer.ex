@@ -15,10 +15,10 @@ defmodule Advent2023.Day5 do
 
   def atomify(name) do
     str =
-    name
-    |> String.replace(" map", "")
-    |> String.replace("-", "_")
-    |> Macro.camelize
+      name
+      |> String.replace(" map", "")
+      |> String.replace("-", "_")
+      |> Macro.camelize
 
     destructure([source, dest], String.split(str, "To"))
 
