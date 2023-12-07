@@ -72,38 +72,20 @@ defmodule Advent2023.Day7 do
     def compare(h1, h2) when h1.class < h2.class, do: :lt
   end
 
-  # 6: four of a kind
-  #   1 joker = five of a kind 7
   def joker_rules(class, number_of_jokers)
-  def joker_rules(class, 0), do: class
+  def joker_rules(class, 0), do: class # no jokers
   def joker_rules(7, 5), do: 7 # already 5 of a kind!
-  def joker_rules(6, 1), do: 7
-  def joker_rules(6, 4), do: 7 # all jokers
-  # 5: full house
-  #   any jokers = 5 of a kind because it's either 2 or 3 7
-  def joker_rules(5, 2), do: 7
-  def joker_rules(5, 3), do: 7
-  # 4: three of a kind
-  #   1 joker = four of a kind 6
-  #   2 joker = impossible, would have been full house
-  #   3 joker = four of a kind, they were the three 6
-  def joker_rules(4, 1), do: 6
-  def joker_rules(4, 3), do: 6
-  # 3: two pair
-  #   1 joke9 = three of a kind, matches with one of the pairs 4
-  #   2 joker = four of a kind, was one of the pairs, 6
-  def joker_rules(3, 1), do: 4
-  def joker_rules(3, 2), do: 6
-  # 2: one pair
-  #   1 joker = three of a kind 4
-  #   2 joker = three of a kind (the joker was the pair) 4
-  #   3 joker = impossible, would have been three of a kind
-  def joker_rules(2, 1), do: 4
-  def joker_rules(2, 2), do: 4
-  # 1: high card
-  #   1 joker = one pair 2
-  #   2+ = impossible, or it would have matched above
-  def joker_rules(1, 1), do: 2
+  def joker_rules(6, 1), do: 7 # add to the four of a kind:     five of a kind
+  def joker_rules(6, 4), do: 7 # match the fifth card:          five of a kind
+  def joker_rules(5, 2), do: 7 # is a set, match the other set: five of a kind
+  def joker_rules(5, 3), do: 7 # is a set, match the other set: five of a kind
+  def joker_rules(4, 1), do: 6 # match one of the cards:        four of a kind
+  def joker_rules(4, 3), do: 6 # match one of the cards:        four of a kind
+  def joker_rules(3, 1), do: 4 # match one pair for:            three of a kind
+  def joker_rules(3, 2), do: 6 # is a pair, match the other:    four of a kind
+  def joker_rules(2, 1), do: 4 # match the pair:                three of a kind
+  def joker_rules(2, 2), do: 4 # is the pair, match a random:   three of a kind
+  def joker_rules(1, 1), do: 2 # match a high card:             one pair
 
   def devalue_jokers(cards, zipper \\ [])
   def devalue_jokers([], zipper), do: Enum.reverse(zipper)
