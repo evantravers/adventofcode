@@ -93,14 +93,12 @@ defmodule Advent2023.Day7 do
   def devalue_jokers([card|cards], zipper), do: devalue_jokers(cards, [card|zipper])
 
   def apply_jokers(%Hand{cards: cards, class: class}) do
-    # IO.inspect(original, label: "Before")
     jokers = Enum.count(cards, & &1 == 11) # still stored as ten by input
 
     %Hand{
       cards: devalue_jokers(cards),
       class: joker_rules(class, jokers)
     }
-    # |> IO.inspect(label: "After")
   end
 
   def setup do
@@ -154,6 +152,7 @@ defmodule Advent2023.Day7 do
     |> Enum.map(fn {hand, bid} -> {apply_jokers(hand), bid} end)
     |> Enum.sort_by(fn {hand, _bid} -> hand end, Hand)
     |> Enum.with_index(1)
+    |> IO.inspect(label: "sorted")
     |> Enum.map(fn {{_hand, bid}, rank} -> bid * rank end)
     |> Enum.sum
   end
