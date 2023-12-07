@@ -15,6 +15,20 @@ defmodule Advent2023.Day7 do
       }
     end
 
+    defimpl Inspect, for: Hand do
+      def strength(7), do: "Five of a Kind"
+      def strength(6), do: "Four of a Kind"
+      def strength(5), do: "Full House"
+      def strength(4), do: "Three of a Kind"
+      def strength(3), do: "Two Pair"
+      def strength(2), do: "One Pair"
+      def strength(1), do: "High Card"
+
+      def inspect(hand, _opts) do
+        "#{strength(hand.class)}: #{Enum.map(hand.cards, &Integer.to_string(&1)) |> Enum.join(" ")}"
+      end
+    end
+
     def value("A"), do: 14
     def value("K"), do: 13
     def value("Q"), do: 12
@@ -91,16 +105,18 @@ defmodule Advent2023.Day7 do
 
   def devalue_jokers(cards, zipper \\ [])
   def devalue_jokers([], zipper), do: Enum.reverse(zipper)
-  def devalue_jokers([10|cards], zipper), do: devalue_jokers(cards, [1|zipper]) # count joker as value 1
+  def devalue_jokers([11|cards], zipper), do: devalue_jokers(cards, [1|zipper]) # count joker as value 1
   def devalue_jokers([card|cards], zipper), do: devalue_jokers(cards, [card|zipper])
 
-  def apply_jokers(%Hand{cards: cards, class: class}) do
-    jokers = Enum.count(cards, & &1 == 10) # still stored as ten by input
+  def apply_jokers(%Hand{cards: cards, class: class} = original) do
+    # IO.inspect(original, label: "Before")
+    jokers = Enum.count(cards, & &1 == 11) # still stored as ten by input
 
     %Hand{
       cards: devalue_jokers(cards),
       class: joker_rules(class, jokers)
     }
+    # |> IO.inspect(label: "After")
   end
 
   def setup do
