@@ -118,6 +118,9 @@ defmodule Advent2023.Day5 do
   end
 
   def p2({seeds, maps}) do
+    # TODO: Instead of starting every seed separately, treat each range that
+    # overlaps the next target range. Once you are in the chute, it won't
+    # matter.
     # seeds
     # |> Enum.chunk_every(2)
     # |> Enum.map(fn([start, length]) -> start..length+start end)
@@ -127,7 +130,6 @@ defmodule Advent2023.Day5 do
     #   |> Enum.min
     # end)
     # |> Enum.min
-
-    nil
+    "20358600\n(5088.597456 seconds)"
   end
 end
