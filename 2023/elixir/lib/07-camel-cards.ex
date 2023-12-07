@@ -2,10 +2,24 @@ defmodule Advent2023.Day7 do
   @moduledoc "https://adventofcode.com/2023/day/7"
 
   defmodule Hand do
-    defstruct cards: nil, bid: nil
+    defstruct cards: nil, class: nil
 
+    def new(string) when is_binary(string) do
+      %Hand{
+        cards:
+          string
+          |> String.codepoints
+          |> Enum.map(&String.to_atom/1)
+      }
+    end
+
+    def compare(h1, h2) when h1 == h2, do: :eq
     def compare(h1, h2) do
-      :gt
+      if h1.class > h2.class do
+        :gt
+      else
+        :lt
+      end
     end
   end
 
@@ -20,12 +34,9 @@ defmodule Advent2023.Day7 do
     |> Enum.map(fn str ->
       [cards, bid] = String.split(str, " ")
 
-      %Hand{
-        cards:
-        cards
-        |> String.codepoints
-        |> Enum.map(&String.to_atom/1),
-        bid: String.to_integer(bid)
+      {
+        Hand.new(cards),
+        String.to_integer(bid)
       }
     end)
   end
@@ -42,9 +53,9 @@ defmodule Advent2023.Day7 do
   """
   def p1(hands) do
     hands
-    |> Enum.sort(Hand)
+    |> Enum.sort_by(fn {hand, _bid} -> hand end, Hand)
     |> Enum.with_index
-    |> Enum.map(fn {hand, rank} -> Map.get(hand, :bid) * rank end)
+    |> Enum.map(fn {{_hand, bid}, rank} -> bid * rank end)
     |> Enum.sum
   end
   def p2(_i), do: nil
