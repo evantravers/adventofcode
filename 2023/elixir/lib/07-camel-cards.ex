@@ -8,12 +8,19 @@ defmodule Advent2023.Day7 do
       cards =
         string
         |> String.codepoints
-        |> Enum.map(&String.to_atom/1)
+        |> Enum.map(&value/1)
       %Hand{
         cards: cards,
         class: classify(cards)
       }
     end
+
+    def value("A"), do: 14
+    def value("K"), do: 13
+    def value("Q"), do: 12
+    def value("J"), do: 11
+    def value("T"), do: 10
+    def value(num), do: String.to_integer(num)
 
     def classify([{_card, 5}]), do:                                       7 # five of a kind
     def classify([{_c1, 4}, {_c2, 1}]), do:                               6 # four of a kind
@@ -31,12 +38,21 @@ defmodule Advent2023.Day7 do
       |> classify
     end
 
+    def first_card([c1|cards1], [c2|cards2]) when c1 == c2, do: first_card(cards1, cards2)
+    def first_card([c1|_cards1], [c2|_cards2]) do
+      if c1 > c2 do
+        :gt
+      else
+        :lt
+      end
+    end
+
     def compare(h1, h2) when h1 == h2, do: :eq
     def compare(
       %Hand{cards: cards1} = c1,
       %Hand{cards: cards2} = c2)
       when c1.class == c2.class do
-      # need to compare the cards
+      first_card(cards1, cards2)
     end
     def compare(h1, h2) when h1.class > h2.class, do: :gt
     def compare(h1, h2) when h1.class < h2.class, do: :lt
@@ -73,7 +89,6 @@ defmodule Advent2023.Day7 do
   def p1(hands) do
     hands
     |> Enum.sort_by(fn {hand, _bid} -> hand end, Hand)
-    |> IO.inspect
     |> Enum.with_index(1)
     |> Enum.map(fn {{_hand, bid}, rank} -> bid * rank end)
     |> Enum.sum
