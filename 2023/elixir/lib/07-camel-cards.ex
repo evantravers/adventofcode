@@ -76,7 +76,9 @@ defmodule Advent2023.Day7 do
   #   1 joker = five of a kind 7
   def joker_rules(class, number_of_jokers)
   def joker_rules(class, 0), do: class
+  def joker_rules(7, 5), do: 7 # already 5 of a kind!
   def joker_rules(6, 1), do: 7
+  def joker_rules(6, 4), do: 7 # all jokers
   # 5: full house
   #   any jokers = 5 of a kind because it's either 2 or 3 7
   def joker_rules(5, 2), do: 7
@@ -108,7 +110,7 @@ defmodule Advent2023.Day7 do
   def devalue_jokers([11|cards], zipper), do: devalue_jokers(cards, [1|zipper]) # count joker as value 1
   def devalue_jokers([card|cards], zipper), do: devalue_jokers(cards, [card|zipper])
 
-  def apply_jokers(%Hand{cards: cards, class: class} = original) do
+  def apply_jokers(%Hand{cards: cards, class: class}) do
     # IO.inspect(original, label: "Before")
     jokers = Enum.count(cards, & &1 == 11) # still stored as ten by input
 
