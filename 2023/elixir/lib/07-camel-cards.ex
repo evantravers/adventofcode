@@ -1,6 +1,14 @@
 defmodule Advent2023.Day7 do
   @moduledoc "https://adventofcode.com/2023/day/7"
 
+  defmodule Hand do
+    defstruct cards: nil, bid: nil
+
+    def compare(h1, h2) do
+      :gt
+    end
+  end
+
   def setup do
     with {:ok, file} <- File.read("../input/7") do
       file |> setup_from_string
@@ -12,17 +20,14 @@ defmodule Advent2023.Day7 do
     |> Enum.map(fn str ->
       [cards, bid] = String.split(str, " ")
 
-      {
+      %Hand{
+        cards:
         cards
         |> String.codepoints
         |> Enum.map(&String.to_atom/1),
-        String.to_integer(bid)
+        bid: String.to_integer(bid)
       }
     end)
-  end
-
-  def stronger?(h1, h2) do
-    h1 # TODO: Fix
   end
 
   @doc """
@@ -37,9 +42,9 @@ defmodule Advent2023.Day7 do
   """
   def p1(hands) do
     hands
-    |> Enum.sort_by(fn{hand, _bid} -> hand end, &stronger?/2)
-    |> Enum.with_index(1)
-    |> Enum.map(fn {{_hand, bid}, rank} -> bid * rank end)
+    |> Enum.sort(Hand)
+    |> Enum.with_index
+    |> Enum.map(fn {hand, rank} -> Map.get(hand, :bid) * rank end)
     |> Enum.sum
   end
   def p2(_i), do: nil
