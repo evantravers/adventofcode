@@ -84,7 +84,7 @@ defmodule Advent2023.Day7 do
   def joker_rules(5, 3), do: 7 # is a set, match the other set: five of a kind
   def joker_rules(4, 1), do: 6 # match one of the cards:        four of a kind
   def joker_rules(4, 3), do: 6 # match one of the cards:        four of a kind
-  def joker_rules(3, 1), do: 4 # match one pair for:            three of a kind
+  def joker_rules(3, 1), do: 5 # match the other for:           full house
   def joker_rules(3, 2), do: 6 # is a pair, match the other:    four of a kind
   def joker_rules(2, 1), do: 4 # match the pair:                three of a kind
   def joker_rules(2, 2), do: 4 # is the pair, match a random:   three of a kind
