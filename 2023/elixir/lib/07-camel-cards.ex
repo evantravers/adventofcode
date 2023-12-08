@@ -16,16 +16,19 @@ defmodule Advent2023.Day7 do
     end
 
     defimpl Inspect, for: Hand do
-      def strength(7), do: "Five of a Kind"
-      def strength(6), do: "Four of a Kind"
-      def strength(5), do: "Full House"
-      def strength(4), do: "Three of a Kind"
-      def strength(3), do: "Two Pair"
-      def strength(2), do: "One Pair"
-      def strength(1), do: "High Card"
+      def strength(7), do: "5 of a Kind"
+      def strength(6), do: "4 of a Kind"
+      def strength(5), do: "Full House "
+      def strength(4), do: "3 of a Kind"
+      def strength(3), do: "Two Pair   "
+      def strength(2), do: "One Pair   "
+      def strength(1), do: "High Card  "
 
       def inspect(hand, _opts) do
-        "#{strength(hand.class)}: #{Enum.map(hand.cards, &Integer.to_string(&1)) |> Enum.join(" ")}"
+        h  = "#{IO.ANSI.red()}#{strength(hand.class)}#{IO.ANSI.white()}"
+        c = "#{Enum.map(hand.cards, &String.pad_leading(Integer.to_string(&1), 2)) |> Enum.join(" ")}"
+
+        "%Hand{#{h}: #{c}}"
       end
     end
 
@@ -150,6 +153,7 @@ defmodule Advent2023.Day7 do
   def p2(hands) do
     hands
     |> Enum.map(fn {hand, bid} -> {apply_jokers(hand), bid} end)
+    |> IO.inspect
     |> Enum.sort_by(fn {hand, _bid} -> hand end, Hand)
     |> Enum.with_index(1)
     |> Enum.map(fn {{_hand, bid}, rank} -> bid * rank end)
