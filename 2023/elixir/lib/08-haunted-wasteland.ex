@@ -40,9 +40,35 @@ defmodule Advent2023.Day8 do
     step(graph, instructions, next, count + 1)
   end
 
+  def ghost(graph, instructions, list_of_current, count \\ 0)
+  def ghost(graph, instructions, list_of_current, count) do
+    if Enum.all?(list_of_current, &String.match?(&1, ~r/\w\wZ/)) do
+      count
+    else
+      direction = get_direction(instructions, count)
+
+      next =
+        list_of_current
+        |> Enum.map(fn current ->
+          graph
+          |> Map.get(current)
+          |> direction(direction)
+        end)
+
+      ghost(graph, instructions, next, count + 1)
+    end
+  end
+
   def p1({steps, graph}) do
     step(graph, steps)
   end
 
-  def p2(_i), do: nil
+  def p2({steps, graph}) do
+    starting_positions =
+      graph
+      |> Map.keys
+      |> Enum.filter(fn str -> String.match?(str, ~r/\w\wA/) end)
+
+    ghost(graph, steps, starting_positions)
+  end
 end
