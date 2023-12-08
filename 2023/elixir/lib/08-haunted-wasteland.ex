@@ -1,6 +1,8 @@
 defmodule Advent2023.Day8 do
   @moduledoc "https://adventofcode.com/2023/day/8"
 
+  require Math
+
   def setup do
     with {:ok, file} <- File.read("../input/8") do
       setup_from_string(file)
@@ -31,44 +33,31 @@ defmodule Advent2023.Day8 do
     Enum.at(instructions, Integer.mod(count, Enum.count(instructions)))
   end
 
-  def step(graph, instructions, current \\ "AAA", count \\ 0)
-  def step(_graph, _instructions, "ZZZ", count), do: count
-  def step(graph, instructions, current, count) do
-    direction = get_direction(instructions, count)
-    next = Map.get(graph, current) |> direction(direction)
-
-    step(graph, instructions, next, count + 1)
-  end
-
-  def ghost(graph, instructions, list_of_current, count \\ 0)
-  def ghost(graph, instructions, list_of_current, count) do
-    if Enum.all?(list_of_current, &String.match?(&1, ~r/\w\wZ/)) do
+  def step(graph, instructions, current, target, count \\ 0)
+  def step(graph, instructions, current, target, count) do
+    if Regex.match?(target, current) do
       count
     else
       direction = get_direction(instructions, count)
+      next = Map.get(graph, current) |> direction(direction)
 
-      next =
-        list_of_current
-        |> Enum.map(fn current ->
-          graph
-          |> Map.get(current)
-          |> direction(direction)
-        end)
-
-      ghost(graph, instructions, next, count + 1)
+      step(graph, instructions, next, target, count + 1)
     end
   end
 
   def p1({steps, graph}) do
-    step(graph, steps)
+    step(graph, steps, "AAA", ~r/ZZZ/)
   end
 
   def p2({steps, graph}) do
-    starting_positions =
-      graph
-      |> Map.keys
-      |> Enum.filter(fn str -> String.match?(str, ~r/\w\wA/) end)
-
-    ghost(graph, steps, starting_positions)
+    graph
+    |> Map.keys
+    |> Enum.filter(fn str -> String.match?(str, ~r/\w\wA/) end)
+    |> Enum.map(fn ghost ->
+      step(graph, steps, ghost, ~r/\w\wZ/)
+    end)
+    |> Enum.reduce(fn(num, acc) ->
+      Math.lcm(num, acc)
+    end)
   end
 end
