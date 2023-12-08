@@ -153,9 +153,9 @@ defmodule Advent2023.Day7 do
   def p2(hands) do
     hands
     |> Enum.map(fn {hand, bid} -> {apply_jokers(hand), bid} end)
-    |> IO.inspect
     |> Enum.sort_by(fn {hand, _bid} -> hand end, Hand)
     |> Enum.with_index(1)
+    |> Enum.map(&IO.inspect/1)
     |> Enum.map(fn {{_hand, bid}, rank} -> bid * rank end)
     |> Enum.sum
   end
