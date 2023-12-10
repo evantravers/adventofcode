@@ -11,4 +11,5 @@ defmodule Advent2023Test do
   doctest Advent2023.Day7, import: true
   doctest Advent2023.Day8, import: true
   doctest Advent2023.Day9, import: true
+  doctest Advent2023.Day10, import: true
 end
