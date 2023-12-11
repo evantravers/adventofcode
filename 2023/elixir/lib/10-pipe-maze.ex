@@ -141,14 +141,19 @@ defmodule Advent2023.Day10 do
   8
   """
   def p1(graph) do
-    {x, y} =
+    animal =
       graph
       |> Graph.vertices
       |> Enum.find(fn v -> Graph.vertex_labels(graph, v) == [:S] end)
 
-    loop = crawl(graph, {x, y-1}) |> IO.inspect
+    start =
+      graph
+      |> Graph.in_neighbors(animal)
+      |> hd
 
-    print(graph, loop)
+    loop = crawl(graph, start)
+
+    # print(graph, loop)
 
     loop
     |> Enum.count
