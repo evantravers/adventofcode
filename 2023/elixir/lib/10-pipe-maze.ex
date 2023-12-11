@@ -78,8 +78,15 @@ defmodule Advent2023.Day10 do
 
   def print(graph, loop \\ []) do
     IO.puts IO.ANSI.clear
-    for y <- 0..200 do
-      for x <- 0..200 do
+
+    max =
+      graph
+      |> Graph.vertices
+      |> Enum.map(&elem(&1, 0))
+      |> Enum.max
+
+    for y <- 0..max do
+      for x <- 0..max do
         char = Graph.vertex_labels(graph, {x, y}) |> List.first
         if char == :S do
           "#{IO.ANSI.yellow_background}🐍#{IO.ANSI.default_background}"
