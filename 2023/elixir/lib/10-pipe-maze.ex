@@ -76,6 +76,8 @@ defmodule Advent2023.Day10 do
     end
   end
 
+  def green(str), do: "#{IO.ANSI.green}#{str}#{IO.ANSI.default_color}"
+
   def print(graph, loop \\ []) do
     IO.puts IO.ANSI.clear
 
@@ -88,13 +90,13 @@ defmodule Advent2023.Day10 do
     for y <- 0..max do
       for x <- 0..max do
         char = Graph.vertex_labels(graph, {x, y}) |> List.first
-        if char == :S do
-          "#{IO.ANSI.yellow_background}🐍#{IO.ANSI.default_background}"
+        if is_nil(char) do
+          " "
         else
-          if Enum.member?(loop, {x, y}) do
-            "#{IO.ANSI.green}#{char}#{IO.ANSI.white}"
+          if char == :S do
+            "#{IO.ANSI.yellow_background}🐍#{IO.ANSI.default_background}"
           else
-            char
+            if Enum.member?(loop, {x, y}), do: green(char), else: char
           end
         end
       end
