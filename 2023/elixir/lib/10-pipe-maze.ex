@@ -109,6 +109,15 @@ defmodule Advent2023.Day10 do
     graph
   end
 
+  def crawl(graph, start), do: crawl(graph, [start], [])
+
+  def crawl(_graph, [], visited), do: visited
+  def crawl(graph, [vert|queue], visited) do
+    todo = Graph.out_neighbors(graph, vert) -- visited
+
+    crawl(graph, todo ++ queue, [vert|visited])
+  end
+
   @doc """
   How many steps along the loop does it take to get from the starting position
   to the point farthest from the starting position?
@@ -132,15 +141,12 @@ defmodule Advent2023.Day10 do
   8
   """
   def p1(graph) do
-    animal =
+    {x, y} =
       graph
       |> Graph.vertices
       |> Enum.find(fn v -> Graph.vertex_labels(graph, v) == [:S] end)
 
-    loop =
-      graph
-      |> Graph.components()
-      |> hd
+    loop = crawl(graph, {x, y-1}) |> IO.inspect
 
     print(graph, loop)
 
