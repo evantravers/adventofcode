@@ -35,31 +35,37 @@ defmodule Advent2023.Day10 do
     graph
     |> Graph.add_edge({x, y}, {x, y+1})
     |> Graph.add_edge({x, y}, {x, y-1})
+    |> Graph.label_vertex({x, y}, "┃")
   end
   def read_pipe("-", {x, y}, graph) do
     graph
     |> Graph.add_edge({x, y}, {x-1, y})
     |> Graph.add_edge({x, y}, {x+1, y})
+    |> Graph.label_vertex({x, y}, "━")
   end
   def read_pipe("L", {x, y}, graph) do
     graph
     |> Graph.add_edge({x, y}, {x, y-1})
     |> Graph.add_edge({x, y}, {x+1, y})
+    |> Graph.label_vertex({x, y}, "┗")
   end
   def read_pipe("J", {x, y}, graph) do
     graph
     |> Graph.add_edge({x, y}, {x, y-1})
     |> Graph.add_edge({x, y}, {x-1, y})
+    |> Graph.label_vertex({x, y}, "┛")
   end
   def read_pipe("7", {x, y}, graph) do
     graph
     |> Graph.add_edge({x, y}, {x, y+1})
     |> Graph.add_edge({x, y}, {x-1, y})
+    |> Graph.label_vertex({x, y}, "┓")
   end
   def read_pipe("F", {x, y}, graph) do
     graph
     |> Graph.add_edge({x, y}, {x, y+1})
     |> Graph.add_edge({x, y}, {x+1, y})
+    |> Graph.label_vertex({x, y}, "┏")
   end
   def read_pipe(".", _coords, graph), do: graph
   def read_pipe("S", {x, y}, graph) do
@@ -68,6 +74,29 @@ defmodule Advent2023.Day10 do
     else
       Graph.add_vertex(graph, {x, y}, :S)
     end
+  end
+
+  def print(graph, loop \\ []) do
+    for y <- 0..200 do
+      for x <- 0..200 do
+        char = Graph.vertex_labels(graph, {x, y}) |> List.first
+        if char == :S do
+          "#{IO.ANSI.yellow_background}🐍#{IO.ANSI.default_background}"
+        else
+          if Enum.member?(loop, {x, y}) do
+            "#{IO.ANSI.green}#{char}#{IO.ANSI.white}"
+          else
+            char
+          end
+        end
+      end
+      |> Enum.join
+      |> Kernel.<>("\n")
+    end
+    |> Enum.join
+    |> IO.puts
+
+    graph
   end
 
   @doc """
@@ -98,9 +127,14 @@ defmodule Advent2023.Day10 do
       |> Graph.vertices
       |> Enum.find(fn v -> Graph.vertex_labels(graph, v) == [:S] end)
 
-    graph
-    |> Graph.components
-    |> Enum.find(fn(comp) -> Enum.member?(comp, animal) end)
+    loop =
+      graph
+      |> Graph.components
+      |> Enum.find(fn(comp) -> Enum.member?(comp, animal) end)
+
+    print(graph, loop)
+
+    loop
     |> Enum.count
     |> div(2)
   end
