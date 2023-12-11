@@ -77,6 +77,7 @@ defmodule Advent2023.Day10 do
   end
 
   def print(graph, loop \\ []) do
+    IO.puts IO.ANSI.clear
     for y <- 0..200 do
       for x <- 0..200 do
         char = Graph.vertex_labels(graph, {x, y}) |> List.first
