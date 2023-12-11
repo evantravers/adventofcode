@@ -94,7 +94,7 @@ defmodule Advent2023.Day10 do
           " "
         else
           if char == :S do
-            "#{IO.ANSI.yellow_background}🐍#{IO.ANSI.default_background}"
+            "#{IO.ANSI.yellow_background}S#{IO.ANSI.default_background}"
           else
             if Enum.member?(loop, {x, y}), do: green(char), else: char
           end
@@ -139,8 +139,8 @@ defmodule Advent2023.Day10 do
 
     loop =
       graph
-      |> Graph.components
-      |> Enum.find(fn(comp) -> Enum.member?(comp, animal) end)
+      |> Graph.components()
+      |> hd
 
     print(graph, loop)
 
