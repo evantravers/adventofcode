@@ -74,6 +74,15 @@ defmodule Advent2023.Day10 do
   How many steps along the loop does it take to get from the starting position
   to the point farthest from the starting position?
 
+  iex> ".....
+  ...>.S-7.
+  ...>.|.|.
+  ...>.L-J.
+  ...>....."
+  ...> |> setup_from_string
+  ...> |> p1
+  4
+
   iex> "..F7.
   ...>.FJ|.
   ...>SJ.L7
@@ -88,7 +97,6 @@ defmodule Advent2023.Day10 do
       graph
       |> Graph.vertices
       |> Enum.find(fn v -> Graph.vertex_labels(graph, v) == [:S] end)
-      |> IO.inspect(label: "Animal")
 
     graph
     |> Graph.components
