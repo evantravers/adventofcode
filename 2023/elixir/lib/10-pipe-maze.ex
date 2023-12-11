@@ -8,17 +8,32 @@ defmodule Advent2023.Day10 do
   end
 
   def setup_from_string(str) do
-    str
-    |> String.split("\n", trim: true)
-    |> Enum.with_index
-    |> Enum.reduce(Graph.new(), fn ({row, y}, graph) ->
-      row
-      |> String.codepoints
+    graph =
+      str
+      |> String.split("\n", trim: true)
       |> Enum.with_index
-      |> Enum.reduce(graph, fn ({char, x}, graph) ->
-        read_pipe(char, {x, y}, graph)
+      |> Enum.reduce(Graph.new(), fn ({row, y}, graph) ->
+        row
+        |> String.codepoints
+        |> Enum.with_index
+        |> Enum.reduce(graph, fn ({char, x}, graph) ->
+          read_pipe(char, {x, y}, graph)
+        end)
       end)
-    end)
+
+    animal =
+      graph
+      |> Graph.vertices
+      |> Enum.find(fn v -> Graph.vertex_labels(graph, v) == [:S] end)
+
+    start =
+      graph
+      |> Graph.in_neighbors(animal)
+      |> hd
+
+    loop = crawl(graph, start)
+
+    {graph, loop}
   end
 
   @doc """
@@ -140,19 +155,7 @@ defmodule Advent2023.Day10 do
   ...> |> p1
   8
   """
-  def p1(graph) do
-    animal =
-      graph
-      |> Graph.vertices
-      |> Enum.find(fn v -> Graph.vertex_labels(graph, v) == [:S] end)
-
-    start =
-      graph
-      |> Graph.in_neighbors(animal)
-      |> hd
-
-    loop = crawl(graph, start)
-
+  def p1({_graph, loop}) do
     # print(graph, loop)
 
     loop
@@ -204,7 +207,7 @@ defmodule Advent2023.Day10 do
   ...> |> p2
   10
   """
-  def p2(graph) do
-    graph
+  def p2({graph, loop}) do
+    nil
   end
 end
