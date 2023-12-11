@@ -3,11 +3,11 @@ defmodule Advent2023.Day10 do
 
   def setup do
     with {:ok, file} <- File.read("../input/10") do
-      file |> setup_with_string
+      file |> setup_from_string
     end
   end
 
-  def setup_with_string(str) do
+  def setup_from_string(str) do
     str
     |> String.split("\n", trim: true)
     |> Enum.with_index
@@ -63,27 +63,38 @@ defmodule Advent2023.Day10 do
   end
   def read_pipe(".", _coords, graph), do: graph
   def read_pipe("S", {x, y}, graph) do
-    graph
-    |> Graph.add_vertex("S", {x, y})
+    if Graph.has_vertex?(graph, {x, y}) do
+      Graph.label_vertex(graph, {x, y}, :S)
+    else
+      Graph.add_vertex(graph, {x, y}, :S)
+    end
   end
 
   @doc """
-  iex> "7-F7-
-  ...>.FJ|7
-  ...>SJLL7
-  ...>|F--J
-  ...>LJ.LJ"
-  ...> |> setup_with_string
-  ...> |> p1
-  8
-
   How many steps along the loop does it take to get from the starting position
   to the point farthest from the starting position?
+
+  iex> "..F7.
+  ...>.FJ|.
+  ...>SJ.L7
+  ...>|F--J
+  ...>LJ..."
+  ...> |> setup_from_string
+  ...> |> p1
+  8
   """
   def p1(graph) do
+    animal =
+      graph
+      |> Graph.vertices
+      |> Enum.find(fn v -> Graph.vertex_labels(graph, v) == [:S] end)
+      |> IO.inspect(label: "Animal")
+
     graph
     |> Graph.components
-    |> IO.inspect
+    |> Enum.find(fn(comp) -> Enum.member?(comp, animal) end)
+    |> Enum.count
+    |> div(2)
   end
 
   def p2(_i), do: nil
