@@ -208,6 +208,28 @@ defmodule Advent2023.Day10 do
   10
   """
   def p2({graph, loop}) do
-    nil
+    max =
+      graph
+      |> Graph.vertices
+      |> Enum.map(&elem(&1, 0))
+      |> Enum.max
+
+    0..max
+    |> Enum.reduce({0, false}, fn(y, {count, inside}) ->
+      0..max
+      |> Enum.reduce({count, inside}, fn(x, {count, inside}) ->
+        if Enum.member?(loop, {x, y}) and hd(Graph.vertex_labels(graph, {x, y})) == "┃" do
+          {count, !inside}
+        else
+          if inside do
+            {count+1, inside}
+          else
+            {count, inside}
+          end
+        end
+      end)
+      |> (fn({count, _inside}) -> {count, false} end).()
+    end)
+    |> elem(0)
   end
 end
