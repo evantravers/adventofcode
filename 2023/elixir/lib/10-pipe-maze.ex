@@ -155,6 +155,10 @@ defmodule Advent2023.Day10 do
     |> div(2)
   end
 
+def in_loop?(graph, list, c) do
+  Enum.member?(list, c) and Graph.vertex_labels(graph, c) != ["━"]
+end
+
   @doc """
   How many tiles are enclosed by the loop?
 
@@ -210,8 +214,19 @@ defmodule Advent2023.Day10 do
       0..max
       |> Enum.reduce({[], false}, fn(y, {members, inside}) ->
         0..max
-        |> Enum.reduce({members, inside}, fn(x, {members, inside}) ->
-          {[{x, y}|members], inside}
+        |> Enum.reduce({members, inside}, fn
+          (x, {members, true}) ->
+            if in_loop?(graph, loop, {x, y}) do
+              {members, false}
+            else
+              {[{x, y}|members], true}
+            end
+          (x, {members, false}) ->
+            if in_loop?(graph, loop, {x, y}) do
+              {members, true}
+            else
+              {members, false}
+            end
         end)
         |> (fn({members, _inside}) -> {members, false} end).()
       end)
