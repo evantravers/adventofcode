@@ -91,9 +91,9 @@ defmodule Advent2023.Day10 do
     end
   end
 
-  def green(str), do: "#{IO.ANSI.green}#{str}#{IO.ANSI.default_color}"
+  def highlight(str), do: "#{IO.ANSI.yellow_background}#{str}#{IO.ANSI.default_background}"
 
-  def print(graph, loop \\ []) do
+  def print(graph, list \\ []) do
     IO.puts IO.ANSI.clear
 
     max =
@@ -104,16 +104,8 @@ defmodule Advent2023.Day10 do
 
     for y <- 0..max do
       for x <- 0..max do
-        char = Graph.vertex_labels(graph, {x, y}) |> List.first
-        if is_nil(char) do
-          " "
-        else
-          if char == :S do
-            "#{IO.ANSI.yellow_background}S#{IO.ANSI.default_background}"
-          else
-            if Enum.member?(loop, {x, y}), do: green(char), else: char
-          end
-        end
+        char = Graph.vertex_labels(graph, {x, y}) |> List.first || " "
+        if Enum.member?(list, {x, y}), do: highlight(char), else: char
       end
       |> Enum.join
       |> Kernel.<>("\n")
@@ -214,22 +206,19 @@ defmodule Advent2023.Day10 do
       |> Enum.map(&elem(&1, 0))
       |> Enum.max
 
-    0..max
-    |> Enum.reduce({0, false}, fn(y, {count, inside}) ->
+    inside =
       0..max
-      |> Enum.reduce({count, inside}, fn(x, {count, inside}) ->
-        if Enum.member?(loop, {x, y}) and hd(Graph.vertex_labels(graph, {x, y})) == "┃" do
-          {count, !inside}
-        else
-          if inside do
-            {count+1, inside}
-          else
-            {count, inside}
-          end
-        end
+      |> Enum.reduce({[], false}, fn(y, {members, inside}) ->
+        0..max
+        |> Enum.reduce({members, inside}, fn(x, {members, inside}) ->
+          {[{x, y}|members], inside}
+        end)
+        |> (fn({members, _inside}) -> {members, false} end).()
       end)
-      |> (fn({count, _inside}) -> {count, false} end).()
-    end)
-    |> elem(0)
+      |> elem(0)
+
+    print(graph, inside)
+
+    Enum.count(inside)
   end
 end
