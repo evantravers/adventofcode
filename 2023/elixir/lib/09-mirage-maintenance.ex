@@ -35,22 +35,10 @@ defmodule Advent2023.Day9 do
     end
   end
 
-  def recursive_compute(list_of_lists) do
-    # reverse everything so I can use hd/1 which is way more performant than
-    # List.last/1
-    list_of_lists
-    |> Enum.map(&Enum.reverse/1)
-    |> recursive_compute(0)
-  end
-  def recursive_compute([], inc), do: inc
-  def recursive_compute([head|tail], acceleration) do
-    recursive_compute(tail, acceleration + hd(head))
-  end
-
-  def extend_sequence(list_of_numbers) do
-    list_of_numbers
-    |> generate_vectors()
-    |> recursive_compute()
+  def recursive_compute(list_of_integers, inc \\ 0, f)
+  def recursive_compute([], inc, _f), do: inc
+  def recursive_compute([head|tail], acceleration, f) do
+    recursive_compute(tail, f.(acceleration, hd(head)), f)
   end
 
   @doc """
@@ -61,12 +49,34 @@ defmodule Advent2023.Day9 do
   ...> |> p1
   114
   """
-  def p1(list_of_numbers) do
+  def p1(list_of_lists) do
     # isn't this basically a Riemann sum / integral kinda thing?
-    list_of_numbers
-    |> Enum.map(&extend_sequence/1)
+    list_of_lists
+    |> Enum.map(fn list_of_numbers ->
+      list_of_numbers
+      |> generate_vectors
+      |> Enum.map(&Enum.reverse/1)
+      |> recursive_compute(0, &Kernel.+/2)
+    end)
     |> Enum.sum
   end
 
-  def p2(_i), do: nil
+  @doc """
+  iex> "0 3 6 9 12 15
+  ...>1 3 6 10 15 21
+  ...>10 13 16 21 30 45"
+  ...> |> setup_from_string
+  ...> |> p2
+  2
+  """
+  def p2(list_of_lists) do
+    # isn't this basically a Riemann sum / integral kinda thing?
+    list_of_lists
+    |> Enum.map(fn list_of_numbers ->
+      list_of_numbers
+      |> generate_vectors
+      |> recursive_compute(0, &Kernel.-/2)
+    end)
+    |> Enum.sum
+  end
 end
