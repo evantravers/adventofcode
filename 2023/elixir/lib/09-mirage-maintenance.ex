@@ -17,7 +17,7 @@ defmodule Advent2023.Day9 do
     end)
   end
 
-  def acceleration_vector(list_of_integers) do
+  def derivative_vector(list_of_integers) do
     list_of_integers
     |> Enum.chunk_every(2, 1)
     |> Enum.reject(&length(&1) == 1)
@@ -27,18 +27,18 @@ defmodule Advent2023.Day9 do
   end
 
   def generate_vectors(list_of_integers, history \\ []) do
-    acc_vector = acceleration_vector(list_of_integers)
-    if Enum.all?(acc_vector, & &1 == 0) do
+    der_vector = derivative_vector(list_of_integers)
+    if Enum.all?(der_vector, & &1 == 0) do
       [list_of_integers|history]
     else
-      generate_vectors(acc_vector, [list_of_integers|history])
+      generate_vectors(der_vector, [list_of_integers|history])
     end
   end
 
   def recursive_compute(list_of_integers, inc \\ 0, f)
   def recursive_compute([], inc, _f), do: inc
-  def recursive_compute([head|tail], acceleration, f) do
-    recursive_compute(tail, f.(acceleration, hd(head)), f)
+  def recursive_compute([head|tail], inc, f) do
+    recursive_compute(tail, f.(inc, hd(head)), f)
   end
 
   @doc """
