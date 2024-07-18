@@ -38,7 +38,7 @@ defmodule Advent2023.Day9 do
   def recursive_compute(list_of_integers, inc \\ 0, f)
   def recursive_compute([], inc, _f), do: inc
   def recursive_compute([head|tail], inc, f) do
-    recursive_compute(tail, f.(inc, hd(head)), f)
+    recursive_compute(tail, f.(hd(head), inc), f)
   end
 
   @doc """
