@@ -42,9 +42,9 @@ defmodule Advent2023.Day9 do
     |> Enum.map(&Enum.reverse/1)
     |> recursive_compute(0)
   end
-  def recursive_compute([], accel), do: accel
-  def recursive_compute(list_of_lists, acceleration) do
-    recursive_compute(tl(list_of_lists), acceleration + hd(hd(list_of_lists)))
+  def recursive_compute([], inc), do: inc
+  def recursive_compute([head|tail], acceleration) do
+    recursive_compute(tail, acceleration + hd(head))
   end
 
   def extend_sequence(list_of_numbers) do
