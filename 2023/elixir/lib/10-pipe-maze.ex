@@ -155,9 +155,10 @@ defmodule Advent2023.Day10 do
     |> div(2)
   end
 
-def in_loop?(graph, list, c) do
-  Enum.member?(list, c) and Graph.vertex_labels(graph, c) != ["-"]
-end
+  def space?(graph, coord), do: Graph.vertex_labels(graph, coord) == []
+  def wall?(graph, list, coord) do
+    Enum.member?(list, coord) and Graph.vertex_labels(graph, coord) != ["━"]
+  end
 
   @doc """
   How many tiles are enclosed by the loop?
@@ -216,15 +217,23 @@ end
         0..max
         |> Enum.reduce({members, inside?}, fn
           (x, {members, true}) ->
-            if in_loop?(graph, loop, {x, y}) do
+            # if it's a wall, flip the switch
+            if wall?(graph, loop, {x, y}) do
               {members, false}
             else
-              {[{x, y}|members], true}
+              # if it's a space, count it
+              if space?(graph, {x, y}) do
+                {[{x,y}|members], true}
+              else
+                {members, true}
+              end
             end
           (x, {members, false}) ->
-            if in_loop?(graph, loop, {x, y}) do
+            # if it's a wall, flip the switch
+            if wall?(graph, loop, {x, y}) do
               {members, true}
             else
+              # otherwise, continue
               {members, false}
             end
         end)
