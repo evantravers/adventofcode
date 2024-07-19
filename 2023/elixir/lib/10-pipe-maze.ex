@@ -156,7 +156,10 @@ defmodule Advent2023.Day10 do
   end
 
   def space?(graph, coord), do: Graph.vertex_labels(graph, coord) == []
-  def wall?(graph, list, coord) do
+  def wall_start?(graph, list, coord) do
+    Enum.member?(list, coord) and Graph.vertex_labels(graph, coord) == ["┃"]
+  end
+  def wall_end?(graph, list, coord) do
     Enum.member?(list, coord) and Graph.vertex_labels(graph, coord) != ["━"]
   end
 
@@ -218,7 +221,7 @@ defmodule Advent2023.Day10 do
         |> Enum.reduce({members, inside?}, fn
           (x, {members, true}) ->
             # if it's a wall, flip the switch
-            if wall?(graph, loop, {x, y}) do
+            if wall_end?(graph, loop, {x, y}) do
               {members, false}
             else
               # if it's a space, count it
@@ -230,7 +233,7 @@ defmodule Advent2023.Day10 do
             end
           (x, {members, false}) ->
             # if it's a wall, flip the switch
-            if wall?(graph, loop, {x, y}) do
+            if wall_start?(graph, loop, {x, y}) do
               {members, true}
             else
               # otherwise, continue
