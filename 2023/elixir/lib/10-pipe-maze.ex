@@ -156,7 +156,7 @@ defmodule Advent2023.Day10 do
   end
 
 def in_loop?(graph, list, c) do
-  Enum.member?(list, c) and Graph.vertex_labels(graph, c) != ["━"]
+  Enum.member?(list, c) and Graph.vertex_labels(graph, c) != ["-"]
 end
 
   @doc """
@@ -212,9 +212,9 @@ end
 
     inside =
       0..max
-      |> Enum.reduce({[], false}, fn(y, {members, inside}) ->
+      |> Enum.reduce({[], false}, fn(y, {members, inside?}) ->
         0..max
-        |> Enum.reduce({members, inside}, fn
+        |> Enum.reduce({members, inside?}, fn
           (x, {members, true}) ->
             if in_loop?(graph, loop, {x, y}) do
               {members, false}
@@ -228,7 +228,7 @@ end
               {members, false}
             end
         end)
-        |> (fn({members, _inside}) -> {members, false} end).()
+        |> (fn({members, _inside?}) -> {members, false} end).()
       end)
       |> elem(0)
 
