@@ -198,7 +198,7 @@ defmodule Advent2023.Day10 do
       true ->
         state
         |> n
-        |> Map.update(:score, 1, & &1 + 1)
+        |> Map.update(:history, [coord], & [coord|&1])
         |> inside
     end
   end
@@ -313,11 +313,13 @@ defmodule Advent2023.Day10 do
         end
         |> (fn (coords) -> %{coords: coords, graph: graph, loop: loop} end).()
         |> outside
-        |> Map.get(:score)
+        |> Map.get(:history)
       end
       |> Enum.reject(&is_nil/1)
-      |> Enum.sum
+      |> List.flatten
 
-    # print(graph, inside_characters)
+    print(graph, inside_characters)
+
+    Enum.count(inside_characters)
   end
 end
