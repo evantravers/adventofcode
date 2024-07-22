@@ -169,6 +169,8 @@ defmodule Advent2023.Day10 do
 
   def n(%{coords: [_coord|tail]} = s), do: Map.put(s, :coords, tail)
 
+  def count(state), do: outside(state)
+
   def outside(%{coords: []} = state), do: state
   def outside(%{coords: [coord|_tail]} = state) do
     cond do
@@ -219,7 +221,7 @@ defmodule Advent2023.Day10 do
   Returns {behaves_as_wall, newstate}
   """
   def corner(state, direction \\ nil)
-  def corner(%{coords: []} = state, _direction), do: state
+  def corner(%{coords: []} = state, _direction), do: {false, state}
   def corner(%{coords: [coord|_tail], graph: graph} = state, nil) do
     cond do
       north?(graph, coord) -> state |> n |> corner(:north)
@@ -229,8 +231,8 @@ defmodule Advent2023.Day10 do
   end
   def corner(%{coords: [coord|_tail], graph: graph} = state, direction) do
     cond do
-      north?(graph, coord) -> {direction == :north, n(state)}
-      south?(graph, coord) -> {direction == :south, n(state)}
+      north?(graph, coord) -> {direction != :north, n(state)}
+      south?(graph, coord) -> {direction != :south, n(state)}
       true -> state |> n |> corner(direction)
     end
   end
@@ -312,7 +314,7 @@ defmodule Advent2023.Day10 do
           {x, y}
         end
         |> (fn (coords) -> %{coords: coords, graph: graph, loop: loop} end).()
-        |> outside
+        |> count
         |> Map.get(:history)
       end
       |> Enum.reject(&is_nil/1)
