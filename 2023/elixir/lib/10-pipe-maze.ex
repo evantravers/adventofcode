@@ -157,26 +157,39 @@ defmodule Advent2023.Day10 do
 
   def label(graph, coord), do: Graph.vertex_labels(graph, coord) |> hd
 
-  def is_wall?(graph, loop, coord) do
-    Enum.member?(loop, coord) and label(graph, coord) != "━"
+  def is_wall?(%{graph: graph, loop: loop}, coord) do
+    Enum.member?(loop, coord) and label(graph, coord) == "┃"
   end
 
-  def count_inside(list_of_coords, graph, loop, last_wall \\ nil, inside? \\ false, found \\ [])
-  def count_inside([], _graph, _loop, _last_wall, _inside?, found), do: found
-  def count_inside([coord|rem], graph, loop, last_wall, true, found) do
-    if is_wall?(graph, loop, coord) do
-      count_inside(rem, graph, loop, coord, false, found)
-    else
-      count_inside(rem, graph, loop, last_wall, true, [coord|found])
+  def is_corner?(%{graph: graph, loop: loop} = world, coord) do
+    Enum.member?(loop, coord)
+    and label(graph, coord) != "━"
+    and !is_wall?(world, coord)
+  end
+
+  def count_in_row(list_of_coords, state), do: outside(list_of_coords, state)
+
+  def outside([], state), do: state
+  def outside([coord|tail], state) do
+    cond do
+      is_wall?(coord, state) -> inside(tail, state)
+      is_corner?(coord, state) -> corner(tail, label(coord), state)
+      true -> outside(tail, state)
     end
   end
-  def count_inside([coord|rem], graph, loop, last_wall, false, found) do
-    if is_wall?(graph, loop, coord) do
-      count_inside(rem, graph, loop, coord, true, found)
-    else
-      count_inside(rem, graph, loop, last_wall, false, found)
+
+  def inside([], state), do: state
+  def inside([coord|tail], state) do
+    cond do
+      is_wall?(coord, state) -> outside(tail, state)
+      is_corner?(coord, state) -> corner(tail, label(coord), state)
+      true -> inside(tail, Map.update(state, :score, 1, & &1 + 1))
     end
   end
+
+  def corner([], state), do: state
+  def corner(["-"]|tail), last_bend, state), do: corner(tail, last_bend, state)
+  def corner([coord|tail], last_bend, state)
 
   @doc """
   How many tiles are enclosed by the loop?
