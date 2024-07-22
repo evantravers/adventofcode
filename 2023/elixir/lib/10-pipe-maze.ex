@@ -155,11 +155,27 @@ defmodule Advent2023.Day10 do
     |> div(2)
   end
 
-  def wall_start?(graph, list, coord) do
-    Enum.member?(list, coord) and Graph.vertex_labels(graph, coord) == ["┃"]
+  def label(graph, coord), do: Graph.vertex_labels(graph, coord) |> hd
+
+  def is_wall?(graph, loop, coord) do
+    Enum.member?(loop, coord) and label(graph, coord) != "━"
   end
-  def wall_end?(graph, list, coord) do
-    Enum.member?(list, coord) and Graph.vertex_labels(graph, coord) != ["━"]
+
+  def count_inside(list_of_coords, graph, loop, last_wall \\ nil, inside? \\ false, found \\ [])
+  def count_inside([], _graph, _loop, _last_wall, _inside?, found), do: found
+  def count_inside([coord|rem], graph, loop, last_wall, true, found) do
+    if is_wall?(graph, loop, coord) do
+      count_inside(rem, graph, loop, coord, false, found)
+    else
+      count_inside(rem, graph, loop, last_wall, true, [coord|found])
+    end
+  end
+  def count_inside([coord|rem], graph, loop, last_wall, false, found) do
+    if is_wall?(graph, loop, coord) do
+      count_inside(rem, graph, loop, coord, true, found)
+    else
+      count_inside(rem, graph, loop, last_wall, false, found)
+    end
   end
 
   @doc """
@@ -233,33 +249,17 @@ defmodule Advent2023.Day10 do
     # I'd need something like a functional state machine that given a certain
     # label or connected graph can determine whether the wall becomes open or
     # whether it curves back on itself.
-    inside =
-      0..max
-      |> Enum.reduce({[], false}, fn(y, {members, inside?}) ->
-        0..max
-        |> Enum.reduce({members, inside?}, fn
-          (x, {members, true}) ->
-            # if it's a wall, flip the switch
-            if wall_end?(graph, loop, {x, y}) do
-              {members, false}
-            else
-              {[{x,y}|members], true}
-            end
-          (x, {members, false}) ->
-            # if it's a wall, flip the switch
-            if wall_start?(graph, loop, {x, y}) do
-              {members, true}
-            else
-              # otherwise, continue
-              {members, false}
-            end
-        end)
-        |> (fn({members, _inside?}) -> {members, false} end).()
-      end)
-      |> elem(0)
+    inside_characters =
+      for y <- 0..max do
+        for x <- 0..max do
+          {x, y}
+        end
+        |> count_inside(graph, loop)
+      end
+      |> List.flatten
 
-    print(graph, inside)
+    print(graph, inside_characters)
 
-    Enum.count(inside)
+    Enum.count(inside_characters)
   end
 end
