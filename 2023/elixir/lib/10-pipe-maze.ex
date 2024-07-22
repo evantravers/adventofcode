@@ -226,6 +226,13 @@ defmodule Advent2023.Day10 do
       |> Enum.map(&elem(&1, 0))
       |> Enum.max
 
+    # New insight: You only cross "in" when it's either a vertical wall "|" or
+    # when you have two bends that both have a vertical dimension.
+    # so there's actually a way to be 50% `inside?`.
+    #
+    # I'd need something like a functional state machine that given a certain
+    # label or connected graph can determine whether the wall becomes open or
+    # whether it curves back on itself.
     inside =
       0..max
       |> Enum.reduce({[], false}, fn(y, {members, inside?}) ->
