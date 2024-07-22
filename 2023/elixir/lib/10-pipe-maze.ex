@@ -155,7 +155,11 @@ defmodule Advent2023.Day10 do
     |> div(2)
   end
 
-  def label(graph, coord), do: Graph.vertex_labels(graph, coord) |> hd
+  def label(graph, coord) do
+    with labels <- Graph.vertex_labels(graph, coord), !Enum.empty?(labels) do
+      hd(labels)
+    end
+  end
 
   def is_wall?(%{graph: graph, loop: loop}, coord) do
     Enum.member?(loop, coord) and label(graph, coord) == "┃"
