@@ -94,7 +94,7 @@ defmodule Advent2023.Day10 do
   def highlight(str), do: "#{IO.ANSI.yellow_background}#{str}#{IO.ANSI.default_background}"
 
   def print(graph, list \\ []) do
-    IO.puts IO.ANSI.clear
+    IO.puts IO.ANSI.clear_line
 
     max =
       graph
