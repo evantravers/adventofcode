@@ -167,29 +167,73 @@ defmodule Advent2023.Day10 do
     and !is_wall?(world, coord)
   end
 
-  def count_in_row(list_of_coords, state), do: outside(list_of_coords, state)
+  def n(%{coords: [_coord|tail]} = s), do: Map.put(s, :coords, tail)
 
-  def outside([], state), do: state
-  def outside([coord|tail], state) do
+  def outside(%{coords: []} = state), do: state
+  def outside(%{coords: [coord|_tail]} = state) do
     cond do
-      is_wall?(coord, state) -> inside(tail, state)
-      is_corner?(coord, state) -> corner(tail, label(coord), state)
-      true -> outside(tail, state)
+      is_wall?(state, coord) -> state |> n |> inside
+      is_corner?(state, coord) ->
+        {wall?, state} = corner(state)
+        if wall? do
+          inside(state)
+        else
+          outside(state)
+        end
+      true -> state |> n |> outside
     end
   end
 
-  def inside([], state), do: state
-  def inside([coord|tail], state) do
+  def inside(%{coords: []} = state), do: state
+  def inside(%{coords: [coord|_tail]} = state) do
     cond do
-      is_wall?(coord, state) -> outside(tail, state)
-      is_corner?(coord, state) -> corner(tail, label(coord), state)
-      true -> inside(tail, Map.update(state, :score, 1, & &1 + 1))
+      is_wall?(state, coord) -> state |> n |> outside
+      is_corner?(state, coord) ->
+        {wall?, state} = corner(state)
+        if wall? do
+          outside(state)
+        else
+          inside(state)
+        end
+      true ->
+        state
+        |> n
+        |> Map.update(:score, 1, & &1 + 1)
+        |> inside
     end
   end
 
-  def corner([], state), do: state
-  def corner(["-"]|tail), last_bend, state), do: corner(tail, last_bend, state)
-  def corner([coord|tail], last_bend, state)
+  def north?(graph, {x, y}) do
+    graph
+    |> Graph.neighbors({x, y})
+    |> Enum.member?({x, y - 1})
+  end
+
+  def south?(graph, {x, y}) do
+    graph
+    |> Graph.neighbors({x, y})
+    |> Enum.member?({x, y + 1})
+  end
+
+  @doc """
+  Returns {behaves_as_wall, newstate}
+  """
+  def corner(state, direction \\ nil)
+  def corner(%{coords: []} = state, _direction), do: state
+  def corner(%{coords: [coord|_tail], graph: graph} = state, nil) do
+    cond do
+      north?(graph, coord) -> state |> n |> corner(:north)
+      south?(graph, coord) -> state |> n |> corner(:south)
+      true -> state |> n |> corner
+    end
+  end
+  def corner(%{coords: [coord|_tail], graph: graph} = state, direction) do
+    cond do
+      north?(graph, coord) -> {direction == :north, n(state)}
+      south?(graph, coord) -> {direction == :south, n(state)}
+      true -> state |> n |> corner(direction)
+    end
+  end
 
   @doc """
   How many tiles are enclosed by the loop?
@@ -267,12 +311,13 @@ defmodule Advent2023.Day10 do
         for x <- 0..max do
           {x, y}
         end
-        |> count_inside(graph, loop)
+        |> (fn (coords) -> %{coords: coords, graph: graph, loop: loop} end).()
+        |> outside
+        |> Map.get(:score)
       end
-      |> List.flatten
+      |> Enum.reject(&is_nil/1)
+      |> Enum.sum
 
-    print(graph, inside_characters)
-
-    Enum.count(inside_characters)
+    # print(graph, inside_characters)
   end
 end
