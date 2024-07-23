@@ -179,16 +179,18 @@ defmodule Advent2023.Day10 do
 
   def n(%{coords: [_coord|tail]} = s), do: Map.put(s, :coords, tail)
 
+  def i(state, coord), do: Map.update(state, :highlight, [coord], & [coord|&1])
+
   def count(state), do: outside(state)
 
   def outside(%{coords: []} = state), do: state
   def outside(%{coords: [coord|_tail]} = state) do
     cond do
-      is_wall?(state, coord) -> state |> n |> inside
+      is_wall?(state, coord) -> state |> n |> i(coord) |> inside
       is_corner?(state, coord) ->
         {wall?, state} = corner(state)
         if wall? do
-          inside(state)
+          state |> i(coord) |> inside
         else
           outside(state)
         end
@@ -311,19 +313,28 @@ defmodule Advent2023.Day10 do
       |> Enum.map(&elem(&1, 0))
       |> Enum.max
 
-    inside_characters =
+    state =
       for y <- 0..max do
         for x <- 0..max do
           {x, y}
         end
         |> (fn (coords) -> %{coords: coords, graph: graph, loop: loop} end).()
         |> count
-        |> Map.get(:history)
       end
+
+    inside_characters =
+      state
+      |> Enum.map(&Map.get(&1, :history))
       |> Enum.reject(&is_nil/1)
       |> List.flatten
 
-    print(graph, inside_characters)
+    boundaries =
+      state
+      |> Enum.map(&Map.get(&1, :highlight))
+      |> Enum.reject(&is_nil/1)
+      |> List.flatten
+
+    print(graph, inside_characters, boundaries)
 
     Enum.count(inside_characters)
   end
