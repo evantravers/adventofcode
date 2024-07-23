@@ -91,9 +91,11 @@ defmodule Advent2023.Day10 do
     end
   end
 
-  def highlight(str), do: "#{IO.ANSI.yellow_background}#{str}#{IO.ANSI.default_background}"
+  def highlight(str, color \\ IO.ANSI.yellow_background) do
+    "#{color}#{str}#{IO.ANSI.default_background}"
+  end
 
-  def print(graph, list \\ []) do
+  def print(graph, loop \\ [], other \\ []) do
     IO.puts IO.ANSI.clear_line
 
     max =
@@ -105,7 +107,11 @@ defmodule Advent2023.Day10 do
     for y <- 0..max do
       for x <- 0..max do
         char = Graph.vertex_labels(graph, {x, y}) |> List.first || " "
-        if Enum.member?(list, {x, y}), do: highlight(char), else: char
+        cond do
+          Enum.member?(loop, {x, y}) -> highlight(char)
+          Enum.member?(other, {x, y}) -> highlight(char, IO.ANSI.red_background)
+          true -> char
+        end
       end
       |> Enum.join
       |> Kernel.<>("\n")
