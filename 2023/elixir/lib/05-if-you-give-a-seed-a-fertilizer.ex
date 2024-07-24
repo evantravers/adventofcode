@@ -117,7 +117,7 @@ defmodule Advent2023.Day5 do
     |> Enum.min
   end
 
-  def p2({seeds, maps}) do
+  def p2({_seeds, _maps}) do
     # TODO: Instead of starting every seed separately, treat each range that
     # overlaps the next target range. Once you are in the chute, it won't
     # matter.
