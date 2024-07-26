@@ -96,16 +96,22 @@ defmodule Advent2023.Day10 do
   end
 
   def print(graph, loop \\ [], other \\ []) do
-    IO.puts IO.ANSI.clear_line
+    IO.puts ""
 
-    max =
+    max_y =
+      graph
+      |> Graph.vertices
+      |> Enum.map(&elem(&1, 1))
+      |> Enum.max
+
+    max_x =
       graph
       |> Graph.vertices
       |> Enum.map(&elem(&1, 0))
       |> Enum.max
 
-    for y <- 0..max do
-      for x <- 0..max do
+    for y <- 0..max_y do
+      for x <- 0..max_x do
         char = Graph.vertex_labels(graph, {x, y}) |> List.first || " "
         cond do
           Enum.member?(loop, {x, y}) -> highlight(char)
