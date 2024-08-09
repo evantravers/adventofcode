@@ -9,7 +9,7 @@ defmodule Advent2023.Day6 do
 
   def ways_to_beat({time, distance}) do
     0..time
-    |> Enum.map(fn(speed) ->
+    |> Stream.map(fn(speed) ->
       speed*(time-speed)
     end)
     |> Enum.count(& &1 > distance)
@@ -58,6 +58,6 @@ defmodule Advent2023.Day6 do
         |> String.to_integer
       end)
 
-    ways_to_beat({time, distance}) # TODO: This is really slow
+    ways_to_beat({time, distance})
   end
 end
