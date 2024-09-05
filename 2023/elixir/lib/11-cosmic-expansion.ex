@@ -13,7 +13,7 @@ defmodule Advent2023.Day11 do
         |> Enum.with_index
         |> Enum.reduce(world, fn
           {"#", x}, world -> [{x, y}|world]
-                _, world  -> world
+                _ , world -> world
         end)
       end)
     end
