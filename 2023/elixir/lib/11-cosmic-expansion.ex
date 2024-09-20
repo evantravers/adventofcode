@@ -22,5 +22,6 @@ defmodule Advent2023.Day11 do
   def p1(world) do
     world
   end
+
   def p2(_world), do: nil
 end
