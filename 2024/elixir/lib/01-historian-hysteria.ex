@@ -41,5 +41,23 @@ defmodule Advent2024.Day1 do
     end)
     |> Enum.sum
   end
-  def p2(_i), do: nil
+
+  @doc """
+  iex> "3   4
+  ...>4   3
+  ...>2   5
+  ...>1   3
+  ...>3   9
+  ...>3   3"
+  ...> |> setup_string
+  ...> |> p2
+  31
+  """
+  def p2([list_1, list_2]) do
+    freq = Enum.frequencies(list_2)
+
+    Enum.reduce(list_1, 0, fn(num, score) ->
+      score + num * Map.get(freq, num, 0)
+    end)
+  end
 end
