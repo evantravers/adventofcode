@@ -1,0 +1,3 @@
+/home/nixos/src/github.com/evantravers/adventofcode/2024/typescript/devenv.lock
+/home/nixos/src/github.com/evantravers/adventofcode/2024/typescript/devenv.nix
+/home/nixos/src/github.com/evantravers/adventofcode/2024/typescript/devenv.yaml
