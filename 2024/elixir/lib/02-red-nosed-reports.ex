@@ -63,5 +63,18 @@ defmodule Advent2024.Day2 do
     list_of_reports
     |> Enum.count(&safe?/1)
   end
-  def p2(_i), do: nil
+  def p2(list_of_reports) do
+    list_of_reports
+    |> Enum.count(fn reports ->
+      if safe?(reports) do
+        true
+      else
+        for n <- 0..length(reports) do
+          reports
+          |> List.delete_at(n)
+        end
+        |> Enum.any?(&safe?/1)
+      end
+    end)
+  end
 end
