@@ -8,8 +8,6 @@ defmodule Advent2024.Day3 do
     end
   end
 
-  def process_multiples(str), do: parse(str)
-
   def parse(tape, context \\ %{enabled: true})
   def parse("do()" <> rest, c), do: parse(rest, %{c | enabled: true})
   def parse("don't()" <> rest, c), do: parse(rest, %{c | enabled: false})
@@ -24,27 +22,43 @@ defmodule Advent2024.Day3 do
 
   defguard number?(char) when char in @numbers
 
-  def save_number(context, str) do
-    number = String.to_integer(str)
-    Map.update(context, :numbers, [number], &[number|&1])
+  def parse_number(char, context)
+  def parse_number(<<num::binary-size(1)>> <> rest, context) when number?(num) do
+    rest
+    |> parse_number(
+      context
+      |> Map.update(:current, [num], &[num|&1])
+    )
   end
+  def parse_number("," <> rest, %{current: num} = context) do
+    number =
+      num
+      |> Enum.join
+      |> String.to_integer
 
-  def parse_number(char, context, str \\ "")
-  def parse_number(<<num::binary-size(1)>> <> rest, context, str) when number?(num) do
-    parse_number(rest, context, str <> num)
-  end
-  def parse_number("," <> rest, context, str) do
     parse_number(
       rest,
-      save_number(context, str),
-      "")
+      context
+      |> Map.put(:first, number)
+      |> Map.delete(:current)
+    )
   end
-  # FIXME: The bug is that I'm not checking for the closing ")" before saving the numbers.
-  def parse_number(<<_char::binary-size(1)>> <> rest, context, str) do
+  def parse_number(")" <> rest, %{first: first, current: last} = context) do
+    last =
+      last
+      |> Enum.join
+      |> String.to_integer
+
     parse(
       rest,
-      save_number(context, str)
+      context
+      |> Map.update(:results, [{first, last}], &[{first, last}|&1])
+      |> Map.delete(:current)
+      |> Map.delete(:first)
     )
+  end
+  def parse_number(<<_char::binary-size(1)>> <> rest, context) do
+    parse(rest, context)
   end
 
   @doc """
@@ -77,12 +91,13 @@ defmodule Advent2024.Day3 do
   """
   def p2(list_of_strings) do
     list_of_strings
-    |> Enum.map(&process_multiples/1)
-    |> Enum.map(fn %{numbers: numbers} ->
-      numbers
-      |> Enum.reverse
-      |> Enum.chunk_every(2)
-      |> Enum.map(fn [a, b] -> a * b end)
+    |> Enum.map(fn(codestr) ->
+      codestr
+      |> parse
+      |> Map.get(:results)
+      |> Enum.map(fn {a, b} ->
+        a * b
+      end)
       |> Enum.sum
     end)
     |> Enum.sum
