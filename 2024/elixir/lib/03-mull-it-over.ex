@@ -8,10 +8,6 @@ defmodule Advent2024.Day3 do
     end
   end
 
-  @doc """
-  iex> process_multiples("xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))")
-  161
-  """
   def process_multiples(str), do: parse(str)
 
   def parse(tape, context \\ %{enabled: true})
@@ -33,16 +29,43 @@ defmodule Advent2024.Day3 do
     parse_number(rest, context, str <> num)
   end
   def parse_number(<<_char::binary-size(1)>> <> rest, context, str) do
-    String.to_integer(str)
-    |> IO.inspect
+    number = String.to_integer(str)
 
-    parse(rest, context)
+    parse(
+      rest,
+      context
+      |> Map.update(:numbers, [number], &[number|&1])
+    )
   end
 
+  @doc """
+  iex> p1(["xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"])
+  161
+  """
   def p1(list_of_strings) do
     list_of_strings
-    |> Enum.map(&process_multiples/1)
+    |> Enum.map(fn(str) ->
+    instructions = Regex.scan(~r/mul\(\d+,\d+\)/, str)
+      if is_list(instructions) do
+        numbers =
+          ~r/\d+/
+          |> Regex.scan(Enum.join(instructions))
+          |> List.flatten
+
+        numbers
+        |> Enum.map(&String.to_integer/1)
+        |> Enum.chunk_every(2)
+        |> Enum.map(fn([a, b]) -> a * b end)
+        |> Enum.sum
+      end
+    end)
     |> Enum.sum
   end
-  def p2(_i), do: nil
+
+  def p2(list_of_strings) do
+    list_of_strings
+    |> Enum.map(&process_multiples/1)
+
+    nil
+  end
 end
