@@ -39,6 +39,7 @@ defmodule Advent2024.Day3 do
       save_number(context, str),
       "")
   end
+  # FIXME: The bug is that I'm not checking for the closing ")" before saving the numbers.
   def parse_number(<<_char::binary-size(1)>> <> rest, context, str) do
     parse(
       rest,
@@ -79,6 +80,7 @@ defmodule Advent2024.Day3 do
     |> Enum.map(&process_multiples/1)
     |> Enum.map(fn %{numbers: numbers} ->
       numbers
+      |> Enum.reverse
       |> Enum.chunk_every(2)
       |> Enum.map(fn [a, b] -> a * b end)
       |> Enum.sum
