@@ -3,4 +3,5 @@ defmodule Advent2024Test do
   doctest Advent
   doctest Advent2024.Day1, import: true
   doctest Advent2024.Day2, import: true
+  doctest Advent2024.Day3, import: true
 end
