@@ -24,17 +24,25 @@ defmodule Advent2024.Day3 do
 
   defguard number?(char) when char in @numbers
 
+  def save_number(context, str) do
+    number = String.to_integer(str)
+    Map.update(context, :numbers, [number], &[number|&1])
+  end
+
   def parse_number(char, context, str \\ "")
   def parse_number(<<num::binary-size(1)>> <> rest, context, str) when number?(num) do
     parse_number(rest, context, str <> num)
   end
+  def parse_number("," <> rest, context, str) do
+    parse_number(
+      rest,
+      save_number(context, str),
+      "")
+  end
   def parse_number(<<_char::binary-size(1)>> <> rest, context, str) do
-    number = String.to_integer(str)
-
     parse(
       rest,
-      context
-      |> Map.update(:numbers, [number], &[number|&1])
+      save_number(context, str)
     )
   end
 
@@ -62,10 +70,19 @@ defmodule Advent2024.Day3 do
     |> Enum.sum
   end
 
+  @doc """
+  iex> p2(["xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"])
+  48
+  """
   def p2(list_of_strings) do
     list_of_strings
     |> Enum.map(&process_multiples/1)
-
-    nil
+    |> Enum.map(fn %{numbers: numbers} ->
+      numbers
+      |> Enum.chunk_every(2)
+      |> Enum.map(fn [a, b] -> a * b end)
+      |> Enum.sum
+    end)
+    |> Enum.sum
   end
 end
