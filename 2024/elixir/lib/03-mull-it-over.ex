@@ -33,6 +33,7 @@ defmodule Advent2024.Day3 do
   def parse_number("," <> rest, %{current: num} = context) do
     number =
       num
+      |> Enum.reverse
       |> Enum.join
       |> String.to_integer
 
@@ -46,6 +47,7 @@ defmodule Advent2024.Day3 do
   def parse_number(")" <> rest, %{first: first, current: last} = context) do
     last =
       last
+      |> Enum.reverse
       |> Enum.join
       |> String.to_integer
 
@@ -88,6 +90,8 @@ defmodule Advent2024.Day3 do
   @doc """
   iex> p2(["xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"])
   48
+  iex> p2(["mul(30,6)"])
+  180
   """
   def p2(list_of_strings) do
     list_of_strings
