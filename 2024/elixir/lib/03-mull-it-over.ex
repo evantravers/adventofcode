@@ -14,28 +14,29 @@ defmodule Advent2024.Day3 do
   """
   def process_multiples(str), do: parse(str)
 
-  def parse(tape, enabled \\ true)
-  def parse("do()" <> rest, _enabled), do: parse(rest, true)
-  def parse("don't()" <> rest, _enabled), do: parse(rest, false)
-  def parse("mul(" <> rest, false), do: parse(rest, false)
-  def parse("mul(" <> rest, true) do
-    parse_number(rest)
+  def parse(tape, context \\ %{enabled: true})
+  def parse("do()" <> rest, c), do: parse(rest, %{c | enabled: true})
+  def parse("don't()" <> rest, c), do: parse(rest, %{c | enabled: false})
+  def parse("mul(" <> rest, %{enabled: false} = c), do: parse(rest, c)
+  def parse("mul(" <> rest, %{enabled: true} = c) do
+    parse_number(rest, c)
   end
-  def parse(<<_::binary-size(1)>> <> rest, enabled), do: parse(rest, enabled)
-  def parse("", _enabled), do: "yay!"
+  def parse(<<_::binary-size(1)>> <> rest, context), do: parse(rest, context)
+  def parse("", context), do: context
 
   @numbers ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
   defguard number?(char) when char in @numbers
 
-  def parse_number(char, str \\ "")
-  def parse_number(<<num::binary-size(1)>> <> rest, str) when number?(num) do
-    parse_number(rest, str <> num)
+  def parse_number(char, context, str \\ "")
+  def parse_number(<<num::binary-size(1)>> <> rest, context, str) when number?(num) do
+    parse_number(rest, context, str <> num)
   end
-  def parse_number(<<char::binary-size(1)>> <> rest, str) do
+  def parse_number(<<_char::binary-size(1)>> <> rest, context, str) do
     String.to_integer(str)
+    |> IO.inspect
 
-    parse(rest, true)
+    parse(rest, context)
   end
 
   def p1(list_of_strings) do
