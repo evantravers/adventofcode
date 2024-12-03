@@ -44,6 +44,13 @@ defmodule Advent2024.Day3 do
       |> Map.delete(:current)
     )
   end
+  def parse_number(")" <> rest, context) when not is_map_key(context, :first) do
+    parse(
+      rest,
+      context
+      |> Map.delete(:current)
+    )
+  end
   def parse_number(")" <> rest, %{first: first, current: last} = context) do
     last =
       last
