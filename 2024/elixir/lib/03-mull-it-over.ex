@@ -12,20 +12,30 @@ defmodule Advent2024.Day3 do
   iex> process_multiples("xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))")
   161
   """
-  def process_multiples(str) do
-    instructions = Regex.scan(~r/mul\(\d+,\d+\)/, str)
-    if is_list(instructions) do
-      numbers =
-        ~r/\d+/
-        |> Regex.scan(Enum.join(instructions))
-        |> List.flatten
+  def process_multiples(str), do: parse(str)
 
-      numbers
-      |> Enum.map(&String.to_integer/1)
-      |> Enum.chunk_every(2)
-      |> Enum.map(fn([a, b]) -> a * b end)
-      |> Enum.sum
-    end
+  def parse(tape, enabled \\ true)
+  def parse("do()" <> rest, _enabled), do: parse(rest, true)
+  def parse("don't()" <> rest, _enabled), do: parse(rest, false)
+  def parse("mul(" <> rest, false), do: parse(rest, false)
+  def parse("mul(" <> rest, true) do
+    parse_number(rest)
+  end
+  def parse(<<_::binary-size(1)>> <> rest, enabled), do: parse(rest, enabled)
+  def parse("", _enabled), do: "yay!"
+
+  @numbers ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+  defguard number?(char) when char in @numbers
+
+  def parse_number(char, str \\ "")
+  def parse_number(<<num::binary-size(1)>> <> rest, str) when number?(num) do
+    parse_number(rest, str <> num)
+  end
+  def parse_number(<<char::binary-size(1)>> <> rest, str) do
+    String.to_integer(str)
+
+    parse(rest, true)
   end
 
   def p1(list_of_strings) do
