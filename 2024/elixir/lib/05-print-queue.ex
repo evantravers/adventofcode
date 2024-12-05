@@ -25,6 +25,10 @@ defmodule Advent2024.Day5 do
     end
   end
 
+  def sort(a, b, _rules) do
+    a < b
+  end
+
   def rule?({a, b}, update) do
     first = Enum.find_index(update, & a == &1) || -10000
     last = Enum.find_index(update, & b == &1) || 10000
@@ -48,5 +52,14 @@ defmodule Advent2024.Day5 do
   def p2({rules, updates}) do
     updates
     |> Enum.reject(&valid?(&1, rules))
+    |> Enum.map(fn update ->
+      update
+      |> Enum.sort(&sort(&1, &2, rules))
+
+      middle = floor(length(update) / 2)
+
+      Enum.at(update, middle)
+    end)
+    |> Enum.sum
   end
 end
