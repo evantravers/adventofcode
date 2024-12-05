@@ -112,6 +112,8 @@ defmodule Advent2024.Day3 do
   0
   iex> p2(["mul(2mul(2,3)"])
   6
+  iex> p2(["mul(2do()mul(2,1)don't()mul(3,2))"])
+  2
   """
   def p2(list_of_strings) do
     list_of_strings
