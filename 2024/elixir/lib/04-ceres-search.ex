@@ -42,6 +42,15 @@ defmodule Advent2024.Day4 do
     |> Enum.count(&xmas?(&1, map))
   end
 
+  def mas?(a, b, map) do
+    Map.get(map, a) == :M && Map.get(map, b) == :S ||
+    Map.get(map, a) == :S && Map.get(map, b) == :M
+  end
+
+  def check_for_x({x, y}, map) do
+    mas?({x-1, y-1}, {x+1, y+1}, map) && mas?({x-1, y+1}, {x+1, y-1}, map)
+  end
+
   def p1(map) do
     map
     |> Map.keys
@@ -49,5 +58,11 @@ defmodule Advent2024.Day4 do
     |> Enum.map(&check_all_directions(&1, map))
     |> Enum.sum
   end
-  def p2(_i), do: nil
+
+  def p2(map) do
+    map
+    |> Map.keys
+    |> Enum.filter(fn  coord -> Map.get(map, coord) == :A end)
+    |> Enum.count(&check_for_x(&1, map))
+  end
 end
