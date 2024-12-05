@@ -23,6 +23,7 @@ defmodule Advent2024.Day3 do
   defguard number?(char) when char in @numbers
 
   def parse_number(char, context)
+  def parse_number("", context), do: context
   def parse_number(<<num::binary-size(1)>> <> rest, context) when number?(num) do
     rest
     |> parse_number(
@@ -66,8 +67,8 @@ defmodule Advent2024.Day3 do
       |> Map.delete(:first)
     )
   end
-  def parse_number(<<_char::binary-size(1)>> <> rest, context) do
-    parse(rest,
+  def parse_number(<<char::binary-size(1)>> <> rest, context) do
+    parse(char <> rest,
       context
       |> Map.delete(:current)
       |> Map.delete(:first)
@@ -105,6 +106,12 @@ defmodule Advent2024.Day3 do
   180
   iex> p2(["do()don't()mul(30,6)"])
   0
+  iex> p2(["mul(2,2"])
+  0
+  iex> p2(["mul(11)"])
+  0
+  iex> p2(["mul(2mul(2,3)"])
+  6
   """
   def p2(list_of_strings) do
     list_of_strings
