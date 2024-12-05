@@ -20,8 +20,7 @@ defmodule Advent2024.Day4 do
     Map.get(map, x) == :X &&
     Map.get(map, m) == :M &&
     Map.get(map, a) == :A &&
-    Map.get(map, s) == :S ||
-    xmas?([s, a, m, x], map)
+    Map.get(map, s) == :S
   end
 
   def generate_directions({x, y}) do
@@ -46,6 +45,7 @@ defmodule Advent2024.Day4 do
   def p1(map) do
     map
     |> Map.keys
+    |> Enum.filter(fn coord -> Map.get(map, coord) == :X end) # what if we only checked x?
     |> Enum.map(&check_all_directions(&1, map))
   end
   def p2(_i), do: nil
