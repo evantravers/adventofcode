@@ -45,5 +45,8 @@ defmodule Advent2024.Day5 do
     |> Enum.sum
   end
 
-  def p2(_i), do: nil
+  def p2({rules, updates}) do
+    updates
+    |> Enum.reject(&valid?(&1, rules))
+  end
 end
