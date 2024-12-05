@@ -67,7 +67,11 @@ defmodule Advent2024.Day3 do
     )
   end
   def parse_number(<<_char::binary-size(1)>> <> rest, context) do
-    parse(rest, context)
+    parse(rest,
+      context
+      |> Map.delete(:current)
+      |> Map.delete(:first)
+    )
   end
 
   @doc """
@@ -99,13 +103,15 @@ defmodule Advent2024.Day3 do
   48
   iex> p2(["mul(30,6)"])
   180
+  iex> p2(["do()don't()mul(30,6)"])
+  0
   """
   def p2(list_of_strings) do
     list_of_strings
     |> Enum.map(fn(codestr) ->
       codestr
       |> parse
-      |> Map.get(:results)
+      |> Map.get(:results, [{0, 0}])
       |> Enum.map(fn {a, b} ->
         a * b
       end)
