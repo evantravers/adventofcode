@@ -47,6 +47,7 @@ defmodule Advent2024.Day4 do
     |> Map.keys
     |> Enum.filter(fn coord -> Map.get(map, coord) == :X end) # what if we only checked x?
     |> Enum.map(&check_all_directions(&1, map))
+    |> Enum.sum
   end
   def p2(_i), do: nil
 end
