@@ -5,30 +5,44 @@ defmodule Advent2024.Day5 do
     with {:ok, file} <- File.read("../input/5") do
       [rules, updates] = String.split(file, "\n\n", trim: true)
 
-      rules =
+      {
         rules
         |> String.split("\n", trim: true)
         |> Enum.map(fn str ->
           str
           |> String.split("|")
           |> Enum.map(&String.to_integer/1)
-        end)
-
-      updates =
+          |> List.to_tuple
+        end),
         updates
+        |> String.split("\n", trim: true)
         |> Enum.map(fn str ->
           str
-          |> String.split("\n", trim: true)
-          |> Enum.map(&String.split(&1, ",", trim: true))
+          |> String.split(",", trim: true)
           |> Enum.map(&String.to_integer/1)
         end)
-
-      {rules, updates}
+      }
     end
+  end
+
+  def rule?({a, b}, update) do
+    first = Enum.find_index(update, & a == &1) || -10000
+    last = Enum.find_index(update, & b == &1) || 10000
+    first < last
+  end
+
+  def valid?(update, rules) do
+    Enum.all?(rules, &rule?(&1, update))
   end
 
   def p1({rules, updates}) do
     updates
+    |> Enum.filter(&valid?(&1, rules))
+    |> Enum.map(fn list ->
+      middle = floor(length(list) / 2)
+      Enum.at(list, middle)
+    end)
+    |> Enum.sum
   end
 
   def p2(_i), do: nil
