@@ -25,6 +25,7 @@ defmodule Advent2024.Day5 do
     end
   end
 
+  # FIXME: how do I sort based on all the rules without exponential complexity?
   def sort(a, b, _rules) do
     a < b
   end
