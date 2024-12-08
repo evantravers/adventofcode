@@ -34,12 +34,12 @@ defmodule Advent2024.Day6 do
   def e({x, y}), do: {x + 1, y}
   def w({x, y}), do: {x - 1, y}
 
-  def obstacle?(lab, coord), do: Map.get(lab, coord) == "#"
+  def hash?(lab, coord), do: Map.get(lab, coord) == "#"
 
-  def check({coords, :north}, lab), do: obstacle?(lab, n(coords))
-  def check({coords, :east}, lab),  do: obstacle?(lab, e(coords))
-  def check({coords, :south}, lab), do: obstacle?(lab, s(coords))
-  def check({coords, :west}, lab),  do: obstacle?(lab, w(coords))
+  def obstacle?({coords, :north}, lab), do: hash?(lab, n(coords))
+  def obstacle?({coords, :east}, lab),  do: hash?(lab, e(coords))
+  def obstacle?({coords, :south}, lab), do: hash?(lab, s(coords))
+  def obstacle?({coords, :west}, lab),  do: hash?(lab, w(coords))
 
   def step({coords, :north}), do: {n(coords), :north}
   def step({coords, :east}),  do: {e(coords), :east}
@@ -47,12 +47,26 @@ defmodule Advent2024.Day6 do
   def step({coords, :west}),  do: {w(coords), :west}
 
   def walk(guard, lab, steps \\ [])
-  def walk(guard, lab, steps) do
-    guard
-    # if next step has obstable, turn
-    # else, step
+  def walk({coords, _dir} = guard, lab, steps) do
+    cond do
+      obstacle?(guard, lab) ->
+        guard
+        |> turn
+        |> walk(lab, steps)
+      is_nil(Map.get(lab, coords)) ->
+        steps
+      true ->
+        guard
+        |> step
+        |> walk(lab, [coords|steps])
+    end
   end
 
-  def p1({lab, guard}), do: walk(guard, lab)
+  def p1({lab, guard}) do
+    guard
+    |> walk(lab)
+    |> Enum.uniq
+    |> Enum.count
+  end
   def p2(_world), do: nil
 end
