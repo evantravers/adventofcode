@@ -33,8 +33,8 @@ defmodule Advent2024.Day6 do
   def turn({coords, :south}), do: {coords, :west}
   def turn({coords, :west}), do: {coords, :north}
 
-  def n({x, y}), do: {x, y + 1}
-  def s({x, y}), do: {x, y - 1}
+  def n({x, y}), do: {x, y - 1}
+  def s({x, y}), do: {x, y + 1}
   def e({x, y}), do: {x + 1, y}
   def w({x, y}), do: {x - 1, y}
 
@@ -52,18 +52,33 @@ defmodule Advent2024.Day6 do
 
   def walk(guard, lab, steps \\ [])
   def walk({coords, _dir} = guard, lab, steps) do
+    IO.puts(pp(lab, guard))
     cond do
+      is_nil(Map.get(lab, coords)) ->
+        steps
       obstacle?(guard, lab) ->
         guard
         |> turn
         |> walk(lab, steps)
-      is_nil(Map.get(lab, coords)) ->
-        steps
-      true ->
+      true -> # keep on walking
         guard
         |> step
         |> walk(lab, [coords|steps])
     end
+  end
+
+  def pp(lab, {coord, _dir}) do
+    for y <- 0..10 do
+      for x <- 0..10 do
+        if coord == {x, y} do
+          "🤦"
+        else
+          Map.get(lab, {x, y})
+        end
+      end
+      |> Enum.join("")
+    end
+    |> Enum.join("\n")
   end
 
   @doc """
