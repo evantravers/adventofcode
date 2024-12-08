@@ -52,7 +52,7 @@ defmodule Advent2024.Day6 do
 
   def walk(guard, lab, steps \\ [])
   def walk({coords, _dir} = guard, lab, steps) do
-    IO.puts(pp(lab, guard))
+    # IO.puts(pp(lab, guard))
     cond do
       is_nil(Map.get(lab, coords)) ->
         steps
@@ -102,5 +102,22 @@ defmodule Advent2024.Day6 do
     |> Enum.uniq
     |> Enum.count
   end
-  def p2(_world), do: nil
+
+  @doc """
+  iex> "....#.....
+  ...>.........#
+  ...>..........
+  ...>..#.......
+  ...>.......#..
+  ...>..........
+  ...>.#..^.....
+  ...>........#.
+  ...>#.........
+  ...>......#..."
+  ...> |> setup_from_string
+  ...> |> p2
+  6
+  """
+  def p2({lab, guard}) do
+  end
 end
