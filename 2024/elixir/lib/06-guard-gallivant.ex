@@ -3,25 +3,29 @@ defmodule Advent2024.Day6 do
 
   def setup do
     with {:ok, file} <- File.read("../input/6") do
-      lab =
-      file
-        |> String.split("\n", trim: true)
-        |> Enum.with_index
-        |> Enum.reduce(%{}, fn {line, y}, map ->
-          line
-          |> String.graphemes
-          |> Enum.with_index
-          |> Enum.reduce(map, fn
-            {"^", x}, map ->
-              map
-              |> Map.put(:guard, {{x, y}, :north})
-              |> Map.put({x, y}, ".")
-            {char, x}, map -> Map.put(map, {x, y}, char)
-          end)
-        end)
-
-      {Map.delete(lab, :guard), Map.get(lab, :guard)}
+      setup_from_string(file)
     end
+  end
+
+  def setup_from_string(file) do
+    lab =
+    file
+      |> String.split("\n", trim: true)
+      |> Enum.with_index
+      |> Enum.reduce(%{}, fn {line, y}, map ->
+        line
+        |> String.graphemes
+        |> Enum.with_index
+        |> Enum.reduce(map, fn
+          {"^", x}, map ->
+            map
+            |> Map.put(:guard, {{x, y}, :north})
+            |> Map.put({x, y}, ".")
+          {char, x}, map -> Map.put(map, {x, y}, char)
+        end)
+      end)
+
+    {Map.delete(lab, :guard), Map.get(lab, :guard)}
   end
 
   def turn({coords, :north}), do: {coords, :east}
@@ -62,6 +66,21 @@ defmodule Advent2024.Day6 do
     end
   end
 
+  @doc """
+  iex> "....#.....
+  ...>.........#
+  ...>..........
+  ...>..#.......
+  ...>.......#..
+  ...>..........
+  ...>.#..^.....
+  ...>........#.
+  ...>#.........
+  ...>......#..."
+  ...> |> setup_from_string
+  ...> |> p1
+  41
+  """
   def p1({lab, guard}) do
     guard
     |> walk(lab)
