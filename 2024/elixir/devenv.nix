@@ -5,7 +5,7 @@
   env.GREET = "";
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git pkgs.elixir-ls ];
+  packages = [ pkgs.git pkgs.lexical ];
 
   # https://devenv.sh/scripts/
   enterShell = ''
