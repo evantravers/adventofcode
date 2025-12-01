@@ -8,14 +8,14 @@ defmodule Advent2025.Day1 do
     end
   end
 
-  def read_instructions("L" <> count), do: {:L, String.to_integer(count)}
-  def read_instructions("R" <> count), do: {:R, String.to_integer(count)}
   def setup_from_string(str) do
     str
     |> String.split("\n", trim: true)
     |> Enum.map(&translate_instructions/1)
   end
 
+  def translate_instructions("L" <> count), do: {:L, String.to_integer(count)}
+  def translate_instructions("R" <> count), do: {:R, String.to_integer(count)}
 
   def turn({:L, count}, [pointer|_rest] = locs) do
     [Integer.mod(pointer - count, 100)|locs]
@@ -24,6 +24,22 @@ defmodule Advent2025.Day1 do
     [Integer.mod(pointer + count, 100)|locs]
   end
 
+  def track({:L, count}, {last_pos, sign_swap_count}) do
+    steps         = last_pos - count
+    rotations     = abs(Integer.floor_div(steps, 100))
+
+    {Integer.mod(steps, 100), sign_swap_count + rotations}
+  end
+  def track({:R, count}, {last_pos, sign_swap_count}) do
+    steps         = last_pos + count
+    rotations     = abs(Integer.floor_div(steps, 100))
+
+    {Integer.mod(steps, 100), sign_swap_count + rotations}
+  end
+
+  @doc """
+  Count how many times that the dial ends on 0.
+  """
   def p1(instructions) do
     start = [50]
 
@@ -49,7 +65,7 @@ defmodule Advent2025.Day1 do
   ...>L82"
   ...> |> setup_from_string
   ...> |> p2
-  3
+  6
   """
   def p2(instructions) do
     start = {50, 0} # {last_position, sign_swap_count}
