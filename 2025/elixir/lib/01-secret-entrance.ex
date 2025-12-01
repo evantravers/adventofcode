@@ -66,6 +66,16 @@ defmodule Advent2025.Day1 do
   ...> |> setup_from_string
   ...> |> p2
   6
+
+  iex> "R1000"
+  ...> |> setup_from_string
+  ...> |> p2
+  10
+
+  iex> "R1050"
+  ...> |> setup_from_string
+  ...> |> p2
+  11
   """
   def p2(instructions) do
     start = {50, 0} # {last_position, sign_swap_count}
