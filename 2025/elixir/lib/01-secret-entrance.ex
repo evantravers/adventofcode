@@ -17,11 +17,30 @@ defmodule Advent2025.Day1 do
   def translate_instructions("L" <> count), do: {:L, String.to_integer(count)}
   def translate_instructions("R" <> count), do: {:R, String.to_integer(count)}
 
-  def turn({:L, count}, [pointer|_rest] = locs) do
-    [Integer.mod(pointer - count, 100)|locs]
-  end
-  def turn({:R, count}, [pointer|_rest] = locs) do
-    [Integer.mod(pointer + count, 100)|locs]
+  @doc """
+  iex> calc_position(11, {:R, 8})
+  19
+
+  iex> calc_position(19, {:L, 19})
+  0
+
+  iex> calc_position(0, {:L, 1})
+  99
+
+  iex> calc_position(99, {:R, 1})
+  0
+
+  iex> calc_position(5, {:L, 10})
+  95
+
+  iex> calc_position(95, {:R, 5})
+  0
+  """
+  def calc_position(pointer, {:L, count}), do: Integer.mod(pointer - count, 100)
+  def calc_position(pointer, {:R, count}), do: Integer.mod(pointer + count, 100)
+
+  def next(instruction, [pointer|_rest] = locs) do
+    [calc_position(pointer, instruction)|locs]
   end
 
   def track({:L, count}, {last_pos, sign_swap_count}) do
@@ -44,7 +63,7 @@ defmodule Advent2025.Day1 do
     start = [50]
 
     instructions
-    |> Enum.reduce(start, &turn/2)
+    |> Enum.reduce(start, &next/2)
     |> Enum.count(& &1 == 0)
   end
 
