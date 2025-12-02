@@ -10,8 +10,30 @@ defmodule Advent2025.Day2 do
   """
 
   def setup do
+    with {:ok, file} <- File.read("../input/02") do
+      values =
+        file
+        |> String.split(",", trim: true)
+        |> Enum.map(fn(str) ->
+          [min, max] = String.split(str, ~r/-|\n/, trim: true)
+          {String.to_integer(min), String.to_integer(max)}
+        end)
+
+      {min, max} =
+        values
+        |> Enum.map(&Tuple.to_list/1)
+        |> List.flatten
+        |> Enum.min_max()
+
+      ranges = Enum.map(values, fn({min, max}) -> Range.new(min, max) end)
+
+      {ranges, min, max}
+    end
   end
 
-  def p1(_i), do: nil
+  def p1(i) do
+    i
+  end
+
   def p2(_i), do: nil
 end
