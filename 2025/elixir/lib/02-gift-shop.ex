@@ -11,7 +11,7 @@ defmodule Advent2025.Day2 do
 
   def setup do
     with {:ok, file} <- File.read("../input/02") do
-      values =
+      ranges =
         file
         |> String.split(",", trim: true)
         |> Enum.map(fn(str) ->
@@ -20,12 +20,10 @@ defmodule Advent2025.Day2 do
         end)
 
       {min, max} =
-        values
+        ranges
         |> Enum.map(&Tuple.to_list/1)
         |> List.flatten
         |> Enum.min_max()
-
-      ranges = Enum.map(values, fn({min, max}) -> min..max end)
 
       fakeIDs = sieve(min, max)
 
@@ -34,13 +32,26 @@ defmodule Advent2025.Day2 do
   end
 
   def sieve(min, max) do
-    possibles = min..max
+    min..max
+    |> Enum.reduce_while([], fn candidate, fake ->
+      digits = Integer.digits(candidate)
+      fakeID = Integer.undigits(digits ++ digits)
 
-    Stream.reject(possibles, & Integer.is_even(&1))
+      if fakeID >= max do
+        {:halt, fake}
+      else
+        {:cont, [fakeID|fake]}
+      end
+    end)
   end
 
-  def p1(i) do
-    i
+  def p1({ranges, fakeIDs}) do
+    fakeIDs
+    |> Enum.reduce(0, fn (id, sum) ->
+      sum + id * Enum.count(ranges, fn {min, max} ->
+        id >= min && id <= max
+      end)
+    end)
   end
 
   def p2(_i), do: nil
