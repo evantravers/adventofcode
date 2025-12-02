@@ -17,40 +17,38 @@ defmodule Advent2025.Day1 do
   def translate_instructions("L" <> count), do: {:L, String.to_integer(count)}
   def translate_instructions("R" <> count), do: {:R, String.to_integer(count)}
 
+  def dir({:L, count}), do: -1 * count
+  def dir({:R, count}), do: count
+
   @doc """
-  iex> calc_position(11, {:R, 8})
+  iex> next_position(11, {:R, 8})
   19
 
-  iex> calc_position(19, {:L, 19})
+  iex> next_position(19, {:L, 19})
   0
 
-  iex> calc_position(0, {:L, 1})
+  iex> next_position(0, {:L, 1})
   99
 
-  iex> calc_position(99, {:R, 1})
+  iex> next_position(99, {:R, 1})
   0
 
-  iex> calc_position(5, {:L, 10})
+  iex> next_position(5, {:L, 10})
   95
 
-  iex> calc_position(95, {:R, 5})
+  iex> next_position(95, {:R, 5})
   0
   """
-  def calc_position(pointer, {:L, count}), do: Integer.mod(pointer - count, 100)
-  def calc_position(pointer, {:R, count}), do: Integer.mod(pointer + count, 100)
-
-  def next(instruction, [pointer|_rest] = locs) do
-    [calc_position(pointer, instruction)|locs]
+  def next_position(pointer, instruction) do
+    Integer.mod(pointer - dir(instruction), 100)
   end
 
-  def track({:L, count}, {last_pos, sign_swap_count}) do
-    steps     = last_pos - count
-    rotations = abs(Integer.floor_div(steps, 100))
-
-    {Integer.mod(steps, 100), sign_swap_count + rotations}
+  def calc_position(instruction, [pointer|_rest] = locs) do
+    [next_position(pointer, instruction)|locs]
   end
-  def track({:R, count}, {last_pos, sign_swap_count}) do
-    steps     = last_pos + count
+
+  def click(instruction, {last_pos, sign_swap_count}) do
+    steps     = last_pos + dir(instruction)
     rotations = abs(Integer.floor_div(steps, 100))
 
     {Integer.mod(steps, 100), sign_swap_count + rotations}
@@ -63,7 +61,7 @@ defmodule Advent2025.Day1 do
     start = [50]
 
     instructions
-    |> Enum.reduce(start, &next/2)
+    |> Enum.reduce(start, &calc_position/2)
     |> Enum.count(& &1 == 0)
   end
 
@@ -100,6 +98,7 @@ defmodule Advent2025.Day1 do
     start = {50, 0} # {last_position, sign_swap_count}
 
     {_last_pos, count} = Enum.reduce(instructions, start, &track/2)
+    {_last_pos, count} = Enum.reduce(instructions, start, &click/2)
 
     count
   end
