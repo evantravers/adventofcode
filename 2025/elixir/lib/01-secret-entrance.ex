@@ -97,7 +97,6 @@ defmodule Advent2025.Day1 do
   def p2(instructions) do
     start = {50, 0} # {last_position, sign_swap_count}
 
-    {_last_pos, count} = Enum.reduce(instructions, start, &track/2)
     {_last_pos, count} = Enum.reduce(instructions, start, &click/2)
 
     count
