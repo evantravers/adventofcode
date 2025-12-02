@@ -44,14 +44,14 @@ defmodule Advent2025.Day1 do
   end
 
   def track({:L, count}, {last_pos, sign_swap_count}) do
-    steps         = last_pos - count
-    rotations     = abs(Integer.floor_div(steps, 100))
+    steps     = last_pos - count
+    rotations = abs(Integer.floor_div(steps, 100))
 
     {Integer.mod(steps, 100), sign_swap_count + rotations}
   end
   def track({:R, count}, {last_pos, sign_swap_count}) do
-    steps         = last_pos + count
-    rotations     = abs(Integer.floor_div(steps, 100))
+    steps     = last_pos + count
+    rotations = abs(Integer.floor_div(steps, 100))
 
     {Integer.mod(steps, 100), sign_swap_count + rotations}
   end
