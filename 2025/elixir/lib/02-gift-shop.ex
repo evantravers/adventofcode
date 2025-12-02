@@ -25,10 +25,18 @@ defmodule Advent2025.Day2 do
         |> List.flatten
         |> Enum.min_max()
 
-      ranges = Enum.map(values, fn({min, max}) -> Range.new(min, max) end)
+      ranges = Enum.map(values, fn({min, max}) -> min..max end)
 
-      {ranges, min, max}
+      fakeIDs = sieve(min, max)
+
+      {ranges, fakeIDs}
     end
+  end
+
+  def sieve(min, max) do
+    possibles = min..max
+
+    Stream.reject(possibles, & Integer.is_even(&1))
   end
 
   def p1(i) do
