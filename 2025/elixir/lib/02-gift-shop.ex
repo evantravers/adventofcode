@@ -19,23 +19,14 @@ defmodule Advent2025.Day2 do
           {String.to_integer(min), String.to_integer(max)}
         end)
 
-      {min, max} =
-        ranges
-        |> Enum.map(&Tuple.to_list/1)
-        |> List.flatten
-        |> Enum.min_max()
-
-      fakeIDs = sieve(min, max)
-
-      {ranges, fakeIDs}
+      ranges
     end
   end
 
-  def sieve(min, max) do
+  def generate_ids(min, max, count \\ 1) do
     min..max
     |> Enum.reduce_while([], fn candidate, fake ->
-      digits = Integer.digits(candidate)
-      fakeID = Integer.undigits(digits ++ digits)
+      fakeID = dupe(candidate, count)
 
       if fakeID >= max do
         {:halt, fake}
@@ -45,7 +36,23 @@ defmodule Advent2025.Day2 do
     end)
   end
 
-  def p1({ranges, fakeIDs}) do
+  def dupe(int_or_digits, count \\ 1)
+  def dupe(digits, 0), do:     Integer.undigits(digits)
+  def dupe(integer, count) when is_integer(integer) do
+    dupe(Integer.digits(integer), count)
+  end
+  def dupe(digits, count) when is_list(digits) do
+    dupe(digits ++ digits, count - 1)
+  end
+
+  def min_max(ranges) do
+    ranges
+    |> Enum.map(&Tuple.to_list/1)
+    |> List.flatten
+    |> Enum.min_max()
+  end
+
+  def count_occurences(fakeIDs, ranges) do
     fakeIDs
     |> Enum.reduce(0, fn (id, sum) ->
       sum + id * Enum.count(ranges, fn {min, max} ->
@@ -54,5 +61,19 @@ defmodule Advent2025.Day2 do
     end)
   end
 
-  def p2(_i), do: nil
+  def p1(ranges) do
+    {min, max} = min_max(ranges)
+
+    fakeIDs = generate_ids(min, max)
+
+    count_occurences(fakeIDs, ranges)
+  end
+
+  def p2(ranges) do
+    {min, max} = min_max(ranges)
+
+    fakeIDs = for n <- 1..10, do: generate_ids(min, max, n)
+
+    count_occurences(List.flatten(fakeIDs), ranges)
+  end
 end
