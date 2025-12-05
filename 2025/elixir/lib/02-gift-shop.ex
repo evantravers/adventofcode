@@ -72,7 +72,12 @@ defmodule Advent2025.Day2 do
   def p2(ranges) do
     {min, max} = min_max(ranges)
 
-    fakeIDs = for n <- 1..10, do: generate_ids(min, max, n)
+    length =
+      max
+      |> Integer.digits
+      |> Enum.count
+
+    fakeIDs = for n <- 1..length, do: generate_ids(min, max, n)
 
     count_occurences(List.flatten(fakeIDs), ranges)
   end
